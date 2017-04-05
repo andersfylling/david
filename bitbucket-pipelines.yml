@@ -1,4 +1,4 @@
-# This is a sample build configuration for C++ â€“ Make.
+# This is a sample build configuration for C++ – Make.
 # Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
 # Only use spaces to indent your .yml configuration.
 # -----
@@ -14,15 +14,14 @@ pipelines:
           # Print the gcc version.
           - gcc --version
           #  Install a CMake 3.x version.
-          #- apt-get update -qq
-          #- apt-get install cmake -y
-          #  Alternatively you could install a CMake 3.2.2 version through PPA repository. 
-          - apt-get update -qq
-          - apt-get install software-properties-common -y
-          # Add PPA repository.
-          - echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list
           - apt-get update -qq
           - apt-get install cmake -y --force-yes
+          #- apt-get update -qq
+          #- apt-get install software-properties-common -y
+          # Add PPA repository.
+          #- echo 'deb http://ppa.launchpad.net/george-edison55/cmake-3.x/ubuntu trusty main' | tee -a /etc/apt/sources.list.d/cmake.list
+          #- apt-get update -qq
+          #- apt-get install cmake -y --force-yes
           # Print the CMake version.
           - cmake --version          
           - mkdir build
