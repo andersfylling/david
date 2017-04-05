@@ -13,14 +13,14 @@ This README would normally document whatever steps are necessary to get your app
 * Summary of set up
 * Configuration
 * Dependencies
-  - Catch
-  - FANN
-  - gcc 6.2
-  - cmake 2.6.x
-  - cpp 14
+    * Catch
+    * FANN
+    * gcc 6.2
+    * cmake 2.6.x
+    * cpp 14
 * Database configuration
 * How to run tests
-  - See https://github.com/philsquared/Catch
+    * See https://github.com/philsquared/Catch
 * Deployment instructions
 
 ### Contribution guidelines ###
