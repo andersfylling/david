@@ -23,6 +23,20 @@ This README would normally document whatever steps are necessary to get your app
     * See https://github.com/philsquared/Catch
 * Deployment instructions
 
+After cloning this repository you have to run: 
+
+git submodule init
+
+git submodule update
+
+Then run:
+
+git pull
+
+git status
+
+to make sure you have the latest versions!
+
 ### Contribution guidelines ###
 
 * Writing tests
