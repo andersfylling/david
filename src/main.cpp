@@ -1,5 +1,8 @@
+#include "../lib/Catch/single_include/catch.hpp"
 
-int main()
-{
-    return 0;
+//
+//Main
+//
+int main(int argc, char *args[]) {
+  return 0;
 }

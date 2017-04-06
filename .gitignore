@@ -1,4 +1,17 @@
 # Add any directories, files, or patterns you don't want to be tracked by version control
 
+# Ignore CMakeDebug files
 cmake-build-debug
+
+# Ignore intellij "CLion" project configurations
 .idea
+
+# Ignore the build and lib dirs
+build
+lib/*
+
+# Ignore any executables
+bin/*
+
+# Ignore Mac specific files
+.DS_Store
