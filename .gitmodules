@@ -1,0 +1,6 @@
+[submodule "lib/Catch"]
+	path = lib/Catch
+	url = git://github.com/philsquared/Catch.git
+[submodule "lib/fann"]
+	path = lib/fann
+	url = git://github.com/libfann/fann

@@ -7,7 +7,7 @@ cmake-build-debug
 .idea
 
 # Ignore the build and lib dirs
-build
+build/*
 lib/*
 
 # Ignore any executables
@@ -15,3 +15,11 @@ bin/*
 
 # Ignore Mac specific files
 .DS_Store
+
+
+
+# DO NOT SKIP THESE
+#Would skip repository lib/Catch
+!lib/README.md
+!build/README.md
+!bin/README.md
