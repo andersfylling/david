@@ -25,7 +25,7 @@ pipelines:
           #- apt-get update
           # Print the CMake version.
           - cmake --version          
-          - mkdir build
+          #- mkdir build
           - cd build
           # Call the CMake.
           - cmake ..
