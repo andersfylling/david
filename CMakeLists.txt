@@ -10,6 +10,7 @@ project(chess_ann)
 
 # Third party libraries in lib
 add_subdirectory(lib/Catch) # Catch, for unit testing.
+add_subdirectory(lib/fann)  # Fann, for faster neural network development.
 
 # cpp files in root project folder
 set(SOURCE_FILES
