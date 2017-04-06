@@ -8,7 +8,7 @@ cmake-build-debug
 
 # Ignore the build and lib dirs
 build/*
-lib/*
+#lib/*
 
 # Ignore any executables
 bin/*
