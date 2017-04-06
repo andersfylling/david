@@ -24,7 +24,9 @@ pipelines:
           # Do a update again
           #- apt-get update
           # Print the CMake version.
-          - cmake --version          
+          - cmake --version 
+          - git submodule init
+          - git submodule update
           #- mkdir build
           - cd build
           # Call the CMake.
