@@ -9,8 +9,10 @@ project(chess_ann)
 #add_subdirectory(chessBoard)
 
 # Third party libraries in lib
-add_subdirectory(lib/Catch) # Catch, for unit testing.
+#add_subdirectory(lib/Catch) # Catch, for unit testing.
 add_subdirectory(lib/fann)  # Fann, for faster neural network development.
+#target_link_libraries(chess_ann fann_static)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/fann/src/include)
 
 # cpp files in root project folder
 set(SOURCE_FILES
@@ -18,5 +20,6 @@ set(SOURCE_FILES
     )
 add_executable(chess_ann ${SOURCE_FILES})
 
+
 # link all folders (root + subfolders)
-target_link_libraries(chess_ann)
+target_link_libraries(chess_ann fann)
