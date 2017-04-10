@@ -2,6 +2,8 @@
 
 # Ignore CMakeDebug files
 cmake-build-debug
+CMakeFiles
+CMakeCache.txt
 
 # Ignore intellij "CLion" project configurations
 .idea
