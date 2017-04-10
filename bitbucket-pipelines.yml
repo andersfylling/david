@@ -26,7 +26,7 @@ pipelines:
           # Print the CMake version.
           - cmake --version 
           #- git submodule init
-          - git submodule update --init
+          - ./update.sh
           #- mkdir build
           - cd build
           # Call the CMake.
