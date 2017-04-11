@@ -33,6 +33,5 @@ bin/*
 
 # DO NOT SKIP THESE
 #Would skip repository lib/Catch
-!lib/README.md
-!build/README.md
-!bin/README.md
+!README.md
+!*/README.md

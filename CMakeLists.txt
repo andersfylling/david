@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 14)
 # root project name
 project(chess_ann)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # sub folders
 #add_subdirectory(chessBoard)
 
@@ -20,7 +22,7 @@ set(SOURCE_FILES
     src/main.cpp
     tests/tests-example.cpp
     src/TestExample.cpp
-    src/include/TestExample.h)
+    include/TestExample.h)
 add_executable(chess_ann ${SOURCE_FILES})
 
 
