@@ -1,4 +1,4 @@
-project (chess_ann_tests)
+project (chess_ann)
 include(CheckCXXCompilerFlag)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include)
@@ -12,9 +12,15 @@ else()
     return()
 endif()
 
-ADD_EXECUTABLE(chess_ann_tests
-    tests-main.cpp
-    tests-example.cpp
-    ../src/TestExample.cpp
+
+# cpp files in root project folder
+set(SOURCE_FILES
+    main.cpp
+    TestExample.cpp
     )
-target_link_libraries(chess_ann_tests )
+add_executable(chess_ann ${SOURCE_FILES})
+
+
+# link all folders (root + subfolders)
+
+target_link_libraries(chess_ann fann)
