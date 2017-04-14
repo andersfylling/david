@@ -1,9 +1,13 @@
 
 #include <iostream>
-#include <UCIListener.h>
+#include <listener.h>
 #include <vector>
+
+
+
 int main (int argc, char * argv[])
 {
+  // Store threads
   std::vector<std::thread> threads;
 
   // Add threads
@@ -14,5 +18,6 @@ int main (int argc, char * argv[])
     t.join();
   }
 
+  // Close program with exit code 0
   return 0;
 }
