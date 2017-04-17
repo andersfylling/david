@@ -4,19 +4,24 @@
 
 #include <iostream>
 #include "UCIHandler.h"
+
+
 UCIHandler::UCIHandler() {
   this->runListener = false;
   //this->listener = std::thread();
 
 }
+
 UCIHandler::~UCIHandler() {
 }
+
 bool UCIHandler::addFunction(const uint8_t event, const std::function<void()> func) {
 
   this->events[event].push_back(func);
 
   return false;
 }
+
 bool UCIHandler::initiateListener() {
 
   this->runListener = true;
@@ -40,6 +45,7 @@ bool UCIHandler::initiateListener() {
 
   return false;
 }
+
 bool UCIHandler::joinListener() {
   if (this->listener.joinable()) {
     this->listener.join();
@@ -47,6 +53,13 @@ bool UCIHandler::joinListener() {
   }
   return false;
 }
+
+bool UCIHandler::setupListener() {
+  this->initiateListener();
+  return this->joinListener();
+}
+
+
 void UCIHandler::test() {
 
   for (auto& entry : this->events) {
@@ -56,6 +69,18 @@ void UCIHandler::test() {
     }
   }
 }
+void UCIHandler::fireEvent(const uint8_t event) {
+  auto entry = this->events.find(event);
+
+  if (entry == this->events.end()) {
+    return;
+  }
+
+  for (auto& observer : entry->second) {
+    observer();
+  }
+}
+
 
 
 

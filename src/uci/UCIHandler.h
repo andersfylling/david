@@ -21,8 +21,10 @@ class UCIHandler {
 
   bool initiateListener();
   bool joinListener();
+  bool setupListener();
 
   bool addFunction(const uint8_t event, const std::function<void()> func);
+  void fireEvent(const uint8_t event);
 
   void test();
 
