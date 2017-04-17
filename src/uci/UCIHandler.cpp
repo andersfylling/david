@@ -6,7 +6,7 @@
 #include "UCIHandler.h"
 UCIHandler::UCIHandler() {
   this->runListener = false;
-  this->listener = std::thread();
+  //this->listener = std::thread();
 
 }
 UCIHandler::~UCIHandler() {
@@ -18,11 +18,12 @@ bool UCIHandler::addFunction(const uint8_t event, const std::function<void()> fu
   return false;
 }
 bool UCIHandler::initiateListener() {
-  std::string line;
+
   this->runListener = true;
 
 
   this->listener = std::thread([&] {
+    std::string line;
     std::cout << "test" << std::endl;
     while (this->runListener && std::getline(std::cin, line)) {
       if (line == "") {
@@ -30,6 +31,10 @@ bool UCIHandler::initiateListener() {
       }
 
       std::cout << ">" << line << std::endl;
+
+      if (line == "stop") {
+        this->runListener = false;
+      }
     }
   });
 
