@@ -18,7 +18,7 @@ set(SOURCE_FILES
         main.cpp
         TestExample.cpp
         uci/listener.cpp
-        uci/interpreter.cpp uci/commands_in.cpp ../include/commands_in.h)
+        uci/interpreter.cpp uci/commands_in.cpp ../include/commands_in.h uci/UCIHandler.cpp uci/UCIHandler.h uci/UCIEvent.h)
 add_executable(chess_ann ${SOURCE_FILES})
 
 

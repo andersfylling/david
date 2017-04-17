@@ -1,5 +1,6 @@
 #include <iostream>
 #include <commands_in.h>
+#include <sstream>
 
 void UCI::command_uci(std::string command, std::string parameters) {
   if (command != "uci") {
@@ -174,6 +175,19 @@ void UCI::command_go(std::string command, std::string parameters) {
   //  * infinite
   //    search until the "stop" command. Do not exit the search without being told so in this mode!
 
+  std::string next;
+  std::stringstream input(parameters);
+  input >> next;
+
+  if (next == "wtime") {}
+  else if (next == "btime") {}
+  else if (next == "winc") {}
+  else if (next == "movestogo") {}
+  else if (next == "depth") {}
+  else if (next == "nodes") {}
+  else if (next == "mate") {}
+  else if (next == "movetime") {}
+  else if (next == "infinite") {}
 
 }
 void UCI::command_stop(std::string command, std::string parameters) {
