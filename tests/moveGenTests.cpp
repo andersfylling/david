@@ -7,7 +7,7 @@
 #include "../src/bitboard.h"
 #include "../src/enviornment.h"
 
-Enviornment test;
+Enviornment test(COLOR::WHITE);
 bitboard * bits;
 TEST_CASE("White pawn movement") {
   bits = test.getDiagYAxis(WP, DIRECTION::UP, true, 1);
