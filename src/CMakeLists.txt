@@ -17,7 +17,7 @@ endif()
 set(SOURCE_FILES
     main.cpp
     TestExample.cpp
-    )
+        ../include/evaluate.h evaluate.cpp ../include/variables.h)
 add_executable(chess_ann ${SOURCE_FILES})
 
 
