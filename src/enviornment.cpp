@@ -117,10 +117,6 @@ int Enviornment::numberOfPieces(bitboard board) {
   return __builtin_popcountll(board);
 #endif
 
-#ifdef _WIN32_WINNT   // For windows
-  return static_cast<int> (__popcnt64(board));
-#endif // Windows
-
 }
 
 bitboard * Enviornment::getDiagYAxis(bitboard board, DIRECTION dir, bool limit, int lock) {

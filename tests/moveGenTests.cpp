@@ -3,7 +3,6 @@
 //
 
 #include "../lib/Catch/include/catch.hpp"
-
 #include "../src/bitboard.h"
 #include "../src/enviornment.h"
 
