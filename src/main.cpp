@@ -4,8 +4,6 @@
 #include "./enviornment.h"
 #include "./bitboard.h"
 #include <iostream>
-//#include <psdk_inc/intrin-impl.h>
-#include <intrin.h>
 
 //
 //Main

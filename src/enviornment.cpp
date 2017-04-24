@@ -7,7 +7,6 @@
 #include <string>
 #include <bitset>
 #include <iostream>
-#include <psdk_inc/intrin-impl.h>
 #include <math.h>
 #include <array>
 
