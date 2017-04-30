@@ -6,7 +6,7 @@
 #define CHESS_ANN_UCIEVENT_H
 
 #include <cstdint>
-namespace UCI {
+namespace uci {
 namespace event {
 
 const uint8_t TEST = 0;

@@ -5,7 +5,7 @@
 #ifndef CHESS_ANN_COMMANDS_IN_H
 #define CHESS_ANN_COMMANDS_IN_H
 #include <iostream>
-namespace UCI {
+namespace uci {
 void command_uci(std::string, std::string);
 void command_debug(std::string, std::string);
 void command_isready(std::string, std::string);

@@ -17,12 +17,21 @@ UCIHandler::~UCIHandler() {
 }
 
 int UCIHandler::addListener(const uint8_t event, const std::function<void()> func) {
-  this->lastID += 1;
+  const int id = this->lastID += 1;
 
-  this->events[event].insert( std::pair<int, std::function<void()>>(this->lastID, func) );
-  this->eventIDs.insert( std::pair<int, uint8_t>(this->lastID, event) );
+  // check if event key already exists, if not create it.
+  if (this->events.count(event) == 0) {
+    this->events.insert(
+        std::pair<const uint8_t, std::map<const int, const std::function<void()>>>(
+            event, std::map<const int, const std::function<void()>>()
+        )
+    );
+  }
 
-  return this->lastID;
+  this->events[event].insert( std::pair<const int, const std::function<void()>>(id, func) );
+  this->eventIDs.insert( std::pair<const int, const uint8_t>(id, event) );
+
+  return id;
 }
 
 bool UCIHandler::initiateListener() {
@@ -32,7 +41,6 @@ bool UCIHandler::initiateListener() {
 
   this->listener = std::thread([&] {
     std::string line;
-    std::cout << "test" << std::endl;
     while (this->runListener && std::getline(std::cin, line)) {
       if (line == "") {
         continue;
@@ -55,6 +63,13 @@ bool UCIHandler::joinListener() {
     return true;
   }
   return false;
+}
+
+bool UCIHandler::joinListenerAndStop() {
+  this->runListener = false;
+  bool joined = this->joinListener();
+
+  return joined && !this->runListener;
 }
 
 bool UCIHandler::setupListener() {
@@ -93,7 +108,7 @@ void UCIHandler::fireEvent(const uint8_t event) {
  * @param int listenerID
  * @return True if listener with listenerID exists
  */
-bool UCIHandler::hasListener(int listenerID) {
+bool UCIHandler::hasListener(const int listenerID) {
   return this->eventIDs.count(listenerID) > 0;
 }
 
@@ -134,7 +149,7 @@ void UCIHandler::hasListener(int listenerID, std::function<void(bool exists)> lo
  * @param listenerID
  * @return true if the listener has been removed or does not exist.
  */
-bool UCIHandler::removeListener(int listenerID) {
+bool UCIHandler::removeListener(const int listenerID) {
   if (!this->hasListener(listenerID)) {
     return true;
   }
@@ -147,7 +162,7 @@ bool UCIHandler::removeListener(int listenerID) {
   // then remove the listenerID
   this->eventIDs.erase(this->eventIDs.find(listenerID));
 
-  return this->hasListener(listenerID);
+  return !this->hasListener(listenerID);
 }
 
 /**

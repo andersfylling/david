@@ -38,6 +38,7 @@ class UCIHandler {
   void test();
 
   void removeListenerThread(int listenerID);
+  bool joinListenerAndStop();
 };
 
 #endif //CHESS_ANN_UCIHANDLER_H

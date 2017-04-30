@@ -2,7 +2,7 @@
 #include <commands_in.h>
 #include <sstream>
 
-void UCI::command_uci(std::string command, std::string parameters) {
+void uci::command_uci(std::string command, std::string parameters) {
   if (command != "uci") {
     return;
   }
@@ -19,7 +19,7 @@ void UCI::command_uci(std::string command, std::string parameters) {
 }
 
 
-void UCI::command_debug(std::string command, std::string parameters) {
+void uci::command_debug(std::string command, std::string parameters) {
   if (command != "debug") {
     return;
   }
@@ -34,7 +34,7 @@ void UCI::command_debug(std::string command, std::string parameters) {
 
 }
 
-void UCI::command_isready(std::string command, std::string parameters) {
+void uci::command_isready(std::string command, std::string parameters) {
   if (command != "isready") {
     return;
   }
@@ -54,7 +54,7 @@ void UCI::command_isready(std::string command, std::string parameters) {
 
 }
 
-void UCI::command_setoption(std::string command, std::string parameters) {
+void uci::command_setoption(std::string command, std::string parameters) {
   if (command != "setoption") {
     return;
   }
@@ -75,7 +75,7 @@ void UCI::command_setoption(std::string command, std::string parameters) {
 
 
 }
-void UCI::command_register(std::string command, std::string parameters) {
+void uci::command_register(std::string command, std::string parameters) {
   if (command != "register") {
     return;
   }
@@ -98,7 +98,7 @@ void UCI::command_register(std::string command, std::string parameters) {
 
 }
 
-void UCI::command_ucinewgame(std::string command, std::string parameters) {
+void uci::command_ucinewgame(std::string command, std::string parameters) {
   if (command != "ucinewgame") {
     return;
   }
@@ -115,7 +115,7 @@ void UCI::command_ucinewgame(std::string command, std::string parameters) {
 
 
 }
-void UCI::command_position(std::string command, std::string parameters) {
+void uci::command_position(std::string command, std::string parameters) {
   if (command != "position") {
     return;
   }
@@ -129,7 +129,7 @@ void UCI::command_position(std::string command, std::string parameters) {
 
 
 }
-void UCI::command_go(std::string command, std::string parameters) {
+void uci::command_go(std::string command, std::string parameters) {
   if (command != "go") {
     return;
   }
@@ -190,7 +190,7 @@ void UCI::command_go(std::string command, std::string parameters) {
   else if (next == "infinite") {}
 
 }
-void UCI::command_stop(std::string command, std::string parameters) {
+void uci::command_stop(std::string command, std::string parameters) {
   if (command != "stop") {
     return;
   }
@@ -204,7 +204,7 @@ void UCI::command_stop(std::string command, std::string parameters) {
 
 }
 
-void UCI::command_ponderhit(std::string command, std::string parameters) {
+void uci::command_ponderhit(std::string command, std::string parameters) {
   if (command != "ponderhit") {
     return;
   }
@@ -217,7 +217,7 @@ void UCI::command_ponderhit(std::string command, std::string parameters) {
 
 }
 
-void UCI::command_quit(std::string command, std::string parameters) {
+void uci::command_quit(std::string command, std::string parameters) {
   if (command != "quit") {
     return;
   }
