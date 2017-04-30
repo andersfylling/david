@@ -19,9 +19,8 @@ int main (int argc, char * argv[])
   //}
 
   UCIHandler uciHandler;
-  uciHandler.initiateListener();
 
-  uciHandler.addFunction(UCI::event::TEST, [] {
+  uciHandler.addListener(UCI::event::TEST, [] {
     std::cout << "called function 1" << std::endl;
   });
 
@@ -29,7 +28,7 @@ int main (int argc, char * argv[])
 
 
   // Join the UCI listener thread, so it exits correctly.
-  uciHandler.joinListener();
+  uciHandler.setupListener();
 
   // Close program with exit code 0
   return 0;

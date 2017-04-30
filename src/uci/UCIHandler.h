@@ -9,11 +9,17 @@
 #include <functional>
 #include <vector>
 #include <thread>
+#include <mutex>
 class UCIHandler {
  private:
-  std::map<const uint8_t, std::vector<std::function<void()>>> events;
+  std::map<const uint8_t, std::map<const int, const std::function<void()>>> events; // (eventID, (listenerID, eventHandler))
+  std::map<const int, const uint8_t> eventIDs; //(listenerID, eventID)
+  int lastID;
   std::thread listener;
   bool runListener;
+
+  std::mutex eventsMutex;
+  std::mutex eventIDsMutex;
 
  public:
   UCIHandler();
@@ -23,12 +29,15 @@ class UCIHandler {
   bool joinListener();
   bool setupListener();
 
-  bool addFunction(const uint8_t event, const std::function<void()> func);
+  int addListener(const uint8_t event, const std::function<void()> func);
+  bool hasListener(int listenerID);
+  void hasListener(int listenerID, std::function<void(bool exists)> lockedCallback);
+  bool removeListener(int listenerID);
   void fireEvent(const uint8_t event);
 
   void test();
 
-
+  void removeListenerThread(int listenerID);
 };
 
 #endif //CHESS_ANN_UCIHANDLER_H
