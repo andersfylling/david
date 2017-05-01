@@ -8,6 +8,10 @@ TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[UCI
 
   std::map<uint8_t, std::string> commands = {
       {uci::event::NO_MATCHING_COMMAND, "akdjas"},
+      {uci::event::NO_MATCHING_COMMAND, "ucii"},
+      {uci::event::NO_MATCHING_COMMAND, "sready"},
+      {uci::event::NO_MATCHING_COMMAND, "ståp"},
+      {uci::event::NO_MATCHING_COMMAND, "sada4g432 fa4f23"},
       {uci::event::UCI,                 "uci"},
       {uci::event::DEBUG,               "debug"},
       {uci::event::ISREADY,             "isready"},
