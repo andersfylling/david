@@ -42,6 +42,7 @@ class UCIListener {
 
   void removeListenerThread(int listenerID);
   bool joinListenerAndStop();
+  void fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments);
 };
 
 #endif //CHESS_ANN_UCILISTENER_H

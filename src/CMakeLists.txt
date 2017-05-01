@@ -20,7 +20,7 @@ set(SOURCE_FILES
         TestExample.cpp
         uci/UCIHandler.cpp
         uci/UCIListener.cpp
-        uci/UCIEvent.h)
+        uci/UCIEvent.h genericUCIResponses.cpp)
 add_executable(chess_ann ${SOURCE_FILES})
 
 

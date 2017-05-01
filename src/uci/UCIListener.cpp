@@ -10,7 +10,7 @@
 #include <mutex>
 #include "UCIHandler.h"
 #include "UCIListener.h"
-
+#include "UCIEvent.h"
 
 UCIListener::UCIListener()
 {
@@ -54,11 +54,12 @@ bool UCIListener::initiateListener() {
         continue;
       }
 
-      std::cout << ">" << line << std::endl;
-
-      if (line == "stop") {
-        this->runListener = false;
+      auto event = this->uciHandler.parseInputForCommand(line);
+      auto arguments = this->uciHandler.parseInputForArguments(line);
+      if (event != uci::event::NO_MATCHING_COMMAND) {
+        this->fireEvent(event);
       }
+
     }
   });
 
@@ -97,6 +98,19 @@ void UCIListener::test() {
   }
 }
 void UCIListener::fireEvent(const uint8_t event) {
+  auto entry = this->events.find(event);
+
+  if (entry == this->events.end()) {
+    return;
+  }
+
+  for (auto& observerEntry : entry->second) {
+    auto& observer = observerEntry.second;
+    observer();
+  }
+}
+
+void UCIListener::fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments) {
   auto entry = this->events.find(event);
 
   if (entry == this->events.end()) {

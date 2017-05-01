@@ -2,7 +2,7 @@
 #include "../src/uci/UCIHandler.h"
 #include "../src/uci/UCIEvent.h"
 
-
+// gui to engine
 TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[UCIHandler.parseInput]" ) {
   UCIHandler uciHandler;
 
@@ -27,5 +27,24 @@ TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[UCI
 
   for (const auto entry : commands) {
     REQUIRE( uciHandler.parseInputForCommand(entry.second) == entry.first );
+  }
+}
+
+// gui to engine
+TEST_CASE( "Making sure arguments from GUI to Engine are correctly parsed", "[UCIHandler.parseInputForArguments]" ) {
+  UCIHandler uciHandler;
+
+  std::map<std::string, std::map<std::string, std::string>> inputs = {
+      {"uci", {}},
+      {"uci this text should be completely ignored by the parser.", {}},
+      {"debug", {}},
+      {"debug on", {{"on", ""}} },
+      {"debug off", {{"off", ""}} }
+  };
+
+  for (const auto entry : inputs) { // this runs a few rounds before error.
+    auto a = uciHandler.parseInputForArguments(entry.first);
+    auto b = entry.second;
+    REQUIRE(a == b);
   }
 }
