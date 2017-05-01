@@ -14,7 +14,7 @@
 
 class UCIListener {
  private:
-  std::map<const uint8_t, std::map<const int, const std::function<void()>>> events; // (eventID, (listenerID, eventHandler))
+  std::map<const uint8_t, std::map<const int, const std::function<void(std::map<std::string, std::string>)>>> events; // (eventID, (listenerID, eventHandler))
   std::map<const int, const uint8_t> eventIDs; //(listenerID, eventID)
   int lastID;
   std::thread listener;
@@ -32,17 +32,15 @@ class UCIListener {
   bool joinListener();
   bool setupListener();
 
-  int addListener(const uint8_t event, const std::function<void()> func);
+  int addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)> func);
   bool hasListener(int listenerID);
   void hasListener(int listenerID, std::function<void(bool exists)> lockedCallback);
   bool removeListener(int listenerID);
   void fireEvent(const uint8_t event);
-
-  void test();
+  void fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments);
 
   void removeListenerThread(int listenerID);
   bool joinListenerAndStop();
-  void fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments);
 };
 
 #endif //CHESS_ANN_UCILISTENER_H

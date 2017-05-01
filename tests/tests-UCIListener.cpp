@@ -9,7 +9,7 @@ TEST_CASE( "Functions are added and being correctly called", "[UCIListener.addLi
 
   auto loopLength = checks.size();
   for (int i = 0; i < loopLength; i++) {
-    auto function = [&checks, i](){
+    auto function = [&checks, i](std::map<std::string, std::string>){
       checks[i] = true;
     };
 
@@ -33,7 +33,7 @@ TEST_CASE( "Functions are added and being removed", "[UCIListener.addListener, U
 
   auto loopLength = checks.size();
   for (int i = 0; i < loopLength; i++) {
-    auto function = [&checks, i](){
+    auto function = [&checks, i](std::map<std::string, std::string>){
       checks[i] = true;
     };
 

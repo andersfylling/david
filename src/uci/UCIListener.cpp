@@ -24,19 +24,19 @@ UCIListener::UCIListener()
 UCIListener::~UCIListener() {
 }
 
-int UCIListener::addListener(const uint8_t event, const std::function<void()> func) {
+int UCIListener::addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)> func) {
   const int id = this->lastID += 1;
 
   // check if event key already exists, if not create it.
   if (this->events.count(event) == 0) {
     this->events.insert(
-        std::pair<const uint8_t, std::map<const int, const std::function<void()>>>(
-            event, std::map<const int, const std::function<void()>>()
+        std::pair<const uint8_t, std::map<const int, const std::function<void(std::map<std::string, std::string>)>>>(
+            event, std::map<const int, const std::function<void(std::map<std::string, std::string>)>>()
         )
     );
   }
 
-  this->events[event].insert( std::pair<const int, const std::function<void()>>(id, func) );
+  this->events[event].insert( std::pair<const int, const std::function<void(std::map<std::string, std::string>)>>(id, func) );
   this->eventIDs.insert( std::pair<const int, const uint8_t>(id, event) );
 
   return id;
@@ -87,27 +87,8 @@ bool UCIListener::setupListener() {
 }
 
 
-void UCIListener::test() {
-
-  for (auto& entry : this->events) {
-    std::cout << "Running event: " << entry.first << std::endl;
-    for (auto& funcEntry : entry.second) {
-      auto& func = funcEntry.second;
-      func();
-    }
-  }
-}
 void UCIListener::fireEvent(const uint8_t event) {
-  auto entry = this->events.find(event);
-
-  if (entry == this->events.end()) {
-    return;
-  }
-
-  for (auto& observerEntry : entry->second) {
-    auto& observer = observerEntry.second;
-    observer();
-  }
+  this->fireEvent(event, std::map<std::string, std::string>());
 }
 
 void UCIListener::fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments) {
@@ -119,7 +100,7 @@ void UCIListener::fireEvent(const uint8_t event, const std::map<std::string, std
 
   for (auto& observerEntry : entry->second) {
     auto& observer = observerEntry.second;
-    observer();
+    observer(arguments);
   }
 }
 
