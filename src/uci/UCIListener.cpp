@@ -8,17 +8,16 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include "UCIHandler.h"
 #include "UCIListener.h"
 
-#include "UCIHandler.h"
 
 UCIListener::UCIListener()
-    : uciHandler()
 {
   this->runListener = false;
   this->lastID = 2;
   //this->listener = std::thread();
-  this->uciHandler->parseUCIInput("");
+  //this->uciHandler.parseInput("");
 
 }
 

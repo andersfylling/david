@@ -5,6 +5,8 @@
 #ifndef CHESS_ANN_UCIHANDLER_H
 #define CHESS_ANN_UCIHANDLER_H
 
+#include <vector>
+#include <map>
 class UCIHandler {
  private:
   const std::map<std::string, std::vector<std::vector<std::string>>> commands = {
@@ -62,7 +64,9 @@ class UCIHandler {
   ~UCIHandler();
 
 
-  std::pair<uint8_t, std::map<std::string, std::string>> parseUCIInput(std::string input);
+  uint8_t parseInputForCommand(std::string input);
+  std::map<std::string, std::string> parseInputForArguments(std::string input);
+  std::pair<uint8_t, std::map<std::string, std::string>> parseInput(std::string input);
 };
 
 #endif //CHESS_ANN_UCIHANDLER_H

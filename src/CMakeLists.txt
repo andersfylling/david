@@ -13,13 +13,14 @@ else()
 endif()
 
 
+
 # cpp files in root project folder
 set(SOURCE_FILES
         main.cpp
         TestExample.cpp
+        uci/UCIHandler.cpp
         uci/UCIListener.cpp
-        uci/UCIEvent.h
-        uci/UCIHandler.cpp)
+        uci/UCIEvent.h)
 add_executable(chess_ann ${SOURCE_FILES})
 
 

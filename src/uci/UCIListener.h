@@ -2,11 +2,15 @@
 // Created by anders on 4/17/17.
 //
 
-#ifndef CHESS_ANN_UCIHANDLER_H
-#define CHESS_ANN_UCIHANDLER_H
+#ifndef CHESS_ANN_UCILISTENER_H
+#define CHESS_ANN_UCILISTENER_H
 
 
-class UCIHandler;
+#include <map>
+#include <functional>
+#include <thread>
+#include <mutex>
+#include "UCIHandler.h"
 
 class UCIListener {
  private:
@@ -15,7 +19,7 @@ class UCIListener {
   int lastID;
   std::thread listener;
   bool runListener;
-  UCIHandler* uciHandler;
+  UCIHandler uciHandler;
 
   std::mutex eventsMutex;
   std::mutex eventIDsMutex;
@@ -40,4 +44,4 @@ class UCIListener {
   bool joinListenerAndStop();
 };
 
-#endif //CHESS_ANN_UCIHANDLER_H
+#endif //CHESS_ANN_UCILISTENER_H

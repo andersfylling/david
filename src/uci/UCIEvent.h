@@ -9,7 +9,11 @@
 namespace uci {
 namespace event {
 
-const uint8_t TEST        = 0;
+// errors
+const uint8_t NO_MATCHING_COMMAND = 0;
+
+// commands
+const uint8_t TEST        = 5;
 const uint8_t UCI         = 10;
 const uint8_t DEBUG       = 20;
 const uint8_t ISREADY     = 30;

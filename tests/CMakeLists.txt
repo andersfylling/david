@@ -17,11 +17,13 @@ endif()
 ADD_EXECUTABLE(chess_ann_tests
         ../src/TestExample.cpp
         ../src/uci/UCIListener.cpp
+        ../src/uci/UCIHandler.cpp
         ../src/uci/UCIEvent.h
 
     tests-main.cpp
     tests-example.cpp
         tests-UCIListener.cpp
+        tests-UCIHandler.cpp
 
         )
 target_link_libraries(chess_ann_tests -lpthread)

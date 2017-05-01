@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 project(chess_ann)
 
 
+
 # sub folders
 #add_subdirectory(chessBoard)
 
