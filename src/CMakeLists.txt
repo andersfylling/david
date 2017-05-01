@@ -17,9 +17,9 @@ endif()
 set(SOURCE_FILES
         main.cpp
         TestExample.cpp
-        uci/UCIHandler.cpp
-        uci/UCIHandler.h
-        uci/UCIEvent.h)
+        uci/UCIListener.cpp
+        uci/UCIEvent.h
+        uci/UCIHandler.cpp)
 add_executable(chess_ann ${SOURCE_FILES})
 
 

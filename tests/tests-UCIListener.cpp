@@ -1,9 +1,9 @@
 #include "catch.hpp"
-#include "../src/uci/UCIHandler.h"
+#include "../src/uci/UCIListener.h"
 #include "../src/uci/UCIEvent.h"
 
-TEST_CASE( "Functions are added and being correctly called", "[UCIHandler.addListener]" ) {
-  UCIHandler uciHandler;
+TEST_CASE( "Functions are added and being correctly called", "[UCIListener.addListener]" ) {
+  UCIListener uciListener;
 
   std::array<bool, 100> checks{false};
 
@@ -13,11 +13,11 @@ TEST_CASE( "Functions are added and being correctly called", "[UCIHandler.addLis
       checks[i] = true;
     };
 
-    uciHandler.addListener(uci::event::TEST, function);
+    uciListener.addListener(uci::event::TEST, function);
   }
 
   // Fire all the events
-  uciHandler.fireEvent(uci::event::TEST);
+  uciListener.fireEvent(uci::event::TEST);
 
   // verify the changes
   for (int i = 0; i < loopLength; i++) {
@@ -25,8 +25,8 @@ TEST_CASE( "Functions are added and being correctly called", "[UCIHandler.addLis
   }
 }
 
-TEST_CASE( "Functions are added and being removed", "[UCIHandler.addListener, UCIHandler.removeListener]" ) {
-  UCIHandler uciHandler;
+TEST_CASE( "Functions are added and being removed", "[UCIListener.addListener, UCIListener.removeListener]" ) {
+  UCIListener uciListener;
 
   std::array<bool, 100> checks{false};
   std::vector<int> listenerIDs;
@@ -37,12 +37,12 @@ TEST_CASE( "Functions are added and being removed", "[UCIHandler.addListener, UC
       checks[i] = true;
     };
 
-    int listenerID = uciHandler.addListener(uci::event::TEST, function);
+    int listenerID = uciListener.addListener(uci::event::TEST, function);
     listenerIDs.push_back(listenerID);
   }
 
   // Fire all the events
-  uciHandler.fireEvent(uci::event::TEST);
+  uciListener.fireEvent(uci::event::TEST);
 
   // verify the changes
   for (int i = 0; i < loopLength; i++) {
@@ -51,7 +51,7 @@ TEST_CASE( "Functions are added and being removed", "[UCIHandler.addListener, UC
 
   // now delete all the functions
   for (const int id : listenerIDs) {
-    REQUIRE( uciHandler.removeListener(id) );
+    REQUIRE( uciListener.removeListener(id) );
   }
 
   // reset all the variables in the array to false, and fire the event again.
@@ -61,7 +61,7 @@ TEST_CASE( "Functions are added and being removed", "[UCIHandler.addListener, UC
   }
 
   // Fire all the events
-  uciHandler.fireEvent(uci::event::TEST);
+  uciListener.fireEvent(uci::event::TEST);
 
   // verify that nothing has changed
   for (int i = 0; i < loopLength; i++) {
