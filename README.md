@@ -8,7 +8,7 @@ This project is written in C++14 and is built using CMake 2.6, with the compiler
 
 ### How do I get set up? ###
 
-* `git clone https://sciencefyll@bitbucket.org/sciencefyll/chess_ann.git && ./update.sh`
+* `git clone https://sciencefyll@bitbucket.org/sciencefyll/chess_ann.git && cd chess_ann && ./update.sh`
 
 * How to run tests: See https://github.com/philsquared/Catch
 
