@@ -6,7 +6,6 @@
 #define CHESS_ANN_ENVIORNMENT_H
 
 #include "./bitboard.h"
-#include "./search.h"
 #include <array>
 
 
@@ -48,8 +47,10 @@ class Enviornment {
   bitboard whitePieces(); // Returns all white pieces
   bitboard blackPieces(); // Returns all black pieces
 
+
   // Mainly for finding completely legal moves
   bitboard combinedAttacks(); // All attacked pieces of opposing color
+
 
   bitboard * pawnMoves(COLOR color);
 

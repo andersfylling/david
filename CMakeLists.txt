@@ -15,5 +15,6 @@ add_subdirectory(tests)     # Our tests
 add_subdirectory(src)
 
 
+
 # link all folders (root + subfolders)
 target_link_libraries(chess_ann)
