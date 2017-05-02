@@ -7,10 +7,10 @@
 namespace uci {
 
 
-void Response::send(const std::string res) {
+void Response::send(std::string res) {
   std::cout << res << std::endl;
 }
-void Response::send(const std::string command, const uci::arguments_t args) {
+void Response::send(std::string command, uci::arguments_t args) {
   std::string res = command;
 
   for (auto& entry : args) {

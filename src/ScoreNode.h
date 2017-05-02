@@ -13,7 +13,7 @@
 class ScoreNode {
  private:
   int score;
-  BitboardsNode* bitboardsNode;
+  //BitboardsNode* bitboardsNode;
 
  public:
   ScoreNode();

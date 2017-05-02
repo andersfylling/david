@@ -16,10 +16,11 @@ endif()
 
 # cpp files in root project folder
 set(SOURCE_FILES
+        main.cpp
         enviornment.cpp
         uci/Parser.cpp
         uci/Listener.cpp
-        uci/UCIEvent.h genericUCIResponses.cpp)
+        uci/Response.cpp)
 add_executable(chess_ann ${SOURCE_FILES})
 
 

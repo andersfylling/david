@@ -9,7 +9,7 @@
 #include "ScoreNode.h"
 class BitboardsNode {
  private:
-  ScoreNode* scoreNode;
+  //ScoreNode* scoreNode;
   bitboard* white;
   bitboard* whitePawns;
   bitboard* whiteQueens;

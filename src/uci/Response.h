@@ -12,8 +12,8 @@ namespace uci {
 class Response {
 
  public:
-  void send(const std::string res);
-  void send(const std::string command, const uci::arguments_t args);
+  void send(std::string res);
+  void send(std::string command, arguments_t args);
 
 };
 }
