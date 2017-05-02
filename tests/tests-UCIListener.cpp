@@ -1,15 +1,15 @@
 #include "../lib/Catch/include/catch.hpp"
-#include "../src/uci/UCIListener.h"
+#include "../src/uci/Listener.h"
 #include "../src/uci/UCIEvent.h"
 
-TEST_CASE( "Functions are added and being correctly called", "[UCIListener.addListener]" ) {
-  UCIListener uciListener;
+TEST_CASE( "Functions are added and being correctly called", "[Listener.addListener]" ) {
+  uci::Listener uciListener;
 
   std::array<bool, 100> checks{false};
 
   auto loopLength = checks.size();
   for (int i = 0; i < loopLength; i++) {
-    auto function = [&checks, i](std::map<std::string, std::string>){
+    auto function = [&checks, i](uci::arguments_t args){
       checks[i] = true;
     };
 
@@ -25,15 +25,15 @@ TEST_CASE( "Functions are added and being correctly called", "[UCIListener.addLi
   }
 }
 
-TEST_CASE( "Functions are added and being removed", "[UCIListener.addListener, UCIListener.removeListener]" ) {
-  UCIListener uciListener;
+TEST_CASE( "Functions are added and being removed", "[Listener.addListener, Listener.removeListener]" ) {
+  uci::Listener uciListener;
 
   std::array<bool, 100> checks{false};
   std::vector<int> listenerIDs;
 
   auto loopLength = checks.size();
   for (int i = 0; i < loopLength; i++) {
-    auto function = [&checks, i](std::map<std::string, std::string>){
+    auto function = [&checks, i](uci::arguments_t args){
       checks[i] = true;
     };
 
