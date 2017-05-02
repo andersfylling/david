@@ -24,7 +24,17 @@ ADD_EXECUTABLE(chess_ann_tests
         ../src/enviornment.cpp
     moveGenTests.cpp
         tests-UCIListener.cpp
-        tests-UCIHandler.cpp
+        tests-UCIHandler.cpp)
 
+ADD_EXECUTABLE(search_test
+        tests-main.cpp
         )
+
+ADD_EXECUTABLE(material_test
+        ../src/enviornment.cpp
+        tests-main.cpp
+        material-test.cpp)
+
+
 target_link_libraries(chess_ann_tests -lpthread)
+

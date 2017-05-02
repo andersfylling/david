@@ -12,6 +12,7 @@ namespace eval {
     // Main evaluate function, declared there
     //
     extern Values evaluate(/*node*/);
+    int materialEvaluation();
 }
 
 #endif //CHESS_ANN_EVALUATE_H

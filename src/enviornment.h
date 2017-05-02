@@ -7,6 +7,7 @@
 
 #include "./bitboard.h"
 #include <array>
+#include "../include/variables.h"
 
 
 class Enviornment {
