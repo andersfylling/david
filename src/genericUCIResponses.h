@@ -6,6 +6,8 @@
 #include "uci/Response.h"
 #include "engineInformation.h"
 namespace uciResponses {
+// http://stackoverflow.com/questions/17003561/using-the-universal-chess-interface
+
 
 /**
  * Send id information to gui.
@@ -22,7 +24,7 @@ auto uciok = [&]() {
 };
 
 auto option = [&]() {
-  ::uci::send("option name Hash type spin default 1 min 1 max 128");
+  //::uci::send("option name Hash type spin default 1 min 1 max 128");
 };
 
 auto responseToUCI = [&](const uci::arguments_t args) {
@@ -30,6 +32,13 @@ auto responseToUCI = [&](const uci::arguments_t args) {
   option();
   uciok();
 };
+
+// TODO: This needs to wait until everything has been setup correctly.
+auto responseToISREADY = [&](const uci::arguments_t args) {
+  ::uci::send("readyok");
+};
+
+
 
 }
 
