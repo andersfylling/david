@@ -13,15 +13,20 @@ else()
 endif()
 
 
+
 # cpp files in root project folder
 set(SOURCE_FILES
     main.cpp
     search.cpp
-    enviornment.cpp)
+    enviornment.cpp
+        enviornment.cpp
+        uci/UCIHandler.cpp
+        uci/UCIListener.cpp
+        uci/UCIEvent.h genericUCIResponses.cpp)
 
 add_executable(chess_ann ${SOURCE_FILES})
 
 
 # link all folders (root + subfolders)
 
-target_link_libraries(chess_ann fann)
+target_link_libraries(chess_ann fann -lpthread)
