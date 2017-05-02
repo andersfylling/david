@@ -16,8 +16,7 @@
 namespace uci {
 class Listener {
  private:
-  std::map<const uint8_t, std::map<const int, const callback_t>>
-      events; // (eventID, (listenerID, eventHandler))
+  std::map<const uint8_t, std::map<const int, const callback_t>> events; // (eventID, (listenerID, eventHandler))
   std::map<const int, const uint8_t> eventIDs; //(listenerID, eventID)
   int lastID;
   std::thread listener;

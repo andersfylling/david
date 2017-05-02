@@ -9,13 +9,18 @@
 #include "Definitions.h"
 
 namespace uci {
-class Response {
+void send(std::string res) {
+  std::cout << res << std::endl;
+}
+void send(std::string command, uci::arguments_t args) {
+  std::string res = command;
 
- public:
-  void send(std::string res);
-  void send(std::string command, arguments_t args);
+  for (auto& entry : args) {
+    res += entry.first + ' ' + entry.second;
+  }
 
-};
+  send(res);
+}
 }
 
 #endif //CHESS_ANN_RESPONSE_H

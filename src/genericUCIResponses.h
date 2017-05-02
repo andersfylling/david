@@ -13,19 +13,16 @@ namespace uciResponses {
  * @param args
  */
 auto id = [&]() {
-  ::uci::Response r;
-  r.send("id name " + engineInformation::ENGINE_NAME);
-  r.send("id author " + engineInformation::ENGINE_AUTHOR);
+  ::uci::send("id name " + engineInformation::ENGINE_NAME);
+  ::uci::send("id author " + engineInformation::ENGINE_AUTHOR);
 };
 
 auto uciok = [&]() {
-  ::uci::Response r;
-  r.send("uciok");
+  ::uci::send("uciok");
 };
 
 auto option = [&]() {
-  ::uci::Response r;
-  r.send("option name Hash type spin default 1 min 1 max 128");
+  ::uci::send("option name Hash type spin default 1 min 1 max 128");
 };
 
 auto responseToUCI = [&](const uci::arguments_t args) {

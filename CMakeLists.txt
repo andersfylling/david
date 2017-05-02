@@ -2,23 +2,15 @@
 cmake_minimum_required(VERSION 3.6)
 set(CMAKE_CXX_STANDARD 14)
 
-# root project name
-project(chess_ann)
-
-# sub folders
-#add_subdirectory(chessBoard)
+if(COMPILER_SUPPORTS_CXX14)
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++14 support.")
+else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++14 support. C++14 or higher is required for this project.")
+    return()
+endif()
 
 # Third party libraries in lib
 add_subdirectory(lib/Catch) # Catch, for unit testing.
 add_subdirectory(lib/fann)  # Fann, for faster neural network development.
+add_subdirectory(src)       # source files
 add_subdirectory(tests)     # Our tests
-
-# cpp files in root project folder
-set(SOURCE_FILES
-    src/main.cpp
-        src/enviornment.cpp
-        src/stockfish_evaluation.cpp src/ScoreNode.cpp src/ScoreNode.h src/BitboardsNode.cpp src/BitboardsNode.h src/engineInformation.h)
-add_executable(chess_ann ${SOURCE_FILES})
-
-# link all folders (root + subfolders)
-target_link_libraries(chess_ann)

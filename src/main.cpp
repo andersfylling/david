@@ -3,7 +3,7 @@
 #include "genericUCIResponses.h"
 int main (int argc, char * argv[])
 {
-  uci::Listener uciListener;
+  ::uci::Listener uciListener;
 
 
   // add basic responses
