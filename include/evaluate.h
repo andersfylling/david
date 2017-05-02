@@ -6,13 +6,14 @@
 #define CHESS_ANN_EVALUATE_H
 
 #include "../include/variables.h"
+#include "../src/enviornment.h"
 
-namespace eval {
+
     //
     // Main evaluate function, declared there
     //
-    extern Values evaluate(/*node*/);
-    int materialEvaluation();
-}
+    enum Values evaluate(Enviornment * node);
+    enum Values materialEvaluation(Enviornment * node);
+
 
 #endif //CHESS_ANN_EVALUATE_H

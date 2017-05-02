@@ -6,8 +6,9 @@
 #include <limits>
 #include <list>
 #include <random>
-#include <search.h>
+#include <../include/search.h>
 #include "./variables.h"
+#include "./evaluate.h"
 
 using namespace std;
 
@@ -64,20 +65,37 @@ void Node::print() {
 // Basic negamax, may need to expand to take in to considerations some more advanced techniques
 //
 
-namespace negamax{
+namespace search{
 
-    int negamax(Node* node, int alpha, int beta, int depth) {
-        int v;
+    //
+    // Main loop, calls upon negamax until max depth is reached, must implement time constraints
+    //
+    void iterativeDeepening(Enviornment * node){
+        int bestValue, alpha, beta;
+        int depth;
 
+        bestValue = alpha = -VALUE_INFINITE;
+        beta = VALUE_INFINITE;
+        depth = 0;
+
+        while(+depth < MAX_DEPTH){
+            bestValue = negamax(node, alpha, beta, depth);
+        }
+
+    }
+
+
+    int negamax(Enviornment * node, int alpha, int beta, int depth) {
+        int value, bestValue;
 
         if (depth == 0 || node->children.empty()) {
-            return node->value; //evaluate(/*some node*/); //Heuristic value of that node
+            return evaluate(node);
         }
-        int bestValue = numeric_limits<int>::min();
-        for (auto i : node->children/*Needs to be corrected*/) {
-            v = -negamax(i, depth - 1, -beta, -alpha);
-            bestValue = max(bestValue, v);
-            alpha = max(alpha, v);
+
+        for (auto i : node->children /*Needs to be corrected*/) {
+            value = -negamax(i, -beta, -alpha, depth - 1);
+            bestValue = max(bestValue, value);
+            alpha = max(alpha, value);
             if (alpha>=beta)
             {
                 continue;

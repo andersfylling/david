@@ -3,13 +3,11 @@
 //
 
 #include "../include/evaluate.h"
-#include "enviornment.h"
-#include "../include/variables.h"
+
 
 
 //Need access to some bitboard
 
-using namespace eval;
 
 int evaluate(Enviornment * node) {
     int score = 0;
@@ -30,10 +28,9 @@ int evaluate(Enviornment * node) {
 
 }
 
-int materialEvaluation(Enviornment * node) {
-    int materialScore;
-    materialScore = 0;
-
+Values materialEvaluation(Enviornment * node) {
+    Values materialScore;
+    materialScore = VALUE_ZERO;
     //
     // Basic piece value
     // Other factors that affect material evaluation might be:
@@ -56,9 +53,12 @@ int materialEvaluation(Enviornment * node) {
     + KnightValueEg * (node->numberOfPieces(WN) - node->numberOfPieces(BN))
     + RookValueEg * (node->numberOfPieces(WC) - node->numberOfPieces(BC))
     + QueenValueEg * (node->numberOfPieces(WQ) - node->numberOfPieces(BQ));
+
+
+    return materialScore;
 }
 
-int mobilityEvaluation(){
+Values mobilityEvaluation(){
    // mobilityScore = mobilityWt * (wMobility-bMobility)
 }
 

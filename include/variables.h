@@ -12,12 +12,6 @@
 //
 const int MAX_DEPTH = 10;
 
-//
-// Global variables
-//
-extern int alpha;
-extern int beta;
-
 
 //
 // Board sides, used in search
@@ -39,6 +33,7 @@ enum Values {
     VALUE_DRAW      = 0,
     VALUE_KNOWN_WIN = 10000,
     VALUE_MATE = 32000,
+    VALUE_INFINITE  = 32001,
 
     PawnValueMg   = 198,   PawnValueEg   = 258,
     KnightValueMg = 817,   KnightValueEg = 846,

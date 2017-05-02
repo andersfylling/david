@@ -7,6 +7,8 @@
 
 
 #include <list>
+#include "../src/enviornment.h"
+#include "variables.h"
 
 class Node {
 public:
@@ -18,9 +20,10 @@ public:
     void print();
 };
 
-namespace negamax {
-    int negamax(Node* node, int alpha, int beta, int depth);
+namespace search {
+    int negamax(Enviornment * node, int alpha, int beta, int depth);
     int max(int value1, int value2);
+    void iterativeDeepening(Enviornment * node);
 }
 
 
