@@ -20,9 +20,10 @@ int main (int argc, char * argv[])
     uciListener.stopListening();
   });
 
-  // setup thread
+  // ###
+  // Creates a forever listening UCI thread, this is to not block everything else.
   uciListener.setupListener();
 
-  // Close program with exit code 0
+  // Close program with exit code 0 after all threads have joined.
   return 0;
 }
