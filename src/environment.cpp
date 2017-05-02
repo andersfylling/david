@@ -2,7 +2,7 @@
 // Created by lolos on 05.04.2017.
 //
 
-#include "enviornment.h"
+#include "environment.h"
 #include "./bitboard.h"
 #include <string>
 #include <bitset>
@@ -28,7 +28,7 @@ bitboard BN = makeBoardFromArray(BNc);
 bitboard BQ = makeBoardFromArray(BQc);
 bitboard BK = makeBoardFromArray(BKc);
 
-void Enviornment::printBoard(bitboard board) {
+void Environment::printBoard(bitboard board) {
   string bits = std::bitset<64>(board).to_string();
   cout << "\n  ";
   for (int i = 'A'; i < 'A'+8; i++)
@@ -46,9 +46,9 @@ void Enviornment::printBoard(bitboard board) {
   cout << '\n';
 }
 
-bitboard * Enviornment::getXAxisFromBoard(bitboard board, bool limit, int lock) {
-  // Enten limit 0 eller 1
-  // Må finne alle brikker som skal kunne flyttes
+bitboard * Environment::getXAxisFromBoard(bitboard board, bool limit, int lock) {
+  // Either limit is 0 or 1
+  // Must find every piece that is to be able to move.
 
   bitboard * boards;  // Stores the boards to be returned
   boards = new bitboard[numberOfPieces(board)+1];
@@ -109,10 +109,10 @@ bitboard * Enviornment::getXAxisFromBoard(bitboard board, bool limit, int lock) 
   return boards;
 }
 
-int Enviornment::numberOfPieces(bitboard board) {
+int Environment::numberOfPieces(bitboard board) {
   // Needs linux alternative.
-  // Fastest way of getting nuber of active bits.
-  // Uses special CPU fuctionality
+  // Fastest way of getting number of active bits.
+  // Uses special CPU functionality
 
 #ifdef __GNUG__
   return __builtin_popcountll(board);
@@ -120,7 +120,7 @@ int Enviornment::numberOfPieces(bitboard board) {
 
 }
 
-bitboard * Enviornment::getDiagYAxis(bitboard board, DIRECTION dir, bool limit, int lock) {
+bitboard * Environment::getDiagYAxis(bitboard board, DIRECTION dir, bool limit, int lock) {
   int dirValue;
   bitboard * boards;  // Stores the boards to be returned
   boards = new bitboard[numberOfPieces(board)+1];
@@ -196,7 +196,7 @@ bitboard * Enviornment::getDiagYAxis(bitboard board, DIRECTION dir, bool limit, 
   return boards;
 }
 
-bitboard * Enviornment::knightMovement(bitboard board) {
+bitboard * Environment::knightMovement(bitboard board) {
   int boardValue = 0;
   bitboard * boards;
   boards = new bitboard[numberOfPieces(board)+1];
@@ -250,35 +250,35 @@ bitboard * Enviornment::knightMovement(bitboard board) {
 
 // Needs compiler support for Microsoft c++ compiler
 // Works with gcc based compilers
-bitboard Enviornment::LSB(bitboard board) {
+bitboard Environment::LSB(bitboard board) {
   return (board != 0LL) ? __builtin_ffsll(board)-1 : 0LL;
 }
 
 // Needs compiler support for Microsoft c++ compiler
 // Works with gcc based compilers
-bitboard Enviornment::NSB(bitboard & board) {
+bitboard Environment::NSB(bitboard & board) {
   board &= ~(1LL << LSB(board));
   return LSB(board);
 }
 
-bitboard Enviornment::MSB(bitboard board) {
+bitboard Environment::MSB(bitboard board) {
   return 63 - __builtin_clzll(board);
 }
 
 // Turns on bit
-void Enviornment::flipBit(bitboard &board, bitboard index) {
+void Environment::flipBit(bitboard &board, bitboard index) {
   board |= (1LL << index);
 }
 
-bitboard Enviornment::whitePieces() {
+bitboard Environment::whitePieces() {
   return (state.WhitePawn | state.WhiteRook | state.WhiteKnight | state.WhiteKing | state.WhiteBishop | state.WhiteQueen);
 }
 
-bitboard Enviornment::blackPieces() {
+bitboard Environment::blackPieces() {
   return (state.BlackPawn | state.BlackRook | state.BlackKing | state.BlackKnight | state.BlackBishop | state.BlackQueen);
 }
 
-Enviornment::Enviornment(COLOR color) {
+Environment::Environment(COLOR color) {
   whiteCastling = true;
   blackCastling = true;
   moves = 0;
@@ -303,7 +303,7 @@ Enviornment::Enviornment(COLOR color) {
 
 }
 
-bitboard * Enviornment::pawnMoves(COLOR color) {
+bitboard * Environment::pawnMoves(COLOR color) {
   bitboard opponent = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
   bitboard own = (color == COLOR::WHITE) ? blackPieces() : whitePieces();
   DIRECTION dir = (color == COLOR::WHITE) ? DIRECTION::UP : DIRECTION::DOWN;
@@ -320,8 +320,8 @@ bitboard * Enviornment::pawnMoves(COLOR color) {
     }
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] &= ~(generateBlocK(bits[i], dir, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlocK(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
+    bits[i] &= ~(generateBlock(bits[i], dir, own) | own);  // Removes collision with own pieces
+    bits[i] &= ~(generateBlock(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
 
     if (COLOR::WHITE == color) {
       bitboard index = 0LL;
@@ -340,9 +340,9 @@ bitboard * Enviornment::pawnMoves(COLOR color) {
   // Generates pseudo legal moves Needs a check for king in attack vector
 }
 
-bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent) {
+bitboard Environment::generateBlock(bitboard vector, DIRECTION dir, bitboard opponent) {
     bitboard blockade = 0LL;
-    bitboard block = vector & oponent;
+    bitboard block = vector & opponent;
     switch (dir) {
         case DIRECTION::UP : {
             bitboard index = MSB(block)+1;
@@ -365,7 +365,7 @@ bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard opo
 }
 
 
-bitboard * Enviornment::knightMove(COLOR color) {
+bitboard * Environment::knightMove(COLOR color) {
   bitboard own = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
   bitboard * bits = knightMovement((COLOR::WHITE == color) ? state.WhiteKnight : state.BlackKnight);
 

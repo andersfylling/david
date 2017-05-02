@@ -16,7 +16,7 @@ add_subdirectory(tests)     # Our tests
 # cpp files in root project folder
 set(SOURCE_FILES
     src/main.cpp
-        src/enviornment.cpp
+        src/environment.cpp
     )
 add_executable(chess_ann ${SOURCE_FILES})
 

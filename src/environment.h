@@ -10,7 +10,7 @@
 
 enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
-class Enviornment {
+class Environment {
  private:
   int moves;    // Number of moves for performance measuring
   gameState state;  // Current gamestate
@@ -26,7 +26,7 @@ class Enviornment {
 
 
  public:
-  Enviornment(COLOR color);
+  Environment(COLOR color);
   void printBoard(bitboard board);  // A damn sexy board representation
 
 
@@ -41,25 +41,27 @@ class Enviornment {
 
   bitboard * getXAxisFromBoard(bitboard board, bool limit = 0, int lock = 0);
   bitboard * getDiagYAxis(bitboard board, DIRECTION dir, bool limit = false, int lock = 0);
-  bitboard generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent);
+  bitboard generateBlock(bitboard vector, DIRECTION dir, bitboard opponent);
   bitboard * knightMovement(bitboard board);
 
   bitboard whitePieces(); // Returns all white pieces
   bitboard blackPieces(); // Returns all black pieces
 
-  // Mainly for finding completly legal moves
-  bitboard combinedAttacks(); // All attacked pieces of oposing color
+  // Mainly for finding completely legal moves
+  bitboard combinedAttacks(); // All attacked pieces of opposing color
 
   bitboard * pawnMoves(COLOR color);
   bitboard * knightMove(COLOR color);
   bitboard KingMove(COLOR color);
 
+  // Generate a bitboard based on a chess position: E6
+
 
 
   int numberOfPieces(bitboard board);     // For generating right sized arrays
-  bitboard LSB (bitboard board);          // Gets least signifigant bit
+  bitboard LSB (bitboard board);          // Gets least significant bit
   bitboard MSB (bitboard board);
-  bitboard NSB (bitboard & board);        // Gets next sigifigant bit
+  bitboard NSB (bitboard & board);        // Gets next significant bit
   void flipBit(bitboard &board, bitboard index);           // Flips a bit in a board
 
 };

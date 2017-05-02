@@ -21,7 +21,7 @@ ADD_EXECUTABLE(chess_ann_tests
         ../src/uci/UCIEvent.h
 
     tests-main.cpp
-        ../src/enviornment.cpp
+        ../src/environment.cpp
     moveGenTests.cpp
         tests-UCIListener.cpp
         tests-UCIHandler.cpp
