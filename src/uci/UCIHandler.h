@@ -21,7 +21,7 @@ class UCIHandler {
           {}
       }},
       {"setoption", {
-          {"name"}
+          {"name", "value"}
       }},
       {"register", {
           {"later"},

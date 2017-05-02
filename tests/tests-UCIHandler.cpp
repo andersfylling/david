@@ -37,9 +37,27 @@ TEST_CASE( "Making sure arguments from GUI to Engine are correctly parsed", "[UC
   std::map<std::string, std::map<std::string, std::string>> inputs = {
       {"uci", {}},
       {"uci this text should be completely ignored by the parser.", {}},
+
       {"debug", {}},
+
       {"debug on", {{"on", ""}} },
-      {"debug off", {{"off", ""}} }
+
+      {"debug off", {{"off", ""}} },
+
+      {"isready", {} },
+
+      {"setoption", {} },
+      {"setoption name", {{"name", ""}} },
+      {"setoption name test", {{"name", "test"}} },
+      {"setoption name test value", {{"name", "test"}, {"value", ""}} },
+      {"setoption name test value lalala", {{"name", "test"}, {"value", "lalala"}} },
+
+      {"register later", {{"later", ""}} },
+      {"register name Stefan MK code 349284", {{"name", "Stefan MK"}, {"code", "349284"}} },
+
+      {"position", {} },
+      {"position fen moves sadha", {{"fen", ""}, {"moves", "sadha"}} },
+      {"position startpos moves sadha", {{"startpos", ""}, {"moves", "sadha"}} }
   };
 
   for (const auto entry : inputs) { // this runs a few rounds before error.

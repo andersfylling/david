@@ -63,7 +63,7 @@ std::map<std::string, std::string> UCIHandler::parseInputForArguments(std::strin
     std::string nextWord;
     int j = 1;
     while (request >> nextWord) {
-      std::cout << request.str() << std::endl;
+      //std::cout << request.str() << std::endl;
 
       if (j < v.size() && v.at(j) == nextWord) {
         // the next word is a key, store the existing value to the old key and clear it.
@@ -75,7 +75,12 @@ std::map<std::string, std::string> UCIHandler::parseInputForArguments(std::strin
         continue; // update the next word!
       }
 
-      value += " " + nextWord;
+      if (value == "") {
+        value = nextWord;
+      }
+      else {
+        value += " " + nextWord;
+      }
     }
 
     arguments[key] = value;
