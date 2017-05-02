@@ -14,7 +14,7 @@ endif()
 
 ADD_EXECUTABLE(chess_ann_tests
     tests-main.cpp
-    tests-example.cpp
-    ../src/TestExample.cpp
+        ../src/enviornment.cpp
+    moveGenTests.cpp
     )
 target_link_libraries(chess_ann_tests )

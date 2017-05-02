@@ -1,23 +1,28 @@
 //
 // Created by markus on 4/24/17.
+// Klingen has already declared some of these in his file, we should relocate to this one
 //
 
 #ifndef CHESS_ANN_VARIABLES_H
 #define CHESS_ANN_VARIABLES_H
 
-#include <limits>
+
+//
+// Const
+//
+const int MAX_DEPTH = 10;
 
 //
 // Global variables
 //
-int alpha = numeric_limits<int>::min();
-int beta = numeric_limits<int>::max();
+extern int alpha;
+extern int beta;
 
 
 //
 // Board sides, used in search
 //
-enum Side {WHITE, BLACK};
+/*enum Side {WHITE, BLACK};*/
 
 //
 // Enums for game phase, if we want to include that
@@ -29,7 +34,7 @@ enum Side {WHITE, BLACK};
 //
 // Mainly taken from stockfish, may need some tweaking
 //
-enum Value {
+enum Values {
     VALUE_ZERO      = 0,
     VALUE_DRAW      = 0,
     VALUE_KNOWN_WIN = 10000,
@@ -42,9 +47,9 @@ enum Value {
     QueenValueMg = 2521, QueenValueEg = 2558,
 };
 
-enum PieceType {
+/*enum PieceType {
     NO_PIECE_TYPE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING,
-};
+};*/
 
 enum Piece {
     NO_PIECE,
@@ -52,12 +57,6 @@ enum Piece {
     B_PAWN = 9, B_KNIGHT, B_BISHOP, B_ROOK, B_QUEEN, B_KING,
 };
 
-enum Depth{
-    //
-    // Randomly set for now
-    //
-    MAX_DEPTH = 10
-};
 
 //
 // variables.h must have it's own return functions, to return spesific types.

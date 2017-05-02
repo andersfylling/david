@@ -16,8 +16,8 @@ endif()
 # cpp files in root project folder
 set(SOURCE_FILES
     main.cpp
-    TestExample.cpp
-        ../include/evaluate.h evaluate.cpp ../include/variables.h ../include/search.h search.cpp)
+    search.cpp)
+
 add_executable(chess_ann ${SOURCE_FILES})
 
 
