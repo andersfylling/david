@@ -17,7 +17,7 @@ add_subdirectory(tests)     # Our tests
 set(SOURCE_FILES
     src/main.cpp
         src/enviornment.cpp
-    )
+        src/stockfish_evaluation.cpp)
 add_executable(chess_ann ${SOURCE_FILES})
 
 # link all folders (root + subfolders)
