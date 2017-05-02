@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "TestExample.h"
+#include "../include/TestExample.h"
 
 TEST_CASE( "Double size are being computed", "[TestExample.doubleMyInt]" ) {
   TestExample testExample;

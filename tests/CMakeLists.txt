@@ -1,7 +1,7 @@
 project (chess_ann_tests)
 include(CheckCXXCompilerFlag)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include)
+#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
 if(COMPILER_SUPPORTS_CXX14)
@@ -12,9 +12,19 @@ else()
     return()
 endif()
 
+
+
 ADD_EXECUTABLE(chess_ann_tests
+        ../src/TestExample.cpp
+        ../src/uci/UCIListener.cpp
+        ../src/uci/UCIHandler.cpp
+        ../src/uci/UCIEvent.h
+
     tests-main.cpp
         ../src/enviornment.cpp
     moveGenTests.cpp
-    )
-target_link_libraries(chess_ann_tests )
+        tests-UCIListener.cpp
+        tests-UCIHandler.cpp
+
+        )
+target_link_libraries(chess_ann_tests -lpthread)
