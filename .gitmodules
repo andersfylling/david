@@ -4,6 +4,3 @@
 [submodule "lib/fann"]
 	path = lib/fann
 	url = git://github.com/sciencefyll/fann
-[submodule "lib/Stockfish"]
-	path = lib/Stockfish
-	url = https://github.com/sciencefyll/Stockfish
