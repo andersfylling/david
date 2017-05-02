@@ -41,6 +41,8 @@ class Listener {
   void fireEvent(const uint8_t event);
   void fireEvent(const uint8_t event, const arguments_t arguments);
 
+  void stopListening();
+
   void removeListenerThread(int listenerID);
   bool joinListenerAndStop();
 };

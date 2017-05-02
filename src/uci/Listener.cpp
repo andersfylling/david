@@ -14,12 +14,10 @@
 #include "Parser.h"
 #include "Listener.h"
 
-uci::Listener::Listener() {
-  this->runListener = false;
-  this->lastID = 2;
-  //this->listener = std::thread();
-  //this->parser.parseInput("");
-
+uci::Listener::Listener()
+    : runListener(false),
+      lastID(2)
+{
 }
 
 uci::Listener::~Listener() {
@@ -60,7 +58,6 @@ bool uci::Listener::initiateListener() {
       if (event != uci::event::NO_MATCHING_COMMAND) {
         this->fireEvent(event);
       }
-
     }
   });
 
@@ -179,4 +176,7 @@ void uci::Listener::removeListenerThread(int listenerID) {
   this->hasListener(listenerID, [&](bool exists) {
     this->removeListener(listenerID);
   });
+}
+void uci::Listener::stopListening() {
+  this->runListener = false;
 }
