@@ -65,21 +65,6 @@ bitboard makeBoardFromArray(const array <int, SIZE > &arr) {
 // Needed for move generation
 enum pieceType{PAWN, KNIGHT, NORMAL};
 
-// White piece types
-extern bitboard WP;
-extern bitboard WC;
-extern bitboard WN;
-extern bitboard WR;
-extern bitboard WQ;
-extern bitboard WK;
-
-// Black piece types
-extern bitboard BP;
-extern bitboard BC;
-extern bitboard BN;
-extern bitboard BR;
-extern bitboard BQ;
-extern bitboard BK;
 
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by

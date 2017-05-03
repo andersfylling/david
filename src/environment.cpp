@@ -321,7 +321,7 @@ bitboard * Enviornment::pawnMoves(COLOR color) {
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
     bits[i] &= ~(generateBlocK(bits[i], dir, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlocK(bits[i], dir, opponent)); // Removes collision with oponent pieces
+    bits[i] &= ~(generateBlocK(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
 
     if (COLOR::WHITE == color) {
       bitboard index = 0LL;
@@ -375,15 +375,6 @@ bitboard * Enviornment::knightMove(COLOR color) {
   }
 
   return bits;
-}
-
-bitboard Enviornment::KingMove(COLOR color) {
-  bitboard movement = 0LL;
-  bitboard own = (COLOR::WHITE == color) ? whitePieces() : blackPieces();
-  bitboard oponent = (COLOR::WHITE == color) ? blackPieces() : whitePieces();
-
-
-
 }
 
 

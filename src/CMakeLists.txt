@@ -16,7 +16,7 @@ endif()
 
 # cpp files in root project folder
 set(SOURCE_FILES
-        enviornment.cpp
+        environment.cpp
         uci/UCIHandler.cpp
         uci/UCIListener.cpp
         uci/UCIEvent.h genericUCIResponses.cpp)
