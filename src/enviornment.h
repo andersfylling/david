@@ -8,13 +8,12 @@
 #include "./bitboard.h"
 #include <array>
 
+enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
 class Enviornment {
  private:
   int moves;    // Number of moves for performance measuring
   gameState state;  // Current gamestate
-  bool pawnStepWhite[8];
-  bool pawnStepBlack[8];
   // If the king has been moved, or been set in check.
   // Castling is not allowed. These values are then set to false
   // This is an important strategic factor in chess
@@ -42,6 +41,7 @@ class Enviornment {
 
   bitboard * getXAxisFromBoard(bitboard board, bool limit = 0, int lock = 0);
   bitboard * getDiagYAxis(bitboard board, DIRECTION dir, bool limit = false, int lock = 0);
+  bitboard generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent);
   bitboard * knightMovement(bitboard board);
 
   bitboard whitePieces(); // Returns all white pieces
@@ -56,6 +56,7 @@ class Enviornment {
 
   int numberOfPieces(bitboard board);     // For generating right sized arrays
   bitboard LSB (bitboard board);          // Gets least signifigant bit
+  bitboard MSB (bitboard board);
   bitboard NSB (bitboard & board);        // Gets next sigifigant bit
   void flipBit(bitboard &board, bitboard index);           // Flips a bit in a board
 

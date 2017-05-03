@@ -260,6 +260,10 @@ bitboard Enviornment::NSB(bitboard & board) {
   return LSB(board);
 }
 
+bitboard Enviornment::MSB(bitboard board) {
+  return 63 - __builtin_clzll(board);
+}
+
 // Turns on bit
 void Enviornment::flipBit(bitboard &board, bitboard index) {
   board |= (1LL << index);
@@ -299,14 +303,60 @@ Enviornment::Enviornment(COLOR color) {
 }
 
 bitboard * Enviornment::pawnMoves(COLOR color) {
+  bitboard oponent = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
+  bitboard own = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
+
   // Generates attack-vectors for pawns
   bitboard * bits = (color == COLOR::WHITE) ? getDiagYAxis(state.WP, DIRECTION::UP, true, 1) : getDiagYAxis(state.BP, DIRECTION::UP, true, 2);
 
   // Adds possibility for double moves
   for (bitboard i = 0; i < numberOfPieces((color == COLOR::WHITE) ? state.WP : state.BP); i++) {
-    if((bits[i] < 65536LL && bits[i] > 128LL) || (bits[i] < 72057594037927936 &&  bits[i] > 1099511627776))
-      flipBit(bits[i], LSB(bits[i]+8));
+    if(bits[i] < 65536LL && bits[i] > 128LL) {
+      flipBit(bits[i], LSB(bits[i] + 8));
+    } else if (bits[i] < 72057594037927936LL &&  bits[i] > 1099511627776LL) {
+      flipBit(bits[i], LSB(bits[i]-8));
+    }
+
+    // We now have forward movement. Needs a attack, but that logic is different with pawns.
+    bits[i] &= ~(generateBlocK(bits[i], UP, own) | own);  // Removes collision with own pieces
+    bits[i] &= ~(generateBlocK(bits[0], UP, oponent) | oponent); // Removes collision with oponent pieces
+
+    if (COLOR::WHITE == color) {
+      bitboard index = 0LL;
+      index |= (1LL << LSB(bits[i]));
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&oponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&oponent;
+    } else {
+      bitboard index = 0LL;
+      index |= (1LL << MSB(bits[i]));
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&oponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&oponent;
+    }
   }
 
   // Generates pseudo legal moves Needs a check for king in attack vector
+}
+
+bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent) {
+    bitboard blockade = 0LL;
+    bitboard block = vector & oponent;
+    switch (dir) {
+        case DIRECTION::UP : {
+            bitboard index = MSB(block)+1;
+            for(bitboard i = index; i < 64; i++) {
+                blockade |= (1LL << i);
+            }
+            break;
+        }
+        case DIRECTION::DOWN : {
+            bitboard index = LSB(block)-1;
+            for(bitboard i = index; i < 64; i++) {
+                blockade |= (1LL << i);
+            }
+            break;
+        }
+        default:
+            blockade = 1LL;
+    }
+    return blockade;
 }

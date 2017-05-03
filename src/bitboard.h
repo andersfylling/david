@@ -46,7 +46,7 @@ const array<int, 1> BKc = {60};
 
 typedef uint64_t bitboard;  // Represents a bitboard
 
-enum DIRECTION {MAIN_DIAGONAL, ANTI_DIAGONAL, UP};
+enum DIRECTION {MAIN_DIAGONAL, ANTI_DIAGONAL, UP, DOWN};
 
 template <std::size_t SIZE>
 bitboard makeBoardFromArray(const array <int, SIZE > &arr) {
