@@ -13,4 +13,5 @@ endif()
 add_subdirectory(lib/Catch) # Catch, for unit testing.
 add_subdirectory(lib/fann)  # Fann, for faster neural network development.
 add_subdirectory(src)       # source files
+add_subdirectory(benchmarks)# Our benchmarks
 add_subdirectory(tests)     # Our tests
