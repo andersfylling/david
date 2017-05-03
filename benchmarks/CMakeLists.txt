@@ -1,6 +1,12 @@
-project (chess_ann_tests)
+project (chess_ann_benchmarks)
 include(CheckCXXCompilerFlag)
 
+# It's not great, I know.
+file(GLOB chess_ann_benchmarksfiles "*.h" "*.cpp" "**/*.h" "**/*.cpp" "../src/*.h" "../src/*.cpp" "../src/**/*.h" "../src/**/*.cpp")
 
-ADD_EXECUTABLE(chess_ann_benchmarks main.cpp)
+# exclude src/main to avoid multiple main files.
+list(REMOVE_ITEM chess_ann_benchmarksfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp")
+
+add_executable(chess_ann_benchmarks ${chess_ann_benchmarksfiles})
+
 target_link_libraries(chess_ann_benchmarks -lpthread)
