@@ -37,8 +37,8 @@ class Environment {
 
 
  public:
-  Enviornment(COLOR color);
-  void printBoard(bitboard board);  // A damn sexy board representation
+  Environment(COLOR color);
+  void printBoard(bitboard_t board);  // A damn sexy board representation
   void setGameState(gameState st);  // Setting the gamestate for testing
   void printBitboards();            // Prints number values of all 12 boards
 
@@ -53,39 +53,39 @@ class Environment {
   // For X axis
 
   // LEVEL 0 of moveGen - The ugly bitflipping and CPU stuff
-  int numberOfPieces(bitboard board);     // For generating right sized arrays
-  void flipBit(bitboard &board, bitboard index);           // Flips a bit in a board
+  int numberOfPieces(bitboard_t board);     // For generating right sized arrays
+  bitboard_t LSB (bitboard_t board);          // Gets least signifigant bit
+  bitboard_t MSB (bitboard_t board);
+  bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit
+  void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
 
   // LEVEL 1 of moveGen - Basic attack vectors
-  bitboard * getXAxisFromBoard(bitboard board, bool limit = 0, int lock = 0);
-  bitboard * getDiagYAxis(bitboard board, DIRECTION dir, bool limit = false, int lock = 0);
-  bitboard generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent);
-  bitboard * knightMovement(bitboard board);
-  bitboard LSB (bitboard board);          // Gets least signifigant bit
-  bitboard MSB (bitboard board);
-  bitboard NSB (bitboard & board);        // Gets next sigifigant bit
+  bitboard_t * getXAxisFromBoard(bitboard_t board, bool limit = 0, int lock = 0);
+  bitboard_t * getDiagYAxis(bitboard_t board, DIRECTION dir, bool limit = false, int lock = 0);
+  bitboard_t generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t opponent);
+  bitboard_t * knightMovement(bitboard_t board);
 
 
   // LEVEL 2 of moveGen - Intermediate logic
-  bitboard whitePieces(); // Returns all white pieces
-  bitboard blackPieces(); // Returns all black pieces
+  bitboard_t whitePieces(); // Returns all white pieces
+  bitboard_t blackPieces(); // Returns all black pieces
 
   // Funksjonen skal returnere et bitboard som trekker fra motstandere og egne riktig
   // Får tilbake et bitboard som er modifisert
-  bitboard reduceVector(bitboard vector, bitboard opponent, bitboard own, DIRECTION dir);
+  bitboard_t reduceVector(bitboard_t vector, bitboard_t opponent, bitboard_t own, DIRECTION dir);
 
-  bitboard * pawnMoves(COLOR color);
-  bitboard * knightMove(COLOR color);
-  bitboard KingMove(COLOR color);
-  bitboard QueenMove(COLOR color);
-  bitboard * BishopMove(COLOR color);
-  bitboard * RookMove(COLOR color);
+  bitboard_t * pawnMoves(COLOR color);
+  bitboard_t * knightMove(COLOR color);
+  bitboard_t KingMove(COLOR color);
+  bitboard_t QueenMove(COLOR color);
+  bitboard_t * BishopMove(COLOR color);
+  bitboard_t * RookMove(COLOR color);
 
   // Generate a bitboard_t based on a chess position: E6
 
   // LEVEL 3 of moveGen - Advanced game logic
-  bitboard combinedAttacks(); // All attacked pieces of opposing color
-  // Move rockade
+  bitboard_t combinedAttacks(); // All attacked pieces of opposing color
+  // Move rockade1
   bool legal(gameState p);
   bool checkMate();
   bool draw();
