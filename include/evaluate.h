@@ -6,7 +6,7 @@
 #define CHESS_ANN_EVALUATE_H
 
 #include "../include/variables.h"
-#include "../src/enviornment.h"
+#include "../src/environment.h"
 
 
     //

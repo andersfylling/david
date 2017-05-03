@@ -6,7 +6,7 @@
 #include <limits>
 #include <list>
 #include <random>
-#include <../include/search.h>
+#include <search.h>
 #include "./variables.h"
 #include "./evaluate.h"
 
