@@ -495,6 +495,10 @@ int Environment::chessIndexToBitboardIndex(std::string chessIndex) {
 
   index = second * 8 + first;
 
+  if (index > 64 || index < 0) {
+    return -1;
+  }
+
   return index;
 }
 
