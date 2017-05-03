@@ -463,12 +463,12 @@ bitboard_t Environment::reduceVector(bitboard_t vector, bitboard_t opponent, bit
 }
 
 /**
- * Converts indexes such as "E6" into an integer index for bitboard_t.
+ * Converts indexes such as "E6" into an integer index: H1 == 0.
  *
  * @param chessIndex String such as "E6"
  * @return integer bitboard_t index, -1 on error.
  */
-int Environment::chessIndexToBitboardIndex(std::string chessIndex) {
+int Environment::chessIndexToArrayIndex(std::string chessIndex) {
   int index = -1;
 
   // Is always 2 in size "alpha" + "numeric" => "H1"
@@ -500,6 +500,19 @@ int Environment::chessIndexToBitboardIndex(std::string chessIndex) {
   }
 
   return index;
+}
+
+/**
+ * Takes a chess position such as "E6" and creates a bitboard with a on bit at that given index.
+ *
+ * @param chessIndex String such as "E6"
+ * @return bitboard with a active bit in given position
+ */
+bitboard_t Environment::chessIndexToBitboard(std::string chessIndex) {
+  bitboard_t board = 0ULL;
+  //flipBit(board, );
+
+  return board;
 }
 
 }// end namespace

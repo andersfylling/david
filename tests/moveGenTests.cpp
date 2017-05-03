@@ -173,21 +173,21 @@ TEST_CASE ("REDUCE VECTOR") {
 }
 
 TEST_CASE("Change chess index into an bitboard array index; E6 => 43") {
-  REQUIRE(test.chessIndexToBitboardIndex("H1") == 0);
-  REQUIRE(test.chessIndexToBitboardIndex("H2") == 8);
-  REQUIRE(test.chessIndexToBitboardIndex("H3") == 16);
-  REQUIRE(test.chessIndexToBitboardIndex("H4") == 24);
-  REQUIRE(test.chessIndexToBitboardIndex("H5") == 32);
-  REQUIRE(test.chessIndexToBitboardIndex("H6") == 40);
-  REQUIRE(test.chessIndexToBitboardIndex("H7") == 48);
-  REQUIRE(test.chessIndexToBitboardIndex("H8") == 56);
+  REQUIRE(test.chessIndexToArrayIndex("H1") == 0);
+  REQUIRE(test.chessIndexToArrayIndex("H2") == 8);
+  REQUIRE(test.chessIndexToArrayIndex("H3") == 16);
+  REQUIRE(test.chessIndexToArrayIndex("H4") == 24);
+  REQUIRE(test.chessIndexToArrayIndex("H5") == 32);
+  REQUIRE(test.chessIndexToArrayIndex("H6") == 40);
+  REQUIRE(test.chessIndexToArrayIndex("H7") == 48);
+  REQUIRE(test.chessIndexToArrayIndex("H8") == 56);
 
-  REQUIRE(test.chessIndexToBitboardIndex("G1") == 1);
-  REQUIRE(test.chessIndexToBitboardIndex("G2") == 9);
-  REQUIRE(test.chessIndexToBitboardIndex("G3") == 17);
-  REQUIRE(test.chessIndexToBitboardIndex("G4") == 25);
-  REQUIRE(test.chessIndexToBitboardIndex("G5") == 33);
-  REQUIRE(test.chessIndexToBitboardIndex("G6") == 41);
-  REQUIRE(test.chessIndexToBitboardIndex("G7") == 49);
-  REQUIRE(test.chessIndexToBitboardIndex("G8") == 57);
+  REQUIRE(test.chessIndexToArrayIndex("G1") == 1);
+  REQUIRE(test.chessIndexToArrayIndex("G2") == 9);
+  REQUIRE(test.chessIndexToArrayIndex("G3") == 17);
+  REQUIRE(test.chessIndexToArrayIndex("G4") == 25);
+  REQUIRE(test.chessIndexToArrayIndex("G5") == 33);
+  REQUIRE(test.chessIndexToArrayIndex("G6") == 41);
+  REQUIRE(test.chessIndexToArrayIndex("G7") == 49);
+  REQUIRE(test.chessIndexToArrayIndex("G8") == 57);
 }

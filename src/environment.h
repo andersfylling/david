@@ -99,7 +99,8 @@ class Environment {
   void applyMove();
 
   // Converters
-  int chessIndexToBitboardIndex(std::string chessIndex);
+  int chessIndexToArrayIndex(std::string chessIndex);
+  bitboard_t chessIndexToBitboard(std::string chessIndex);
 
 };
 }
