@@ -5,8 +5,11 @@
 #ifndef PROJECT_SEARCH_H
 #define PROJECT_SEARCH_H
 
+namespace search {
+
 class Search {
 
 };
+}
 
 #endif //PROJECT_SEARCH_H
