@@ -8,21 +8,6 @@
 #include "genericUCIResponses.h"
 int main (int argc, char * argv[])
 {
-  {
-
-  //::environment::Environment test(::bitboard::WHITE);
-
-
-
-
-  //std::cout << test.MSB(BP) << std::endl;
-
-  //bitboard * bits = test.getDiagYAxis(WP, UP);
-  //test.printBoard(test.generateBlock(bits[0], UP, BP));
-
-  }
-  
-  
   ::uci::Listener uciListener;
 
   // ###
