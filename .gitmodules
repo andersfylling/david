@@ -7,3 +7,6 @@
 [submodule "lib/Stockfish"]
 	path = lib/Stockfish
 	url = https://github.com/sciencefyll/Stockfish
+[submodule "lib/benchmark"]
+	path = lib/benchmark
+	url = https://github.com/google/benchmark

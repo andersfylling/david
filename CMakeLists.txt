@@ -10,7 +10,10 @@ else()
 endif()
 
 # Third party libraries in lib
-add_subdirectory(lib/Catch) # Catch, for unit testing.
-add_subdirectory(lib/fann)  # Fann, for faster neural network development.
-add_subdirectory(src)       # source files
-add_subdirectory(tests)     # Our tests
+add_subdirectory(lib/Catch)     # Catch, for unit testing.
+add_subdirectory(lib/fann)      # Fann, for faster neural network development.
+add_subdirectory(lib/benchmark) # Benchmark, google benchmarks for easier decision making and overview of code performance.
+
+add_subdirectory(src)           # source files
+add_subdirectory(benchmarks)    # Our benchmarks
+add_subdirectory(tests)         # Our tests
