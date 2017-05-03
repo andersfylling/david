@@ -1,10 +1,10 @@
 #include "../lib/Catch/include/catch.hpp"
-#include "../src/uci/UCIHandler.h"
+#include "../src/uci/Parser.h"
 #include "../src/uci/UCIEvent.h"
 
 // gui to engine
-TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[UCIHandler.parseInput]" ) {
-  UCIHandler uciHandler;
+TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[Parser.parseInput]" ) {
+  uci::Parser parser;
 
   std::map<uint8_t, std::string> commands = {
       {uci::event::NO_MATCHING_COMMAND, "akdjas"},
@@ -26,15 +26,15 @@ TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[UCI
   };
 
   for (const auto entry : commands) {
-    REQUIRE( uciHandler.parseInputForCommand(entry.second) == entry.first );
+    REQUIRE( parser.parseInputForCommand(entry.second) == entry.first );
   }
 }
 
 // gui to engine
-TEST_CASE( "Making sure arguments from GUI to Engine are correctly parsed", "[UCIHandler.parseInputForArguments]" ) {
-  UCIHandler uciHandler;
+TEST_CASE( "Making sure arguments from GUI to Engine are correctly parsed", "[Parser.parseInputForArguments]" ) {
+  uci::Parser parser;
 
-  std::map<std::string, std::map<std::string, std::string>> inputs = {
+  std::map<std::string, uci::arguments_t> inputs = {
       {"uci", {}},
       {"uci this text should be completely ignored by the parser.", {}},
 
@@ -61,7 +61,7 @@ TEST_CASE( "Making sure arguments from GUI to Engine are correctly parsed", "[UC
   };
 
   for (const auto entry : inputs) { // this runs a few rounds before error.
-    auto a = uciHandler.parseInputForArguments(entry.first);
+    auto a = parser.parseInputForArguments(entry.first);
     auto b = entry.second;
     REQUIRE(a == b);
   }

@@ -6,46 +6,48 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include "UCIHandler.h"
+#include "Parser.h"
 #include "UCIEvent.h"
+#include "Definitions.h"
 
-UCIHandler::UCIHandler() {
+namespace uci {
+Parser::Parser() {
 }
 
-UCIHandler::~UCIHandler() {
+Parser::~Parser() {
 }
-std::pair<uint8_t, std::map<std::string, std::string>> UCIHandler::parseInput(std::string input) {
+std::pair<uint8_t, arguments_t> Parser::parseInput(std::string input) {
   auto command = this->parseInputForCommand(input);
   if (command == uci::event::NO_MATCHING_COMMAND) {
-    return std::pair<uint8_t, std::map<std::string, std::string>>();
+    return std::pair<uint8_t, arguments_t>();
   }
 
   // get arguments
   auto arguments = this->parseInputForArguments(input);
 
-  return std::pair<uint8_t, std::map<std::string, std::string>>();
+  return std::pair<uint8_t, arguments_t>();
 }
 
-std::map<std::string, std::string> UCIHandler::parseInputForArguments(std::string input) {
+std::map<std::string, std::string> Parser::parseInputForArguments(std::string input) {
   std::stringstream request(input);
 
   // remove command, if it hasn't been removed already.
   // This assumes that if the first word is a match for a command, its a true command
   // and removes it.
   std::string command;
-  if (this->parseInputForCommand(input) != uci::event::NO_MATCHING_COMMAND) {
+  if (this->parseInputForCommand(input) != event::NO_MATCHING_COMMAND) {
     request >> command;
   }
 
   // get arguments from argumentsStr.
-  std::map<std::string, std::string> arguments;
+  arguments_t arguments;
   std::string firstWord;
   request >> firstWord;
 
   const auto cmdEntry = this->commands.find(command);
-  auto& vecHolder = cmdEntry->second;
+  auto &vecHolder = cmdEntry->second;
   for (int i = 0; i < vecHolder.size(); i++) {
-    auto& v = vecHolder.at(i);
+    auto &v = vecHolder.at(i);
 
     // if the first key in this vector doesn't equal the first word, ignore the rest and continue
     // to the next vector
@@ -54,7 +56,7 @@ std::map<std::string, std::string> UCIHandler::parseInputForArguments(std::strin
     }
 
     // add the key to the arguments map
-    arguments.insert( std::pair<std::string, std::string>(firstWord, ""));
+    arguments.insert(std::pair<std::string, std::string>(firstWord, ""));
 
     // if the next word is not another key, it should be the value of this key.
     // this value is appended upon until the next key is met.
@@ -71,14 +73,13 @@ std::map<std::string, std::string> UCIHandler::parseInputForArguments(std::strin
         arguments[key] = value;
         value = "";
         key = nextWord;
-        arguments.insert( std::pair<std::string, std::string>(key, "") );
+        arguments.insert(std::pair<std::string, std::string>(key, ""));
         continue; // update the next word!
       }
 
       if (value == "") {
         value = nextWord;
-      }
-      else {
+      } else {
         value += " " + nextWord;
       }
     }
@@ -89,12 +90,10 @@ std::map<std::string, std::string> UCIHandler::parseInputForArguments(std::strin
     break;
   }
 
-
   return arguments;
 }
 
-
-uint8_t UCIHandler::parseInputForCommand(std::string input) {
+uint8_t Parser::parseInputForCommand(std::string input) {
   std::stringstream request(input);
 
   std::string command;
@@ -106,41 +105,31 @@ uint8_t UCIHandler::parseInputForCommand(std::string input) {
   uint8_t event = 0;
   if (entry == this->commands.end()) {
     event = uci::event::NO_MATCHING_COMMAND;
-  }
-  else if (command == "uci") {
+  } else if (command == "uci") {
     event = uci::event::UCI;
-  }
-  else if (command == "debug") {
+  } else if (command == "debug") {
     event = uci::event::DEBUG;
-  }
-  else if (command == "isready") {
+  } else if (command == "isready") {
     event = uci::event::ISREADY;
-  }
-  else if (command == "setoption") {
+  } else if (command == "setoption") {
     event = uci::event::SETOPTION;
-  }
-  else if (command == "register") {
+  } else if (command == "register") {
     event = uci::event::REGISTER;
-  }
-  else if (command == "ucinewgame") {
+  } else if (command == "ucinewgame") {
     event = uci::event::UCINEWGAME;
-  }
-  else if (command == "position") {
+  } else if (command == "position") {
     event = uci::event::POSITION;
-  }
-  else if (command == "go") {
+  } else if (command == "go") {
     event = uci::event::GO;
-  }
-  else if (command == "stop") {
+  } else if (command == "stop") {
     event = uci::event::STOP;
-  }
-  else if (command == "ponderhit") {
+  } else if (command == "ponderhit") {
     event = uci::event::PONDERHIT;
-  }
-  else if (command == "quit") {
+  } else if (command == "quit") {
     event = uci::event::QUIT;
   }
 
   return event;
 }
 
+}

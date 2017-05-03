@@ -7,7 +7,10 @@
 
 #include <vector>
 #include <map>
-class UCIHandler {
+#include "Definitions.h"
+
+namespace uci {
+class Parser {
  private:
   const std::map<std::string, std::vector<std::vector<std::string>>> commands = {
       {"uci", {
@@ -60,13 +63,14 @@ class UCIHandler {
   };
 
  public:
-  UCIHandler();
-  ~UCIHandler();
-
+  Parser();
+  ~Parser();
 
   uint8_t parseInputForCommand(std::string input);
-  std::map<std::string, std::string> parseInputForArguments(std::string input);
-  std::pair<uint8_t, std::map<std::string, std::string>> parseInput(std::string input);
+  arguments_t parseInputForArguments(std::string input);
+  std::pair<uint8_t, arguments_t> parseInput(std::string input);
 };
+
+}
 
 #endif //CHESS_ANN_UCIHANDLER_H
