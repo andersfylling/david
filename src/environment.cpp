@@ -2,7 +2,7 @@
 // Created by lolos on 05.04.2017.
 //
 
-#include "enviornment.h"
+#include "environment.h"
 #include "./bitboard.h"
 #include <string>
 #include <bitset>
@@ -14,6 +14,7 @@ namespace environment {
 
 using std::string;
 using std::cout;
+using ::bitboard::bitboard_t;
 using ::bitboard::WPc;
 using ::bitboard::WCc;
 using ::bitboard::WNc;
@@ -271,7 +272,7 @@ bitboard_t Environment::blackPieces() {
       | state.BlackQueen);
 }
 
-Enviornment::Enviornment(COLOR color) {
+Environment::Environment(COLOR color) {
   whiteCastling = true;
   blackCastling = true;
   moves = 0;
@@ -317,8 +318,8 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     }
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] &= ~(generateBlocK(bits[i], dir, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlocK(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
+    bits[i] &= ~(generateBlock(bits[i], dir, own) | own);  // Removes collision with own pieces
+    bits[i] &= ~(generateBlock(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
 
     if (COLOR::WHITE == color) {
       bitboard_t index = 0LL;
@@ -337,36 +338,27 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
   // Generates pseudo legal moves Needs a check for king in attack vector
 }
 
-bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent) {
-    bitboard blockade = 0LL;
-    bitboard block = vector & oponent;
+bitboard_t Environment::generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t oponent) {
+    bitboard_t blockade = 0LL;
+    bitboard_t block = vector & oponent;
     switch (dir) {
-        case DIRECTION::UP : {
-            bitboard index = MSB(block)+1;
-            for(bitboard i = index; i < 64; i++) {
-                blockade |= (1LL << i);
-            }
-            break;
-        }
-        case DIRECTION::DOWN : {
-            bitboard index = LSB(block)-1;
-            for(bitboard i = index; i < 64; i++) {
-                blockade |= (1LL << i);
-            }
-            break;
-        }
-        default:
-            blockade = 1LL;
-    }
-    case DIRECTION::DOWN : {
-      bitboard_t index = LSB(block) - 1;
-      for (bitboard_t i = index; i < 64; i++) {
-        blockade |= (1LL << i);
+      case DIRECTION::UP : {
+          bitboard_t index = MSB(block)+1;
+          for(bitboard_t i = index; i < 64; i++) {
+              blockade |= (1LL << i);
+          }
+          break;
       }
-      break;
-    }
-    default:blockade = 1LL;
+      case DIRECTION::DOWN : {
+          bitboard_t index = LSB(block)-1;
+          for(bitboard_t i = index; i < 64; i++) {
+              blockade |= (1LL << i);
+          }
+          break;
+      }
+      default: blockade = 1LL;
   }
+
   return blockade;
 }
 
@@ -382,10 +374,7 @@ bitboard_t *Environment::knightMove(COLOR color) {
   return bits;
 }
 bitboard_t * Environment::KingMove(COLOR color) {
-  return 0;
-}
-bitboard_t Environment::combinedAttacks() {
-  return 0;
+  return nullptr;
 }
 
 }

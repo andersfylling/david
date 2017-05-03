@@ -60,27 +60,9 @@ bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
   return boardValue;
 }
 
-inline namespace pieceTypes {
 // Piece types. Sliding includes queen, king, rook and tower
 // Needed for move generation
 enum pieceType { PAWN, KNIGHT, NORMAL };
-
-//// White
-//extern bitboard_t WP;
-//extern bitboard_t WC;
-//extern bitboard_t WN;
-//extern bitboard_t WR;
-//extern bitboard_t WQ;
-//extern bitboard_t WK;
-//
-//// Black
-//extern bitboard_t BP;
-//extern bitboard_t BC;
-//extern bitboard_t BN;
-//extern bitboard_t BR;
-//extern bitboard_t BQ;
-//extern bitboard_t BK;
-}
 
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by

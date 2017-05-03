@@ -21,7 +21,7 @@ using ::bitboard::DIRECTION;
 
 enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
-class Enviornment {
+class Environment {
  private:
   int moves;    // Number of moves for performance measuring
   gameState state;  // Current gamestate
