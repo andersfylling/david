@@ -51,6 +51,8 @@ class Enviornment {
   bitboard combinedAttacks(); // All attacked pieces of oposing color
 
   bitboard * pawnMoves(COLOR color);
+  bitboard * knightMove(COLOR color);
+  bitboard KingMove(COLOR color);
 
 
 

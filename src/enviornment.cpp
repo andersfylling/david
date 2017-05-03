@@ -13,6 +13,7 @@
 using std::string;
 using std::cout;
 
+// These are only made for testing.
 bitboard WP = makeBoardFromArray(WPc);
 bitboard WC = makeBoardFromArray(WCc);
 bitboard WN = makeBoardFromArray(WNc);
@@ -270,11 +271,11 @@ void Enviornment::flipBit(bitboard &board, bitboard index) {
 }
 
 bitboard Enviornment::whitePieces() {
-  return (state.WP | state.WC | state.WK | state.WN | state.WR | state.WQ);
+  return (state.WhitePawn | state.WhiteRook | state.WhiteKnight | state.WhiteKing | state.WhiteBishop | state.WhiteQueen);
 }
 
 bitboard Enviornment::blackPieces() {
-  return (state.BP | state.BC | state.BK | state.BN | state.BR | state.BQ);
+  return (state.BlackPawn | state.BlackRook | state.BlackKing | state.BlackKnight | state.BlackBishop | state.BlackQueen);
 }
 
 Enviornment::Enviornment(COLOR color) {
@@ -283,19 +284,19 @@ Enviornment::Enviornment(COLOR color) {
   moves = 0;
   hostColor = color;
 
-  state.WP = makeBoardFromArray(WPc);
-  state.WC = makeBoardFromArray(WCc);
-  state.WN = makeBoardFromArray(WNc);
-  state.WR = makeBoardFromArray(WRc);
-  state.WQ = makeBoardFromArray(WQc);
-  state.WK = makeBoardFromArray(WKc);
+  state.WhitePawn = makeBoardFromArray(WPc);
+  state.WhiteRook = makeBoardFromArray(WCc);
+  state.WhiteKnight = makeBoardFromArray(WNc);
+  state.WhiteBishop = makeBoardFromArray(WRc);
+  state.WhiteQueen = makeBoardFromArray(WQc);
+  state.WhiteKing = makeBoardFromArray(WKc);
 
-  state.BP = makeBoardFromArray(BPc);
-  state.BC = makeBoardFromArray(BCc);
-  state.BR = makeBoardFromArray(BRc);
-  state.BN = makeBoardFromArray(BNc);
-  state.BQ = makeBoardFromArray(BQc);
-  state.BK = makeBoardFromArray(BKc);
+  state.BlackPawn = makeBoardFromArray(BPc);
+  state.BlackRook = makeBoardFromArray(BCc);
+  state.BlackBishop = makeBoardFromArray(BRc);
+  state.BlackKnight = makeBoardFromArray(BNc);
+  state.BlackQueen = makeBoardFromArray(BQc);
+  state.BlackKing = makeBoardFromArray(BKc);
 
   // IF COLOR WHITE
   // INITIATE AUTO MOVES
@@ -303,14 +304,15 @@ Enviornment::Enviornment(COLOR color) {
 }
 
 bitboard * Enviornment::pawnMoves(COLOR color) {
-  bitboard oponent = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
-  bitboard own = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
+  bitboard opponent = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
+  bitboard own = (color == COLOR::WHITE) ? blackPieces() : whitePieces();
+  DIRECTION dir = (color == COLOR::WHITE) ? DIRECTION::UP : DIRECTION::DOWN;
 
   // Generates attack-vectors for pawns
-  bitboard * bits = (color == COLOR::WHITE) ? getDiagYAxis(state.WP, DIRECTION::UP, true, 1) : getDiagYAxis(state.BP, DIRECTION::UP, true, 2);
+  bitboard * bits = (color == COLOR::WHITE) ? getDiagYAxis(state.WhitePawn, DIRECTION::UP, true, 1) : getDiagYAxis(state.BlackPawn, DIRECTION::UP, true, 2);
 
   // Adds possibility for double moves
-  for (bitboard i = 0; i < numberOfPieces((color == COLOR::WHITE) ? state.WP : state.BP); i++) {
+  for (bitboard i = 0; i < numberOfPieces((color == COLOR::WHITE) ? state.WhitePawn : state.BlackPawn); i++) {
     if(bits[i] < 65536LL && bits[i] > 128LL) {
       flipBit(bits[i], LSB(bits[i] + 8));
     } else if (bits[i] < 72057594037927936LL &&  bits[i] > 1099511627776LL) {
@@ -318,22 +320,23 @@ bitboard * Enviornment::pawnMoves(COLOR color) {
     }
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] &= ~(generateBlocK(bits[i], UP, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlocK(bits[0], UP, oponent) | oponent); // Removes collision with oponent pieces
+    bits[i] &= ~(generateBlocK(bits[i], dir, own) | own);  // Removes collision with own pieces
+    bits[i] &= ~(generateBlocK(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
 
     if (COLOR::WHITE == color) {
       bitboard index = 0LL;
       index |= (1LL << LSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&oponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&oponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&opponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&opponent;
     } else {
       bitboard index = 0LL;
       index |= (1LL << MSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&oponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&oponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&opponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&opponent;
     }
+  
   }
-
+  return bits;
   // Generates pseudo legal moves Needs a check for king in attack vector
 }
 
@@ -360,3 +363,18 @@ bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard opo
     }
     return blockade;
 }
+
+
+bitboard * Enviornment::knightMove(COLOR color) {
+  bitboard own = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
+  bitboard * bits = knightMovement((COLOR::WHITE == color) ? state.WhiteKnight : state.BlackKnight);
+
+  // Cannot move on top of own pieces
+  for (int i = 0;  i < numberOfPieces((color == COLOR::WHITE) ? state.WhiteKnight : state.BlackKnight); i++) {
+    bits[i] &= ~own;
+  }
+
+  return bits;
+}
+
+

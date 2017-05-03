@@ -84,19 +84,19 @@ extern bitboard BK;
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
-  bitboard WP;
-  bitboard WC;
-  bitboard WN;
-  bitboard WR;
-  bitboard WQ;
-  bitboard WK;
+  bitboard WhitePawn;
+  bitboard WhiteRook;
+  bitboard WhiteKnight;
+  bitboard WhiteBishop;
+  bitboard WhiteQueen;
+  bitboard WhiteKing;
 
-  bitboard BP;
-  bitboard BC;
-  bitboard BN;
-  bitboard BR;
-  bitboard BQ;
-  bitboard BK;
+  bitboard BlackPawn;
+  bitboard BlackRook;
+  bitboard BlackKnight;
+  bitboard BlackBishop;
+  bitboard BlackQueen;
+  bitboard BlackKing;
 };
 
 struct stateNode {
