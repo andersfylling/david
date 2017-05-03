@@ -8,6 +8,17 @@
 #include "./bitboard.h"
 #include <array>
 
+
+
+namespace environment {
+
+// deal with bitboard_t dependencies
+using ::bitboard::gameState;
+using ::bitboard::COLOR;
+using ::bitboard::bitboard_t;
+using ::bitboard::DIRECTION;
+
+
 enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
 class Environment {
@@ -27,7 +38,7 @@ class Environment {
 
  public:
   Environment(COLOR color);
-  void printBoard(bitboard board);  // A damn sexy board representation
+  void printBoard(bitboard_t board);  // A damn sexy board representation
 
 
   // The limit makes a divide between sliding and moving
@@ -39,31 +50,32 @@ class Environment {
   // LOCK values 0 == no lock. 1 == WHITE-LIMIT 2 == BLACK-LIMIT
   // For X axis
 
-  bitboard * getXAxisFromBoard(bitboard board, bool limit = 0, int lock = 0);
-  bitboard * getDiagYAxis(bitboard board, DIRECTION dir, bool limit = false, int lock = 0);
-  bitboard generateBlock(bitboard vector, DIRECTION dir, bitboard opponent);
-  bitboard * knightMovement(bitboard board);
+  bitboard_t * getXAxisFromBoard(bitboard_t board, bool limit = 0, int lock = 0);
+  bitboard_t * getDiagYAxis(bitboard_t board, DIRECTION dir, bool limit = false, int lock = 0);
+  bitboard_t generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t opponent);
+  bitboard_t * knightMovement(bitboard_t board);
 
-  bitboard whitePieces(); // Returns all white pieces
-  bitboard blackPieces(); // Returns all black pieces
+  bitboard_t whitePieces(); // Returns all white pieces
+  bitboard_t blackPieces(); // Returns all black pieces
 
   // Mainly for finding completely legal moves
-  bitboard combinedAttacks(); // All attacked pieces of opposing color
+  bitboard_t combinedAttacks(); // All attacked pieces of opposing color
 
-  bitboard * pawnMoves(COLOR color);
-  bitboard * knightMove(COLOR color);
-  bitboard KingMove(COLOR color);
+  bitboard_t * pawnMoves(COLOR color);
+  bitboard_t * knightMove(COLOR color);
+  bitboard_t * KingMove(COLOR color);
 
-  // Generate a bitboard based on a chess position: E6
+  // Generate a bitboard_t based on a chess position: E6
 
 
 
-  int numberOfPieces(bitboard board);     // For generating right sized arrays
-  bitboard LSB (bitboard board);          // Gets least significant bit
-  bitboard MSB (bitboard board);
-  bitboard NSB (bitboard & board);        // Gets next significant bit
-  void flipBit(bitboard &board, bitboard index);           // Flips a bit in a board
+  int numberOfPieces(bitboard_t board);     // For generating right sized arrays
+  bitboard_t LSB (bitboard_t board);          // Gets least significant bit
+  bitboard_t MSB (bitboard_t board);
+  bitboard_t NSB (bitboard_t & board);        // Gets next significant bit
+  void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
 
 };
+}
 
 #endif //CHESS_ANN_ENVIORNMENT_H

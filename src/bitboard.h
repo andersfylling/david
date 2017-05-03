@@ -9,14 +9,16 @@
 #include <stdint.h>
 #include <math.h>
 
+namespace bitboard {
+
 using std::array;
 // These values represent the position of the pieces
 // BN and WN references to the Knights. This is to
 // Differ them from the kings.
 
-//   A    B   C   D   E   F   G   H
-// 8: 0    1   2   3   4   5   6   7
-// 7: 8    9   10  11  12  13  14  15
+//     A    B   C   D   E   F   G   H
+// 8:  0    1   2   3   4   5   6   7
+// 7:  8    9  10  11  12  13  14  15
 // 6: 16   17  18  19  20  21  22  23
 // 5: 24   25  26  27  28  29  30  31
 // 4: 32   33  34  35  36  37  38  39
@@ -24,7 +26,7 @@ using std::array;
 // 2: 48   49  50  51  52  53  54  55
 // 1: 56   57  58  59  60  61  62  63
 
-enum COLOR {BLACK, WHITE};
+enum COLOR { BLACK, WHITE };
 
 // These values are used when generating bitboards
 // Replace the whole struct for testing specific situations
@@ -44,65 +46,68 @@ const array<int, 1> BKc = {60};
 // Why do I use arrays?
 // They are AWESOME
 
-typedef uint64_t bitboard;  // Represents a bitboard
+typedef uint64_t bitboard_t;  // Represents a bitboard_t
 
-enum DIRECTION {MAIN_DIAGONAL, ANTI_DIAGONAL, UP, DOWN};
+enum DIRECTION { MAIN_DIAGONAL, ANTI_DIAGONAL, UP, DOWN };
 
-template <std::size_t SIZE>
-bitboard makeBoardFromArray(const array <int, SIZE > &arr) {
-  bitboard boardValue = 0;
+template<std::size_t SIZE>
+bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
+  bitboard_t boardValue = 0;
   for (int i = 0; i < 64; i++) {
     for (const auto &v : arr) {
       if (v == i) {
-        boardValue = boardValue|static_cast<bitboard>(pow(2.0, static_cast<long double>(i)));
+        boardValue = boardValue | static_cast<bitboard_t>(pow(2.0, static_cast<long double>(i)));
       }
     }
   }
   return boardValue;
 }
 
+inline namespace pieceTypes {
 // Piece types. Sliding includes queen, king, rook and tower
 // Needed for move generation
-enum pieceType{PAWN, KNIGHT, NORMAL};
+enum pieceType { PAWN, KNIGHT, NORMAL };
 
-// White piece types
-extern bitboard WP;
-extern bitboard WC;
-extern bitboard WN;
-extern bitboard WR;
-extern bitboard WQ;
-extern bitboard WK;
+// White
+bitboard_t WP;
+bitboard_t WC;
+bitboard_t WN;
+bitboard_t WR;
+bitboard_t WQ;
+bitboard_t WK;
 
-// Black piece types
-extern bitboard BP;
-extern bitboard BC;
-extern bitboard BN;
-extern bitboard BR;
-extern bitboard BQ;
-extern bitboard BK;
+// Black
+bitboard_t BP;
+bitboard_t BC;
+bitboard_t BN;
+bitboard_t BR;
+bitboard_t BQ;
+bitboard_t BK;
+}
 
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
-  bitboard WhitePawn;
-  bitboard WhiteRook;
-  bitboard WhiteKnight;
-  bitboard WhiteBishop;
-  bitboard WhiteQueen;
-  bitboard WhiteKing;
+  bitboard_t WhitePawn;
+  bitboard_t WhiteRook;
+  bitboard_t WhiteKnight;
+  bitboard_t WhiteBishop;
+  bitboard_t WhiteQueen;
+  bitboard_t WhiteKing;
 
-  bitboard BlackPawn;
-  bitboard BlackRook;
-  bitboard BlackKnight;
-  bitboard BlackBishop;
-  bitboard BlackQueen;
-  bitboard BlackKing;
+  bitboard_t BlackPawn;
+  bitboard_t BlackRook;
+  bitboard_t BlackKnight;
+  bitboard_t BlackBishop;
+  bitboard_t BlackQueen;
+  bitboard_t BlackKing;
 };
 
 struct stateNode {
   int value;
-  gameState * state;
+  gameState *state;
   // Some children pointer
 };
+}
 
 #endif  //CHESS_ANN_BITBOARD_H
