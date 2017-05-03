@@ -1,40 +1,13 @@
 project (chess_ann_tests)
 include(CheckCXXCompilerFlag)
 
-#INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../include)
+# It's not great, I know.
+file(GLOB chess_ann_testsfiles "*.h" "*.cpp" "**/*.h" "**/*.cpp" "../src/*.h" "../src/*.cpp" "../src/**/*.h" "../src/**/*.cpp")
 
-CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
-if(COMPILER_SUPPORTS_CXX14)
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has C++14 support.")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++0x, C++11 support. chess_ann will still work with no problem, but the tests will not be able to compile.")
-    return()
-endif()
+# exclude src/main to avoid multiple main files.
+list(REMOVE_ITEM chess_ann_testsfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp")
 
-
-
-ADD_EXECUTABLE(chess_ann_tests
-        ../src/TestExample.cpp
-        ../src/uci/UCIListener.cpp
-        ../src/uci/UCIHandler.cpp
-        ../src/uci/UCIEvent.h
-
-    tests-main.cpp
-        ../src/enviornment.cpp
-    moveGenTests.cpp
-        tests-UCIListener.cpp
-        tests-UCIHandler.cpp)
-
-ADD_EXECUTABLE(search_test
-        tests-main.cpp
-        )
-
-ADD_EXECUTABLE(material_test
-        ../src/enviornment.cpp
-        tests-main.cpp
-        material-test.cpp)
-
+add_executable(chess_ann_tests  ${chess_ann_testsfiles})
 
 target_link_libraries(chess_ann_tests -lpthread)
 

@@ -8,23 +8,22 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-#include "UCIHandler.h"
-#include "UCIListener.h"
+
+#include "Definitions.h"
 #include "UCIEvent.h"
+#include "Parser.h"
+#include "Listener.h"
 
-UCIListener::UCIListener()
+uci::Listener::Listener()
+    : runListener(false),
+      lastID(2)
 {
-  this->runListener = false;
-  this->lastID = 2;
-  //this->listener = std::thread();
-  //this->uciHandler.parseInput("");
-
 }
 
-UCIListener::~UCIListener() {
+uci::Listener::~Listener() {
 }
 
-int UCIListener::addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)> func) {
+int uci::Listener::addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)> func) {
   const int id = this->lastID += 1;
 
   // check if event key already exists, if not create it.
@@ -36,16 +35,16 @@ int UCIListener::addListener(const uint8_t event, const std::function<void(std::
     );
   }
 
-  this->events[event].insert( std::pair<const int, const std::function<void(std::map<std::string, std::string>)>>(id, func) );
-  this->eventIDs.insert( std::pair<const int, const uint8_t>(id, event) );
+  this->events[event].insert(std::pair<const int, const std::function<void(std::map<std::string, std::string>)>>(id,
+                                                                                                                 func));
+  this->eventIDs.insert(std::pair<const int, const uint8_t>(id, event));
 
   return id;
 }
 
-bool UCIListener::initiateListener() {
+bool uci::Listener::initiateListener() {
 
   this->runListener = true;
-
 
   this->listener = std::thread([&] {
     std::string line;
@@ -54,19 +53,18 @@ bool UCIListener::initiateListener() {
         continue;
       }
 
-      auto event = this->uciHandler.parseInputForCommand(line);
-      auto arguments = this->uciHandler.parseInputForArguments(line);
+      auto event = this->parser.parseInputForCommand(line);
+      auto arguments = this->parser.parseInputForArguments(line);
       if (event != uci::event::NO_MATCHING_COMMAND) {
         this->fireEvent(event);
       }
-
     }
   });
 
   return false;
 }
 
-bool UCIListener::joinListener() {
+bool uci::Listener::joinListener() {
   if (this->listener.joinable()) {
     this->listener.join();
     return true;
@@ -74,32 +72,31 @@ bool UCIListener::joinListener() {
   return false;
 }
 
-bool UCIListener::joinListenerAndStop() {
+bool uci::Listener::joinListenerAndStop() {
   this->runListener = false;
   bool joined = this->joinListener();
 
   return joined && !this->runListener;
 }
 
-bool UCIListener::setupListener() {
+bool uci::Listener::setupListener() {
   this->initiateListener();
   return this->joinListener();
 }
 
-
-void UCIListener::fireEvent(const uint8_t event) {
+void uci::Listener::fireEvent(const uint8_t event) {
   this->fireEvent(event, std::map<std::string, std::string>());
 }
 
-void UCIListener::fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments) {
+void uci::Listener::fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments) {
   auto entry = this->events.find(event);
 
   if (entry == this->events.end()) {
     return;
   }
 
-  for (auto& observerEntry : entry->second) {
-    auto& observer = observerEntry.second;
+  for (auto &observerEntry : entry->second) {
+    auto &observer = observerEntry.second;
     observer(arguments);
   }
 }
@@ -111,7 +108,7 @@ void UCIListener::fireEvent(const uint8_t event, const std::map<std::string, std
  * @param int listenerID
  * @return True if listener with listenerID exists
  */
-bool UCIListener::hasListener(const int listenerID) {
+bool uci::Listener::hasListener(const int listenerID) {
   return this->eventIDs.count(listenerID) > 0;
 }
 
@@ -123,10 +120,10 @@ bool UCIListener::hasListener(const int listenerID) {
  * @param int listenerID
  * @return True if listener with listenerID exists
  */
-void UCIListener::hasListener(int listenerID, std::function<void(bool exists)> lockedCallback) {
+void uci::Listener::hasListener(int listenerID, std::function<void(bool exists)> lockedCallback) {
   static std::mutex m;
   {
-      std::lock_guard<std::mutex> e(m);
+    std::lock_guard<std::mutex> e(m);
   };
 
   {
@@ -152,14 +149,14 @@ void UCIListener::hasListener(int listenerID, std::function<void(bool exists)> l
  * @param listenerID
  * @return true if the listener has been removed or does not exist.
  */
-bool UCIListener::removeListener(const int listenerID) {
+bool uci::Listener::removeListener(const int listenerID) {
   if (!this->hasListener(listenerID)) {
     return true;
   }
 
   // find and remove function
   auto eventID = this->eventIDs.find(listenerID)->second;
-  auto& eventEntry = this->events.find(eventID)->second;
+  auto &eventEntry = this->events.find(eventID)->second;
   eventEntry.erase(eventEntry.find(listenerID));
 
   // then remove the listenerID
@@ -175,12 +172,11 @@ bool UCIListener::removeListener(const int listenerID) {
  * @param listenerID
  * @return true if the listener has been removed or does not exist.
  */
-void UCIListener::removeListenerThread(int listenerID) {
-  this->hasListener(listenerID, [&](bool exists){
+void uci::Listener::removeListenerThread(int listenerID) {
+  this->hasListener(listenerID, [&](bool exists) {
     this->removeListener(listenerID);
   });
 }
-
-
-
-
+void uci::Listener::stopListening() {
+  this->runListener = false;
+}
