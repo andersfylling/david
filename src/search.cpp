@@ -70,7 +70,7 @@ namespace search{
     //
     // Main loop, calls upon negamax until max depth is reached, must implement time constraints
     //
-    void iterativeDeepening(Enviornment node){
+    void iterativeDeepening(Enviornment * node){
         int bestValue, alpha, beta;
         int depth;
 
