@@ -9,6 +9,7 @@
 #include <iostream>
 #include <math.h>
 #include <array>
+#include <algorithm>
 
 namespace environment {
 
@@ -459,6 +460,42 @@ bitboard_t Environment::reduceVector(bitboard_t vector, bitboard_t opponent, bit
   //result = vector & ~(generateBlocK(vector, dir, own) | own | generateBlocK(vector, dir, opponent));
 
   return result;
+}
+
+/**
+ * Converts indexes such as "E6" into an integer index for bitboard_t.
+ *
+ * @param chessIndex String such as "E6"
+ * @return integer bitboard_t index, -1 on error.
+ */
+int Environment::chessIndexToBitboardIndex(std::string chessIndex) {
+  int index = -1;
+
+  // Is always 2 in size "alpha" + "numeric" => "H1"
+  if (chessIndex.length() != 2) {
+    return index;
+  }
+
+  // make sure it's uppercase
+  std::transform(chessIndex.begin(), chessIndex.end(), chessIndex.begin(), ::toupper);
+
+  // store first and second char
+  const char& a = chessIndex.front();
+  const char& b = chessIndex.back();
+
+  char cPos[] = {'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'}; // matches index value
+  int first = 0;
+  int second = b - 48 - 1;
+  for (int i = 0; i < 8; i++) {
+    if (a == cPos[i]) {
+      first = i;
+      break;
+    }
+  }
+
+  index = second * 8 + first;
+
+  return index;
 }
 
 }// end namespace

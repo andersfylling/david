@@ -7,6 +7,6 @@ file(GLOB chess_ann_benchmarksfiles "*.h" "*.cpp" "**/*.h" "**/*.cpp" "../src/*.
 # exclude src/main to avoid multiple main files.
 list(REMOVE_ITEM chess_ann_benchmarksfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp")
 
-add_executable(chess_ann_benchmarks ${chess_ann_benchmarksfiles} test.cpp include.h)
+add_executable(chess_ann_benchmarks ${chess_ann_benchmarksfiles})
 
 target_link_libraries(chess_ann_benchmarks benchmark -lpthread)

@@ -171,3 +171,23 @@ TEST_CASE ("REDUCE VECTOR") {
                             DIRECTION::DOWN);
   REQUIRE(board == 134742016);
 }
+
+TEST_CASE("Change chess index into an bitboard array index; E6 => 43") {
+  REQUIRE(test.chessIndexToBitboardIndex("H1") == 0);
+  REQUIRE(test.chessIndexToBitboardIndex("H2") == 8);
+  REQUIRE(test.chessIndexToBitboardIndex("H3") == 16);
+  REQUIRE(test.chessIndexToBitboardIndex("H4") == 24);
+  REQUIRE(test.chessIndexToBitboardIndex("H5") == 32);
+  REQUIRE(test.chessIndexToBitboardIndex("H6") == 40);
+  REQUIRE(test.chessIndexToBitboardIndex("H7") == 48);
+  REQUIRE(test.chessIndexToBitboardIndex("H8") == 56);
+
+  REQUIRE(test.chessIndexToBitboardIndex("G1") == 1);
+  REQUIRE(test.chessIndexToBitboardIndex("G2") == 9);
+  REQUIRE(test.chessIndexToBitboardIndex("G3") == 17);
+  REQUIRE(test.chessIndexToBitboardIndex("G4") == 25);
+  REQUIRE(test.chessIndexToBitboardIndex("G5") == 33);
+  REQUIRE(test.chessIndexToBitboardIndex("G6") == 41);
+  REQUIRE(test.chessIndexToBitboardIndex("G7") == 49);
+  REQUIRE(test.chessIndexToBitboardIndex("G8") == 57);
+}

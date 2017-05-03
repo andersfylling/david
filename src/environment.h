@@ -98,6 +98,9 @@ class Environment {
   // INTERPRETATION
   void applyMove();
 
+  // Converters
+  int chessIndexToBitboardIndex(std::string chessIndex);
+
 };
 }
 
