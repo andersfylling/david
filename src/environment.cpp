@@ -553,9 +553,12 @@ int Environment::chessIndexToArrayIndex(std::string chessIndex) {
  */
 bitboard_t Environment::chessIndexToBitboard(std::string chessIndex) {
   bitboard_t board = 0ULL;
-  //flipBit(board, );
+  flipBit(board, intToUint64(chessIndexToArrayIndex(chessIndex)));
 
   return board;
+}
+uint64_t Environment::intToUint64(int i) {
+  return (uint64_t)i;
 }
 
 }// end namespace

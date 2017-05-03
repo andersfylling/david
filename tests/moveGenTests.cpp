@@ -2,6 +2,7 @@
 // Created by Martin Klingenberg on 16.04.2017.
 //
 
+#include <iostream>
 #include "../lib/Catch/include/catch.hpp"
 #include "../src/bitboard.h"
 #include "../src/environment.h"
@@ -256,4 +257,9 @@ TEST_CASE("Change chess index into an bitboard array index; E6 => 43") {
   REQUIRE(test.chessIndexToArrayIndex("G6") == 41);
   REQUIRE(test.chessIndexToArrayIndex("G7") == 49);
   REQUIRE(test.chessIndexToArrayIndex("G8") == 57);
+}
+
+TEST_CASE("Create a bitboard using a string index as E6 for index") {
+  bitboard_t board = test.chessIndexToBitboard("e6");
+  REQUIRE(board == 8796093022208);
 }

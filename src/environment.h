@@ -101,6 +101,7 @@ class Environment {
   // Converters
   int chessIndexToArrayIndex(std::string chessIndex);
   bitboard_t chessIndexToBitboard(std::string chessIndex);
+  uint64_t intToUint64(int i);
 
 };
 }
