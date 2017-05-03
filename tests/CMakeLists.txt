@@ -1,18 +1,12 @@
 project (chess_ann_tests)
 include(CheckCXXCompilerFlag)
 
+# It's not great, I know.
+file(GLOB chess_ann_testsfiles "*.h" "*.cpp" "**/*.h" "**/*.cpp" "../src/*.h" "../src/*.cpp" "../src/**/*.h" "../src/**/*.cpp")
 
-ADD_EXECUTABLE(chess_ann_tests
-        ../src/TestExample.cpp
-        ../src/uci/Listener.cpp
-        ../src/uci/Parser.cpp
-        ../src/uci/UCIEvent.h
+# exclude src/main to avoid multiple main files.
+list(REMOVE_ITEM chess_ann_testsfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp")
 
-    tests-main.cpp
-        ../src/enviornment.cpp
-    moveGenTests.cpp
-        tests-UCIListener.cpp
-        tests-UCIHandler.cpp
+add_executable(chess_ann_tests  ${chess_ann_testsfiles})
 
-        ../src/uci/Definitions.h ../src/uci/Response.h)
 target_link_libraries(chess_ann_tests -lpthread)

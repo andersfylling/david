@@ -1,3 +1,8 @@
+#include "environment.h"
+#include "bitboard.h"
+
+#include <iostream>
+
 #include "uci/Listener.h"
 #include "uci/UCIEvent.h"
 #include "genericUCIResponses.h"

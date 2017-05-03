@@ -5,8 +5,6 @@
 #ifndef CHESS_ANN_NODE_H
 #define CHESS_ANN_NODE_H
 
-#include "bitboard.h"
-#include "BitboardsNode.h"
 /**
  * This is what the game tree is made up of.
  */
