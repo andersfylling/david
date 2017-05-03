@@ -12,8 +12,7 @@ int main (int argc, char * argv[])
 
   //::environment::Environment test(::bitboard::WHITE);
 
-  //::bitboard::bitboard_t * bits = test.getXAxisFromBoard(::bitboard::WQ);
-  //test.printBoard(*bits & ~test.generateBlock(*bits, ::bitboard::UP, ::bitboard::BP));
+
 
 
   //std::cout << test.MSB(BP) << std::endl;

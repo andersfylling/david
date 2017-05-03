@@ -3,6 +3,7 @@
 //
 
 #include "environment.h"
+#include "environment.h"
 #include "./bitboard.h"
 #include <string>
 #include <bitset>
@@ -16,20 +17,9 @@ namespace environment {
 using std::string;
 using std::cout;
 using ::bitboard::bitboard_t;
-using ::bitboard::WPc;
-using ::bitboard::WCc;
-using ::bitboard::WNc;
-using ::bitboard::WRc;
-using ::bitboard::WQc;
-using ::bitboard::WKc;
-using ::bitboard::BPc;
-using ::bitboard::BCc;
-using ::bitboard::BRc;
-using ::bitboard::BNc;
-using ::bitboard::BQc;
-using ::bitboard::BKc;
+using ::bitboard::gameState;
+using ::bitboard::DIRECTION;
 using ::bitboard::COLOR;
-using ::bitboard::makeBoardFromArray;
 
 void Environment::setGameState(gameState st) {
   state = st;
@@ -53,12 +43,12 @@ void Environment::printBitboards() {
 void Environment::printBoard(bitboard_t board) {
   string bits = std::bitset<64>(board).to_string();
   cout << "\n  ";
-  for (int i = 'A'; i < 'A'+8; i++)
+  for (int i = 'A'; i < 'A' + 8; i++)
     cout << "  " << (char) i << " ";
   cout << std::endl;
   cout << "  +---+---+---+---+---+---+---+---+\n";
   for (int i = 0; i < 8; i++) {
-    cout << i+1 << " | ";
+    cout << i + 1 << " | ";
     for (int j = 0; j < 8; j++) {
       cout << bits.at((i * 8) + j) << " | ";
     }
@@ -69,39 +59,36 @@ void Environment::printBoard(bitboard_t board) {
 }
 
 bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int lock) {
-  // Either limit is 0 or 1
-  // Must find every piece that is to be able to move.
+  // Enten limit 0 eller 1
+  // Må finne alle brikker som skal kunne flyttes
 
-  bitboard_t * boards;  // Stores the boards to be returned
-  boards = new bitboard_t[numberOfPieces(board)+1];
+  bitboard_t *boards;  // Stores the boards to be returned
+  boards = new bitboard_t[numberOfPieces(board) + 1];
   int boardsIndex = 0;
 
   bool xPlus, xMinus;
-  xPlus = false; xMinus = false;
+  xPlus = false;
+  xMinus = false;
   switch (lock) {
-    case 1:
-      xPlus = true;
+    case 1:xPlus = true;
       break;
 
-    case 2:
-      xMinus = true;
+    case 2:xMinus = true;
       break;
 
-    default:
-      ; // No action
+    default:; // No action
   }
 
-
-  if(limit) {  // Logic for moving a piece one step
+  if (limit) {  // Logic for moving a piece one step
     for (bitboard_t index = LSB(board); index; index = NSB(board), boardsIndex++) {
       bitboard_t temp = 0;
-      bitboard_t rowMod = (index /  8);
+      bitboard_t rowMod = (index / 8);
 
-      if((index+1) / 8 == rowMod)
-        temp |= 1LL << (index+1);
+      if ((index + 1) / 8 == rowMod)
+        temp |= 1LL << (index + 1);
 
-      if((index-1) / 8 == rowMod)
-        temp |= 1LL << (index-1);
+      if ((index - 1) / 8 == rowMod)
+        temp |= 1LL << (index - 1);
 
       boards[boardsIndex] = temp;
     }
@@ -110,7 +97,7 @@ bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int loc
       // Make map with all possible moves on x-axis.
       // Within boundaries of board width
       bitboard_t temp = 0;
-      bitboard_t i = index+1;
+      bitboard_t i = index + 1;
       bitboard_t rowMod = (i / 8);
 
       // Gets adds vector for right side of piece
@@ -119,7 +106,7 @@ bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int loc
         i++;
       }
 
-      i = index-1;
+      i = index - 1;
       while (!xMinus && i / 8 == rowMod) {
         flipBit(temp, i);
         i--;
@@ -144,47 +131,41 @@ int Environment::numberOfPieces(bitboard_t board) {
 
 bitboard_t *Environment::getDiagYAxis(bitboard_t board, DIRECTION dir, bool limit, int lock) {
   int dirValue;
-  bitboard_t * boards;  // Stores the boards to be returned
-  boards = new bitboard_t[numberOfPieces(board)+1];
+  bitboard_t *boards;  // Stores the boards to be returned
+  boards = new bitboard_t[numberOfPieces(board) + 1];
   int boardsIndex = 0;
 
   switch (dir) {
-    case DIRECTION::MAIN_DIAGONAL:
-      dirValue = 9;
+    case DIRECTION::MAIN_DIAGONAL:dirValue = 9;
       break;
-    case DIRECTION::ANTI_DIAGONAL:
-      dirValue = 7;
+    case DIRECTION::ANTI_DIAGONAL:dirValue = 7;
       break;
-    default:
-      dirValue = 8;
+    default:dirValue = 8;
       break;
   }
 
   bool xPlus, xMinus;
-  xPlus = false; xMinus = false;
+  xPlus = false;
+  xMinus = false;
   switch (lock) {
-    case 2:
-      xPlus = true;
+    case 2:xPlus = true;
       break;
 
-    case 1:
-      xMinus = true;
+    case 1:xMinus = true;
       break;
 
-    default:
-      ; // No action
+    default:; // No action
   }
-
 
   if (limit) {
     for (bitboard_t index = LSB(board); index; index = NSB(board), boardsIndex++) {
       bitboard_t temp = 0;
 
-      if((index-dirValue) >= 0 && !xMinus && ((index-dirValue)/8) == (index/8)-1) // Activate bit over
-        temp |= 1LL << index-(dirValue);
+      if ((index - dirValue) >= 0 && !xMinus && ((index - dirValue) / 8) == (index / 8) - 1) // Activate bit over
+        temp |= 1LL << index - (dirValue);
 
-      if((index+dirValue) <= 63 && !xPlus && ((index+dirValue)/8) == (index/8)+1) // Activate bit under
-        temp |= 1LL << (index+dirValue);
+      if ((index + dirValue) <= 63 && !xPlus && ((index + dirValue) / 8) == (index / 8) + 1) // Activate bit under
+        temp |= 1LL << (index + dirValue);
 
       boards[boardsIndex] = temp;
     }
@@ -193,24 +174,24 @@ bitboard_t *Environment::getDiagYAxis(bitboard_t board, DIRECTION dir, bool limi
       // Make map with all possible moves on x-axis.
       // Within boundaries of board width
       bitboard_t temp = 0;
-      bitboard_t row = index/8;
-      bitboard_t i = index+dirValue;
+      bitboard_t row = index / 8;
+      bitboard_t i = index + dirValue;
 
 
       // Gets adds vector for right side of piece
-      while (!xPlus && i/8 == (row+1) && i < 64) {
+      while (!xPlus && i / 8 == (row + 1) && i < 64) {
         flipBit(temp, i);
-        row = i/8;
+        row = i / 8;
         i += dirValue;
       }
 
       i = index - dirValue;
-      row = index/8;
+      row = index / 8;
 
-      while (!xMinus && i/8 == (row-1) && i < 64) {
+      while (!xMinus && i / 8 == (row - 1) && i < 64) {
         flipBit(temp, i);
         row = i / 8;
-        i-=dirValue;
+        i -= dirValue;
       }
       boards[boardsIndex] = temp;
     }
@@ -220,13 +201,14 @@ bitboard_t *Environment::getDiagYAxis(bitboard_t board, DIRECTION dir, bool limi
 
 bitboard_t *Environment::knightMovement(bitboard_t board) {
   int boardValue = 0;
-  bitboard_t * boards;
-  boards = new bitboard_t[numberOfPieces(board)+1];
+  bitboard_t *boards;
+  boards = new bitboard_t[numberOfPieces(board) + 1];
   for (bitboard_t index = LSB(board); index; index = NSB(board), ++boardValue) {
     bitboard_t temp = 0;
-    bitboard_t row = index/8;
+    bitboard_t row = index / 8;
 
     // Two steps up, one left
+
     if (row-2 == (index-15)/8 && index - 15 < 64) {
       flipBit(temp, index-15);
     }
@@ -273,7 +255,7 @@ bitboard_t *Environment::knightMovement(bitboard_t board) {
 // Needs compiler support for Microsoft c++ compiler
 // Works with gcc based compilers
 bitboard_t Environment::LSB(bitboard_t board) {
-  return (board != 0LL) ? __builtin_ffsll(board)-1 : 0LL;
+  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
 }
 
 // Needs compiler support for Microsoft c++ compiler
@@ -293,11 +275,13 @@ void Environment::flipBit(bitboard_t &board, bitboard_t index) {
 }
 
 bitboard_t Environment::whitePieces() {
-  return (state.WhitePawn | state.WhiteRook | state.WhiteKnight | state.WhiteKing | state.WhiteBishop | state.WhiteQueen);
+  return (state.WhitePawn | state.WhiteRook | state.WhiteKnight | state.WhiteKing | state.WhiteBishop
+      | state.WhiteQueen);
 }
 
 bitboard_t Environment::blackPieces() {
-  return (state.BlackPawn | state.BlackRook | state.BlackKing | state.BlackKnight | state.BlackBishop | state.BlackQueen);
+  return (state.BlackPawn | state.BlackRook | state.BlackKing | state.BlackKnight | state.BlackBishop
+      | state.BlackQueen);
 }
 
 Environment::Environment(COLOR color) {
@@ -306,19 +290,19 @@ Environment::Environment(COLOR color) {
   moves = 0;
   hostColor = color;
 
-  state.WhitePawn = makeBoardFromArray(WPc);
-  state.WhiteRook = makeBoardFromArray(WCc);
-  state.WhiteKnight = makeBoardFromArray(WNc);
-  state.WhiteBishop = makeBoardFromArray(WRc);
-  state.WhiteQueen = makeBoardFromArray(WQc);
-  state.WhiteKing = makeBoardFromArray(WKc);
+  state.BlackBishop = 2594073385365405696ULL;
+  state.BlackKing = 1152921504606846976ULL;
+  state.BlackKnight = 4755801206503243776ULL;
+  state.BlackPawn = 71776119061217280ULL;
+  state.BlackQueen = 576460752303423488ULL;
+  state.BlackRook = 9295429630892703744ULL;
 
-  state.BlackPawn = makeBoardFromArray(BPc);
-  state.BlackRook = makeBoardFromArray(BCc);
-  state.BlackBishop = makeBoardFromArray(BRc);
-  state.BlackKnight = makeBoardFromArray(BNc);
-  state.BlackQueen = makeBoardFromArray(BQc);
-  state.BlackKing = makeBoardFromArray(BKc);
+  state.WhiteBishop = 36;
+  state.WhiteKnight = 66;
+  state.WhitePawn = 65280;
+  state.WhiteQueen = 8;
+  state.WhiteKing = 16;
+  state.WhiteRook = 129;
 
   // IF COLOR WHITE
   // INITIATE AUTO MOVES
@@ -331,14 +315,18 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
   DIRECTION dir = (color == COLOR::WHITE) ? DIRECTION::UP : DIRECTION::DOWN;
 
   // Generates attack-vectors for pawns
-  bitboard_t * bits = (color == COLOR::WHITE) ? getDiagYAxis(state.WhitePawn, DIRECTION::UP, true, 1) : getDiagYAxis(state.BlackPawn, DIRECTION::UP, true, 2);
+  bitboard_t *bits =
+      (color == COLOR::WHITE) ? getDiagYAxis(state.WhitePawn, DIRECTION::UP, true, 1) : getDiagYAxis(state.BlackPawn,
+                                                                                                     DIRECTION::UP,
+                                                                                                     true,
+                                                                                                     2);
 
   // Adds possibility for double moves
   for (bitboard_t i = 0; i < numberOfPieces((color == COLOR::WHITE) ? state.WhitePawn : state.BlackPawn); i++) {
-    if(bits[i] < 65536LL && bits[i] > 128LL) {
+    if (bits[i] < 65536LL && bits[i] > 128LL) {
       flipBit(bits[i], LSB(bits[i] + 8));
-    } else if (bits[i] < 72057594037927936LL &&  bits[i] > 1099511627776LL) {
-      flipBit(bits[i], LSB(bits[i]-8));
+    } else if (bits[i] < 72057594037927936LL && bits[i] > 1099511627776LL) {
+      flipBit(bits[i], LSB(bits[i] - 8));
     }
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
@@ -348,13 +336,13 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     if (COLOR::WHITE == color) {
       bitboard_t index = 0LL;
       index |= (1LL << LSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&opponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&opponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1)) & opponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1)) & opponent;
     } else {
       bitboard_t index = 0LL;
       index |= (1LL << MSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1))&opponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1))&opponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1)) & opponent;
+      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1)) & opponent;
     }
 
   }
@@ -362,13 +350,13 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
   // Generates pseudo legal moves Needs a check for king in attack vector
 }
 
-bitboard_t Environment::generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t opponent) {
+bitboard_t Environment::generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t oponent) {
   bitboard_t blockade = 0LL;
-  bitboard_t block = vector & opponent;
+  bitboard_t block = vector & oponent;
   switch (dir) {
     case DIRECTION::DOWN : {
-      if(bitboard_t index = LSB(block)) {
-        for (bitboard_t i = 0; i < index-1; i++) {
+      if (bitboard_t index = LSB(block)) {
+        for (bitboard_t i = 0; i < index - 1; i++) {
           blockade |= (1LL << i);
         }
       }
@@ -376,24 +364,23 @@ bitboard_t Environment::generateBlock(bitboard_t vector, DIRECTION dir, bitboard
     }
     case DIRECTION::UP : {
       if (bitboard_t index = LSB(block)) {
-        for (bitboard_t i = index+1; i < 64; i++) {
+        for (bitboard_t i = index + 1; i < 64; i++) {
           blockade |= (1LL << i);
         }
       }
       break;
     }
-    default:
-      blockade = 1LL;
+    default:blockade = 1LL;
   }
   return blockade;
 }
 
 bitboard_t *Environment::knightMove(COLOR color) {
   bitboard_t own = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
-  bitboard_t * bits = knightMovement((COLOR::WHITE == color) ? state.WhiteKnight : state.BlackKnight);
+  bitboard_t *bits = knightMovement((COLOR::WHITE == color) ? state.WhiteKnight : state.BlackKnight);
 
   // Cannot move on top of own pieces
-  for (int i = 0;  i < numberOfPieces((color == COLOR::WHITE) ? state.WhiteKnight : state.BlackKnight); i++) {
+  for (int i = 0; i < numberOfPieces((color == COLOR::WHITE) ? state.WhiteKnight : state.BlackKnight); i++) {
     bits[i] &= ~own;
   }
 
@@ -446,7 +433,6 @@ bitboard_t Environment::QueenMove(COLOR color) {
   movement |= reduceVector(*getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 2), opponent, own, DIRECTION::DOWN);
   movement |= reduceVector(*getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 1), opponent, own, DIRECTION::UP);
 
-
   return movement;
 
 }
@@ -457,9 +443,66 @@ bitboard_t Environment::reduceVector(bitboard_t vector, bitboard_t opponent, bit
   opB = generateBlock(vector, dir, opponent);
   result = (vector & ~(own | owB | opB));
 
-  //result = vector & ~(generateBlocK(vector, dir, own) | own | generateBlocK(vector, dir, opponent));
+  //result = vector & ~(generateBlock(vector, dir, own) | own | generateBlock(vector, dir, opponent));
 
   return result;
+}
+
+bitboard_t * Environment::BishopMove(COLOR color) {
+  bitboard_t * bits;
+
+  bitboard_t own, opponent, board;
+
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteBishop;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackBishop;
+    opponent = whitePieces();
+  }
+
+  bits = new bitboard_t[numberOfPieces(board)];
+
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    bits[i] = 0;
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 1)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 1)[i], opponent, own, DIRECTION::UP);
+  }
+
+  return bits;
+}
+
+bitboard_t * Environment::RookMove(COLOR color) {
+  bitboard_t * bits;
+
+  bitboard_t own, opponent, board;
+
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteRook;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackRook;
+    opponent = whitePieces();
+  }
+
+  bits = new bitboard_t[numberOfPieces(board)];
+
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    bits[i] = 0;
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 1)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 1)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 2)[i], opponent, own, DIRECTION::UP);
+  }
+
+  return bits;
+
 }
 
 /**

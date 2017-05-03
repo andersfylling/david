@@ -91,11 +91,6 @@ struct gameState {
   bitboard_t BlackKing;
 };
 
-struct stateNode {
-  int value;
-  gameState *state;
-  // Some children pointer
-};
 }
 
 #endif  //CHESS_ANN_BITBOARD_H
