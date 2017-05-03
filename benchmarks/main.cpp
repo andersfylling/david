@@ -1,3 +1,3 @@
-#include "../lib/benchmark/include/benchmark/benchmark.h"
+#include "include.h"
 
 BENCHMARK_MAIN();
