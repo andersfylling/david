@@ -2,7 +2,7 @@
 // Created by lolos on 05.04.2017.
 //
 
-#include "environment.h"
+#include "enviornment.h"
 #include "./bitboard.h"
 #include <string>
 #include <bitset>
@@ -108,8 +108,8 @@ bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int loc
 
 int Environment::numberOfPieces(bitboard_t board) {
   // Needs linux alternative.
-  // Fastest way of getting number of active bits.
-  // Uses special CPU functionality
+  // Fastest way of getting nuber of active bits.
+  // Uses special CPU fuctionality
 
 #ifdef __GNUG__
   return __builtin_popcountll(board);
@@ -271,7 +271,7 @@ bitboard_t Environment::blackPieces() {
       | state.BlackQueen);
 }
 
-Environment::Environment(COLOR color) {
+Enviornment::Enviornment(COLOR color) {
   whiteCastling = true;
   blackCastling = true;
   moves = 0;
@@ -317,8 +317,8 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     }
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] &= ~(generateBlock(bits[i], dir, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlock(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
+    bits[i] &= ~(generateBlocK(bits[i], dir, own) | own);  // Removes collision with own pieces
+    bits[i] &= ~(generateBlocK(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
 
     if (COLOR::WHITE == color) {
       bitboard_t index = 0LL;
@@ -337,16 +337,26 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
   // Generates pseudo legal moves Needs a check for king in attack vector
 }
 
-bitboard_t Environment::generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t opponent) {
-  bitboard_t blockade = 0LL;
-  bitboard_t block = vector & opponent;
-  switch (dir) {
-    case DIRECTION::UP : {
-      bitboard_t index = MSB(block) + 1;
-      for (bitboard_t i = index; i < 64; i++) {
-        blockade |= (1LL << i);
-      }
-      break;
+bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard oponent) {
+    bitboard blockade = 0LL;
+    bitboard block = vector & oponent;
+    switch (dir) {
+        case DIRECTION::UP : {
+            bitboard index = MSB(block)+1;
+            for(bitboard i = index; i < 64; i++) {
+                blockade |= (1LL << i);
+            }
+            break;
+        }
+        case DIRECTION::DOWN : {
+            bitboard index = LSB(block)-1;
+            for(bitboard i = index; i < 64; i++) {
+                blockade |= (1LL << i);
+            }
+            break;
+        }
+        default:
+            blockade = 1LL;
     }
     case DIRECTION::DOWN : {
       bitboard_t index = LSB(block) - 1;
