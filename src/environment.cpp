@@ -226,42 +226,42 @@ bitboard_t *Environment::knightMovement(bitboard_t board) {
     bitboard_t row = index/8;
 
     // Two steps up, one left
-    if ((index/8)-2 == (index-15)/8 && index - 15 < 64) {
+    if (row-2 == (index-15)/8 && index - 15 < 64) {
       flipBit(temp, index-15);
     }
 
     // Two steps up, one right
-    if ((index/8)-2 == (index-17)/8 && index-17 < 64) {
+    else if (row-2 == (index-17)/8 && index-17 < 64) {
       flipBit(temp, index-17);
     }
 
     // One step up, two left
-    if ((index/8)-1 == (index-10)/8 && index-10 < 64) {
+    else if (row-1 == (index-10)/8 && index-10 < 64) {
       flipBit(temp, index-10);
     }
 
     // One step up, two right
-    if ((index/8)-1 == (index-6)/8 && index-6 < 64) {
+    else if (row-1 == (index-6)/8 && index-6 < 64) {
       flipBit(temp, index-6);
     }
 
     // Two steps down, one left
-    if ((index/8)+2 == (index+15)/8 && index+15 < 64) {
+    else if (row+2 == (index+15)/8 && index+15 < 64) {
       flipBit(temp, index+15);
     }
 
     // Two steps down, one right
-    if ((index/8)+2 == (index+17)/8 && index+17 < 64) {
+    else if (row+2 == (index+17)/8 && index+17 < 64) {
       flipBit(temp, index+17);
     }
 
     // One step down, two left
-    if ((index/8)+1 == (index+6)/8 && index+6 < 64) {
+    else if (row+1 == (index+6)/8 && index+6 < 64) {
       flipBit(temp, index+6);
     }
 
     // One step down, two right
-    if ((index/8)+1 == (index+10)/8 && index+10 < 64) {
+    else if (row+1 == (index+10)/8 && index+10 < 64) {
       flipBit(temp, index+10);
     }
     boards[boardValue] = temp;
