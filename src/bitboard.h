@@ -1,6 +1,3 @@
-//
-// Created by lolos on 05.04.2017.
-//
 
 #ifndef CHESS_ANN_BITBOARD_H
 #define CHESS_ANN_BITBOARD_H
@@ -68,21 +65,21 @@ inline namespace pieceTypes {
 // Needed for move generation
 enum pieceType { PAWN, KNIGHT, NORMAL };
 
-// White
-bitboard_t WP;
-bitboard_t WC;
-bitboard_t WN;
-bitboard_t WR;
-bitboard_t WQ;
-bitboard_t WK;
-
-// Black
-bitboard_t BP;
-bitboard_t BC;
-bitboard_t BN;
-bitboard_t BR;
-bitboard_t BQ;
-bitboard_t BK;
+//// White
+//extern bitboard_t WP;
+//extern bitboard_t WC;
+//extern bitboard_t WN;
+//extern bitboard_t WR;
+//extern bitboard_t WQ;
+//extern bitboard_t WK;
+//
+//// Black
+//extern bitboard_t BP;
+//extern bitboard_t BC;
+//extern bitboard_t BN;
+//extern bitboard_t BR;
+//extern bitboard_t BQ;
+//extern bitboard_t BK;
 }
 
 // Each game state is represented by a struct of

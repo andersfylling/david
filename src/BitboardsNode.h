@@ -5,9 +5,7 @@
 #ifndef CHESS_ANN_BITBOARDSNODE_H
 #define CHESS_ANN_BITBOARDSNODE_H
 
-#ifndef CHESS_ANN_BITBOARD_H
 #include "bitboard.h"
-#endif
 
 class BitboardsNode {
  private:
@@ -25,6 +23,7 @@ class BitboardsNode {
   ::bitboard::bitboard_t* blackRooks;
   ::bitboard::bitboard_t* blackBishops;
   ::bitboard::bitboard_t* blackKnights;
+  int test;
 
  public:
   BitboardsNode();
