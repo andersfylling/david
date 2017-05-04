@@ -27,9 +27,5 @@ pipelines:
           - cmake --version 
           #- git submodule init
           - ./update.sh
-          #- mkdir build
-          - cd cmake
-          # Call the CMake.
-          - cmake ..
-          # Build the porject.
-          - make
+          # run cmake script
+          - ./cmake.sh
