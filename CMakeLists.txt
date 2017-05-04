@@ -1,6 +1,6 @@
 # settings
 cmake_minimum_required(VERSION 3.6)
-project(chess_ann VERISON 0.3 LANGUAGES CXX)
+project(chess_ann LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 
 if(COMPILER_SUPPORTS_CXX14)
