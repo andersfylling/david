@@ -32,6 +32,6 @@ bin/*
 
 
 # DO NOT SKIP THESE
-#Would skip repository lib/Catch
 !README.md
 !*/README.md
+!Paths.cmake
