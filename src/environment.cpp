@@ -446,4 +446,61 @@ bitboard_t Environment::reduceVector(bitboard_t vector, bitboard_t opponent, bit
   return result;
 }
 
+bitboard_t * Environment::BishopMove(COLOR color) {
+  bitboard_t * bits;
+
+  bitboard_t own, opponent, board;
+
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteBishop;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackBishop;
+    opponent = whitePieces();
+  }
+
+  bits = new bitboard_t[numberOfPieces(board)];
+
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    bits[i] = 0;
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 1)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 1)[i], opponent, own, DIRECTION::UP);
+  }
+
+  return bits;
+}
+
+bitboard_t * Environment::RookMove(COLOR color) {
+  bitboard_t * bits;
+
+  bitboard_t own, opponent, board;
+
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteRook;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackRook;
+    opponent = whitePieces();
+  }
+
+  bits = new bitboard_t[numberOfPieces(board)];
+
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    bits[i] = 0;
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 1)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 1)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 2)[i], opponent, own, DIRECTION::UP);
+  }
+
+  return bits;
+
+}
+
 } // END OF Environment
