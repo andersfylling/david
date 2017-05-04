@@ -5,7 +5,7 @@
 #ifndef CHESS_ANN_EVALUATE_H
 #define CHESS_ANN_EVALUATE_H
 
-#include "../include/variables.h"
+#include "variables.h"
 #include "../src/environment.h"
 
 
