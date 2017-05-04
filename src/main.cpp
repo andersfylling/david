@@ -10,10 +10,10 @@ int main (int argc, char * argv[])
 {
   {
 
-  Enviornment test(WHITE);
+  //::environment::Environment test(::bitboard::WHITE);
 
-  bitboard * bits = test.getXAxisFromBoard(WQ);
-  test.printBoard(*bits & ~test.generateBlocK(*bits, UP, BP));
+  //::bitboard::bitboard_t * bits = test.getXAxisFromBoard(::bitboard::WQ);
+  //test.printBoard(*bits & ~test.generateBlock(*bits, ::bitboard::UP, ::bitboard::BP));
 
 
   //std::cout << test.MSB(BP) << std::endl;

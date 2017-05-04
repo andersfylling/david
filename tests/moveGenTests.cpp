@@ -6,30 +6,43 @@
 #include "../src/bitboard.h"
 #include "../src/environment.h"
 
-#include <iostream>
+
+::environment::gameState testStruct; // White Queen in the middle. Rest is normal
 
 
+using ::bitboard::bitboard_t;
+using ::bitboard::WPc;
+using ::bitboard::WCc;
+using ::bitboard::WNc;
+using ::bitboard::WRc;
+using ::bitboard::WQc;
+using ::bitboard::WKc;
+using ::bitboard::BPc;
+using ::bitboard::BCc;
+using ::bitboard::BRc;
+using ::bitboard::BNc;
+using ::bitboard::BQc;
+using ::bitboard::BKc;
+using ::bitboard::COLOR;
+using ::bitboard::makeBoardFromArray;
+using ::bitboard::DIRECTION;
 
-gameState testStruct; // White Queen in the middle. Rest is normal
+bitboard_t WC = makeBoardFromArray(WCc);
+bitboard_t WN = makeBoardFromArray(WNc);
+bitboard_t WR = makeBoardFromArray(WRc);
+bitboard_t WK = makeBoardFromArray(WKc);
+
+bitboard_t BC = makeBoardFromArray(BCc);
+bitboard_t BR = makeBoardFromArray(BRc);
+bitboard_t BN = makeBoardFromArray(BNc);
+bitboard_t BQ = makeBoardFromArray(BQc);
+bitboard_t BK = makeBoardFromArray(BKc);
+
+::environment::Environment test(COLOR::WHITE);
+bitboard_t *bits;
 
 
-
-bitboard WP = makeBoardFromArray(WPc);
-bitboard WC = makeBoardFromArray(WCc);
-bitboard WN = makeBoardFromArray(WNc);
-bitboard WR = makeBoardFromArray(WRc);
-bitboard WQ = makeBoardFromArray(WQc);
-bitboard WK = makeBoardFromArray(WKc);
-
-bitboard BP = makeBoardFromArray(BPc);
-bitboard BC = makeBoardFromArray(BCc);
-bitboard BR = makeBoardFromArray(BRc);
-bitboard BN = makeBoardFromArray(BNc);
-bitboard BQ = makeBoardFromArray(BQc);
-bitboard BK = makeBoardFromArray(BKc);
-
-Enviornment test(COLOR::WHITE);
-bitboard * bits;
+bitboard_t * bits;
 TEST_CASE("White pawn movement") {
   bits = test.getDiagYAxis(WP, DIRECTION::UP, true, 1);
   REQUIRE(bits[0] == 65536LL);
@@ -45,7 +58,7 @@ TEST_CASE("White pawn movement") {
 }
 
 TEST_CASE("Black pawn movement") {
-  bitboard cor = 1099511627776;
+  bitboard_t cor = 1099511627776;
   bits = test.getDiagYAxis(BP, DIRECTION::UP, true, 2);
   REQUIRE(bits[0] == cor);
   delete [] bits;
@@ -62,7 +75,7 @@ TEST_CASE("Black pawn movement") {
 
 
 TEST_CASE("White knight movement") {
-  bitboard cor = 1099511627776;
+  bitboard_t cor = 1099511627776;
   bits = test.getDiagYAxis(BP, DIRECTION::UP, true, 2);
   REQUIRE(bits[0] == cor);
   delete [] bits;
@@ -78,7 +91,7 @@ TEST_CASE("White knight movement") {
 }
 
 TEST_CASE("X-AXIS movement") {
-  bitboard  cor = 20;
+  bitboard_t  cor = 20;
 
   bits = test.getXAxisFromBoard(WQ, 1);
   REQUIRE(bits[0] == cor);
@@ -96,7 +109,7 @@ TEST_CASE("X-AXIS movement") {
 }
 
 TEST_CASE("YDiagGeneration") {
-  bitboard cor = 578721382704613376;
+  bitboard_t cor = 578721382704613376;
   bits = test.getDiagYAxis(WQ, UP);
   REQUIRE(bits[0] == cor);
 
@@ -155,67 +168,15 @@ TEST_CASE("Queen move BLOCK") {
   //test.printBitboards();
   //test.printBoard(test.whitePieces() | test.blackPieces());
 
-  bitboard cor = 11853796676861952;
+  bitboard_t cor = 11853796676861952;
   //test.printBoard(test.QueenMove(WHITE));
   REQUIRE(cor == test.QueenMove(WHITE));
 }
 
 TEST_CASE ("REDUCE VECTOR") {
-  bitboard board = test.reduceVector(*test.getDiagYAxis(34359738368LL, UP, false, 1), test.blackPieces(), test.whitePieces(), UP);
+  bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368LL, UP, false, 1), test.blackPieces(), test.whitePieces(), UP);
   REQUIRE(board == 2260595906707456);
 
   board = test.reduceVector(*test.getDiagYAxis(34359738368LL, UP, false, 2), test.blackPieces(), test.whitePieces(), DOWN);
   REQUIRE(board == 134742016);
-}
-
-TEST_CASE("Bishop MOVEMENT") {
-  testStruct.BlackBishop = 2594073385365405696LL;
-  testStruct.BlackKing = 1152921504606846976LL;
-  testStruct.BlackKnight = 4755801206503243776LL;
-  testStruct.BlackPawn = 71776119061217280LL;
-  testStruct.BlackQueen = 576460752303423488LL;
-  testStruct.BlackRook = 9295429630892703744LL;
-
-  testStruct.WhiteBishop = 524292;
-  //testStruct.WhiteBishop = 36;
-  //testStruct.WhiteQueen = 34359738368;
-  testStruct.WhiteKnight = 66;
-  testStruct.WhitePawn = 65280;
-  testStruct.WhiteQueen = 8;
-  testStruct.WhiteKing = 16;
-  testStruct.WhiteRook = 129;
-
-  test.setGameState(testStruct);
-
-  //test.printBoard(testStruct.WhiteBishop);
-  bitboard t1 = test.BishopMove(WHITE)[0];
-  bitboard t2 = test.BishopMove(WHITE)[1];
-
-  REQUIRE(t1 == 0);
-  REQUIRE(t2 == 36100411639201792);
-}
-
-
-TEST_CASE ("Rook move") {
-  testStruct.BlackBishop = 2594073385365405696LL;
-  testStruct.BlackKing = 1152921504606846976LL;
-  testStruct.BlackKnight = 4755801206503243776LL;
-  testStruct.BlackPawn = 71776119061217280LL;
-  testStruct.BlackQueen = 576460752303423488LL;
-  testStruct.BlackRook = 9295429630892703744LL;
-
-
-  testStruct.WhiteBishop = 36;
-  //testStruct.WhiteQueen = 34359738368;
-  testStruct.WhiteKnight = 66;
-  testStruct.WhitePawn = 65280;
-  testStruct.WhiteQueen = 8;
-  testStruct.WhiteKing = 16;
-  testStruct.WhiteRook = 34359738369;
-  //testStruct.WhiteRook = 129;
-
-  test.printBoard(testStruct.WhiteRook);
-  bitboard b1 = test.RookMove(WHITE)[0];
-  bitboard b2 = test.RookMove(WHITE)[1];
-  test.printBoard(b1);
 }

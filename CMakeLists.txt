@@ -9,6 +9,9 @@ else()
     return()
 endif()
 
+# Store this as the root directory
+set(ROOT_PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 # Third party libraries in lib
 add_subdirectory(lib/Catch) # Catch, for unit testing.
 add_subdirectory(lib/fann)  # Fann, for faster neural network development.
