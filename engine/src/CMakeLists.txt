@@ -1,6 +1,5 @@
 # Settings
 project (chess_ann_src)
-include(CheckCXXCompilerFlag)
 
 # Files to be compiled.
 file(GLOB chess_ann_srcfiles "*.h" "*.cpp" "**/*.h" "**/*.cpp")
