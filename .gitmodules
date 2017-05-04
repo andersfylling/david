@@ -1,12 +1,12 @@
-[submodule "lib/Catch"]
-	path = lib/Catch
+[submodule "external/Catch"]
+	path = external/Catch
 	url = git://github.com/philsquared/Catch.git
-[submodule "lib/fann"]
-	path = lib/fann
+[submodule "external/fann"]
+	path = external/fann
 	url = git://github.com/sciencefyll/fann
-[submodule "lib/Stockfish"]
-	path = lib/Stockfish
+[submodule "external/Stockfish"]
+	path = external/Stockfish
 	url = https://github.com/sciencefyll/Stockfish
-[submodule "lib/benchmark"]
-	path = lib/benchmark
+[submodule "external/benchmark"]
+	path = external/benchmark
 	url = https://github.com/google/benchmark
