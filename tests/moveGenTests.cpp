@@ -6,6 +6,8 @@
 #include "../src/bitboard.h"
 #include "../src/environment.h"
 
+#include <iostream>
+
 
 
 gameState testStruct; // White Queen in the middle. Rest is normal
@@ -164,4 +166,56 @@ TEST_CASE ("REDUCE VECTOR") {
 
   board = test.reduceVector(*test.getDiagYAxis(34359738368LL, UP, false, 2), test.blackPieces(), test.whitePieces(), DOWN);
   REQUIRE(board == 134742016);
+}
+
+TEST_CASE("Bishop MOVEMENT") {
+  testStruct.BlackBishop = 2594073385365405696LL;
+  testStruct.BlackKing = 1152921504606846976LL;
+  testStruct.BlackKnight = 4755801206503243776LL;
+  testStruct.BlackPawn = 71776119061217280LL;
+  testStruct.BlackQueen = 576460752303423488LL;
+  testStruct.BlackRook = 9295429630892703744LL;
+
+  testStruct.WhiteBishop = 524292;
+  //testStruct.WhiteBishop = 36;
+  //testStruct.WhiteQueen = 34359738368;
+  testStruct.WhiteKnight = 66;
+  testStruct.WhitePawn = 65280;
+  testStruct.WhiteQueen = 8;
+  testStruct.WhiteKing = 16;
+  testStruct.WhiteRook = 129;
+
+  test.setGameState(testStruct);
+
+  //test.printBoard(testStruct.WhiteBishop);
+  bitboard t1 = test.BishopMove(WHITE)[0];
+  bitboard t2 = test.BishopMove(WHITE)[1];
+
+  REQUIRE(t1 == 0);
+  REQUIRE(t2 == 36100411639201792);
+}
+
+
+TEST_CASE ("Rook move") {
+  testStruct.BlackBishop = 2594073385365405696LL;
+  testStruct.BlackKing = 1152921504606846976LL;
+  testStruct.BlackKnight = 4755801206503243776LL;
+  testStruct.BlackPawn = 71776119061217280LL;
+  testStruct.BlackQueen = 576460752303423488LL;
+  testStruct.BlackRook = 9295429630892703744LL;
+
+
+  testStruct.WhiteBishop = 36;
+  //testStruct.WhiteQueen = 34359738368;
+  testStruct.WhiteKnight = 66;
+  testStruct.WhitePawn = 65280;
+  testStruct.WhiteQueen = 8;
+  testStruct.WhiteKing = 16;
+  testStruct.WhiteRook = 34359738369;
+  //testStruct.WhiteRook = 129;
+
+  test.printBoard(testStruct.WhiteRook);
+  bitboard b1 = test.RookMove(WHITE)[0];
+  bitboard b2 = test.RookMove(WHITE)[1];
+  test.printBoard(b1);
 }

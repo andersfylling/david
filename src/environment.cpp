@@ -425,6 +425,7 @@ bitboard Enviornment::QueenMove(COLOR color) {
   movement |= reduceVector(*getXAxisFromBoard(board, false, 1), opponent, own, UP);
   movement |= reduceVector(*getDiagYAxis(board, DIRECTION::UP, false, 1), opponent, own, UP);
   movement |= reduceVector(*getDiagYAxis(board, DIRECTION::UP, false, 2), opponent, own, DOWN);
+
   movement |= reduceVector(*getDiagYAxis(board, MAIN_DIAGONAL, false, 2), opponent, own, DOWN);
   movement |= reduceVector(*getDiagYAxis(board, MAIN_DIAGONAL, false, 1), opponent, own, UP);
   movement |= reduceVector(*getDiagYAxis(board, ANTI_DIAGONAL, false, 2), opponent, own, DOWN);
@@ -444,4 +445,61 @@ bitboard Enviornment::reduceVector(bitboard vector, bitboard opponent, bitboard 
   //result = vector & ~(generateBlocK(vector, dir, own) | own | generateBlocK(vector, dir, opponent));
 
   return result;
+}
+
+bitboard * Enviornment::BishopMove(COLOR color) {
+  bitboard * bits;
+
+  bitboard own, opponent, board;
+
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteBishop;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackBishop;
+    opponent = whitePieces();
+  }
+
+  bits = new bitboard[numberOfPieces(board)];
+
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    bits[i] = 0;
+    bits[i] |= reduceVector(getDiagYAxis(board, MAIN_DIAGONAL, false, 2)[i], opponent, own, DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, MAIN_DIAGONAL, false, 1)[i], opponent, own, UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, ANTI_DIAGONAL, false, 2)[i], opponent, own, DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, ANTI_DIAGONAL, false, 1)[i], opponent, own, UP);
+  }
+
+  return bits;
+}
+
+bitboard * Enviornment::RookMove(COLOR color) {
+  bitboard * bits;
+
+  bitboard own, opponent, board;
+
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteRook;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackRook;
+    opponent = whitePieces();
+  }
+
+  bits = new bitboard[numberOfPieces(board)];
+
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    bits[i] = 0;
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 2)[i], opponent, own, DOWN);
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 1)[i], opponent, own, UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 1)[i], opponent, own, DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 2)[i], opponent, own, UP);
+  }
+
+  return bits;
+
 }
