@@ -1,4 +1,4 @@
-#include "../lib/Catch/include/catch.hpp"
+#include "catch.h"
 #include "../src/uci/Listener.h"
 #include "../src/uci/UCIEvent.h"
 
