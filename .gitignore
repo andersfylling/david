@@ -2,19 +2,7 @@
 
 # Ignore CMakeDebug files
 cmake-build-debug
-CMakeFiles
-CMakeCache.txt
-Makefile
-cmake_*
-*.cbp
-*.cmake
-*/cmake-build-debug
-*/CMakeFiles
-*/CMakeCache.txt
-*/Makefile
-*/cmake_*
-*/*.cbp
-*/*.cmake
+cmake/build
 
 # Ignore intellij "CLion" project configurations
 .idea
@@ -32,6 +20,6 @@ bin/*
 
 
 # DO NOT SKIP THESE
-#Would skip repository lib/Catch
 !README.md
 !*/README.md
+!Paths.cmake
