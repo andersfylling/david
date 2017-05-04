@@ -1,6 +1,6 @@
-#include "../../lib/fann/src/include/fann.h"
-#include "../../lib/fann/src/include/fann_cpp.h"
-#include "../utils.h"
+#include "fann/fann.h"
+#include "fann/fann_cpp.h"
+#include "chess_ann/utils.h"
 
 #include <ios>
 #include <iostream>
