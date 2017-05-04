@@ -2,7 +2,7 @@
 // Created by lolos on 05.04.2017.
 //
 
-#include "enviornment.h"
+#include "environment.h"
 #include "./bitboard.h"
 #include <string>
 #include <bitset>
@@ -13,20 +13,24 @@
 using std::string;
 using std::cout;
 
-// These are only made for testing.
-bitboard WP = makeBoardFromArray(WPc);
-bitboard WC = makeBoardFromArray(WCc);
-bitboard WN = makeBoardFromArray(WNc);
-bitboard WR = makeBoardFromArray(WRc);
-bitboard WQ = makeBoardFromArray(WQc);
-bitboard WK = makeBoardFromArray(WKc);
+void Enviornment::setGameState(gameState st) {
+  state = st;
+}
 
-bitboard BP = makeBoardFromArray(BPc);
-bitboard BC = makeBoardFromArray(BCc);
-bitboard BR = makeBoardFromArray(BRc);
-bitboard BN = makeBoardFromArray(BNc);
-bitboard BQ = makeBoardFromArray(BQc);
-bitboard BK = makeBoardFromArray(BKc);
+void Enviornment::printBitboards() {
+  std::cout << state.BlackBishop << "\n";
+  std::cout << state.BlackKing << "\n";
+  std::cout << state.BlackKnight << "\n";
+  std::cout << state.BlackPawn << "\n";
+  std::cout << state.BlackQueen << "\n";
+  std::cout << state.BlackRook << "\n";
+  std::cout << state.WhiteBishop << "\n";
+  std::cout << state.WhiteQueen << "\n";
+  std::cout << state.WhiteKnight << "\n";
+  std::cout << state.WhitePawn << "\n";
+  std::cout << state.WhiteRook << "\n";
+  std::cout << state.WhiteKing << "\n";
+}
 
 void Enviornment::printBoard(bitboard board) {
   string bits = std::bitset<64>(board).to_string();
@@ -73,13 +77,13 @@ bitboard * Enviornment::getXAxisFromBoard(bitboard board, bool limit, int lock) 
   if(limit) {  // Logic for moving a piece one step
     for (bitboard index = LSB(board); index; index = NSB(board), boardsIndex++) {
       bitboard temp = 0;
-      bitboard rowMod = (index) /  8;
+      bitboard rowMod = (index /  8);
 
-      if(index / 8 == rowMod)
-        temp |= 1LL << index;
+      if((index+1) / 8 == rowMod)
+        temp |= 1LL << (index+1);
 
       if((index-1) / 8 == rowMod)
-        temp |= 1LL << (index);
+        temp |= 1LL << (index-1);
 
       boards[boardsIndex] = temp;
     }
@@ -88,7 +92,7 @@ bitboard * Enviornment::getXAxisFromBoard(bitboard board, bool limit, int lock) 
         // Make map with all possible moves on x-axis.
         // Within boundaries of board width
         bitboard temp = 0;
-        bitboard i = index;
+        bitboard i = index+1;
         bitboard rowMod = (i / 8);
 
         // Gets adds vector for right side of piece
@@ -97,7 +101,7 @@ bitboard * Enviornment::getXAxisFromBoard(bitboard board, bool limit, int lock) 
           i++;
         }
 
-        i = index ;
+        i = index-1;
         while (!xMinus && i / 8 == rowMod) {
           flipBit(temp, i);
           i--;
@@ -321,7 +325,7 @@ bitboard * Enviornment::pawnMoves(COLOR color) {
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
     bits[i] &= ~(generateBlocK(bits[i], dir, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlocK(bits[i], dir, opponent) | opponent); // Removes collision with oponent pieces
+    bits[i] &= ~(generateBlocK(bits[i], dir, opponent)); // Removes collision with oponent pieces
 
     if (COLOR::WHITE == color) {
       bitboard index = 0LL;
@@ -344,18 +348,20 @@ bitboard Enviornment::generateBlocK(bitboard vector, DIRECTION dir, bitboard opo
     bitboard blockade = 0LL;
     bitboard block = vector & oponent;
     switch (dir) {
-        case DIRECTION::UP : {
-            bitboard index = MSB(block)+1;
-            for(bitboard i = index; i < 64; i++) {
+        case DIRECTION::DOWN : {
+            if(bitboard index = LSB(block)) {
+              for (bitboard i = 0; i < index-1; i++) {
                 blockade |= (1LL << i);
+              }
             }
             break;
         }
-        case DIRECTION::DOWN : {
-            bitboard index = LSB(block)-1;
-            for(bitboard i = index; i < 64; i++) {
-                blockade |= (1LL << i);
+        case DIRECTION::UP : {
+          if (bitboard index = LSB(block)) {
+            for (bitboard i = index+1; i < 64; i++) {
+              blockade |= (1LL << i);
             }
+          }
             break;
         }
         default:
@@ -378,3 +384,64 @@ bitboard * Enviornment::knightMove(COLOR color) {
 }
 
 
+bitboard Enviornment::KingMove(COLOR color) {
+  bitboard movement = 0LL;
+
+  bitboard own, board;
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteKing;
+  } else {
+    own = blackPieces();
+    board = state.BlackKing;
+  }
+
+  // Add the possible fields to move to
+  movement |= *getXAxisFromBoard(board, true);    // X-axis (both directions)
+  movement |= *getDiagYAxis(board, DIRECTION::UP, true); // Y-AXIS (both directions)
+  movement |= *getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, true); // MAIN DIAGONAL
+  movement |= *getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, true); // ANTI DIAGONAL
+
+  // Subtract moves into own
+  movement &= ~own;
+
+  return movement;
+}
+
+bitboard Enviornment::QueenMove(COLOR color) {
+  bitboard movement = 0;
+  bitboard own, opponent, board;
+  if (color == COLOR::WHITE) {
+    own = whitePieces();
+    board = state.WhiteQueen;
+    opponent = blackPieces();
+  } else {
+    own = blackPieces();
+    board = state.BlackQueen;
+    opponent = whitePieces();
+  }
+
+  movement |= reduceVector(*getXAxisFromBoard(board, false, 2), opponent, own, DOWN);
+  movement |= reduceVector(*getXAxisFromBoard(board, false, 1), opponent, own, UP);
+  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::UP, false, 1), opponent, own, UP);
+  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::UP, false, 2), opponent, own, DOWN);
+  movement |= reduceVector(*getDiagYAxis(board, MAIN_DIAGONAL, false, 2), opponent, own, DOWN);
+  movement |= reduceVector(*getDiagYAxis(board, MAIN_DIAGONAL, false, 1), opponent, own, UP);
+  movement |= reduceVector(*getDiagYAxis(board, ANTI_DIAGONAL, false, 2), opponent, own, DOWN);
+  movement |= reduceVector(*getDiagYAxis(board, ANTI_DIAGONAL, false, 1), opponent, own, UP);
+
+
+  return movement;
+
+}
+
+bitboard Enviornment::reduceVector(bitboard vector, bitboard opponent, bitboard own, DIRECTION dir) {
+  bitboard result, owB, opB;
+  owB = generateBlocK(vector, dir, own);
+  opB = generateBlocK(vector, dir, opponent);
+  result = (vector & ~(own | owB | opB));
+
+  //result = vector & ~(generateBlocK(vector, dir, own) | own | generateBlocK(vector, dir, opponent));
+
+  return result;
+}
