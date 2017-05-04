@@ -2,19 +2,7 @@
 
 # Ignore CMakeDebug files
 cmake-build-debug
-CMakeFiles
-CMakeCache.txt
-Makefile
-cmake_*
-*.cbp
-*.cmake
-*/cmake-build-debug
-*/CMakeFiles
-*/CMakeCache.txt
-*/Makefile
-*/cmake_*
-*/*.cbp
-*/*.cmake
+cmake/build
 
 # Ignore intellij "CLion" project configurations
 .idea
