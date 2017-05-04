@@ -6,9 +6,9 @@
 #include <vector>
 #include <map>
 #include <sstream>
-#include "Parser.h"
-#include "UCIEvent.h"
-#include "Definitions.h"
+#include "chess_ann/uci/Parser.h"
+#include "chess_ann/uci/UCIEvent.h"
+#include "chess_ann/uci/Definitions.h"
 
 namespace uci {
 Parser::Parser() {

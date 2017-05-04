@@ -2,8 +2,8 @@
 #define CHESS_ANN_GENERICUCIRESPONSES_H
 
 
-#include "uci/Definitions.h"
-#include "uci/Response.h"
+#include "chess_ann/uci/Definitions.h"
+#include "chess_ann/uci/Response.h"
 #include "engineInformation.h"
 namespace uciResponses {
 // http://stackoverflow.com/questions/17003561/using-the-universal-chess-interface

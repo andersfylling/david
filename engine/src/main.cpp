@@ -1,11 +1,11 @@
-#include "environment.h"
-#include "bitboard.h"
+#include "chess_ann/environment.h"
+#include "chess_ann/bitboard.h"
 
 #include <iostream>
 
-#include "uci/Listener.h"
-#include "uci/UCIEvent.h"
-#include "genericUCIResponses.h"
+#include "chess_ann/uci/Listener.h"
+#include "chess_ann/uci/UCIEvent.h"
+#include "chess_ann/genericUCIResponses.h"
 int main (int argc, char * argv[])
 {
   ::uci::Listener uciListener;

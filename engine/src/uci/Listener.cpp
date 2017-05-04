@@ -9,10 +9,10 @@
 #include <thread>
 #include <mutex>
 
-#include "Definitions.h"
-#include "UCIEvent.h"
-#include "Parser.h"
-#include "Listener.h"
+#include "chess_ann/uci/Definitions.h"
+#include "chess_ann/uci/UCIEvent.h"
+#include "chess_ann/uci/Parser.h"
+#include "chess_ann/uci/Listener.h"
 
 uci::Listener::Listener()
     : runListener(false),

@@ -3,9 +3,9 @@
 //
 
 #include <iostream>
-#include "../lib/Catch/include/catch.hpp"
-#include "../src/bitboard.h"
-#include "../src/environment.h"
+#include "catch.hpp"
+#include "chess_ann/bitboard.h"
+#include "chess_ann/environment.h"
 
 
 ::environment::gameState testStruct; // White Queen in the middle. Rest is normal

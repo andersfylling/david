@@ -2,9 +2,9 @@
 // Created by lolos on 05.04.2017.
 //
 
-#include "environment.h"
-#include "environment.h"
-#include "./bitboard.h"
+#include "chess_ann/environment.h"
+#include "chess_ann/environment.h"
+#include "chess_ann/bitboard.h"
 #include <string>
 #include <bitset>
 #include <iostream>
