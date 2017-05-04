@@ -153,12 +153,12 @@ TEST_CASE("YDiagGeneration") {
 
 TEST_CASE("Queen move BLOCK") {
   //test.printBitboards();
-  testStruct.BlackBishop = 2594073385365405696LL;
-  testStruct.BlackKing = 1152921504606846976LL;
-  testStruct.BlackKnight = 4755801206503243776LL;
-  testStruct.BlackPawn = 71776119061217280LL;
-  testStruct.BlackQueen = 576460752303423488LL;
-  testStruct.BlackRook = 9295429630892703744LL;
+  testStruct.BlackBishop = 2594073385365405696ULL;
+  testStruct.BlackKing = 1152921504606846976ULL;
+  testStruct.BlackKnight = 4755801206503243776ULL;
+  testStruct.BlackPawn = 71776119061217280ULL;
+  testStruct.BlackQueen = 576460752303423488ULL;
+  testStruct.BlackRook = 9295429630892703744ULL;
 
   testStruct.WhiteBishop = 36;
   testStruct.WhiteQueen = 34359738368;
@@ -185,13 +185,14 @@ TEST_CASE ("REDUCE VECTOR") {
   REQUIRE(board == 134742016);
 }
 
+
 TEST_CASE("Bishop MOVEMENT") {
-  testStruct.BlackBishop = 2594073385365405696LL;
-  testStruct.BlackKing = 1152921504606846976LL;
-  testStruct.BlackKnight = 4755801206503243776LL;
-  testStruct.BlackPawn = 71776119061217280LL;
-  testStruct.BlackQueen = 576460752303423488LL;
-  testStruct.BlackRook = 9295429630892703744LL;
+  testStruct.BlackBishop = 2594073385365405696ULL;
+  testStruct.BlackKing = 1152921504606846976ULL;
+  testStruct.BlackKnight = 4755801206503243776ULL;
+  testStruct.BlackPawn = 71776119061217280ULL;
+  testStruct.BlackQueen = 576460752303423488ULL;
+  testStruct.BlackRook = 9295429630892703744ULL;
 
   testStruct.WhiteBishop = 524292;
   //testStruct.WhiteBishop = 36;
@@ -214,13 +215,12 @@ TEST_CASE("Bishop MOVEMENT") {
 
 
 TEST_CASE ("Rook move") {
-  testStruct.BlackBishop = 2594073385365405696LL;
-  testStruct.BlackKing = 1152921504606846976LL;
-  testStruct.BlackKnight = 4755801206503243776LL;
-  testStruct.BlackPawn = 71776119061217280LL;
-  testStruct.BlackQueen = 576460752303423488LL;
-  testStruct.BlackRook = 9295429630892703744LL;
-
+  testStruct.BlackBishop = 2594073385365405696ULL;
+  testStruct.BlackKing = 1152921504606846976ULL;
+  testStruct.BlackKnight = 4755801206503243776ULL;
+  testStruct.BlackPawn = 71776119061217280ULL;
+  testStruct.BlackQueen = 576460752303423488ULL;
+  testStruct.BlackRook = 9295429630892703744ULL;
 
   testStruct.WhiteBishop = 36;
   //testStruct.WhiteQueen = 34359738368;
@@ -231,8 +231,30 @@ TEST_CASE ("Rook move") {
   testStruct.WhiteRook = 34359738369;
   //testStruct.WhiteRook = 129;
 
-  test.printBoard(testStruct.WhiteRook);
+  //test.printBoard(testStruct.WhiteRook);
   bitboard_t b1 = test.RookMove(COLOR::WHITE)[0];
   bitboard_t b2 = test.RookMove(COLOR::WHITE)[1];
-  test.printBoard(b1);
+  //test.printBoard(b1);
+
+}
+
+TEST_CASE("Change chess index into an bitboard array index; E6 => 43") {
+    REQUIRE(test.chessIndexToBitboardIndex("H1") == 0);
+  REQUIRE(test.chessIndexToBitboardIndex("H2") == 8);
+  REQUIRE(test.chessIndexToBitboardIndex("H3") == 16);
+  REQUIRE(test.chessIndexToBitboardIndex("H4") == 24);
+  REQUIRE(test.chessIndexToBitboardIndex("H5") == 32);
+  REQUIRE(test.chessIndexToBitboardIndex("H6") == 40);
+  REQUIRE(test.chessIndexToBitboardIndex("H7") == 48);
+  REQUIRE(test.chessIndexToBitboardIndex("H8") == 56);
+
+  REQUIRE(test.chessIndexToBitboardIndex("G1") == 1);
+  REQUIRE(test.chessIndexToBitboardIndex("G2") == 9);
+  REQUIRE(test.chessIndexToBitboardIndex("G3") == 17);
+  REQUIRE(test.chessIndexToBitboardIndex("G4") == 25);
+  REQUIRE(test.chessIndexToBitboardIndex("G5") == 33);
+  REQUIRE(test.chessIndexToBitboardIndex("G6") == 41);
+  REQUIRE(test.chessIndexToBitboardIndex("G7") == 49);
+  REQUIRE(test.chessIndexToBitboardIndex("G8") == 57);
+
 }

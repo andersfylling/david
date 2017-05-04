@@ -10,6 +10,7 @@
 #include <iostream>
 #include <math.h>
 #include <array>
+#include <algorithm>
 
 namespace environment {
 
@@ -207,43 +208,44 @@ bitboard_t *Environment::knightMovement(bitboard_t board) {
     bitboard_t row = index / 8;
 
     // Two steps up, one left
-    if ((index / 8) - 2 == (index - 15) / 8 && index - 15 < 64) {
-      flipBit(temp, index - 15);
+
+    if (row-2 == (index-15)/8 && index - 15 < 64) {
+      flipBit(temp, index-15);
     }
 
     // Two steps up, one right
-    if ((index / 8) - 2 == (index - 17) / 8 && index - 17 < 64) {
-      flipBit(temp, index - 17);
+    else if (row-2 == (index-17)/8 && index-17 < 64) {
+      flipBit(temp, index-17);
     }
 
     // One step up, two left
-    if ((index / 8) - 1 == (index - 10) / 8 && index - 10 < 64) {
-      flipBit(temp, index - 10);
+    else if (row-1 == (index-10)/8 && index-10 < 64) {
+      flipBit(temp, index-10);
     }
 
     // One step up, two right
-    if ((index / 8) - 1 == (index - 6) / 8 && index - 6 < 64) {
-      flipBit(temp, index - 6);
+    else if (row-1 == (index-6)/8 && index-6 < 64) {
+      flipBit(temp, index-6);
     }
 
     // Two steps down, one left
-    if ((index / 8) + 2 == (index + 15) / 8 && index + 15 < 64) {
-      flipBit(temp, index + 15);
+    else if (row+2 == (index+15)/8 && index+15 < 64) {
+      flipBit(temp, index+15);
     }
 
     // Two steps down, one right
-    if ((index / 8) + 2 == (index + 17) / 8 && index + 17 < 64) {
-      flipBit(temp, index + 17);
+    else if (row+2 == (index+17)/8 && index+17 < 64) {
+      flipBit(temp, index+17);
     }
 
     // One step down, two left
-    if ((index / 8) + 1 == (index + 6) / 8 && index + 6 < 64) {
-      flipBit(temp, index + 6);
+    else if (row+1 == (index+6)/8 && index+6 < 64) {
+      flipBit(temp, index+6);
     }
 
     // One step down, two right
-    if ((index / 8) + 1 == (index + 10) / 8 && index + 10 < 64) {
-      flipBit(temp, index + 10);
+    else if (row+1 == (index+10)/8 && index+10 < 64) {
+      flipBit(temp, index+10);
     }
     boards[boardValue] = temp;
   }
@@ -288,12 +290,12 @@ Environment::Environment(COLOR color) {
   moves = 0;
   hostColor = color;
 
-  state.BlackBishop = 2594073385365405696LL;
-  state.BlackKing = 1152921504606846976LL;
-  state.BlackKnight = 4755801206503243776LL;
-  state.BlackPawn = 71776119061217280LL;
-  state.BlackQueen = 576460752303423488LL;
-  state.BlackRook = 9295429630892703744LL;
+  state.BlackBishop = 2594073385365405696ULL;
+  state.BlackKing = 1152921504606846976ULL;
+  state.BlackKnight = 4755801206503243776ULL;
+  state.BlackPawn = 71776119061217280ULL;
+  state.BlackQueen = 576460752303423488ULL;
+  state.BlackRook = 9295429630892703744ULL;
 
   state.WhiteBishop = 36;
   state.WhiteKnight = 66;
@@ -503,4 +505,44 @@ bitboard_t * Environment::RookMove(COLOR color) {
 
 }
 
-} // END OF Environment
+/**
+ * Converts indexes such as "E6" into an integer index for bitboard_t.
+ *
+ * @param chessIndex String such as "E6"
+ * @return integer bitboard_t index, -1 on error.
+ */
+int Environment::chessIndexToBitboardIndex(std::string chessIndex) {
+  int index = -1;
+
+  // Is always 2 in size "alpha" + "numeric" => "H1"
+  if (chessIndex.length() != 2) {
+    return index;
+  }
+
+  // make sure it's uppercase
+  std::transform(chessIndex.begin(), chessIndex.end(), chessIndex.begin(), ::toupper);
+
+  // store first and second char
+  const char& a = chessIndex.front();
+  const char& b = chessIndex.back();
+
+  char cPos[] = {'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'}; // matches index value
+  int first = 0;
+  int second = b - 48 - 1;
+  for (int i = 0; i < 8; i++) {
+    if (a == cPos[i]) {
+      first = i;
+      break;
+    }
+  }
+
+  index = second * 8 + first;
+
+  if (index > 64 || index < 0) {
+    return -1;
+  }
+
+  return index;
+}
+
+}// end namespace
