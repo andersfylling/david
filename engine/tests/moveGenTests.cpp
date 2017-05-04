@@ -1,7 +1,3 @@
-//
-// Created by Martin Klingenberg on 16.04.2017.
-//
-
 #include <iostream>
 #include "catch.hpp"
 #include "chess_ann/bitboard.h"
