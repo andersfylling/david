@@ -21,7 +21,10 @@ void Search::searchInit(/*Pseudo Node*/) {
 }
 
 int Search::iterativeDeepening() {
-    int bestScore = std::numeric_limits<int>::min();
+    int bestScore = -VALUE_INFINITE;
+    int aplha = -VALUE_INFINITE;
+    int beta = VALUE_INFINITE;
+    int lastDepth = 0;
 
     /*Must create a move tree based on the root node sent to iterative Deepening*/
 
@@ -29,7 +32,16 @@ int Search::iterativeDeepening() {
     // Iterate down in the search tree for each search tree
     //
     for(int currentDepth = 1; currentDepth <= depth; currentDepth++){
+        int score = -VALUE_INFINITE;
+        lastDepth = currentDepth;
 
+
+        bool finished = false;
+        while(!finished){
+            //
+            // Do negamax
+            //
+        }
     }
     return 0;
 }
