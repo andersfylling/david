@@ -1,7 +1,3 @@
-//
-// Created by anders on 5/3/17.
-//
-
 #ifndef PROJECT_SEARCH_H
 #define PROJECT_SEARCH_H
 
@@ -27,19 +23,27 @@ class Search {
  private:
   int searchScore;
   int /*time[COLOR], inc[COLOR],*/ npmsec, movestogo, depth, movetime, mate, infinite, ponder;
-  void uciOutput();
+  //void uciOutput();
   void resetSearchValues();
 
-  // uci protocol
-  static void uci_go_depth(::uci::arguments_t args);
-  static void uci_go(::uci::arguments_t args);
-  static void uci_stop(::uci::arguments_t args);
-  static void uci_quit(::uci::arguments_t args);
+  // uci protocol functions, used for uci protocol events
+  ::uci::callback_t uci_go = [&](::uci::arguments_t args){
+    if (args.count("depth") > 0) {
+      this->setDepth(args);
+    }
+  };
+  ::uci::callback_t uci_stop = [&](::uci::arguments_t args){
+    this->stopSearch(args);
+  };
+  ::uci::callback_t uci_quit = [&](::uci::arguments_t args){
+    this->quitSearch(args);
+  };
+
+  // uci protocol methods, this can be used in unit testing
+  void setDepth(::uci::arguments_t args);
+  void stopSearch(::uci::arguments_t args);
+  void quitSearch(::uci::arguments_t args);
 };
-
-inline void Search::uciOutput() {
-
-}
 
 }
 

@@ -42,10 +42,6 @@ int uci::Listener::addListener(const uint8_t event, const std::function<void(std
   return id;
 }
 
-int uci::Listener::addClassListener(const uint8_t event, void (*fptr)(arguments_t)) {
-  return this->addListener(event, [&](arguments_t args){ fptr(args); });
-}
-
 bool uci::Listener::initiateListener() {
 
   this->runListener = true;
@@ -58,9 +54,10 @@ bool uci::Listener::initiateListener() {
       }
 
       auto event = this->parser.parseInputForCommand(line);
-      auto arguments = this->parser.parseInputForArguments(line);
+      auto args = this->parser.parseInputForArguments(line);
+
       if (event != uci::event::NO_MATCHING_COMMAND) {
-        this->fireEvent(event);
+        this->fireEvent(event, args);
       }
     }
   });
@@ -92,7 +89,7 @@ void uci::Listener::fireEvent(const uint8_t event) {
   this->fireEvent(event, std::map<std::string, std::string>());
 }
 
-void uci::Listener::fireEvent(const uint8_t event, const std::map<std::string, std::string> arguments) {
+void uci::Listener::fireEvent(const uint8_t event, const arguments_t args) {
   auto entry = this->events.find(event);
 
   if (entry == this->events.end()) {
@@ -101,7 +98,7 @@ void uci::Listener::fireEvent(const uint8_t event, const std::map<std::string, s
 
   for (auto &observerEntry : entry->second) {
     auto &observer = observerEntry.second;
-    observer(arguments);
+    observer(args);
   }
 }
 

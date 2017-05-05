@@ -8,11 +8,7 @@
 // Constructor
 //
 search::Search::Search(::uci::Listener &uci) {
-  uci.addClassListener(::uci::event::QUIT, std::ref(uci_quit));
-  uci.addClassListener(::uci::event::STOP, std::ref(uci_stop));
-  uci.addClassListener(::uci::event::GO, uci_go);
-
-  uci.addListener(::uci::event::GO, [&](::uci::arguments_t args){ std:: cout << 4;});
+  uci.addListener(::uci::event::GO, this->uci_go);
 }
 
 //Root search
@@ -56,21 +52,15 @@ void search::Search::resetSearchValues() {
 
 }
 
-static void search::Search::uci_go_depth(::uci::arguments_t args) {
+void search::Search::setDepth(::uci::arguments_t args) {
   std::string d = args["depth"];
 
 
   // convert to int or whatever:
-  int depth = std::stoi(d);
+  int depth = d == "" ? 0 : std::stoi(d);
   std::cout << depth << std::endl;
 }
 
-static void search::Search::uci_go(uci::arguments_t args) {
-  if (args.count("depth") > 0) {
-    uci_go_depth(args);
-  }
-}
-
-void search::Search::uci_stop(::uci::arguments_t args) {}
-void search::Search::uci_quit(::uci::arguments_t args) {}
+void search::Search::stopSearch(::uci::arguments_t args) {}
+void search::Search::quitSearch(::uci::arguments_t args) {}
 
