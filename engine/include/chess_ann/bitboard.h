@@ -92,6 +92,11 @@ struct gameState {
   bitboard_t BlackKing;
 
   std::vector<gameState*> children;
+
+  int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
+  int fullMoves = 1; // starts at 1, increments after every time black moves.
+
+  int score = 0; // board score
 };
 
 const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

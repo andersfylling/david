@@ -9,6 +9,7 @@
 
 namespace utils {
   int stoi(std::string v);
+  bool bitAt(uint64_t b, uint8_t i);
 
 };
 
