@@ -561,4 +561,122 @@ uint64_t Environment::intToUint64(int i) {
   return (uint64_t)i;
 }
 
+/**
+ * A FEN record contains six fields. The separator between fields is a space. The fields are:
+
+    1. Piece placement (from white's perspective). Each rank is described, starting with rank 8 and ending with rank 1; within each rank, the contents of each square are described from file "a" through file "h". Following the Standard Algebraic Notation (SAN), each piece is identified by a single letter taken from the standard English names (pawn = "P", knight = "N", bishop = "B", rook = "R", queen = "Q" and king = "K").[1] White pieces are designated using upper-case letters ("PNBRQK") while black pieces use lowercase ("pnbrqk"). Empty squares are noted using digits 1 through 8 (the number of empty squares), and "/" separates ranks.
+
+    2. Active color. "w" means White moves next, "b" means Black.
+
+    3. Castling availability. If neither side can castle, this is "-". Otherwise, this has one or more letters: "K" (White can castle kingside), "Q" (White can castle queenside), "k" (Black can castle kingside), and/or "q" (Black can castle queenside).
+
+    4. En passant target square in algebraic notation. If there's no en passant target square, this is "-". If a pawn has just made a two-square move, this is the position "behind" the pawn. This is recorded regardless of whether there is a pawn in position to make an en passant capture.[2]
+
+    5. Halfmove clock: This is the number of halfmoves since the last capture or pawn advance. This is used to determine if a draw can be claimed under the fifty-move rule.
+
+    6. Fullmove number: The number of the full move. It starts at 1, and is incremented after Black's move.
+
+ * @param node
+ * @param whiteMovesNext
+ * @return
+ */
+std::string Environment::fen(gameState* node, bool whiteMovesNext) {
+
+
+  std::array<bitboard_t, 12> boards = {
+      node->BlackBishop,
+      node->BlackKing,
+      node->BlackKnight,
+      node->BlackPawn,
+      node->BlackQueen,
+      node->BlackRook,
+
+      node->WhiteBishop,
+      node->WhiteKing,
+      node->WhiteKnight,
+      node->WhitePawn,
+      node->WhiteQueen,
+      node->WhiteRook
+  };
+
+  std::array<char, 12> symbols = {
+      'b',
+      'k',
+      'n',
+      'p',
+      'q',
+      'r',
+
+      'B',
+      'K',
+      'N',
+      'P',
+      'Q',
+      'R'
+  };
+
+  char spaces[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8'};
+
+  int spacing = 0;
+  int pos = 1;
+  std::string fen = "";
+
+  for (uint8_t i = 0; i < 64; i++) {
+    if (pos == 9) {
+      pos = 1;
+      fen += '/';
+    }
+
+
+    char p = ' ';
+    for (uint8_t j = 0; j < 12; j++) {
+      if (this->bitAt(boards[j], i)) {
+        p = symbols[j];
+        break;
+      }
+    }
+
+    if (p == ' ') {
+      spacing += 1;
+    }
+
+    if (pos == 8 || p != ' ') {
+      fen += spaces[spacing];
+      spacing = 0;
+    }
+
+    if (p != ' ') {
+      fen += p;
+    }
+
+    pos += 1;
+  }
+
+  // who is to move next
+  fen += whiteMovesNext ? " w" : " b";
+
+  // missing castling verification support
+  fen += " -";
+
+  // missing passant target verification support
+  fen += " -";
+
+  // missing halfmove verification support
+  fen += " -";
+
+  // missing halfmove verification support
+  fen += " 0";
+
+  // missing fullmove verification support
+  fen += " 1";
+
+  return fen;
+}
+
+bool Environment::bitAt(bitboard_t board, uint8_t index) {
+  std::bitset<64> bitset(board);
+
+  return bitset.test(index);
+}
+
 }// end namespace

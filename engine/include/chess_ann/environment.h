@@ -103,6 +103,9 @@ class Environment {
   bitboard_t chessIndexToBitboard(std::string chessIndex);
   uint64_t intToUint64(int i);
 
+  std::string fen(gameState* node, bool whiteMovesNext);
+  bool bitAt(bitboard_t board, uint8_t index);
+
 };
 }
 
