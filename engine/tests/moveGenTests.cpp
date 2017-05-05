@@ -1,7 +1,9 @@
 #include <iostream>
+#include <stockfish/evaluate.h>
 #include "catch.hpp"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/environment.h"
+#include "chess_ann/stockfish_wrapper.h"
 
 
 ::environment::gameState testStruct; // White Queen in the middle. Rest is normal
@@ -266,7 +268,9 @@ TEST_CASE("Validate fen string from gameState node") {
 
   ::bitboard::gameState* n_p = &node;
 
-  auto fen = test.fen(n_p, false);
+  //auto fen = test.fen(n_p, false);
 
-  std::cout << fen << std::endl;
+  //std::cout << fen << std::endl;
+
+  std::cout << ::stockfish_wrapper::getScoreFromNode(n_p) << std::endl;
 }
