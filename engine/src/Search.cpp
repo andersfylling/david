@@ -7,7 +7,7 @@
 
 
 namespace Search {
-    Signals Signal;
+    //Signals Signal;
 }
 //
 // Constructor
@@ -113,22 +113,22 @@ int search::Search::iterativeDeepening(/*Pseudo node*/) {
       //
       // Iterate down in the search tree for each search tree
       //
-      for (int currentDepth = 1; currentDepth <= depth && !Signal.stop; currentDepth++) {
-        int score = -VALUE_INFINITE;
-        lastDepth = currentDepth;
-
-        bool finished = false;
-        while (!finished) {
-          //
-          // Do negamax
-          //
-          score = negamax(/*Pseudo node*/ alpha, beta, currentDepth);
-        }
-      }
+//      for (int currentDepth = 1; currentDepth <= depth && !Signal.stop; currentDepth++) {
+//        int score = -VALUE_INFINITE;
+//        lastDepth = currentDepth;
+//
+//        bool finished = false;
+//        while (!finished) {
+//          //
+//          // Do negamax
+//          //
+//          score = negamax(/*Pseudo node*/ alpha, beta, currentDepth);
+//        }
+//      }
       return 0;
 }
 
-int search::Search::negamax(/*Pseudo node*/ int alpha, int beta, int depth) {
+int search::Search::negamax(::bitboard::gameState* node, int alpha, int beta, int depth) {
     int score = -VALUE_INFINITE;
     int value = 0;
     int moveCounter=0;
@@ -143,7 +143,7 @@ int search::Search::negamax(/*Pseudo node*/ int alpha, int beta, int depth) {
      * */
 
     for (auto i : node->children /*Needs to be corrected*/) {
-        value = -negamax(/*i,*/ -beta, -alpha, depth - 1);
+        value = -negamax(node, -beta, -alpha, depth - 1);
         score = (score > value) ? score : value;
         alpha = (alpha > value) ? alpha : value;
         if (alpha>=beta)

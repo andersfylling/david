@@ -3,6 +3,7 @@
 #define CHESS_ANN_BITBOARD_H
 
 #include <array>
+#include <vector>
 #include <stdint.h>
 #include <math.h>
 
@@ -89,6 +90,8 @@ struct gameState {
   bitboard_t BlackBishop;
   bitboard_t BlackQueen;
   bitboard_t BlackKing;
+
+  std::vector<gameState*> children;
 };
 
 const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
