@@ -2,6 +2,7 @@
 #include "catch.hpp"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/environment.h"
+#include "stockfish/stockfishMock.h"
 
 
 ::environment::gameState testStruct; // White Queen in the middle. Rest is normal
@@ -261,9 +262,10 @@ TEST_CASE("Create a bitboard using a string index as E6 for index") {
 }
 
 TEST_CASE("Validate fen string from gameState node") {
-  ::bitboard::gameState node; // 0 state for every board
-  node.WhitePawn = 0;
+  //::bitboard::gameState node; // 0 state for every board
+  //node.WhitePawn = 0;
 
-  ::bitboard::gameState* n_p = &node;
+  //auto fen = test.fen(&node, true);
+  std::cout << ::stockfishMock::evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1") << std::endl;
 
 }
