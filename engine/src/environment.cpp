@@ -11,6 +11,7 @@
 #include <math.h>
 #include <array>
 #include <algorithm>
+#include <chess_ann/utils.h>
 
 namespace environment {
 
@@ -630,7 +631,7 @@ std::string Environment::fen(gameState* node, bool whiteMovesNext) {
 
     char p = ' ';
     for (uint8_t j = 0; j < 12; j++) {
-      if (this->bitAt(boards[j], i)) {
+      if (::utils::bitAt(boards[j], i)) {
         p = symbols[j];
         break;
       }
@@ -673,6 +674,14 @@ std::string Environment::fen(gameState* node, bool whiteMovesNext) {
   return fen;
 }
 
+/**
+ * Checks if bit exists at given index.
+ *
+ * @deprecated use ::utils::bitAt(...) -> bool
+ * @param board
+ * @param index
+ * @return
+ */
 bool Environment::bitAt(bitboard_t board, uint8_t index) {
   std::bitset<64> bitset(board);
 
