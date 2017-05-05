@@ -266,7 +266,4 @@ TEST_CASE("Validate fen string from gameState node") {
 
   ::bitboard::gameState* n_p = &node;
 
-  auto fen = test.fen(n_p, false);
-
-  std::cout << fen << std::endl;
 }
