@@ -18,6 +18,8 @@ int valueToInt(Value val) {
 }
 void nodeToPosition(::bitboard::gameState& n, Position& pos) {
 
+  //pos.set(); //set board setup based on FEN string
+
 }
 
 // ScoreNode pointer, or reference
