@@ -22,7 +22,7 @@ void search::Search::searchInit(/*Pseudo Node*/) {
   searchScore = iterativeDeepening(/*Pseudo node*/);
 }
 
-int Search::iterativeDeepening() {
+int search::Search::iterativeDeepening() {
     int bestScore = -VALUE_INFINITE;
     int aplha = -VALUE_INFINITE;
     int beta = VALUE_INFINITE;
