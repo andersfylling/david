@@ -259,3 +259,14 @@ TEST_CASE("Create a bitboard using a string index as E6 for index") {
   bitboard_t board = test.chessIndexToBitboard("e6");
   REQUIRE(board == 8796093022208);
 }
+
+TEST_CASE("Validate fen string from gameState node") {
+  ::bitboard::gameState node; // 0 state for every board
+  node.WhitePawn = 0;
+
+  ::bitboard::gameState* n_p = &node;
+
+  auto fen = test.fen(n_p, false);
+
+  std::cout << fen << std::endl;
+}

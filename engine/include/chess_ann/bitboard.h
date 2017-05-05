@@ -91,6 +91,8 @@ struct gameState {
   bitboard_t BlackKing;
 };
 
+const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 }
 
 #endif  //CHESS_ANN_BITBOARD_H
