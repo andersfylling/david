@@ -20,7 +20,7 @@ namespace search {
 
 class Search {
  public:
-  Search(::uci::Listener& uci){};
+  Search(::uci::Listener &uci);
   void searchInit(/*Pseudo node*/);
   int iterativeDeepening(/*Pseudo node*/);
   int negamax(/*Pseudo node*/);
@@ -28,15 +28,18 @@ class Search {
   int searchScore;
   int /*time[COLOR], inc[COLOR],*/ npmsec, movestogo, depth, movetime, mate, infinite, ponder;
   void uciOutput();
-  void uci_go_depth(::uci::arguments_t args);
-  void uci_go(uci::arguments_t args);
   void resetSearchValues();
+
+  // uci protocol
+  static void uci_go_depth(::uci::arguments_t args);
+  static void uci_go(::uci::arguments_t args);
+  static void uci_stop(::uci::arguments_t args);
+  static void uci_quit(::uci::arguments_t args);
 };
 
-    inline void Search::uciOutput() {
+inline void Search::uciOutput() {
 
-    }
-
+}
 
 }
 

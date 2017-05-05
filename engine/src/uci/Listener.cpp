@@ -23,7 +23,7 @@ uci::Listener::Listener()
 uci::Listener::~Listener() {
 }
 
-int uci::Listener::addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)> func) {
+int uci::Listener::addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)>& func) {
   const int id = this->lastID += 1;
 
   // check if event key already exists, if not create it.
@@ -40,6 +40,10 @@ int uci::Listener::addListener(const uint8_t event, const std::function<void(std
   this->eventIDs.insert(std::pair<const int, const uint8_t>(id, event));
 
   return id;
+}
+
+int uci::Listener::addClassListener(const uint8_t event, void (*fptr)(arguments_t)) {
+  return this->addListener(event, [&](arguments_t args){ fptr(args); });
 }
 
 bool uci::Listener::initiateListener() {

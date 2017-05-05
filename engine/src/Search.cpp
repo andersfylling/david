@@ -3,21 +3,23 @@
 //
 
 #include "chess_ann/Search.h"
-using namespace search;
 
 //
 // Constructor
 //
-Search::Search(::uci::Listener &uci) {
-    uci.addListener(::uci::event::QUIT, this->uci_quit);
-    uci.addListener(::uci::event::STOP, this->uci_stop); // etc
+search::Search::Search(::uci::Listener &uci) {
+  uci.addClassListener(::uci::event::QUIT, std::ref(uci_quit));
+  uci.addClassListener(::uci::event::STOP, std::ref(uci_stop));
+  uci.addClassListener(::uci::event::GO, uci_go);
+
+  uci.addListener(::uci::event::GO, [&](::uci::arguments_t args){ std:: cout << 4;});
 }
 
 //Root search
-void Search::searchInit(/*Pseudo Node*/) {
-    resetSearchValues();
+void search::Search::searchInit(/*Pseudo Node*/) {
+  resetSearchValues();
 
-    searchScore = iterativeDeepening(/*Pseudo node*/);
+  searchScore = iterativeDeepening(/*Pseudo node*/);
 }
 
 int Search::iterativeDeepening() {
@@ -26,7 +28,7 @@ int Search::iterativeDeepening() {
     int beta = VALUE_INFINITE;
     int lastDepth = 0;
 
-    /*Must create a move tree based on the root node sent to iterative Deepening*/
+  /*Must create a move tree based on the root node sent to iterative Deepening*/
 
     //
     // Iterate down in the search tree for each search tree
@@ -46,26 +48,29 @@ int Search::iterativeDeepening() {
     return 0;
 }
 
-int Search::negamax() {
-    return 0;
+int search::Search::negamax() {
+  return 0;
 }
 
-void Search::resetSearchValues() {
+void search::Search::resetSearchValues() {
 
 }
 
-void Search::uci_go_depth(::uci::arguments_t args) {
-    std::string d = args.at("depth").second;
+static void search::Search::uci_go_depth(::uci::arguments_t args) {
+  std::string d = args["depth"];
 
 
-    // convert to int or whatever:
-    int depth = std::stoi(d);
+  // convert to int or whatever:
+  int depth = std::stoi(d);
+  std::cout << depth << std::endl;
 }
 
-void Search::uci_go(uci::arguments_t args) {
-    if (args.count("depth") > 0) {
-        this->uci_go_depth(args);
-    }
+static void search::Search::uci_go(uci::arguments_t args) {
+  if (args.count("depth") > 0) {
+    uci_go_depth(args);
+  }
 }
 
+void search::Search::uci_stop(::uci::arguments_t args) {}
+void search::Search::uci_quit(::uci::arguments_t args) {}
 
