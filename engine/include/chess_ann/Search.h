@@ -16,33 +16,41 @@ namespace search {
 
 class Search {
  public:
+  Search(); // This can be used for unit testing and benchmarking.
   Search(::uci::Listener &uci);
   void searchInit(/*Pseudo node*/);
   int iterativeDeepening(/*Pseudo node*/);
   int negamax(/*Pseudo node*/);
- private:
-  int searchScore;
-  int /*time[COLOR], inc[COLOR],*/ npmsec, movestogo, depth, movetime, mate, infinite, ponder;
-  //void uciOutput();
-  void resetSearchValues();
 
-  // uci protocol functions, used for uci protocol events
-  ::uci::callback_t uci_go = [&](::uci::arguments_t args){
-    if (args.count("depth") > 0) {
-      this->setDepth(args);
-    }
-  };
-  ::uci::callback_t uci_stop = [&](::uci::arguments_t args){
-    this->stopSearch(args);
-  };
-  ::uci::callback_t uci_quit = [&](::uci::arguments_t args){
-    this->quitSearch(args);
-  };
 
   // uci protocol methods, this can be used in unit testing
-  void setDepth(::uci::arguments_t args);
-  void stopSearch(::uci::arguments_t args);
-  void quitSearch(::uci::arguments_t args);
+  void stopSearch();
+  void quitSearch();
+  void setDepth(int depth);
+  void setSearchMoves(std::string moves);
+  void setWTime(int wtime);
+  void setBTime(int btime);
+  void setWinc(int winc);
+  void setBinc(int binc);
+  void setMovesToGo(int movestogo);
+  void setNodes(int nodes);
+  void setMoveTime(int movetime);
+  void setMate(int mate);
+  void setInfinite(int mate); // bool ?
+  void setPonder(int ponder); // bool ?
+
+ private:
+  int depth;
+  int movestogo;
+  int movetime;
+  int mate;
+  int infinite;
+  int ponder;
+  std::string searchMoves;
+  int searchScore;
+  int /*time[COLOR], inc[COLOR],*/ npmsec;
+  //void uciOutput();
+  void resetSearchValues();
 };
 
 }
