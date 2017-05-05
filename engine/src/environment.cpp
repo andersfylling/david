@@ -663,13 +663,10 @@ std::string Environment::fen(gameState* node, bool whiteMovesNext) {
   fen += " -";
 
   // missing halfmove verification support
-  fen += " -";
-
-  // missing halfmove verification support
-  fen += " 0";
+  fen += " " + std::to_string(node->halfMoves);
 
   // missing fullmove verification support
-  fen += " 1";
+  fen += " " + std::to_string(node->fullMoves);
 
   return fen;
 }
