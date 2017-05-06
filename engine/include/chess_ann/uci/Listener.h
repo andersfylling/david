@@ -34,7 +34,7 @@ class Listener {
   bool joinListener();
   bool setupListener();
 
-  int addListener(const uint8_t event, const callback_t func);
+  int addListener(const uint8_t event, const callback_t& func);
   bool hasListener(int listenerID);
   void hasListener(int listenerID, std::function<void(bool exists)> lockedCallback);
   bool removeListener(int listenerID);

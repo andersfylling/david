@@ -6,6 +6,7 @@ file(GLOB chess_ann_testsfiles "*.h" "*.cpp" "**/*.h" "**/*.cpp" "../src/*.h" ".
 # exclude src/main to avoid multiple main files.
 list(REMOVE_ITEM chess_ann_testsfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp")
 
-add_executable(chess_ann_tests  ${chess_ann_testsfiles})
+add_executable(chess_ann_tests  ${chess_ann_testsfiles} test-search.cpp)
 
-target_link_libraries(chess_ann_tests -lpthread)
+target_link_libraries(chess_ann_tests stockfish -lpthread)
+
