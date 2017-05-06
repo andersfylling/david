@@ -402,7 +402,7 @@ bitboard_t *Environment::knightMove(COLOR color) {
   return bits;
 }
 
-bitboard_t Environment::KingMove(COLOR color) {
+bitboard_t * Environment::KingMove(COLOR color) {
   bitboard_t movement = 0LL;
 
   bitboard_t own, board;
@@ -422,13 +422,16 @@ bitboard_t Environment::KingMove(COLOR color) {
 
   // Subtract moves into own
   movement &= ~own;
-
-  return movement;
+  bitboard_t * bits = new bitboard_t;
+  bits = &movement;
+  return bits;
 }
 
-bitboard_t Environment::QueenMove(COLOR color) {
+bitboard_t * Environment::QueenMove(COLOR color) {
   bitboard_t movement = 0;
   bitboard_t own, opponent, board;
+  bitboard_t * bits;
+
   if (color == COLOR::WHITE) {
     own = whitePieces();
     board = state.WhiteQueen;
@@ -439,16 +442,21 @@ bitboard_t Environment::QueenMove(COLOR color) {
     opponent = whitePieces();
   }
 
-  movement |= reduceVector(*getXAxisFromBoard(board, false, 2), opponent, own, DIRECTION::DOWN);
-  movement |= reduceVector(*getXAxisFromBoard(board, false, 1), opponent, own, DIRECTION::UP);
-  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::UP, false, 1), opponent, own, DIRECTION::UP);
-  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::UP, false, 2), opponent, own, DIRECTION::DOWN);
-  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 2), opponent, own, DIRECTION::DOWN);
-  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 1), opponent, own, DIRECTION::UP);
-  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 2), opponent, own, DIRECTION::DOWN);
-  movement |= reduceVector(*getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 1), opponent, own, DIRECTION::UP);
+  bits = new bitboard_t[numberOfPieces(board)];
 
-  return movement;
+  for (int i = 0; i < numberOfPieces(board); i++) {
+    movement |= reduceVector(getXAxisFromBoard(board, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    movement |= reduceVector(getXAxisFromBoard(board, false, 1)[i], opponent, own, DIRECTION::UP);
+    movement |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 1)[i], opponent, own, DIRECTION::UP);
+    movement |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    movement |= reduceVector(getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    movement |= reduceVector(getDiagYAxis(board, DIRECTION::MAIN_DIAGONAL, false, 1)[i], opponent, own, DIRECTION::UP);
+    movement |= reduceVector(getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 2)[i], opponent, own, DIRECTION::DOWN);
+    movement |= reduceVector(getDiagYAxis(board, DIRECTION::ANTI_DIAGONAL, false, 1)[i], opponent, own, DIRECTION::UP);
+    bits[i] = movement;
+  }
+
+  return bits;
 
 }
 
@@ -697,6 +705,10 @@ bool Environment::bitAt(bitboard_t board, uint8_t index) {
   std::bitset<64> bitset(board);
 
   return bitset.test(index);
+}
+
+bitboard_t Environment::combinedAttacks(COLOR color) {
+
 }
 
 }// end namespace

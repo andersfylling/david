@@ -76,15 +76,15 @@ class Environment {
 
   bitboard_t * pawnMoves(COLOR color);
   bitboard_t * knightMove(COLOR color);
-  bitboard_t KingMove(COLOR color);
-  bitboard_t QueenMove(COLOR color);
+  bitboard_t * KingMove(COLOR color);
+  bitboard_t * QueenMove(COLOR color);
   bitboard_t * BishopMove(COLOR color);
   bitboard_t * RookMove(COLOR color);
 
   // Generate a bitboard_t based on a chess position: E6
 
   // LEVEL 3 of moveGen - Advanced game logic
-  bitboard_t combinedAttacks(); // All attacked pieces of opposing color
+  bitboard_t combinedAttacks(COLOR color); // All attacked pieces of opposing color
   // Move rockade1
   bool legal(gameState p);
   bool checkMate();
