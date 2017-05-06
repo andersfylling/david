@@ -52,6 +52,7 @@ class GameTree {
   nodePtr getCurrentNode();
   int getNumberOfNodes();
   void generateChildren(nodePtr node);
+  void sortChildren(nodePtr node);
 
 
 };

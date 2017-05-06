@@ -2,6 +2,7 @@
 #include "chess_ann/GameTree.h"
 #include <memory>
 #include <iostream>
+#include <algorithm>
 
 ::gameTree::GameTree::GameTree()
     : maxNumberOfNodes(100)
@@ -64,6 +65,18 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
   for (int i = 0; i < 35; i++) {
     this->generateNode(node);
   }
+}
+
+void ::gameTree::GameTree::sortChildren(nodePtr node) {
+  if (node == nullptr) {
+    return;
+  }
+
+  std::sort(node->children.begin(), node->children.end(),
+       [](const nodePtr& a, const nodePtr& b) -> bool
+       {
+         return a->score > b->score;
+       });
 }
 
 
