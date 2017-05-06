@@ -108,22 +108,24 @@ int search::Search::iterativeDeepening(/*Pseudo node*/) {
       int beta = VALUE_INFINITE;
       int lastDepth = 0;
 
-      /*Must create a move tree based on the root node sent to iterative Deepening*/
-
       //
       // Iterate down in the search tree for each search tree
       //
       for (int currentDepth = 1; currentDepth <= depth && !Signal.stop; currentDepth++) {
-        int score = -VALUE_INFINITE;
-        lastDepth = currentDepth;
+          int score = -VALUE_INFINITE;
+          lastDepth = currentDepth;
+          bool finished = false;
+          while (!finished) {
+              //
+              // Do negamax
+              //
+              score = negamax(/*Pseudo node*/ alpha, beta, currentDepth);
 
-        bool finished = false;
-        while (!finished) {
-          //
-          // Do negamax
-          //
-          score = negamax(/*Pseudo node*/ alpha, beta, currentDepth);
-        }
+              if (Signal.stop)
+                  break;
+
+
+          }
       }
       return 0;
 }
@@ -156,7 +158,7 @@ int search::Search::negamax(/*Pseudo node*/ int alpha, int beta, int depth) {
 }
 
 void search::Search::resetSearchValues() {
-
+    Signal.stop = false;
 }
 
 void search::Search::stopSearch() {

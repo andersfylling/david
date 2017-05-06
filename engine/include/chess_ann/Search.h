@@ -9,10 +9,17 @@
 #include "chess_ann/uci/Parser.h"
 #include "chess_ann/uci/UCIEvent.h"
 #include <chess_ann/uci/Listener.h>
+#include <atomic>
 
 using ::bitboard::COLOR;
 
 namespace search {
+
+struct Signals{
+  std::atomic_bool stop;
+};
+
+extern Signals Signal;
 
 class Search {
  public:
@@ -20,7 +27,7 @@ class Search {
   Search(::uci::Listener &uci);
   void searchInit(/*Pseudo node*/);
   int iterativeDeepening(/*Pseudo node*/);
-  int negamax(/*Pseudo node*/);
+  int negamax(/*Pseudo node*/ int aplha, int beta, int depth);
 
 
   // uci protocol methods, this can be used in unit testing
@@ -50,7 +57,7 @@ class Search {
   int searchScore;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
-  void resetSearchValues();
+  void resetSearchValues();|
 };
 
 }
