@@ -3,8 +3,10 @@
 #define CHESS_ANN_BITBOARD_H
 
 #include <array>
+#include <vector>
 #include <stdint.h>
 #include <math.h>
+#include <memory>
 
 namespace bitboard {
 
@@ -90,10 +92,14 @@ struct gameState {
   bitboard_t BlackQueen;
   bitboard_t BlackKing;
 
+  std::vector<std::shared_ptr<gameState>> children;
+
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
   int fullMoves = 1; // starts at 1, increments after every time black moves.
 
   int score = 0; // board score
+
+  int gameTreeLevel = 0;
 };
 
 const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
