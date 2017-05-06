@@ -27,11 +27,17 @@ void ::gameTree::GameTree::reset(nodePtr node) {
     return;
   }
 
-  for (nodePtr child : node->children) {
-    this->reset(node);
+  node.reset();
+}
+
+void ::gameTree::GameTree::resetChildren(nodePtr node) {
+  if (node == nullptr) {
+    return;
   }
 
-  node.reset();
+  for (nodePtr child : node->children) {
+    this->reset(child);
+  }
 }
 
 

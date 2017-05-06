@@ -39,6 +39,7 @@ class GameTree {
   ~GameTree();
   void reset();
   void reset(nodePtr node);
+  void resetChildren(nodePtr node);
   void setMaxNumberOfNodes(int n);
   bool hasMaxNumberOfNodes();
   int getMaxNumberOfNodes();
