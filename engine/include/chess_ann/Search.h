@@ -21,8 +21,8 @@ namespace search {
   std::atomic_bool stop;
 };
 
-extern Signals Signal;*/
 
+extern Signals Signal;*/
 
 class Search {
  public:
