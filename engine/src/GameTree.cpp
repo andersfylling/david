@@ -52,6 +52,8 @@ void ::gameTree::GameTree::newRootNode(nodePtr node) {
 }
 
 
+
+
 void ::gameTree::GameTree::setMaxNumberOfNodes(int n) {
   if (n >= 0) {
     this->maxNumberOfNodes = n;
@@ -127,6 +129,18 @@ nodePtr GameTree::generateNode(nodePtr parent) {
 }
 
 nodePtr GameTree::getCurrentNode() {
+  return this->current;
+}
+
+nodePtr GameTree::regretNewRootNode() {
+  if (this->previous == nullptr) {
+    return nullptr;
+  }
+
+  this->current = this->previous;
+  this->previous = nullptr;
+  this->maxNumberOfNodes = 100;
+
   return this->current;
 }
 
