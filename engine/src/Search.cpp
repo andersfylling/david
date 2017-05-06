@@ -95,14 +95,13 @@ search::Search::Search(::uci::Listener &uci) {
 
 
 //Root search
-void search::Search::searchInit(/*Pseudo Node*/) {
+void search::Search::searchInit(::bitboard::gameState* node) {
   resetSearchValues();
 
-  searchScore = iterativeDeepening(/*Pseudo node*/);
+  searchScore = iterativeDeepening(node);
 }
 
-int search::Search::iterativeDeepening(/*Pseudo node*/) {
-    using namespace search;
+int search::Search::iterativeDeepening(::bitboard::gameState* node) {
       int bestScore = -VALUE_INFINITE;
       int alpha = -VALUE_INFINITE;
       int beta = VALUE_INFINITE;
@@ -120,7 +119,7 @@ int search::Search::iterativeDeepening(/*Pseudo node*/) {
               //
               // Do negamax
               //
-              score = negamax(/*Pseudo node*/ alpha, beta, currentDepth);
+              score = negamax(node, alpha, beta, currentDepth);
 
               if (Signal.stop)
                   break;

@@ -25,8 +25,8 @@ class Search {
  public:
   Search(); // This can be used for unit testing and benchmarking.
   Search(::uci::Listener &uci);
-  void searchInit(/*Pseudo node*/);
-  int iterativeDeepening(/*Pseudo node*/);
+  void searchInit(::bitboard::gameState* node);
+  int iterativeDeepening(::bitboard::gameState* node);
   int negamax(::bitboard::gameState* node, int alpha, int beta, int depth);
 
 
