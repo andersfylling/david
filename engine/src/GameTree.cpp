@@ -4,85 +4,51 @@
 #include <iostream>
 
 ::gameTree::GameTree::GameTree()
-    : previous(nullptr),
-      current(nullptr),
-      maxLevel(1),
-      maxNumberOfNodes(100),
-      maxStoredLevels(2)
+    : maxNumberOfNodes(100)
 {}
 
 ::gameTree::GameTree::GameTree(std::shared_ptr<gameState> node)
-    :previous(nullptr),
-     current(node),
-     maxLevel(1),
-     maxNumberOfNodes(100),
-     maxStoredLevels(2)
+    : current(node),
+      maxNumberOfNodes(100)
+{
+}
+
+::gameTree::GameTree::~GameTree()
 {}
 
 void ::gameTree::GameTree::reset() {
-  this->previous = nullptr;
-  this->current = nullptr;
-  this->maxLevel = 1;
+  this->current.reset();
+  this->previous.reset();
   this->maxNumberOfNodes = 100;
-  this->maxStoredLevels = 2;
 }
 
-/**
- * Generates child nodes for given node. Make sure you do not
- * @param node
- */
-void ::gameTree::GameTree::generateChildrenForNode(nodePtr node) {
+void ::gameTree::GameTree::reset(nodePtr node) {
+  if (node == nullptr) {
+    return;
+  }
 
+  for (nodePtr child : node->children) {
+    this->reset(node);
+  }
+
+  node.reset();
 }
 
-void ::gameTree::GameTree::setMaxLevel(int level) {
-  this->maxLevel = level;
-}
 
-void ::gameTree::GameTree::setMaxNumberOfNodes(int level) {
-  this->maxLevel = level;
-}
-bool ::gameTree::GameTree::hasMaxLevel() {
-  return this->maxLevel != 0;
+void ::gameTree::GameTree::setMaxNumberOfNodes(int n) {
+  if (n >= 0) {
+    this->maxNumberOfNodes = n;
+  }
+  else {
+    std::cerr << "::gameTree::GameTree::setMaxNumberOfNodes(int n): Integer 'n' can not be smaller than 0." << std::endl;
+  }
 }
 bool ::gameTree::GameTree::hasMaxNumberOfNodes() {
-  return this->maxNumberOfNodes != 0;
-}
-int ::gameTree::GameTree::getMaxLevel() {
-  return this->maxLevel;
+  return this->maxNumberOfNodes == this->getNumberOfNodes();
 }
 int ::gameTree::GameTree::getMaxNumberOfNodes() {
   return this->maxNumberOfNodes;
 }
-bool ::gameTree::GameTree::hasMaxStoreLevel() {
-  return this->maxStoredLevels != 0;
-}
-void ::gameTree::GameTree::setMaxStoreLevel(int level) {
-  this->maxStoredLevels = level;
-}
-int ::gameTree::GameTree::getMaxStoreLevel() {
-  return this->maxStoredLevels;
-}
-
-/**
- * Generates nodes until the maxLevel is reached or if maxStoredLevel, if set, is reached first.
- * If both have the value -1, this will never stop to generated nodes. mhuahaha.
- */
-void ::gameTree::GameTree::generateLevels() {
-  if (this->current == nullptr) {
-    std::cerr << "Need a node pointer first" << std::endl;
-    return;
-  }
-
-  if (this->maxLevel == 0 && this->maxStoredLevels == 0) {
-    std::cerr << "both maxLevel and maxStoredLevels equals 0" << std::endl;
-    return;
-  }
-
-  int floor = this->current->gameTreeLevel;
-
-}
-
 
 
 void ::gameTree::GameTree::generateNodes() {
@@ -91,30 +57,36 @@ void ::gameTree::GameTree::generateNodes() {
     return;
   }
 
+  int livingNodes = this->getNumberOfNodes();
+
+  nodePtr node = this->current;
+  while (livingNodes < this->maxNumberOfNodes) {
+    this->generateNode(node);
+    livingNodes += 1;
+  }
+
 }
 
 int ::gameTree::GameTree::getNumberOfNodes() {
   if (this->current == nullptr) {
-    std::cerr << "Need a node pointer first" << std::endl;
-    return -1;
+    return 0;
   }
 
   int count = 1;
 
-  std::vector<nodePtr> que;
-  que.push_back(this->current);
-  do {
-    nodePtr node = que.at(0);
-    count += node->children.size();
-
-    for (nodePtr child : node->children) {
-      que.push_back(child);
-    }
-
-  } while ();
-
   for (std::shared_ptr<gameState> node : this->current->children) {
+    count += this->getNumberOfNodes(node);
+  }
 
+  return count;
+}
+
+int ::gameTree::GameTree::getNumberOfNodes(nodePtr node) {
+  if (node->children.size() == 0) {
+    return 1;
+  }
+  for (std::shared_ptr<gameState> node : this->current->children) {
+    return this->getNumberOfNodes(node);
   }
 }
 
@@ -127,6 +99,7 @@ nodePtr GameTree::generateNode(nodePtr parent) {
   node->score = std::rand() % 2429 + 21;
   node->fullMoves = (node->gameTreeLevel + 1) / 2;
   node->halfMoves = 0; // eh..
+  node->weakParent = parent;
 
   // do bitboard stuff when applicable
 

@@ -100,6 +100,9 @@ struct gameState {
   int score = 0; // board score
 
   int gameTreeLevel = 0;
+
+
+  std::weak_ptr<::bitboard::gameState> weakParent; //...
 };
 
 const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

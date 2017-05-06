@@ -29,25 +29,19 @@ class GameTree {
  private:
   nodePtr previous;// in case a player regrets their move?
   nodePtr current; // this represent the active game board
-  int maxLevel;
-  int maxNumberOfNodes;
-  int maxStoredLevels; // highest level - lowest level (leafNode->gameTreeLevel - currentNode->gameTreeLevel)
+  int maxNumberOfNodes; // nodes in memory
+
+  int getNumberOfNodes(nodePtr node);
 
  public:
   GameTree();
   GameTree(std::shared_ptr<gameState> node);
+  ~GameTree();
   void reset();
-  void generateChildrenForNode(std::shared_ptr<gameState> node);
-  void setMaxLevel(int level);
-  void setMaxStoreLevel(int level);
-  void setMaxNumberOfNodes(int level);
-  bool hasMaxLevel();
-  bool hasMaxStoreLevel();
+  void reset(nodePtr node);
+  void setMaxNumberOfNodes(int n);
   bool hasMaxNumberOfNodes();
-  int getMaxLevel();
-  int getMaxStoreLevel();
   int getMaxNumberOfNodes();
-  void generateLevels();
   void generateNodes();
   nodePtr generateNode(nodePtr parent);
   nodePtr getCurrentNode();
