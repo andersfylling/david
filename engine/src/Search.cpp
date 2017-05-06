@@ -6,8 +6,8 @@
 #include "chess_ann/utils.h"
 
 
-namespace Search {
-    //Signals Signal;
+namespace search {
+    Signals Signal;
 }
 //
 // Constructor

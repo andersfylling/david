@@ -19,8 +19,6 @@ struct Signals{
   std::atomic_bool stop;
 };
 
-extern Signals Signal;
-
 class Search {
  public:
   Search(); // This can be used for unit testing and benchmarking.
@@ -58,7 +56,7 @@ class Search {
   int searchScore;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
-  void resetSearchValues();|
+  void resetSearchValues();
 };
 
 }
