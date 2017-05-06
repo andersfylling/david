@@ -31,6 +31,8 @@ class GameTree {
   nodePtr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory
 
+  // TODO: sort children by score
+
   int getNumberOfNodes(nodePtr node);
 
  public:
@@ -49,6 +51,8 @@ class GameTree {
   nodePtr generateNode(nodePtr parent);
   nodePtr getCurrentNode();
   int getNumberOfNodes();
+  void generateChildren(nodePtr node);
+
 
 };
 

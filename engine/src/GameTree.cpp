@@ -51,6 +51,20 @@ void ::gameTree::GameTree::newRootNode(nodePtr node) {
   this->maxNumberOfNodes = 100;
 }
 
+void ::gameTree::GameTree::generateChildren(nodePtr node) {
+  if (node == nullptr) {
+    return;
+  }
+
+  // find some way to get all the different boards
+  // then call generate node
+  // you prolly need to change it's parameters
+
+  // mock test
+  for (int i = 0; i < 35; i++) {
+    this->generateNode(node);
+  }
+}
 
 
 
