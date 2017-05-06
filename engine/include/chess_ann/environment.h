@@ -53,7 +53,7 @@ class Environment {
   // For X axis
 
   // LEVEL 0 of moveGen - The ugly bitflipping and CPU stuff
-  int numberOfPieces(bitboard_t board);     // For generating right sized arrays
+  bitboard_t numberOfPieces(bitboard_t board);     // For generating right sized arrays
   bitboard_t LSB (bitboard_t board);          // Gets least signifigant bit
   bitboard_t MSB (bitboard_t board);
   bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit

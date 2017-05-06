@@ -61,10 +61,12 @@ void Environment::printBoard(bitboard_t board) {
 bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int lock) {
   // Enten limit 0 eller 1
   // Må finne alle brikker som skal kunne flyttes
+  bitboard_t temp;
 
   bitboard_t *boards;  // Stores the boards to be returned
-  boards = new bitboard_t[numberOfPieces(board) + 1];
-  int boardsIndex = 0;
+  bitboard_t numPiece = numberOfPieces(board);
+  bitboard_t index;
+  boards = new bitboard_t[numPiece];
 
   bool xPlus, xMinus;
   xPlus = false;
@@ -80,25 +82,29 @@ bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int loc
   }
 
   if (limit) {  // Logic for moving a piece one step
-    for (bitboard_t index = LSB(board); index; index = NSB(board), boardsIndex++) {
-      bitboard_t temp = 0;
+    for (bitboard_t i = 0; i < numPiece; i++) {
+      temp = 0;
+      index = LSB(board);
       bitboard_t rowMod = (index / 8);
 
-      if ((index + 1) / 8 == rowMod)
+      if ((index + 1) / 8 == rowMod && !xPlus && index < 64ULL)
         temp |= 1LL << (index + 1);
 
-      if ((index - 1) / 8 == rowMod)
+      if ((index - 1) / 8 == rowMod && !xPlus && index < 64ULL)
         temp |= 1LL << (index - 1);
 
-      boards[boardsIndex] = temp;
+      boards[i] = temp;
+      NSB(board);
     }
   } else {  // Logic for making an attack vector
-    for (bitboard_t index = LSB(board); index; index = NSB(board), boardsIndex++) {
+
+    for (bitboard_t index = 0; index < numPiece; index++) {
       // Make map with all possible moves on x-axis.
       // Within boundaries of board width
-      bitboard_t temp = 0;
-      bitboard_t i = index + 1;
+      temp = 0;
+      bitboard_t i = LSB(board);
       bitboard_t rowMod = (i / 8);
+      i++;
 
       // Gets adds vector for right side of piece
       while (!xPlus && i / 8 == rowMod) {
@@ -106,19 +112,20 @@ bitboard_t *Environment::getXAxisFromBoard(bitboard_t board, bool limit, int loc
         i++;
       }
 
-      i = index - 1;
-      while (!xMinus && i / 8 == rowMod) {
+      i = LSB(board)-1ULL;
+      while (!xMinus && i / 8 == rowMod && i < 64ULL) {
         flipBit(temp, i);
         i--;
       }
 
-      boards[boardsIndex] = temp;
+      boards[index] = temp;
+      NSB(board);
     }
   }
   return boards;
 }
 
-int Environment::numberOfPieces(bitboard_t board) {
+bitboard_t Environment::numberOfPieces(bitboard_t board) {
   // Needs linux alternative.
   // Fastest way of getting nuber of active bits.
   // Uses special CPU fuctionality
@@ -132,8 +139,9 @@ int Environment::numberOfPieces(bitboard_t board) {
 bitboard_t *Environment::getDiagYAxis(bitboard_t board, DIRECTION dir, bool limit, int lock) {
   int dirValue;
   bitboard_t *boards;  // Stores the boards to be returned
-  boards = new bitboard_t[numberOfPieces(board) + 1];
-  int boardsIndex = 0;
+  boards = new bitboard_t[numberOfPieces(board)];
+  bitboard_t numPiece = numberOfPieces(board);
+
 
   switch (dir) {
     case DIRECTION::MAIN_DIAGONAL:dirValue = 9;
@@ -158,8 +166,10 @@ bitboard_t *Environment::getDiagYAxis(bitboard_t board, DIRECTION dir, bool limi
   }
 
   if (limit) {
-    for (bitboard_t index = LSB(board); index; index = NSB(board), boardsIndex++) {
+    bitboard_t index;
+    for (bitboard_t i = 0; i < numPiece; i++) {
       bitboard_t temp = 0;
+      index = LSB(board);
 
       if ((index - dirValue) >= 0 && !xMinus && ((index - dirValue) / 8) == (index / 8) - 1) // Activate bit over
         temp |= 1LL << index - (dirValue);
@@ -167,33 +177,37 @@ bitboard_t *Environment::getDiagYAxis(bitboard_t board, DIRECTION dir, bool limi
       if ((index + dirValue) <= 63 && !xPlus && ((index + dirValue) / 8) == (index / 8) + 1) // Activate bit under
         temp |= 1LL << (index + dirValue);
 
-      boards[boardsIndex] = temp;
+      boards[i] = temp;
+      NSB(board);
     }
   } else {
-    for (bitboard_t index = LSB(board); index; index = NSB(board), boardsIndex++) {
+    for (bitboard_t index = 0; index < numPiece; index++) {
       // Make map with all possible moves on x-axis.
       // Within boundaries of board width
       bitboard_t temp = 0;
-      bitboard_t row = index / 8;
-      bitboard_t i = index + dirValue;
+      bitboard_t i = LSB(board);
+      bitboard_t row = i / 8;
+      i += dirValue;
 
 
       // Gets adds vector for right side of piece
-      while (!xPlus && i / 8 == (row + 1) && i < 64) {
+      while (!xPlus && i / 8 == (row + 1) && i < 64ULL) {
         flipBit(temp, i);
         row = i / 8;
         i += dirValue;
       }
 
-      i = index - dirValue;
-      row = index / 8;
+      i = LSB(board);
+      row = i/8;
+      i -= dirValue;
 
-      while (!xMinus && i / 8 == (row - 1) && i < 64) {
+      while (!xMinus && i / 8 == (row - 1) && i < 64ULL) {
         flipBit(temp, i);
-        row = i / 8;
+        row = i / 8ULL;
         i -= dirValue;
       }
-      boards[boardsIndex] = temp;
+      boards[index] = temp;
+      NSB(board);
     }
   }
   return boards;
@@ -495,10 +509,10 @@ bitboard_t * Environment::RookMove(COLOR color) {
 
   for (int i = 0; i < numberOfPieces(board); i++) {
     bits[i] = 0;
-    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 2)[i], opponent, own, DIRECTION::DOWN);
-    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 1)[i], opponent, own, DIRECTION::UP);
-    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 1)[i], opponent, own, DIRECTION::DOWN);
-    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 2)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 2)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getXAxisFromBoard(board, false, 1)[i], opponent, own, DIRECTION::DOWN);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 1)[i], opponent, own, DIRECTION::UP);
+    bits[i] |= reduceVector(getDiagYAxis(board, DIRECTION::UP, false, 2)[i], opponent, own, DIRECTION::DOWN);
   }
 
   return bits;
