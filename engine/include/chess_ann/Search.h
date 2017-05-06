@@ -10,26 +10,31 @@
 #include "chess_ann/uci/UCIEvent.h"
 #include <chess_ann/uci/Listener.h>
 #include <atomic>
+#include <time.h>
+#include <memory>
 
 using ::bitboard::COLOR;
 
 namespace search {
 
-struct Signals{
+/*struct Signals{
   std::atomic_bool stop;
 };
 
-extern Signals Signal;
+extern Signals Signal;*/
+
 
 class Search {
  public:
   Search(); // This can be used for unit testing and benchmarking.
   Search(::uci::Listener &uci);
-  void searchInit(::bitboard::gameState* node);
-  int iterativeDeepening(::bitboard::gameState* node);
-  int negamax(::bitboard::gameState* node, int alpha, int beta, int depth);
+  void searchInit(std::shared_ptr<::bitboard::gameState> node);
+  int iterativeDeepening(std::shared_ptr<::bitboard::gameState> node);
+  int negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int depth);
+  void setIterationComplete(bool isCompleted);
 
-
+  //Test/debug
+  bool returnMembers();
 
   // uci protocol methods, this can be used in unit testing
   void stopSearch();
@@ -58,8 +63,15 @@ class Search {
   int searchScore;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
-  void resetSearchValues();|
+  void resetSearchValues();
 };
+
+  inline bool Search::returnMembers() {
+    if(this->depth)
+      return true;
+    else
+      return false;
+  }
 
 }
 

@@ -176,10 +176,10 @@ TEST_CASE("Queen move BLOCK") {
 }
 
 TEST_CASE ("REDUCE VECTOR") {
-  bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368LL, DIRECTION::UP, false, 1), test.blackPieces(), test.whitePieces(), DIRECTION::UP);
+  bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368ULL, DIRECTION::UP, false, 1), test.blackPieces(), test.whitePieces(), DIRECTION::UP);
   REQUIRE(board == 2260595906707456);
 
-  board = test.reduceVector(*test.getDiagYAxis(34359738368LL, DIRECTION::UP, false, 2), test.blackPieces(), test.whitePieces(), DIRECTION::DOWN);
+  board = test.reduceVector(*test.getDiagYAxis(34359738368ULL, DIRECTION::UP, false, 2), test.blackPieces(), test.whitePieces(), DIRECTION::DOWN);
   REQUIRE(board == 134742016);
 }
 

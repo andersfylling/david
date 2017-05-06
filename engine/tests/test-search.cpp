@@ -4,12 +4,21 @@
 
 #include "chess_ann/Search.h"
 #include "catch.hpp"
+#include "chess_ann/bitboard.h"
 
-using namespace search;
+std::shared_ptr<::search::Search> searchPtr(new ::search::Search);
+std::shared_ptr<::bitboard::gameState> node(new ::bitboard::gameState);
 
-::Search * test_search;
 
-TEST_CASE("Making of search object"){
+
+
+
+TEST_CASE("Making of relevant objects"){
+    REQUIRE(searchPtr->returnMembers());
+}
+
+TEST_CASE("Search"){
+  REQUIRE_NOTHROW(searchPtr->searchInit(node));
 
 }
 
