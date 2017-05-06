@@ -27,7 +27,8 @@ class Search {
   Search(::uci::Listener &uci);
   void searchInit(/*Pseudo node*/);
   int iterativeDeepening(/*Pseudo node*/);
-  int negamax(/*Pseudo node*/ int aplha, int beta, int depth);
+  int negamax(::bitboard::gameState* node, int alpha, int beta, int depth);
+
 
 
   // uci protocol methods, this can be used in unit testing
