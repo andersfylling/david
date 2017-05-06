@@ -5,6 +5,10 @@
 #include "chess_ann/Search.h"
 #include "chess_ann/utils.h"
 
+
+namespace Search {
+    Signals Signal;
+}
 //
 // Constructor
 //
@@ -97,33 +101,58 @@ void search::Search::searchInit(/*Pseudo Node*/) {
   searchScore = iterativeDeepening(/*Pseudo node*/);
 }
 
-int search::Search::iterativeDeepening() {
-  int bestScore = -VALUE_INFINITE;
-  int aplha = -VALUE_INFINITE;
-  int beta = VALUE_INFINITE;
-  int lastDepth = 0;
+int search::Search::iterativeDeepening(/*Pseudo node*/) {
+    using namespace search;
+      int bestScore = -VALUE_INFINITE;
+      int alpha = -VALUE_INFINITE;
+      int beta = VALUE_INFINITE;
+      int lastDepth = 0;
 
-  /*Must create a move tree based on the root node sent to iterative Deepening*/
+      /*Must create a move tree based on the root node sent to iterative Deepening*/
 
-  //
-  // Iterate down in the search tree for each search tree
-  //
-  for (int currentDepth = 1; currentDepth <= depth; currentDepth++) {
-    int score = -VALUE_INFINITE;
-    lastDepth = currentDepth;
-
-    bool finished = false;
-    while (!finished) {
       //
-      // Do negamax
+      // Iterate down in the search tree for each search tree
       //
-    }
-  }
-  return 0;
+      for (int currentDepth = 1; currentDepth <= depth && !Signal.stop; currentDepth++) {
+        int score = -VALUE_INFINITE;
+        lastDepth = currentDepth;
+
+        bool finished = false;
+        while (!finished) {
+          //
+          // Do negamax
+          //
+          score = negamax(/*Pseudo node*/ alpha, beta, currentDepth);
+        }
+      }
+      return 0;
 }
 
-int search::Search::negamax() {
-  return 0;
+int search::Search::negamax(/*Pseudo node*/ int alpha, int beta, int depth) {
+    int score = -VALUE_INFINITE;
+    int value = 0;
+    int moveCounter=0;
+
+    if (depth == 0 /*|| node->children.empty()*/) {
+        /*return evaluate(node);*/
+    }
+
+    /**
+     *  childNodes := GenerateMoves(node)
+     *  childNodes := OrderMoves(childNodes)
+     * */
+
+    for (auto i : node->children /*Needs to be corrected*/) {
+        value = -negamax(/*i,*/ -beta, -alpha, depth - 1);
+        score = (score > value) ? score : value;
+        alpha = (alpha > value) ? alpha : value;
+        if (alpha>=beta)
+        {
+            continue;
+        }
+    }
+
+    return score;
 }
 
 void search::Search::resetSearchValues() {
