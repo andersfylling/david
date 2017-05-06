@@ -60,11 +60,14 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
   // find some way to get all the different boards
   // then call generate node
   // you prolly need to change it's parameters
+  int livingNodes = this->getNumberOfNodes();
 
   // mock test
-  for (int i = 0; i < 35; i++) {
+  for (int i = 0; i < 35 && i < livingNodes; livingNodes++, i++) {
     this->generateNode(node);
   }
+
+  this->sortChildren(node);
 }
 
 void ::gameTree::GameTree::sortChildren(nodePtr node) {
@@ -110,6 +113,8 @@ void ::gameTree::GameTree::generateNodes() {
     this->generateNode(node);
     livingNodes += 1;
   }
+
+  this->sortChildren(node);
 
 }
 
