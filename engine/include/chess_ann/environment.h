@@ -39,7 +39,7 @@ class Environment {
  public:
   Environment(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
-  void setGameState(gameState st);  // Setting the gamestate for testing
+  void setGameState(gameState* st);  // Setting the gamestate for testing
   void printBitboards();            // Prints number values of all 12 boards
 
 
@@ -86,7 +86,7 @@ class Environment {
   // LEVEL 3 of moveGen - Advanced game logic
   bitboard_t combinedAttacks(); // All attacked pieces of opposing color
   // Move rockade1
-  bool legal(gameState p);
+  bool legal(gameState* p);
   bool checkMate();
   bool draw();
 

@@ -22,8 +22,8 @@ using ::bitboard::gameState;
 using ::bitboard::DIRECTION;
 using ::bitboard::COLOR;
 
-void Environment::setGameState(gameState st) {
-  state = st;
+void Environment::setGameState(gameState* st) {
+  state = (*st); // dereferrence
 }
 
 void Environment::printBitboards() {
