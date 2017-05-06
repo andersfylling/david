@@ -98,6 +98,22 @@ struct gameState {
 
 const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+
+struct pieceAttack {
+  bitboard_t * WhitePawn;
+  bitboard_t * WhiteRook;
+  bitboard_t * WhiteKnight;
+  bitboard_t * WhiteBishop;
+  bitboard_t * WhiteQueen;
+  bitboard_t * WhiteKing;
+
+  bitboard_t * BlackPawn;
+  bitboard_t * BlackRook;
+  bitboard_t * BlackKnight;
+  bitboard_t * BlackBishop;
+  bitboard_t * BlackQueen;
+  bitboard_t * BlackKing;
+};
 }
 
 #endif  //CHESS_ANN_BITBOARD_H

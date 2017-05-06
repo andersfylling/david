@@ -17,7 +17,7 @@ using ::bitboard::gameState;
 using ::bitboard::COLOR;
 using ::bitboard::bitboard_t;
 using ::bitboard::DIRECTION;
-
+using ::bitboard::pieceAttack;
 
 enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
@@ -25,6 +25,7 @@ class Environment {
  private:
   int moves;    // Number of moves for performance measuring
   gameState state;  // Current gamestate
+  pieceAttack attacks;  // Calculated attacks by pieces
   // If the king has been moved, or been set in check.
   // Castling is not allowed. These values are then set to false
   // This is an important strategic factor in chess
@@ -58,6 +59,7 @@ class Environment {
   bitboard_t MSB (bitboard_t board);
   bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit
   void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
+  void flipOff(bitboard_t &bord, bitboard_t index);
 
   // LEVEL 1 of moveGen - Basic attack vectors
   bitboard_t * getXAxisFromBoard(bitboard_t board, bool limit = 0, int lock = 0);
@@ -84,7 +86,9 @@ class Environment {
   // Generate a bitboard_t based on a chess position: E6
 
   // LEVEL 3 of moveGen - Advanced game logic
-  bitboard_t combinedAttacks(COLOR color); // All attacked pieces of opposing color
+  void generateAttacks();  // Sets the attacs-values
+  bitboard_t combinedBlackAttacks(); // All attacked pieces of black
+  bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
   // Move rockade1
   bool legal(gameState p);
   bool checkMate();

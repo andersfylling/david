@@ -21,6 +21,7 @@ using ::bitboard::bitboard_t;
 using ::bitboard::gameState;
 using ::bitboard::DIRECTION;
 using ::bitboard::COLOR;
+using ::bitboard::pieceAttack;
 
 void Environment::setGameState(gameState st) {
   state = st;
@@ -289,6 +290,8 @@ void Environment::flipBit(bitboard_t &board, bitboard_t index) {
   board |= (1LL << index);
 }
 
+
+
 bitboard_t Environment::whitePieces() {
   return (state.WhitePawn | state.WhiteRook | state.WhiteKnight | state.WhiteKing | state.WhiteBishop
       | state.WhiteQueen);
@@ -318,6 +321,8 @@ Environment::Environment(COLOR color) {
   state.WhiteQueen = 8;
   state.WhiteKing = 16;
   state.WhiteRook = 129;
+
+  generateAttacks();
 
   // IF COLOR WHITE
   // INITIATE AUTO MOVES
@@ -707,8 +712,80 @@ bool Environment::bitAt(bitboard_t board, uint8_t index) {
   return bitset.test(index);
 }
 
-bitboard_t Environment::combinedAttacks(COLOR color) {
 
+void Environment::generateAttacks() {
+  attacks.WhitePawn = pawnMoves(COLOR::WHITE);
+  attacks.WhiteBishop = BishopMove(COLOR::WHITE);
+  attacks.WhiteQueen = QueenMove(COLOR::WHITE);
+  attacks.WhiteKing = KingMove(COLOR::WHITE);
+  attacks.WhiteRook = RookMove(COLOR::WHITE);
+  attacks.WhiteKnight = knightMove(COLOR::WHITE);
+
+  attacks.BlackPawn = pawnMoves(COLOR::BLACK);
+  attacks.BlackBishop = BishopMove(COLOR::BLACK);
+  attacks.BlackQueen = QueenMove(COLOR::BLACK);
+  attacks.BlackKing = KingMove(COLOR::BLACK);
+  attacks.BlackRook = RookMove(COLOR::BLACK);
+  attacks.BlackKnight = knightMove(COLOR::BLACK);
 }
+
+bitboard_t Environment::combinedBlackAttacks() {
+  bitboard_t comb = 0;
+  for (bitboard_t i = 0; i < numberOfPieces(state.BlackBishop); i++) {
+    comb |= attacks.BlackBishop[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.BlackKnight); i++) {
+    comb |= attacks.BlackKnight[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.BlackQueen); i++) {
+    comb |= attacks.BlackQueen[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.BlackKing); i++) {
+    comb |= attacks.BlackKing[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.BlackRook); i++) {
+    comb |= attacks.BlackRook[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.BlackPawn); i++) {
+    comb |= attacks.BlackPawn[i];
+  }
+
+  return comb;
+}
+
+bitboard_t Environment::combinedWhiteAttacks() {
+  bitboard_t comb = 0;
+  for (bitboard_t i = 0; i < numberOfPieces(state.WhiteBishop); i++) {
+    comb |= attacks.WhiteBishop[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.WhiteKnight); i++) {
+    comb |= attacks.BlackKnight[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.WhiteQueen); i++) {
+    comb |= attacks.WhiteQueen[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.WhiteKing); i++) {
+    comb |= attacks.WhiteKing[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.WhiteRook); i++) {
+    comb |= attacks.WhiteRook[i];
+  }
+
+  for (bitboard_t i = 0; i < numberOfPieces(state.WhitePawn); i++) {
+    comb |= attacks.WhitePawn[i];
+  }
+
+  return comb;
+}
+
 
 }// end namespace
