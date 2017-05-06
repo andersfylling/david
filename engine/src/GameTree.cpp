@@ -40,6 +40,17 @@ void ::gameTree::GameTree::resetChildren(nodePtr node) {
   }
 }
 
+void ::gameTree::GameTree::newRootNode(nodePtr node) {
+  if (node == nullptr) {
+    return;
+  }
+
+  this->previous.reset();
+  this->previous = current;
+  this->current = node;
+  this->maxNumberOfNodes = 100;
+}
+
 
 void ::gameTree::GameTree::setMaxNumberOfNodes(int n) {
   if (n >= 0) {
