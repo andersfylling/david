@@ -9,6 +9,7 @@
 #include "chess_ann/uci/Parser.h"
 #include "chess_ann/uci/UCIEvent.h"
 #include <chess_ann/uci/Listener.h>
+#include "chess_ann/GameTree.h"
 #include <atomic>
 #include <time.h>
 #include <memory>
@@ -30,7 +31,7 @@ class Search {
   Search(::uci::Listener &uci);
   void searchInit(std::shared_ptr<::bitboard::gameState> node);
   int iterativeDeepening(std::shared_ptr<::bitboard::gameState> node);
-  int negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int depth);
+  int negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth);
   void setIterationComplete(bool isCompleted);
 
   //Test/debug

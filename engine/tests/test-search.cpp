@@ -6,7 +6,7 @@
 #include "catch.hpp"
 #include "chess_ann/bitboard.h"
 
-std::shared_ptr<::search::Search> searchPtr(new ::search::Search);
+::search::Search test_search;
 std::shared_ptr<::bitboard::gameState> node(new ::bitboard::gameState);
 
 
@@ -14,11 +14,11 @@ std::shared_ptr<::bitboard::gameState> node(new ::bitboard::gameState);
 
 
 TEST_CASE("Making of relevant objects"){
-    REQUIRE(searchPtr->returnMembers()); //Implies that object exist
+    REQUIRE(test_search.returnMembers()); //Implies that object exist
 }
 
 TEST_CASE("Search"){
-  REQUIRE_NOTHROW(searchPtr->searchInit(node)); // No errors though out search, may be a bit wide
+  REQUIRE_NOTHROW(test_search.searchInit(node)); // No errors though out search, may be a bit wide
 
 }
 

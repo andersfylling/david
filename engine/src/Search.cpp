@@ -108,7 +108,7 @@ search::Search::Search(::uci::Listener &uci) {
 void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
   resetSearchValues();
 
-  //searchScore = iterativeDeepening(node);
+  searchScore = iterativeDeepening(node);
 }
 
 
@@ -118,7 +118,7 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
  * @param node
  * @return
  */
-int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> node) {
+int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> board) {
       int bestScore = -VALUE_INFINITE;  //Kinda deprecated, should be switched to a gamestate
       int alpha = -VALUE_INFINITE;
       int beta = VALUE_INFINITE;
@@ -128,9 +128,13 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> no
 
       std::shared_ptr<::bitboard::gameState> bestMove;    
 
-      std::shared_ptr<::bitboard::gameState> rootMoves;
-      //rootMoves->generateMoves(node);
-      //rootMoves->moveTree->sort();
+      //
+      // Create move tree
+      //
+
+      ::gameTree::GameTree rMoves(board);
+      rMoves.setMaxNumberOfNodes(100);
+      rMoves.generateNodes();
 
 
       //
@@ -145,7 +149,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> no
           lastDepth = currentDepth;     //Sent to UCI or some debug when search is done
 
           //Needs to be replaced
-          score = negamax(node, alpha, beta, currentDepth);
+          score = negamax(board, alpha, beta, currentDepth);
 
 
           // Before we can do this, the return type of negamax needs to be changed
@@ -177,17 +181,17 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> no
  * @param depth
  * @return
  */
-int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int depth) {
+int search::Search::negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth) {
     int score = -VALUE_INFINITE;
     int value = 0;
     int moveCounter=0;
 
-    if (depth == 0 || node->children.empty()) {
-        return node->score;
+    if (depth == 0 || board->children.empty()) {
+        return board->score;
     }
 
     //Node->children does not return correct type atm
-    for (std::shared_ptr<::bitboard::gameState> i : node->children) {
+    for (auto i : board->children) {
         value = -negamax(i, -beta, -alpha, depth - 1);
         score = (score > value) ? score : value;
         alpha = (alpha > value) ? alpha : value;
