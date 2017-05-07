@@ -1,1 +1,0 @@
-/usr/bin/c++    -std=c++11 -Wall -Wextra -Wshadow -pedantic -pedantic-errors -Wfloat-equal -fstrict-aliasing -Wzero-as-null-pointer-constant -Wstrict-aliasing   CMakeFiles/donotoptimize_test.dir/donotoptimize_test.cc.o  -o donotoptimize_test -Wl,-rpath,/home/anders/Projects/chess_ann/cmake/build/external/benchmark/src -rdynamic ../src/libbenchmark.so.0.0.0 -lpthread -lrt 
