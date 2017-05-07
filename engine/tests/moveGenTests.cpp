@@ -3,10 +3,12 @@
 #include "chess_ann/bitboard.h"
 #include "chess_ann/environment.h"
 #include <math.h>
+#include <memory>
+#include <iostream>
 #include "stockfish/stockfishMock.h"
 
 
-::bitboard::gameState* testStruct = new ::bitboard::gameState; // White Queen in the middle. Rest is normal
+std::shared_ptr<::bitboard::gameState> testStruct = std::make_shared<::bitboard::gameState>(); // White Queen in the middle. Rest is normal
 
 
 using ::bitboard::bitboard_t;
@@ -310,7 +312,7 @@ TEST_CASE ("Rook move") {
   own = test.whitePieces();
   //test.printBoard(own);
 
-  bitboard_t movement = test.reduceVector(test.getXAxisFromBoard(testStruct.WhiteRook, false, 2)[1], opponent, own, DIRECTION::UP);
+  bitboard_t movement = test.reduceVector(test.getXAxisFromBoard(testStruct->WhiteRook, false, 2)[1], opponent, own, DIRECTION::UP);
 
   //movement |= test.reduceVector(test.getXAxisFromBoard(testStruct.WhiteRook, false, 1)[1], opponent, own, DIRECTION::DOWN);
   //movement |= test.reduceVector(test.getDiagYAxis(testStruct.WhiteRook, DIRECTION::UP, false, 1)[1], opponent, own, DIRECTION::UP);
