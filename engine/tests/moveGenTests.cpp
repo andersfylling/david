@@ -2,6 +2,7 @@
 #include "catch.hpp"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/environment.h"
+#include <math.h>
 #include "stockfish/stockfishMock.h"
 
 
@@ -42,6 +43,36 @@ bitboard_t BP = makeBoardFromArray(BPc);
 ::environment::Environment test(COLOR::WHITE);
 bitboard_t *bits;
 
+TEST_CASE ("Num-Pieces") {
+  // One piece activated
+  //std::cout << test.numberOfPieces(WQ) << std::endl;
+  // Two pieces
+  //std::cout << test.numberOfPieces(WC) << std::endl;
+  // All pieces
+}
+
+TEST_CASE("Flip-bit") {
+  bitboard_t temp = 0ULL;
+  bitboard_t control = 0ULL;
+
+  // Tests setting bits opposed to using slow power function
+  for (bitboard_t i = 0ULL; i < 64ULL; i++) {
+    temp = 0ULL;
+    test.flipBit(temp, i);
+    control = static_cast<unsigned long long>(pow(2.0, static_cast<float>(i)));
+    REQUIRE(temp == control);
+  }
+
+  // Tests with several selected bits
+  temp = 0ULL;
+  control = 0ULL;
+  for (bitboard_t i = 0ULL; i < 64ULL; i++) {
+    test.flipBit(temp, i);
+    control += static_cast<unsigned long long>(pow(2.0, static_cast<float>(i)));
+    REQUIRE(temp == control);
+  }
+}
+
 
 TEST_CASE("White pawn movement") {
   bitboard_t WP = makeBoardFromArray(WPc);
@@ -76,6 +107,26 @@ TEST_CASE("Black pawn movement") {
 }
 
 
+TEST_CASE("LSB MSB NSB") {
+  bitboard_t testBrett = 0ULL;
+
+  // Tests that LSB can find the correct index
+  for (bitboard_t i = 0; i < 64; i++) {
+    testBrett = 0ULL;
+    test.flipBit(testBrett, i);
+    REQUIRE(test.LSB(testBrett) == i);
+  }
+
+  for (bitboard_t i = 0; i < 64; i++)
+    test.flipBit(testBrett, i);
+
+  // Tests that NSB works with all possible fields
+  for (bitboard_t i = 0; i < 63; i++) {
+    REQUIRE(test.NSB(testBrett) == i+1);
+  }
+}
+
+
 TEST_CASE("White knight movement") {
   bitboard_t cor = 1099511627776;
   bits = test.getDiagYAxis(BP, DIRECTION::UP, true, 2);
@@ -93,24 +144,32 @@ TEST_CASE("White knight movement") {
 }
 
 TEST_CASE("X-AXIS movement") {
-  bitboard_t  cor = 20;
+  bitboard_t * bits;
+  bits = test.getXAxisFromBoard(WC, 0, 1);
+  REQUIRE(bits[0] == 0ULL);
+  REQUIRE(bits[1] == 127ULL);
+  bits = test.getXAxisFromBoard(WC, 0, 2);
+  REQUIRE(bits[0] == 254ULL);
+  REQUIRE(bits[1] == 0ULL);
 
-  bits = test.getXAxisFromBoard(WQ, 1);
-  REQUIRE(bits[0] == cor);
 
-  delete [] bits;
+  bits = test.getXAxisFromBoard(WC, 1, 1);
+  REQUIRE(bits[0] == 0ULL);
+  REQUIRE(bits[1] == 0ULL);
+  bits = test.getXAxisFromBoard(WC, 1, 2);
+  REQUIRE(bits[0] == 2ULL);
+  REQUIRE(bits[1] == 64ULL);
 
-  cor = 247;
-  bits = test.getXAxisFromBoard(WQ);
 
-  REQUIRE(bits[0] == cor);
-
-  delete [] bits;
 
 
 }
 
 TEST_CASE("YDiagGeneration") {
+  // Seriously the greates test. Seriously. Made a great deal. GREAT #TRUMP
+  bitboard_t queen = 34359738368;     // Queen in the middle of the board
+  bits = test.getDiagYAxis(queen, DIRECTION::MAIN_DIAGONAL, false, 2);
+
   bitboard_t cor = 578721382704613376;
   bits = test.getDiagYAxis(WQ, DIRECTION::UP);
   REQUIRE(bits[0] == cor);
@@ -146,6 +205,9 @@ TEST_CASE("YDiagGeneration") {
   REQUIRE(bits[0] == cor);
 
   delete [] bits;
+
+
+
 }
 
 
@@ -167,12 +229,14 @@ TEST_CASE("Queen move BLOCK") {
   testStruct->WhiteRook = 129;
 
   test.setGameState(testStruct);
+
   //test.printBitboards();
   //test.printBoard(test.whitePieces() | test.blackPieces());
 
   bitboard_t cor = 11853796676861952;
   //test.printBoard(test.QueenMove(WHITE));
-  REQUIRE(cor == test.QueenMove(COLOR::WHITE));
+  bitboard_t qm = test.QueenMove(COLOR::WHITE)[0];
+  REQUIRE(cor == qm);
 }
 
 TEST_CASE ("REDUCE VECTOR") {
@@ -207,6 +271,8 @@ TEST_CASE("Bishop MOVEMENT") {
   bitboard_t t1 = test.BishopMove(COLOR::WHITE)[0];
   bitboard_t t2 = test.BishopMove(COLOR::WHITE)[1];
 
+
+
   REQUIRE(t1 == 0);
   REQUIRE(t2 == 36100411639201792);
 }
@@ -229,10 +295,32 @@ TEST_CASE ("Rook move") {
   testStruct->WhiteRook = 34359738369;
   //testStruct.WhiteRook = 129;
 
-  //test.printBoard(testStruct.WhiteRook);
+  /*//test.printBoard(testStruct.WhiteRook);
   bitboard_t b1 = test.RookMove(COLOR::WHITE)[0];
   bitboard_t b2 = test.RookMove(COLOR::WHITE)[1];
-  //test.printBoard(b1);
+  test.printBoard(b1);
+  test.printBoard(b2);
+
+  //REQUIRE(b1 == 0ULL);
+  //REQUIRE(b2 == 2261107679428608);*/
+
+  bitboard_t opponent, own;
+  //test.printBoard(testStruct.WhiteRook);
+  opponent = test.blackPieces();
+  own = test.whitePieces();
+  //test.printBoard(own);
+
+  bitboard_t movement = test.reduceVector(test.getXAxisFromBoard(testStruct.WhiteRook, false, 2)[1], opponent, own, DIRECTION::UP);
+
+  //movement |= test.reduceVector(test.getXAxisFromBoard(testStruct.WhiteRook, false, 1)[1], opponent, own, DIRECTION::DOWN);
+  //movement |= test.reduceVector(test.getDiagYAxis(testStruct.WhiteRook, DIRECTION::UP, false, 1)[1], opponent, own, DIRECTION::UP);
+  //movement |= test.reduceVector(test.getDiagYAxis(testStruct.WhiteRook, DIRECTION::UP, false, 2)[1], opponent, own, DIRECTION::DOWN);
+  //test.printBoard(movement);
+  ::environment::Environment test2(COLOR::WHITE);
+  test2.setGameState(testStruct);
+  bitboard_t * b = test2.RookMove(COLOR::WHITE);
+  REQUIRE(b[1] == 2261656898371584ULL);
+
 
 }
 
@@ -268,4 +356,7 @@ TEST_CASE("Validate fen string from gameState node") {
   //auto fen = test.fen(&node, true);
   std::cout << ::stockfishMock::evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1") << std::endl;
 
+  //auto fen = test.fen(n_p, false);
+
+  //std::cout << fen << std::endl;
 }
