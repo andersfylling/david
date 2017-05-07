@@ -5,7 +5,7 @@
 		<Option title="CatchSelfTest"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\external\;CMake Files\external\Catch\;CMake Files\external\fann\;CMake Files\external\fann\cmake\;CMake Files\external\fann\cmake\Modules\;CMake Files\external\fann\src\;CMake Files\external\fann\lib\;CMake Files\external\fann\lib\googletest\;CMake Files\external\fann\lib\googletest\cmake\;CMake Files\external\fann\tests\;CMake Files\external\Stockfish\;CMake Files\external\Stockfish\src\;CMake Files\external\benchmark\;CMake Files\external\benchmark\cmake\;CMake Files\external\benchmark\src\;CMake Files\external\benchmark\test\;CMake Files\cmake\;CMake Files\engine\;CMake Files\engine\src\;CMake Files\engine\benchmarks\;CMake Files\engine\tests\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\external\;CMake Files\external\Catch\;CMake Files\external\fann\;CMake Files\external\fann\cmake\;CMake Files\external\fann\cmake\Modules\;CMake Files\external\fann\src\;CMake Files\external\fann\lib\;CMake Files\external\fann\lib\googletest\;CMake Files\external\fann\lib\googletest\cmake\;CMake Files\external\fann\tests\;CMake Files\external\Stockfish\;CMake Files\external\Stockfish\src\;CMake Files\external\benchmark\;CMake Files\external\benchmark\cmake\;CMake Files\external\benchmark\src\;CMake Files\external\benchmark\test\;CMake Files\cmake\;CMake Files\engine\;CMake Files\engine\src\;CMake Files\engine\benchmarks\;CMake Files\engine\tests\;CMake Files\engine\ANNTraining\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch"/>
@@ -826,6 +826,12 @@
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\engine\tests\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/ANNTraining/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\ANNTraining\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/ANNTraining/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\ANNTraining\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

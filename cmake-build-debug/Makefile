@@ -644,6 +644,19 @@ chess_ann_tests/fast:
 	$(MAKE) -f engine/tests/CMakeFiles/chess_ann_tests.dir/build.make engine/tests/CMakeFiles/chess_ann_tests.dir/build
 .PHONY : chess_ann_tests/fast
 
+#=============================================================================
+# Target rules for targets named chess_ann_anntraining
+
+# Build rule for target.
+chess_ann_anntraining: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 chess_ann_anntraining
+.PHONY : chess_ann_anntraining
+
+# fast build rule for target.
+chess_ann_anntraining/fast:
+	$(MAKE) -f engine/ANNTraining/CMakeFiles/chess_ann_anntraining.dir/build.make engine/ANNTraining/CMakeFiles/chess_ann_anntraining.dir/build
+.PHONY : chess_ann_anntraining/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -694,6 +707,7 @@ help:
 	@echo "... chess_ann_src"
 	@echo "... chess_ann_benchmarks"
 	@echo "... chess_ann_tests"
+	@echo "... chess_ann_anntraining"
 .PHONY : help
 
 

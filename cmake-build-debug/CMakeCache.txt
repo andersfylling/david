@@ -333,6 +333,12 @@ chess_ann_BINARY_DIR:STATIC=/home/anders/Projects/chess_ann/cmake-build-debug
 chess_ann_SOURCE_DIR:STATIC=/home/anders/Projects/chess_ann
 
 //Value Computed by CMake
+chess_ann_anntraining_BINARY_DIR:STATIC=/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining
+
+//Value Computed by CMake
+chess_ann_anntraining_SOURCE_DIR:STATIC=/home/anders/Projects/chess_ann/engine/ANNTraining
+
+//Value Computed by CMake
 chess_ann_benchmarks_BINARY_DIR:STATIC=/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks
 
 //Value Computed by CMake
@@ -523,7 +529,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=16
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=17
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

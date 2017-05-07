@@ -8,3 +8,4 @@ include_directories(${CHESS_ANN_STOCKFISH_INCLUDE_DIR})
 add_subdirectory(src)           # source files
 add_subdirectory(benchmarks)    # Our benchmarks
 add_subdirectory(tests)         # Our tests
+add_subdirectory(ANNTraining)   # Neural network training

@@ -5,7 +5,7 @@
 		<Option title="chess_ann"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\external\;CMake Files\external\Catch\;CMake Files\external\fann\;CMake Files\external\fann\cmake\;CMake Files\external\fann\cmake\Modules\;CMake Files\external\fann\src\;CMake Files\external\fann\lib\;CMake Files\external\fann\lib\googletest\;CMake Files\external\fann\lib\googletest\cmake\;CMake Files\external\fann\tests\;CMake Files\external\Stockfish\;CMake Files\external\Stockfish\src\;CMake Files\external\benchmark\;CMake Files\external\benchmark\cmake\;CMake Files\external\benchmark\src\;CMake Files\external\benchmark\test\;CMake Files\cmake\;CMake Files\engine\;CMake Files\engine\src\;CMake Files\engine\benchmarks\;CMake Files\engine\tests\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\external\;CMake Files\external\Catch\;CMake Files\external\fann\;CMake Files\external\fann\cmake\;CMake Files\external\fann\cmake\Modules\;CMake Files\external\fann\src\;CMake Files\external\fann\lib\;CMake Files\external\fann\lib\googletest\;CMake Files\external\fann\lib\googletest\cmake\;CMake Files\external\fann\tests\;CMake Files\external\Stockfish\;CMake Files\external\Stockfish\src\;CMake Files\external\benchmark\;CMake Files\external\benchmark\cmake\;CMake Files\external\benchmark\src\;CMake Files\external\benchmark\test\;CMake Files\cmake\;CMake Files\engine\;CMake Files\engine\src\;CMake Files\engine\benchmarks\;CMake Files\engine\tests\;CMake Files\engine\ANNTraining\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
@@ -1957,7 +1957,64 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="chess_ann_anntraining">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/chess_ann_anntraining" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 chess_ann_anntraining"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_anntraining/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/chess_ann_anntraining" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 chess_ann_anntraining/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 		</Build>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/ANNTraining/main.cpp">
+			<Option target="chess_ann_anntraining"/>
+		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/charToInt.cpp">
 			<Option target="chess_ann_benchmarks"/>
 		</Unit>
@@ -1974,31 +2031,37 @@
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/BitboardsNode.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/GameTree.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/ScoreNode.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/Search.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/environment.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/main.cpp">
 			<Option target="chess_ann_src"/>
@@ -2007,16 +2070,19 @@
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/uci/Parser.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/src/utils.cpp">
 			<Option target="chess_ann_src"/>
 			<Option target="chess_ann_benchmarks"/>
 			<Option target="chess_ann_tests"/>
+			<Option target="chess_ann_anntraining"/>
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/moveGenTests.cpp">
 			<Option target="chess_ann_tests"/>
@@ -3036,6 +3102,12 @@
 		</Unit>
 		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\engine\tests\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/ANNTraining/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\ANNTraining\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/ANNTraining/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\ANNTraining\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

@@ -162,3 +162,12 @@
 /home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/CMakeFiles/package_source.dir
 /home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/CMakeFiles/package.dir
 /home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/CMakeFiles/chess_ann_tests.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/install/strip.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/install/local.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/install.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/list_install_components.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/rebuild_cache.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/edit_cache.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/package_source.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/package.dir
+/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/CMakeFiles/chess_ann_anntraining.dir

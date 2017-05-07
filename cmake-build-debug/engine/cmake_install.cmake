@@ -37,6 +37,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/cmake_install.cmake")
   include("/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/cmake_install.cmake")
   include("/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/cmake_install.cmake")
+  include("/home/anders/Projects/chess_ann/cmake-build-debug/engine/ANNTraining/cmake_install.cmake")
 
 endif()
 
