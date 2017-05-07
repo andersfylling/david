@@ -21,6 +21,14 @@ using ::bitboard::pieceAttack;
 
 enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
+bitboard_t LSB (bitboard_t board);          // Gets least signifigant bit
+bitboard_t MSB (bitboard_t board);
+bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit
+bitboard_t NSB_t(bitboard_t & board);
+
+void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
+void flipOff(bitboard_t &bord, bitboard_t index);
+
 class Environment {
  private:
   int moves;    // Number of moves for performance measuring
@@ -55,11 +63,8 @@ class Environment {
 
   // LEVEL 0 of moveGen - The ugly bitflipping and CPU stuff
   bitboard_t numberOfPieces(bitboard_t board);     // For generating right sized arrays
-  bitboard_t LSB (bitboard_t board);          // Gets least signifigant bit
-  bitboard_t MSB (bitboard_t board);
-  bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit
-  void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
-  void flipOff(bitboard_t &bord, bitboard_t index);
+
+
 
   // LEVEL 1 of moveGen - Basic attack vectors
   bitboard_t * getXAxisFromBoard(bitboard_t board, bool limit = 0, int lock = 0);
@@ -120,17 +125,9 @@ using ::bitboard::bitboard_t ;
    private:
     move_t mv;
    public:
-    void setTo(int t);
-    void setFrom(int f);
-    void setDoublePawnPush();
-    void setKingCastle();
-    void setQueenCastle();
-    void setCaptures();
-    void setEnpassant();
-    void setKnightPromo();
-    void setQueenPromo();
-    void setRookPromo();
-    void setBishopPromo();
+    Move(int to, int from, int flags);
+    Move();
+    void printMoveString();
 
     bool doublePawnPush();
     bool kingCastle();
@@ -141,6 +138,7 @@ using ::bitboard::bitboard_t ;
     bool queenPromo();
     bool knightPromo();
     bool bishopPromo();
+    move_t number();
   };
 }
 

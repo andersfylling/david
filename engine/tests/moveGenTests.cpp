@@ -27,6 +27,10 @@ using ::bitboard::BKc;
 using ::bitboard::COLOR;
 using ::bitboard::makeBoardFromArray;
 using ::bitboard::DIRECTION;
+using ::environment::NSB;
+using ::environment::LSB;
+using ::environment::flipBit;
+
 
 bitboard_t WP = makeBoardFromArray(WPc);
 bitboard_t WC = makeBoardFromArray(WCc);
@@ -60,7 +64,7 @@ TEST_CASE("Flip-bit") {
   // Tests setting bits opposed to using slow power function
   for (bitboard_t i = 0ULL; i < 64ULL; i++) {
     temp = 0ULL;
-    test.flipBit(temp, i);
+    flipBit(temp, i);
     control = static_cast<unsigned long long>(pow(2.0, static_cast<float>(i)));
     REQUIRE(temp == control);
   }
@@ -69,7 +73,7 @@ TEST_CASE("Flip-bit") {
   temp = 0ULL;
   control = 0ULL;
   for (bitboard_t i = 0ULL; i < 64ULL; i++) {
-    test.flipBit(temp, i);
+    flipBit(temp, i);
     control += static_cast<unsigned long long>(pow(2.0, static_cast<float>(i)));
     REQUIRE(temp == control);
   }
@@ -115,16 +119,16 @@ TEST_CASE("LSB MSB NSB") {
   // Tests that LSB can find the correct index
   for (bitboard_t i = 0; i < 64; i++) {
     testBrett = 0ULL;
-    test.flipBit(testBrett, i);
-    REQUIRE(test.LSB(testBrett) == i);
+    flipBit(testBrett, i);
+    REQUIRE(LSB(testBrett) == i);
   }
 
   for (bitboard_t i = 0; i < 64; i++)
-    test.flipBit(testBrett, i);
+    flipBit(testBrett, i);
 
   // Tests that NSB works with all possible fields
   for (bitboard_t i = 0; i < 63; i++) {
-    REQUIRE(test.NSB(testBrett) == i+1);
+    REQUIRE(NSB(testBrett) == i+1);
   }
 }
 
@@ -243,10 +247,10 @@ TEST_CASE("Queen move BLOCK") {
 
 TEST_CASE ("REDUCE VECTOR") {
   bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368LL, DIRECTION::UP, false, 1), test.blackPieces(), test.whitePieces(), DIRECTION::UP);
-  REQUIRE(board == 2260595906707456);
+  REQUIRE(board == 2260595906707456ULL);
 
   board = test.reduceVector(*test.getDiagYAxis(34359738368LL, DIRECTION::UP, false, 2), test.blackPieces(), test.whitePieces(), DIRECTION::DOWN);
-  REQUIRE(board == 134742016);
+  REQUIRE(board == 134742016ULL);
 }
 
 
@@ -276,7 +280,7 @@ TEST_CASE("Bishop MOVEMENT") {
 
 
   REQUIRE(t1 == 0);
-  REQUIRE(t2 == 36100411639201792);
+  REQUIRE(t2 == 36100411639201792ULL);
 }
 
 
@@ -348,7 +352,7 @@ TEST_CASE("Change chess index into an bitboard array index; E6 => 43") {
 
 TEST_CASE("Create a bitboard using a string index as E6 for index") {
   bitboard_t board = test.chessIndexToBitboard("e6");
-  REQUIRE(board == 8796093022208);
+  REQUIRE(board == 8796093022208ULL);
 }
 
 TEST_CASE("Validate fen string from gameState node") {
@@ -362,3 +366,23 @@ TEST_CASE("Validate fen string from gameState node") {
 
   //std::cout << fen << std::endl;
 }
+
+TEST_CASE("Combined attacks") {
+  bitboard_t t = test.combinedWhiteAttacks();
+  //test.printBoard(t);
+
+  bitboard_t  tt = test.combinedBlackAttacks();
+  //test.printBoard(tt);
+}
+
+TEST_CASE("Creating moves") {
+  move::Move m(35, 36, 15);
+  REQUIRE(m.number() == 36431U);
+
+
+  m.printMoveString();
+
+
+
+}
+

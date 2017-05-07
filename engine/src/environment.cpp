@@ -12,6 +12,7 @@
 #include <array>
 #include <algorithm>
 #include <chess_ann/utils.h>
+#include <ibase.h>
 
 namespace environment {
 
@@ -267,29 +268,6 @@ bitboard_t *Environment::knightMovement(bitboard_t board) {
   }
   return boards;
 }
-
-// Needs compiler support for Microsoft c++ compiler
-// Works with gcc based compilers
-bitboard_t Environment::LSB(bitboard_t board) {
-  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
-}
-
-// Needs compiler support for Microsoft c++ compiler
-// Works with gcc based compilers
-bitboard_t Environment::NSB(bitboard_t &board) {
-  board &= ~(1LL << LSB(board));
-  return LSB(board);
-}
-
-bitboard_t Environment::MSB(bitboard_t board) {
-  return 63 - __builtin_clzll(board);
-}
-
-// Turns on bit
-void Environment::flipBit(bitboard_t &board, bitboard_t index) {
-  board |= (1LL << index);
-}
-
 
 
 bitboard_t Environment::whitePieces() {
@@ -773,6 +751,39 @@ bitboard_t Environment::combinedWhiteAttacks() {
   return comb;
 }
 
+// Needs compiler support for Microsoft c++ compiler
+// Works with gcc based compilers
+bitboard_t LSB(bitboard_t board) {
+  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
+}
+
+// Needs compiler support for Microsoft c++ compiler
+// Works with gcc based compilers
+bitboard_t NSB(bitboard_t &board) {
+  board &= ~(1LL << LSB(board));
+  return LSB(board);
+}
+
+bitboard_t MSB(bitboard_t board) {
+  return 63 - __builtin_clzll(board);
+}
+
+bitboard_t NSB_r(bitboard_t & board) {
+  board &= ~(1LL << MSB(board));
+  return MSB(board);
+}
+
+// Turns on bit
+void flipBit(bitboard_t &board, bitboard_t index) {
+  board |= (1LL << index);
+}
+
+void flipOff(bitboard_t &board, bitboard_t index) {
+  board &= (0LL << index);
+}
+
+
+
 
 }// end namespace
 
@@ -781,10 +792,32 @@ namespace move {
 
 using ::bitboard::move_t;
 using ::bitboard::bitboard_t;
+using std::bitset;
+using std::string;
 
-void Move::setTo(int t) {
+
+Move::Move() {
+  // This function will never be used
+  // The function will disappear when development getting better
+  mv = 0U;
 
 }
 
+void Move::printMoveString() {
+  string bits = std::bitset<16>(mv).to_string();
+  for (int i = 0; i < 16; i++) {
+    std::cout << bits.at(i) << " ";
+  }
+  std::cout << '\n';
+}
+
+move_t Move::number() {
+  return mv;
+}
+
+Move::Move(int to, int from, int flags) {
+  mv = 0U;
+  mv |= (to << 5);
+}
 
 } // End of move
