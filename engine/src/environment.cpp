@@ -12,12 +12,9 @@
 #include <array>
 #include <algorithm>
 #include <chess_ann/utils.h>
-<<<<<<< HEAD
 #include <ibase.h>
-=======
 #include <chess_ann/GameTree.h>
 #include <map>
->>>>>>> 050b6c8a9440b08aa8a49a9e4dfb4196ae101410
 
 namespace environment {
 

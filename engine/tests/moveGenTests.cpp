@@ -368,7 +368,6 @@ TEST_CASE("Validate fen string from gameState node") {
   //std::cout << fen << std::endl;
 }
 
-<<<<<<< HEAD
 TEST_CASE("Combined attacks") {
   bitboard_t t = test.combinedWhiteAttacks();
   //test.printBoard(t);
@@ -388,7 +387,6 @@ TEST_CASE("Creating moves") {
 
 }
 
-=======
 TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
   ::environment::Environment env(::bitboard::COLOR::BLACK);
 
@@ -397,4 +395,4 @@ TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.genera
 
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
 }
->>>>>>> 050b6c8a9440b08aa8a49a9e4dfb4196ae101410
+
