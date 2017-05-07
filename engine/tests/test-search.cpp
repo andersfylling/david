@@ -14,12 +14,13 @@ std::shared_ptr<::bitboard::gameState> node(new ::bitboard::gameState);
 
 
 TEST_CASE("Making of relevant objects"){
-    REQUIRE(searchPtr->returnMembers());
+    REQUIRE(searchPtr->returnMembers()); //Implies that object exist
 }
 
 TEST_CASE("Search"){
-  REQUIRE_NOTHROW(searchPtr->searchInit(node));
+  REQUIRE_NOTHROW(searchPtr->searchInit(node)); // No errors though out search, may be a bit wide
 
 }
+
 
 

@@ -126,8 +126,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> no
       startTime = clock();              //Starting clock
 
 
-      std::shared_ptr<::bitboard::gameState> bestMove;
-      bestMove->score = -INFINITY;
+      std::shared_ptr<::bitboard::gameState> bestMove;    
 
       std::shared_ptr<::bitboard::gameState> rootMoves;
       //rootMoves->generateMoves(node);
@@ -147,6 +146,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> no
 
           //Needs to be replaced
           score = negamax(node, alpha, beta, currentDepth);
+
 
           // Before we can do this, the return type of negamax needs to be changed
           //currentScore = negamax(node, alpha, beta, currentDepth);
@@ -209,8 +209,11 @@ void search::Search::resetSearchValues() {
   this->depth = 10;
 }
 
+/**
+ * If the UCI at any time tells search to abort
+ */
 void search::Search::stopSearch() {
-
+  // return bestMove maybe..
 }
 
 void search::Search::quitSearch() {
