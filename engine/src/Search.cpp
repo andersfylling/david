@@ -4,17 +4,17 @@
 
 #include "chess_ann/Search.h"
 #include "chess_ann/utils.h"
-
+#include <ctime>
 
 namespace search {
-    //Signals Signal; //Scrapped for now
-    clock_t startTime;
+//Signals Signal; //Scrapped for now
+clock_t startTime;
 }
 
 /**
  * Constructor used in debug/test
  */
-search::Search::Search(){
+search::Search::Search() {
 
 };
 
@@ -28,57 +28,46 @@ search::Search::Search(::uci::Listener &uci) {
 
 
   // uci protocol functions, used for uci protocol events
-    auto uci_go = [&](arguments_t args) {
+  auto uci_go = [&](arguments_t args) {
     // All of the "go" parameters
     if (args.count("depth") > 0) {
       this->setDepth(::utils::stoi(args["depth"]));
-    }
-    else if (args.count("searchmoves") > 0) {
+    } else if (args.count("searchmoves") > 0) {
       this->setSearchMoves(args["searchmoves"]);
-    }
-    else if (args.count("wtime") > 0) {
+    } else if (args.count("wtime") > 0) {
       this->setWTime(::utils::stoi(args["wtime"]));
-    }
-    else if (args.count("btime") > 0) {
+    } else if (args.count("btime") > 0) {
       this->setBTime(::utils::stoi(args["btime"]));
-    }
-    else if (args.count("winc") > 0) {
+    } else if (args.count("winc") > 0) {
       this->setWinc(::utils::stoi(args["winc"]));
-    }
-    else if (args.count("binc") > 0) {
+    } else if (args.count("binc") > 0) {
       this->setBinc(::utils::stoi(args["binc"]));
-    }
-    else if (args.count("movestogo") > 0) {
+    } else if (args.count("movestogo") > 0) {
       this->setMovesToGo(::utils::stoi(args["movestogo"]));
-    }
-    else if (args.count("nodes") > 0) {
+    } else if (args.count("nodes") > 0) {
       this->setNodes(::utils::stoi(args["nodes"]));
-    }
-    else if (args.count("movetime") > 0) {
+    } else if (args.count("movetime") > 0) {
       this->setMoveTime(::utils::stoi(args["movetime"]));
-    }
-    else if (args.count("mate") > 0) {
+    } else if (args.count("mate") > 0) {
       this->setMate(::utils::stoi(args["mate"]));
-    }
-    else if (args.count("infinite") > 0) {
+    } else if (args.count("infinite") > 0) {
       this->setInfinite(::utils::stoi(args["infinite"]));
-    }
-    else if (args.count("ponder") > 0) {
+    } else if (args.count("ponder") > 0) {
       this->setPonder(::utils::stoi(args["ponder"]));
     }
   };
-  auto uci_stop = [&](arguments_t args){
+  auto uci_stop = [&](arguments_t args) {
     this->stopSearch();
   };
-  auto uci_quit = [&](arguments_t args){
+  auto uci_quit = [&](arguments_t args) {
     this->quitSearch();
   };
-  auto uci_ponderhit = [&](arguments_t args){
+  auto uci_ponderhit = [&](arguments_t args) {
 //     * ponderhit
 //	the user has played the expected move. This will be sent if the engine was told to ponder on the same move
 //	the user has played. The engine should continue searching but switch from pondering to normal search.
   };
-  auto uci_ucinewgame = [&](arguments_t args){
+  auto uci_ucinewgame = [&](arguments_t args) {
 //    * ucinewgame
 //    this is sent to the engine when the next search (started with "position" and "go") will be from
 //    a different game. This can be a new game the engine should play or a new game it should analyse but
@@ -92,13 +81,12 @@ search::Search::Search(::uci::Listener &uci) {
 
 
   // bind the listeners
-  uci.addListener(GO,         uci_go);
-  uci.addListener(STOP,       uci_stop);
-  uci.addListener(QUIT,       uci_quit);
-  uci.addListener(PONDERHIT,  uci_ponderhit);
+  uci.addListener(GO, uci_go);
+  uci.addListener(STOP, uci_stop);
+  uci.addListener(QUIT, uci_quit);
+  uci.addListener(PONDERHIT, uci_ponderhit);
   uci.addListener(UCINEWGAME, uci_ucinewgame);
 }
-
 
 /**
  * Set Search variables. searchScore is a class member and
@@ -111,7 +99,6 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
   searchScore = iterativeDeepening(node);
 }
 
-
 /**
  * Main iterative loop, calls negamax until desired depth is reached
  * or the time limit is run out.
@@ -119,53 +106,55 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
  * @return
  */
 int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> board) {
-      int bestScore = -VALUE_INFINITE;  //Kinda deprecated, should be switched to a gamestate
-      int alpha = -VALUE_INFINITE;
-      int beta = VALUE_INFINITE;
-      int lastDepth = 0;
-      startTime = clock();              //Starting clock
+  int bestScore = -VALUE_INFINITE;  //Kinda deprecated, should be switched to a gamestate
+  int alpha = -VALUE_INFINITE;
+  int beta = VALUE_INFINITE;
+  int lastDepth = 0;
+  startTime = clock();              //Starting clock
 
 
-      std::shared_ptr<::bitboard::gameState> bestMove;    
+  std::shared_ptr<::bitboard::gameState> bestMove = std::make_shared<::bitboard::gameState>();
 
-      //
-      // Create move tree
-      //
+  //
+  // Create move tree
+  //
 
-      ::gameTree::GameTree rMoves(board);
-      rMoves.setMaxNumberOfNodes(100);
-      rMoves.generateNodes();
-
-
-      //
-      // Iterate down in the search tree for each search tree
-      //
-      for (int currentDepth = 1; currentDepth <= depth || (static_cast<double> (clock() - startTime)/CLOCKS_PER_SEC) < movetime; currentDepth++) {
-          std::shared_ptr<::bitboard::gameState> currentScore;
-          currentScore->score  = -VALUE_INFINITE;
-
-          //Old score, replaced my a gameState currentScore
-          int score = -VALUE_INFINITE;
-          lastDepth = currentDepth;     //Sent to UCI or some debug when search is done
-
-          //Needs to be replaced
-          score = negamax(board, alpha, beta, currentDepth);
+  ::gameTree::GameTree rMoves(board);
+  rMoves.setMaxNumberOfNodes(100);
+  rMoves.generateNodes();
+  //int asda = rMoves.getNumberOfNodes();
+  //int dfkjhsdf = rMoves.getDepth();
 
 
-          // Before we can do this, the return type of negamax needs to be changed
-          //currentScore = negamax(node, alpha, beta, currentDepth);
+  //
+  // Iterate down in the search tree for each search tree
+  //
+  time_t initTimer = std::time(nullptr);
+  auto timeout = (initTimer * 1000) + movetime;
+  for (int currentDepth = 0; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+    std::shared_ptr<::bitboard::gameState> currentScore = std::make_shared<::bitboard::gameState>();
+    //Old score, replaced my a gameState currentScore
+    //int score = ;
+
+    // this doesnt show true depth
+    lastDepth = currentDepth = bestMove->gameTreeLevel;     //Sent to UCI or some debug when search is done
+
+    //Needs to be replaced
+    int score = negamax(board, alpha, beta, currentDepth);
 
 
-          // Needs to be changed to compare moves instead
-          //If score from a greater depth is better than current bestScore, update
-          if(bestScore < score)
-            bestScore = score;
+    // Before we can do this, the return type of negamax needs to be changed
+    //currentScore = negamax(node, alpha, beta, currentDepth);
 
-      }
-      //Does not return a move yet
-      return bestScore;
+
+    // Needs to be changed to compare moves instead
+    //If score from a greater depth is better than current bestScore, update
+    if (bestScore < score)
+      bestScore = score;
+  }
+  //Does not return a move yet
+  return bestScore;
 }
-
 
 /**
  * Negamax routine. Recursive.
@@ -181,27 +170,26 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
  * @param depth
  * @return
  */
-int search::Search::negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth) {
-    int score = -VALUE_INFINITE;
-    int value = 0;
-    int moveCounter=0;
+int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int depth) {
+  int score = 0;
+  int value = 0;
+  int moveCounter = 0;
 
-    if (depth == 0 || board->children.empty()) {
-        return board->score;
+  if (depth == 0 || node->children.empty()) {
+    return node->score;
+  }
+
+  //Node->children does not return correct type atm
+  for (std::shared_ptr<::bitboard::gameState> i : node->children) {
+    value = -negamax(i, -beta, -alpha, depth - 1); // usually start at node 0, which means this will loop forever..
+    score = (score > value) ? score : value;
+    alpha = (alpha > value) ? alpha : value;
+    if (alpha >= beta) {
+      continue;
     }
+  }
 
-    //Node->children does not return correct type atm
-    for (auto i : board->children) {
-        value = -negamax(i, -beta, -alpha, depth - 1);
-        score = (score > value) ? score : value;
-        alpha = (alpha > value) ? alpha : value;
-        if (alpha>=beta)
-        {
-            continue;
-        }
-    }
-
-    return score;
+  return score;
 }
 
 /**

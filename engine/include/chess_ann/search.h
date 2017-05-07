@@ -21,9 +21,9 @@ public:
 };
 
 namespace search {
-    int negamax(Enviornment * node, int alpha, int beta, int depth);
-    int max(int value1, int value2);
-    void iterativeDeepening(Enviornment * node);
+    //int negamax(Enviornment * node, int alpha, int beta, int depth);
+    //int max(int value1, int value2);
+    //void iterativeDeepening(Enviornment * node);
 }
 
 

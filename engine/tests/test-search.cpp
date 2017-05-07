@@ -7,7 +7,7 @@
 #include "chess_ann/bitboard.h"
 
 ::search::Search test_search;
-std::shared_ptr<::bitboard::gameState> node(new ::bitboard::gameState);
+std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameState>();
 
 
 
