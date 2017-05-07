@@ -16,6 +16,9 @@
 int utils::stoi(std::string v) {
   return v == "" || v == " " ? 0 : std::stoi(v);
 }
+int utils::stoi(const char c) {
+  return c == ' ' ? 0 : c - '0';
+}
 
 /**
  * Check if a bit is set at given index.
