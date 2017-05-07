@@ -11,7 +11,7 @@
 #include <thread>
 #include <mutex>
 #include "Parser.h"
-#include "Definitions.h"
+#include "definitions.h"
 
 namespace uci {
 class Listener {

@@ -1,0 +1,3041 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="chess_ann"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\external\;CMake Files\external\Catch\;CMake Files\external\fann\;CMake Files\external\fann\cmake\;CMake Files\external\fann\cmake\Modules\;CMake Files\external\fann\src\;CMake Files\external\fann\lib\;CMake Files\external\fann\lib\googletest\;CMake Files\external\fann\lib\googletest\cmake\;CMake Files\external\fann\tests\;CMake Files\external\Stockfish\;CMake Files\external\Stockfish\src\;CMake Files\external\benchmark\;CMake Files\external\benchmark\cmake\;CMake Files\external\benchmark\src\;CMake Files\external\benchmark\test\;CMake Files\cmake\;CMake Files\engine\;CMake Files\engine\src\;CMake Files\engine\benchmarks\;CMake Files\engine\tests\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package_source">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 package_source"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="package">
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 package"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Benchmark">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Benchmark" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 Benchmark"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Benchmark/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Benchmark" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 Benchmark/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SelfTest">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/SelfTest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 SelfTest"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SelfTest/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/SelfTest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 SelfTest/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Catch/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="floatfann">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfloatfann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 floatfann"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="floatfann/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfloatfann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 floatfann/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="floatfann_static">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfloatfann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 floatfann_static"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="floatfann_static/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfloatfann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 floatfann_static/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="doublefann">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libdoublefann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 doublefann"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="doublefann/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libdoublefann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 doublefann/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="doublefann_static">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libdoublefann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 doublefann_static"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="doublefann_static/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libdoublefann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 doublefann_static/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fixedfann">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfixedfann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fixedfann"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fixedfann/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfixedfann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fixedfann/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fixedfann_static">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfixedfann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fixedfann_static"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fixedfann_static/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfixedfann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fixedfann_static/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fann">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fann"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fann/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfann.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fann/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fann_static">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fann_static"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fann_static/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/libfann.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-D_REENTRANT"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/src/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 fann_static/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/libgtest_main.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGTEST_CREATE_SHARED_LIBRARY=1"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 gtest_main"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest_main/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/libgtest_main.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGTEST_CREATE_SHARED_LIBRARY=1"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 gtest_main/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/libgtest.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGTEST_CREATE_SHARED_LIBRARY=1"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 gtest"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gtest/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/libgtest.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DGTEST_CREATE_SHARED_LIBRARY=1"/>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/lib/googletest"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 gtest/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/lib/googletest/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fann_tests">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/fann_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/tests/../src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/tests/../lib/googletest/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 fann_tests"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fann_tests/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/fann_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/tests/../src/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/tests/../lib/googletest/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 fann_tests/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/fann/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="benchmark">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/libbenchmark.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/src"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 benchmark"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="benchmark/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/libbenchmark.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/src"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 benchmark/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="filter_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/filter_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 filter_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="filter_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/filter_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 filter_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="donotoptimize_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/donotoptimize_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 donotoptimize_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="donotoptimize_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/donotoptimize_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 donotoptimize_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="skip_with_error_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/skip_with_error_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 skip_with_error_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="skip_with_error_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/skip_with_error_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 skip_with_error_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="options_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/options_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 options_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="options_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/options_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 options_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="diagnostics_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/diagnostics_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 diagnostics_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="diagnostics_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/diagnostics_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 diagnostics_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="complexity_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/complexity_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 complexity_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="complexity_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/complexity_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 complexity_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="basic_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/basic_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 basic_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="basic_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/basic_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 basic_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="output_test_helper">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/liboutput_test_helper.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 output_test_helper"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="output_test_helper/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/liboutput_test_helper.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 output_test_helper/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="benchmark_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/benchmark_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 benchmark_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="benchmark_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/benchmark_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 benchmark_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="user_counters_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/user_counters_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 user_counters_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="user_counters_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/user_counters_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 user_counters_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="map_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/map_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 map_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="map_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/map_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 map_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="cxx03_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/cxx03_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 cxx03_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="cxx03_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/cxx03_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 cxx03_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="register_benchmark_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/register_benchmark_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 register_benchmark_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="register_benchmark_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/register_benchmark_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 register_benchmark_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="multiple_ranges_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/multiple_ranges_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 multiple_ranges_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="multiple_ranges_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/multiple_ranges_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 multiple_ranges_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="reporter_output_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/reporter_output_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 reporter_output_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="reporter_output_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/reporter_output_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 reporter_output_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="user_counters_tabular_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/user_counters_tabular_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 user_counters_tabular_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="user_counters_tabular_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/user_counters_tabular_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 user_counters_tabular_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fixture_test">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/fixture_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 fixture_test"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="fixture_test/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/fixture_test" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DHAVE_STD_REGEX"/>
+					<Add option="-DHAVE_POSIX_REGEX"/>
+					<Add option="-DHAVE_STEADY_CLOCK"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 fixture_test/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stockfish">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/libstockfish.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 stockfish"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="stockfish/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/libstockfish.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 stockfish/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Stockfish_src">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Stockfish_src" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 Stockfish_src"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Stockfish_src/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Stockfish_src" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 Stockfish_src/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/external/Stockfish/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_src">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/chess_ann_src" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/src"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 chess_ann_src"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_src/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/chess_ann_src" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/src"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 chess_ann_src/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_benchmarks">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/chess_ann_benchmarks" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 chess_ann_benchmarks"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_benchmarks/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/chess_ann_benchmarks" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 chess_ann_benchmarks/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_tests">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/chess_ann_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 chess_ann_tests"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chess_ann_tests/fast">
+				<Option output="/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/chess_ann_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/anders/Projects/chess_ann/engine/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/benchmark/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Catch/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/fann/include"/>
+					<Add directory="/home/anders/Projects/chess_ann/external/Stockfish/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/../../../../include/c++/6.3.1/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/6.3.1/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 chess_ann_tests/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/anders/Projects/chess_ann/cmake-build-debug/engine/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/charToInt.cpp">
+			<Option target="chess_ann_benchmarks"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/intReference.cpp">
+			<Option target="chess_ann_benchmarks"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/main.cpp">
+			<Option target="chess_ann_benchmarks"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/test.cpp">
+			<Option target="chess_ann_benchmarks"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/ANN/ann.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/BitboardsNode.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/GameTree.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/ScoreNode.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/Search.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/environment.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/main.cpp">
+			<Option target="chess_ann_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/uci/Listener.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/uci/Parser.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/utils.cpp">
+			<Option target="chess_ann_src"/>
+			<Option target="chess_ann_benchmarks"/>
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/moveGenTests.cpp">
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/test-search.cpp">
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/tests-GameTree.cpp">
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/tests-UCIHandler.cpp">
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/tests-UCIListener.cpp">
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/tests-main.cpp">
+			<Option target="chess_ann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/catch.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/catch_session.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/catch_with_main.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/external/clara.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/external/tbc_text_format.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_approx.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_assertionresult.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_assertionresult.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_capture.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_clara.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_commandline.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_common.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_common.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_compiler_capabilities.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_config.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_console_colour.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_console_colour_impl.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_context.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_context_impl.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_debugger.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_debugger.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_default_main.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_errno_guard.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_evaluate.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_exception_translator_registry.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_expression_lhs.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_fatal_condition.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_generators.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_generators_impl.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_impl.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_capture.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_config.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_exception.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_generators.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_registry_hub.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_reporter.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_runner.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_tag_alias_registry.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_interfaces_testcase.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_legacy_reporter_adapter.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_legacy_reporter_adapter.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_list.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_matchers.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_matchers_string.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_matchers_string.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_matchers_vector.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_message.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_message.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_notimplemented_exception.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_notimplemented_exception.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_objc.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_objc_arc.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_option.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_platform.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_ptr.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_reenable_warnings.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_registry_hub.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_reporter_registrars.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_reporter_registry.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_result_builder.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_result_builder.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_result_type.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_run_context.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_section.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_section.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_section_info.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_section_info.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_stream.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_stream.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_streambuf.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_suppress_warnings.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_tag_alias.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_tag_alias_registry.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_tag_alias_registry.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_case_info.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_case_info.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_case_registry_impl.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_case_tracker.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_registry.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_spec.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_test_spec_parser.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_text.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_timer.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_timer.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_tostring.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_tostring.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_totals.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_type_traits.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_version.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_version.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_wildcard_pattern.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_windows_h_proxy.h">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/internal/catch_xmlwriter.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_automake.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_bases.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_compact.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_console.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_junit.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_multi.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_tap.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_teamcity.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/include/reporters/catch_reporter_xml.hpp">
+			<Option target="Benchmark"/>
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/Benchmark/BenchMain.cpp">
+			<Option target="Benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/Benchmark/StringificationBench.cpp">
+			<Option target="Benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ApproxTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/BDDTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ClassTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/CmdLineTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/CompilationTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ConditionTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/EnumToString.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ExceptionTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/GeneratorTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/MatchersTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/MessageTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/MiscTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/PartTrackerTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_common.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_console_colour.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_debugger.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_capture.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_config.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_exception.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_generators.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_registry_hub.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_reporter.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_runner.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_interfaces_testcase.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_message.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_option.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_ptr.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_stream.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_streambuf.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_test_case_tracker.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_test_spec.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/SurrogateCpps/catch_xmlwriter.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/TagAliasTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/TestMain.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ToStringGeneralTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ToStringPair.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ToStringTuple.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ToStringVector.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/ToStringWhich.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/TrickyTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/projects/SelfTest/VariadicMacrosTests.cpp">
+			<Option target="SelfTest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/benchmark.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/bitbase.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/bitboard.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/endgame.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/evaluate.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/main.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/material.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/misc.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/movegen.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/movepick.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/pawns.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/position.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/psqt.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/search.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/syzygy/tbprobe.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/thread.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/timeman.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/tt.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/uci.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/ucioption.cpp">
+			<Option target="stockfish"/>
+			<Option target="Stockfish_src"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/include/benchmark/benchmark.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/include/benchmark/benchmark_api.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/include/benchmark/macros.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/include/benchmark/reporter.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/arraysize.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/benchmark.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/benchmark_api_internal.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/benchmark_register.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/check.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/colorprint.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/colorprint.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/commandlineflags.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/commandlineflags.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/complexity.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/complexity.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/console_reporter.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/counter.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/counter.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/csv_reporter.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/cycleclock.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/internal_macros.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/json_reporter.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/log.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/mutex.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/re.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/reporter.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/sleep.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/sleep.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/stat.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/string_util.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/string_util.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/sysinfo.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/sysinfo.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/timers.cc">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/timers.h">
+			<Option target="benchmark"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/basic_test.cc">
+			<Option target="basic_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/benchmark_test.cc">
+			<Option target="benchmark_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/complexity_test.cc">
+			<Option target="complexity_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/cxx03_test.cc">
+			<Option target="cxx03_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/diagnostics_test.cc">
+			<Option target="diagnostics_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/donotoptimize_test.cc">
+			<Option target="donotoptimize_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/filter_test.cc">
+			<Option target="filter_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/fixture_test.cc">
+			<Option target="fixture_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/map_test.cc">
+			<Option target="map_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/multiple_ranges_test.cc">
+			<Option target="multiple_ranges_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/options_test.cc">
+			<Option target="options_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/output_test.h">
+			<Option target="complexity_test"/>
+			<Option target="output_test_helper"/>
+			<Option target="user_counters_test"/>
+			<Option target="reporter_output_test"/>
+			<Option target="user_counters_tabular_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/output_test_helper.cc">
+			<Option target="output_test_helper"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/register_benchmark_test.cc">
+			<Option target="register_benchmark_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/reporter_output_test.cc">
+			<Option target="reporter_output_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/skip_with_error_test.cc">
+			<Option target="skip_with_error_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/user_counters_tabular_test.cc">
+			<Option target="user_counters_tabular_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/user_counters_test.cc">
+			<Option target="user_counters_test"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/src/gtest-all.cc">
+			<Option target="gtest"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/src/gtest_main.cc">
+			<Option target="gtest_main"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/src/doublefann.c">
+			<Option target="doublefann"/>
+			<Option target="doublefann_static"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/src/fixedfann.c">
+			<Option target="fixedfann"/>
+			<Option target="fixedfann_static"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/src/floatfann.c">
+			<Option target="floatfann"/>
+			<Option target="floatfann_static"/>
+			<Option target="fann"/>
+			<Option target="fann_static"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/fann_test.cpp">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/fann_test.h">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/fann_test_data.cpp">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/fann_test_data.h">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/fann_test_train.cpp">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/fann_test_train.h">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/main.cpp">
+			<Option target="fann_tests"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Catch\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Catch/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Catch\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/config.h.in">
+			<Option virtualFolder="CMake Files\external\fann\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/fann.pc.cmake">
+			<Option virtualFolder="CMake Files\external\fann\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/fann-config.cmake.in">
+			<Option virtualFolder="CMake Files\external\fann\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/config.h.in">
+			<Option virtualFolder="CMake Files\external\fann\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/fann.pc.cmake">
+			<Option virtualFolder="CMake Files\external\fann\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/fann-config.cmake.in">
+			<Option virtualFolder="CMake Files\external\fann\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/Modules/DefineInstallationPaths.cmake">
+			<Option virtualFolder="CMake Files\external\fann\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/cmake/Modules/DefineInstallationPaths.cmake">
+			<Option virtualFolder="CMake Files\external\fann\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\lib\googletest\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\lib\googletest\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\lib\googletest\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\external\fann\lib\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\external\fann\lib\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/lib/googletest/cmake/internal_utils.cmake">
+			<Option virtualFolder="CMake Files\external\fann\lib\googletest\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\tests\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\tests\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/fann/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\fann\tests\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Stockfish\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Stockfish\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Stockfish\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Stockfish\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/Stockfish/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\Stockfish\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\benchmark\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\benchmark\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/GetGitVersion.cmake">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/AddCXXCompilerFlag.cmake">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/CXXFeatureCheck.cmake">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/std_regex.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/gnu_posix_regex.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/posix_regex.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/steady_clock.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/Config.cmake.in">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/GetGitVersion.cmake">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/AddCXXCompilerFlag.cmake">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/CXXFeatureCheck.cmake">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/std_regex.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/gnu_posix_regex.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/posix_regex.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/steady_clock.cpp">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/cmake/Config.cmake.in">
+			<Option virtualFolder="CMake Files\external\benchmark\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\benchmark\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\benchmark\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\benchmark\test\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/external/benchmark/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\benchmark\test\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/cmake/Paths.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\src\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\benchmarks\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/benchmarks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\benchmarks\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\tests\"/>
+		</Unit>
+		<Unit filename="/home/anders/Projects/chess_ann/engine/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\engine\tests\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

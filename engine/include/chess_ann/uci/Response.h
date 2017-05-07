@@ -6,7 +6,7 @@
 #define CHESS_ANN_RESPONSE_H
 
 #include <iostream>
-#include "Definitions.h"
+#include "definitions.h"
 
 namespace uci {
 void send(std::string res) {

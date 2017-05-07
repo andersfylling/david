@@ -7,8 +7,8 @@
 #include <map>
 #include <sstream>
 #include "chess_ann/uci/Parser.h"
-#include "chess_ann/uci/UCIEvent.h"
-#include "chess_ann/uci/Definitions.h"
+#include "chess_ann/uci/events.h"
+#include "chess_ann/uci/definitions.h"
 
 namespace uci {
 Parser::Parser() {

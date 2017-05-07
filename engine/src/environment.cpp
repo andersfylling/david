@@ -698,18 +698,6 @@ std::string Environment::fen(gameState* node, bool whiteMovesNext) {
   return fen;
 }
 
-/**
- * Checks if bit exists at given index.
- *
- * @deprecated use ::utils::bitAt(...) -> bool
- * @param board
- * @param index
- * @return
- */
-bool Environment::bitAt(bitboard_t board, uint8_t index) {
-  return ::utils::bitAt(board, index);
-}
-
 
 void Environment::generateAttacks() {
   attacks.WhitePawn = pawnMoves(COLOR::WHITE);

@@ -7,7 +7,7 @@
 #include "chess_ann/bitboard.h"
 #include "chess_ann/variables.h"
 #include "chess_ann/uci/Parser.h"
-#include "chess_ann/uci/UCIEvent.h"
+#include "chess_ann/uci/events.h"
 #include <chess_ann/uci/Listener.h>
 
 using ::bitboard::COLOR;

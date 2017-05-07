@@ -1,0 +1,2 @@
+/usr/bin/ar qc libfixedfann.a  CMakeFiles/fixedfann_static.dir/fixedfann.c.o
+/usr/bin/ranlib libfixedfann.a

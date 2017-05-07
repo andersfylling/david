@@ -76,7 +76,7 @@ void xor_test()
 
 
   FANN::training_data data;
-  if (data.read_train_from_file(::utils::getAbsoluteProjectPath() + "/src/ANN/xor.data")) //hacky fix
+  if (data.read_train_from_file(::utils::getAbsoluteProjectPath() + "/engine/src/ANN/xor.data")) //hacky fix
   {
     // Initialize and train the network with the data
     net.init_weights(data);
@@ -104,9 +104,9 @@ void xor_test()
     cout << endl << "Saving network." << endl;
 
     // Save the network in floating point and fixed point
-    net.save(::utils::getAbsoluteProjectPath() + "/src/ANN/trainingoutput/xor_float.net");
-    unsigned int decimal_point = net.save_to_fixed(::utils::getAbsoluteProjectPath() + "/src/ANN/trainingoutput/xor_fixed.net");
-    data.save_train_to_fixed(::utils::getAbsoluteProjectPath() + "/src/ANN/trainingoutput/xor_fixed.data", decimal_point);
+    net.save(::utils::getAbsoluteProjectPath() + "/engine/src/ANN/trainingoutput/xor_float.net");
+    unsigned int decimal_point = net.save_to_fixed(::utils::getAbsoluteProjectPath() + "/engine/src/ANN/trainingoutput/xor_fixed.net");
+    data.save_train_to_fixed(::utils::getAbsoluteProjectPath() + "/engine/src/ANN/trainingoutput/xor_fixed.data", decimal_point);
 
     cout << endl << "XOR test completed." << endl;
   }

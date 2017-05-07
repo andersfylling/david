@@ -1,0 +1,1 @@
+/usr/bin/c++    -std=c++11 -Wall -Wextra -Wshadow -pedantic -pedantic-errors -Wfloat-equal -fstrict-aliasing -Wzero-as-null-pointer-constant -Wstrict-aliasing -g   CMakeFiles/cxx03_test.dir/cxx03_test.cc.o  -o cxx03_test -Wl,-rpath,/home/anders/Projects/chess_ann/cmake-build-debug/external/benchmark/src -rdynamic ../src/libbenchmark.so.0.0.0 -lpthread -lrt 
