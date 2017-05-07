@@ -45,7 +45,6 @@ class GameTree {
   void newRootNode(nodePtr node);
   nodePtr regretNewRootNode();
   void setMaxNumberOfNodes(int n);
-  bool hasMaxNumberOfNodes();
   int getMaxNumberOfNodes();
   void generateNodes();
   nodePtr generateNode(nodePtr parent);
