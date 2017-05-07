@@ -10,9 +10,10 @@
 #include "chess_ann/uci/UCIEvent.h"
 #include <chess_ann/uci/Listener.h>
 #include "chess_ann/GameTree.h"
-#include <atomic>
 #include <time.h>
 #include <memory>
+#include <cassert>
+
 
 using ::bitboard::COLOR;
 
@@ -35,7 +36,8 @@ class Search {
   void setIterationComplete(bool isCompleted);
 
   //Test/debug
-  bool returnMembers();
+  int returnDepth();
+  int returnTimeToSearch();
 
   // uci protocol methods, this can be used in unit testing
   void stopSearch();
@@ -61,17 +63,18 @@ class Search {
   int infinite;
   int ponder;
   std::string searchMoves;
-  int searchScore;
+  int searchScore; //replaced by next line
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
 };
 
-  inline bool Search::returnMembers() {
-    if(this->depth)
-      return true;
-    else
-      return false;
+  inline int Search::returnDepth()  {
+    return this->depth;
+  }
+
+  inline int Search::returnTimeToSearch(){
+    return this->movetime;
   }
 
 }

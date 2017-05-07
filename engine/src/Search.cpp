@@ -95,8 +95,11 @@ search::Search::Search(::uci::Listener &uci) {
  */
 void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
   resetSearchValues();
+  std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
+  std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
 
-  searchScore = iterativeDeepening(node);
+  this->searchScore = iterativeDeepening(node);
+  std::cout << "Search objects score after complete search: " << this->searchScore<< std::endl;  //Debug
 }
 
 /**
@@ -106,43 +109,43 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
  * @return
  */
 int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> board) {
-  int bestScore = -VALUE_INFINITE;  //Kinda deprecated, should be switched to a gamestate
   int alpha = -VALUE_INFINITE;
   int beta = VALUE_INFINITE;
   int lastDepth = 0;
   startTime = clock();              //Starting clock
-
-
-  std::shared_ptr<::bitboard::gameState> bestMove = std::make_shared<::bitboard::gameState>();
+  //std::shared_ptr<::bitboard::gameState> bestMove = std::make_shared<::bitboard::gameState>();  //Score best node score
+  int bestMove;
 
   //
   // Create move tree
   //
   ::gameTree::GameTree rMoves(board);
-  rMoves.setMaxNumberOfNodes(100);
+  rMoves.setMaxNumberOfNodes(100);        // Replace hard coding
   rMoves.generateNodes();
+
 
   //
   // Iterate down in the search tree for each search tree
   //
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 1000) + movetime;
-  for (int currentDepth = 0; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
-    std::shared_ptr<::bitboard::gameState> currentBestMove = std::make_shared<::bitboard::gameState>();
+  for (int currentDepth = 1; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+    int currentBestMove;
 
     // this doesnt show true depth
-    lastDepth = currentDepth = bestMove->gameTreeLevel;     //Sent to UCI or some debug when search is done
+    lastDepth = currentDepth;// = currentBestMove->gameTreeLevel;     //Sent to UCI or some debug when search is done
 
-    //Needs to be replaced
-    currentBestMove->score = negamax(board, alpha, beta, currentDepth);
+    std::cout << "Iterative deepening depth: " << currentDepth << std::endl; //Debug
+    currentBestMove = negamax(board, alpha, beta, currentDepth);
 
 
     //If score from a greater depth is better than current bestScore, update
-    if (bestMove->score < currentBestMove->score)
-      bestMove->score = currentBestMove->score;
+    if (bestMove < currentBestMove)
+      bestMove = currentBestMove;
   }
   //Does not return a move yet
-  return bestScore;
+  std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
+  return bestMove;
 }
 
 /**
@@ -159,25 +162,30 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
  * @param depth
  * @return
  */
-int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int depth) {
-  int score = 0;
-  int value = 0;
+int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int iDepth) {
+  /*std::shared_ptr<::bitboard::gameState> score;
+  std::shared_ptr<::bitboard::gameState> value;*/
+  int score;
+  int value;
   int moveCounter = 0;
 
-  if (depth == 0 || node->children.empty()) {
-    return node->score;
+  std::cout << "Negamax depth is: " << iDepth << std::endl;
+
+  if (0 < iDepth && iDepth <= depth || node->children.empty()) {
+    return score;
   }
 
   //Node->children does not return correct type atm
   for (std::shared_ptr<::bitboard::gameState> i : node->children) {
-    value = -negamax(i, -beta, -alpha, ++depth); // usually start at node 0, which means this will loop forever..
+    value = -negamax(i, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
     score = (score > value) ? score : value;
     alpha = (alpha > value) ? alpha : value;
     if (alpha >= beta) {
+      std::cout << "Nodes pruned" << std::endl; //debug
       continue;
     }
   }
-
+  std::cout << "Score after negamax iteration: " << score << std::endl;  //Debug
   return score;
 }
 
@@ -186,7 +194,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
  * Mainly used for debugging and progress atm
  */
 void search::Search::resetSearchValues() {
-  this->movetime = 3000; //Hardcoded variables as of now, need to switch to uci later
+  this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
   this->depth = 10;
 }
 

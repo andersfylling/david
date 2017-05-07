@@ -243,10 +243,10 @@ TEST_CASE("Queen move BLOCK") {
 
 TEST_CASE ("REDUCE VECTOR") {
   bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368ULL, DIRECTION::UP, false, 1), test.blackPieces(), test.whitePieces(), DIRECTION::UP);
-  REQUIRE(board == 2260595906707456);
+  REQUIRE(board == 2260595906707456ULL);
 
   board = test.reduceVector(*test.getDiagYAxis(34359738368ULL, DIRECTION::UP, false, 2), test.blackPieces(), test.whitePieces(), DIRECTION::DOWN);
-  REQUIRE(board == 134742016);
+  REQUIRE(board == 134742016ULL);
 }
 
 
@@ -276,7 +276,7 @@ TEST_CASE("Bishop MOVEMENT") {
 
 
   REQUIRE(t1 == 0);
-  REQUIRE(t2 == 36100411639201792);
+  REQUIRE(t2 == 36100411639201792ULL);
 }
 
 
@@ -348,7 +348,7 @@ TEST_CASE("Change chess index into an bitboard array index; E6 => 43") {
 
 TEST_CASE("Create a bitboard using a string index as E6 for index") {
   bitboard_t board = test.chessIndexToBitboard("e6");
-  REQUIRE(board == 8796093022208);
+  REQUIRE(board == 8796093022208ULL);
 }
 
 TEST_CASE("Validate fen string from gameState node") {
