@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdoublefann.a  CMakeFiles/doublefann_static.dir/doublefann.c.o
-/usr/bin/ranlib libdoublefann.a
