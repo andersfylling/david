@@ -116,7 +116,7 @@ void ::gameTree::GameTree::sortChildren(nodePtr node) {
   }
 
   std::sort(node->children.begin(), node->children.end(),
-       [](const nodePtr& a, const nodePtr& b) -> bool
+       [](const nodePtr a, const nodePtr b) -> bool
        {
          return a->score > b->score;
        });
@@ -201,6 +201,33 @@ int ::gameTree::GameTree::getNumberOfNodes(nodePtr node) {
   }
   for (std::shared_ptr<gameState> node : this->current->children) {
     return this->getNumberOfNodes(node);
+  }
+}
+
+int ::gameTree::GameTree::getDepth() {
+  if (this->current == nullptr) {
+    return 0;
+  }
+
+  int depth = this->current->gameTreeLevel;
+
+  for (std::shared_ptr<gameState> node : this->current->children) {
+    this->getDepth(node, depth);
+  }
+
+  return depth;
+}
+void ::gameTree::GameTree::getDepth(nodePtr node, int& depth) {
+  if (node == nullptr) {
+    return; // this should never fire.
+  }
+
+  if (depth < node->gameTreeLevel) {
+    depth += 1;
+  }
+
+  for (std::shared_ptr<gameState> child : node->children) {
+    this->getDepth(child, depth);
   }
 }
 

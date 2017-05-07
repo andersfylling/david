@@ -32,6 +32,7 @@ class GameTree {
   int maxNumberOfNodes; // nodes in memory
 
   int getNumberOfNodes(nodePtr node);
+  void getDepth(nodePtr node, int& depth);
 
  public:
   GameTree();
@@ -50,6 +51,7 @@ class GameTree {
   int getNumberOfNodes();
   void generateChildren(nodePtr node);
   void sortChildren(nodePtr node);
+  int getDepth();
   
 };
 
