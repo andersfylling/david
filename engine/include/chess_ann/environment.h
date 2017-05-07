@@ -108,6 +108,8 @@ class Environment {
   uint64_t intToUint64(int i);
 
   std::string fen(gameState* node, bool whiteMovesNext);
+  void setFen(std::string fen);
+  std::shared_ptr<::bitboard::gameState> generateBoardFromFen(const std::string fen);
 
 };
 }

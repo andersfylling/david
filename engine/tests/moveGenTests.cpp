@@ -5,6 +5,7 @@
 #include <math.h>
 #include <memory>
 #include <iostream>
+#include <chess_ann/GameTree.h>
 #include "stockfish/stockfishMock.h"
 
 
@@ -356,9 +357,18 @@ TEST_CASE("Validate fen string from gameState node") {
   //node.WhitePawn = 0;
 
   //auto fen = test.fen(&node, true);
-  std::cout << ::stockfishMock::evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1") << std::endl;
+  //std::cout << ::stockfishMock::evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1") << std::endl;
 
   //auto fen = test.fen(n_p, false);
 
   //std::cout << fen << std::endl;
+}
+
+TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
+  ::environment::Environment env(::bitboard::COLOR::BLACK);
+
+  ::gameTree::nodePtr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  env.setGameState(node);
+
+  REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
 }

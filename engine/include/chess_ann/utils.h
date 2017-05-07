@@ -14,6 +14,7 @@
 
 namespace utils {
 int stoi(std::string v);
+int stoi(const char c);
 bool bitAt(uint64_t b, uint8_t i);
 std::string getAbsoluteProjectPath();
 };

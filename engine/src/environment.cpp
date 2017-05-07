@@ -12,6 +12,8 @@
 #include <array>
 #include <algorithm>
 #include <chess_ann/utils.h>
+#include <chess_ann/GameTree.h>
+#include <map>
 
 namespace environment {
 
@@ -696,6 +698,63 @@ std::string Environment::fen(gameState* node, bool whiteMovesNext) {
   fen += " " + std::to_string(node->fullMoves);
 
   return fen;
+}
+
+void Environment::setFen(std::string fen) {
+
+}
+
+/**
+ * Get a shared pointer of a fresh gameState based on a fen string.
+ * This assumes the fen string is correct before parsing.
+ *
+ * Warning: this ignores, castling, passant, halfmove and fullmove.
+ *
+ * @param fen std::string, must be correctly formatted (!)
+ * @return new shared_ptr of gameState
+ */
+std::shared_ptr<::bitboard::gameState> Environment::generateBoardFromFen(const std::string fen) {
+  gameTree::nodePtr node = std::make_shared<::bitboard::gameState>();
+
+  std::map<const char, ::bitboard::bitboard_t&> links = {
+      {'b', node->BlackBishop},
+      {'k', node->BlackKing},
+      {'n', node->BlackKnight},
+      {'p', node->BlackPawn},
+      {'q', node->BlackQueen},
+      {'r', node->BlackRook},
+
+      {'B', node->WhiteBishop},
+      {'K', node->WhiteKing},
+      {'N', node->WhiteKnight},
+      {'P', node->WhitePawn},
+      {'Q', node->WhiteQueen},
+      {'R', node->WhiteRook}
+  };
+
+  bitboard_t index = 0;
+  for (const auto c : fen) {
+    if (index == 64) {
+      break;
+    }
+    if (c == '/') {
+      continue;
+    }
+
+    // check if the char is a piece type
+    if (links.count(c) > 0) {
+      // it's a piece type
+      flipBit(links.at(c), index); // set bit at correct index on correct board
+      index += 1;
+    }
+    else {
+      // assumption: it's a number
+      // update index with this number
+      index += ::utils::stoi(c);
+    }
+  }
+
+  return node;
 }
 
 
