@@ -1,0 +1,2 @@
+/usr/bin/ar qc libfloatfann.a  CMakeFiles/floatfann_static.dir/floatfann.c.o
+/usr/bin/ranlib libfloatfann.a
