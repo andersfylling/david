@@ -187,7 +187,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
     }
 
     //Node->children does not return correct type atm
-    for (auto i : node->children) {
+    for (std::shared_ptr<::bitboard::gameState> i : node->children) {
         value = -negamax(i, -beta, -alpha, depth - 1);
         score = (score > value) ? score : value;
         alpha = (alpha > value) ? alpha : value;
