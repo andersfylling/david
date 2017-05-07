@@ -789,3 +789,16 @@ bitboard_t Environment::combinedWhiteAttacks() {
 
 
 }// end namespace
+
+
+namespace move {
+
+using ::bitboard::move_t;
+using ::bitboard::bitboard_t;
+
+void Move::setTo(int t) {
+
+}
+
+
+} // End of move

@@ -113,4 +113,36 @@ class Environment {
 };
 }
 
+
+namespace move {
+using ::bitboard::move_t;
+using ::bitboard::bitboard_t ;
+  class Move {
+   private:
+    using ::bitboard::move_t;
+   public:
+    void setTo(int t);
+    void setFrom(int f);
+    void setDoublePawnPush();
+    void setKingCastle();
+    void setQueenCastle();
+    void setCaptures();
+    void setEnpassant();
+    void setKnightPromo();
+    void setQueenPromo();
+    void setRookPromo();
+    void setBishopPromo();
+
+    bool doublePawnPush();
+    bool kingCastle();
+    bool queenCastle();
+    bool captures();
+    bool enPassant();
+    bool rookPromo();
+    bool queenPromo();
+    bool knightPromo();
+    bool bishopPromo();
+  };
+}
+
 #endif //CHESS_ANN_ENVIORNMENT_H

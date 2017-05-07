@@ -53,6 +53,7 @@ const array<int, 1> BKc = {60};
 // They are AWESOME
 
 typedef uint64_t bitboard_t;  // Represents a bitboard_t
+typedef uint16_t move_t;      // Representing moves
 
 enum DIRECTION { MAIN_DIAGONAL, ANTI_DIAGONAL, UP, DOWN };
 
@@ -114,6 +115,8 @@ struct pieceAttack {
   bitboard_t * BlackQueen;
   bitboard_t * BlackKing;
 };
+
+
 }
 
 #endif  //CHESS_ANN_BITBOARD_H
