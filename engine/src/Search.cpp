@@ -118,13 +118,9 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   //
   // Create move tree
   //
-
   ::gameTree::GameTree rMoves(board);
   rMoves.setMaxNumberOfNodes(100);
   rMoves.generateNodes();
-  //int asda = rMoves.getNumberOfNodes();
-  //int dfkjhsdf = rMoves.getDepth();
-
 
   //
   // Iterate down in the search tree for each search tree
@@ -132,25 +128,18 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 1000) + movetime;
   for (int currentDepth = 0; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
-    std::shared_ptr<::bitboard::gameState> currentScore = std::make_shared<::bitboard::gameState>();
-    //Old score, replaced my a gameState currentScore
-    //int score = ;
+    std::shared_ptr<::bitboard::gameState> currentBestMove = std::make_shared<::bitboard::gameState>();
 
     // this doesnt show true depth
     lastDepth = currentDepth = bestMove->gameTreeLevel;     //Sent to UCI or some debug when search is done
 
     //Needs to be replaced
-    int score = negamax(board, alpha, beta, currentDepth);
+    currentBestMove->score = negamax(board, alpha, beta, currentDepth);
 
 
-    // Before we can do this, the return type of negamax needs to be changed
-    //currentScore = negamax(node, alpha, beta, currentDepth);
-
-
-    // Needs to be changed to compare moves instead
     //If score from a greater depth is better than current bestScore, update
-    if (bestScore < score)
-      bestScore = score;
+    if (bestMove->score < currentBestMove->score)
+      bestMove->score = currentBestMove->score;
   }
   //Does not return a move yet
   return bestScore;
@@ -181,7 +170,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
 
   //Node->children does not return correct type atm
   for (std::shared_ptr<::bitboard::gameState> i : node->children) {
-    value = -negamax(i, -beta, -alpha, depth - 1); // usually start at node 0, which means this will loop forever..
+    value = -negamax(i, -beta, -alpha, ++depth); // usually start at node 0, which means this will loop forever..
     score = (score > value) ? score : value;
     alpha = (alpha > value) ? alpha : value;
     if (alpha >= beta) {

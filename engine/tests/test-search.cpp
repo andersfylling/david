@@ -14,11 +14,11 @@ std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameS
 
 
 TEST_CASE("Making of relevant objects"){
-    REQUIRE(test_search.returnMembers()); //Implies that object exist
+    
 }
 
 TEST_CASE("Search"){
-  REQUIRE_NOTHROW(test_search.searchInit(node)); // No errors though out search, may be a bit wide
+
 
 }
 
