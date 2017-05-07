@@ -171,8 +171,13 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
   std::cout << "Negamax depth is: " << iDepth << std::endl;
 
   if (node->children.empty()) {
+    this->bestMove = node;
     return node->score;
   }
+
+  ::gameTree::GameTree rMoves(node);
+  rMoves.newRootNode(node);
+  rMoves.generateNodes();
 
   //Node->children does not return correct type atm
   for (std::shared_ptr<::bitboard::gameState> child : node->children) {

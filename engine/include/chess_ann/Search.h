@@ -62,7 +62,8 @@ class Search {
   int infinite;
   int ponder;
   std::string searchMoves;
-  int searchScore; //replaced by next line
+  int searchScore;
+  std::shared_ptr<::bitboard::gameState> bestMove;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
