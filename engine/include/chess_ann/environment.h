@@ -119,7 +119,7 @@ using ::bitboard::move_t;
 using ::bitboard::bitboard_t ;
   class Move {
    private:
-    using ::bitboard::move_t;
+    move_t mv;
    public:
     void setTo(int t);
     void setFrom(int f);
