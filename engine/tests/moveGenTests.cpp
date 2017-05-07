@@ -3,10 +3,12 @@
 #include "chess_ann/bitboard.h"
 #include "chess_ann/environment.h"
 #include <math.h>
+#include <memory>
+#include <iostream>
 #include "stockfish/stockfishMock.h"
 
 
-::environment::gameState testStruct; // White Queen in the middle. Rest is normal
+std::shared_ptr<::bitboard::gameState> testStruct = std::make_shared<::bitboard::gameState>(); // White Queen in the middle. Rest is normal
 
 
 using ::bitboard::bitboard_t;
@@ -213,20 +215,20 @@ TEST_CASE("YDiagGeneration") {
 
 TEST_CASE("Queen move BLOCK") {
   //test.printBitboards();
-  testStruct.BlackBishop = 2594073385365405696ULL;
-  testStruct.BlackKing = 1152921504606846976ULL;
-  testStruct.BlackKnight = 4755801206503243776ULL;
-  testStruct.BlackPawn = 71776119061217280ULL;
-  testStruct.BlackQueen = 576460752303423488ULL;
-  testStruct.BlackRook = 9295429630892703744ULL;
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
 
-  testStruct.WhiteBishop = 36;
-  testStruct.WhiteQueen = 34359738368;
-  testStruct.WhiteKnight = 66;
-  testStruct.WhitePawn = 65280;
-  // testStruct.WhiteQueen = 8;
-  testStruct.WhiteKing = 16;
-  testStruct.WhiteRook = 129;
+  testStruct->WhiteBishop = 36;
+  testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  // testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
 
   test.setGameState(testStruct);
 
@@ -249,21 +251,21 @@ TEST_CASE ("REDUCE VECTOR") {
 
 
 TEST_CASE("Bishop MOVEMENT") {
-  testStruct.BlackBishop = 2594073385365405696ULL;
-  testStruct.BlackKing = 1152921504606846976ULL;
-  testStruct.BlackKnight = 4755801206503243776ULL;
-  testStruct.BlackPawn = 71776119061217280ULL;
-  testStruct.BlackQueen = 576460752303423488ULL;
-  testStruct.BlackRook = 9295429630892703744ULL;
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
 
-  testStruct.WhiteBishop = 524292;
-  //testStruct.WhiteBishop = 36;
-  //testStruct.WhiteQueen = 34359738368;
-  testStruct.WhiteKnight = 66;
-  testStruct.WhitePawn = 65280;
-  testStruct.WhiteQueen = 8;
-  testStruct.WhiteKing = 16;
-  testStruct.WhiteRook = 129;
+  testStruct->WhiteBishop = 524292;
+  //testStruct->WhiteBishop = 36;
+  //testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
 
   test.setGameState(testStruct);
 
@@ -279,20 +281,20 @@ TEST_CASE("Bishop MOVEMENT") {
 
 
 TEST_CASE ("Rook move") {
-  testStruct.BlackBishop = 2594073385365405696ULL;
-  testStruct.BlackKing = 1152921504606846976ULL;
-  testStruct.BlackKnight = 4755801206503243776ULL;
-  testStruct.BlackPawn = 71776119061217280ULL;
-  testStruct.BlackQueen = 576460752303423488ULL;
-  testStruct.BlackRook = 9295429630892703744ULL;
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
 
-  testStruct.WhiteBishop = 36;
-  //testStruct.WhiteQueen = 34359738368;
-  testStruct.WhiteKnight = 66;
-  testStruct.WhitePawn = 65280;
-  testStruct.WhiteQueen = 8;
-  testStruct.WhiteKing = 16;
-  testStruct.WhiteRook = 34359738369;
+  testStruct->WhiteBishop = 36;
+  //testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 34359738369;
   //testStruct.WhiteRook = 129;
 
   /*//test.printBoard(testStruct.WhiteRook);
@@ -310,7 +312,7 @@ TEST_CASE ("Rook move") {
   own = test.whitePieces();
   //test.printBoard(own);
 
-  bitboard_t movement = test.reduceVector(test.getXAxisFromBoard(testStruct.WhiteRook, false, 2)[1], opponent, own, DIRECTION::UP);
+  bitboard_t movement = test.reduceVector(test.getXAxisFromBoard(testStruct->WhiteRook, false, 2)[1], opponent, own, DIRECTION::UP);
 
   //movement |= test.reduceVector(test.getXAxisFromBoard(testStruct.WhiteRook, false, 1)[1], opponent, own, DIRECTION::DOWN);
   //movement |= test.reduceVector(test.getDiagYAxis(testStruct.WhiteRook, DIRECTION::UP, false, 1)[1], opponent, own, DIRECTION::UP);

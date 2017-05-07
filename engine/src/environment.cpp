@@ -23,8 +23,8 @@ using ::bitboard::DIRECTION;
 using ::bitboard::COLOR;
 using ::bitboard::pieceAttack;
 
-void Environment::setGameState(gameState st) {
-  state = st;
+void Environment::setGameState(std::shared_ptr<::bitboard::gameState> st) {
+  state = (*st); // dereferrence
 }
 
 void Environment::printBitboards() {
@@ -707,9 +707,7 @@ std::string Environment::fen(gameState* node, bool whiteMovesNext) {
  * @return
  */
 bool Environment::bitAt(bitboard_t board, uint8_t index) {
-  std::bitset<64> bitset(board);
-
-  return bitset.test(index);
+  return ::utils::bitAt(board, index);
 }
 
 

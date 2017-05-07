@@ -40,7 +40,7 @@ class Environment {
  public:
   Environment(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
-  void setGameState(gameState st);  // Setting the gamestate for testing
+  void setGameState(std::shared_ptr<::bitboard::gameState> st);  // Setting the gamestate for testing
   void printBitboards();            // Prints number values of all 12 boards
 
 
@@ -90,7 +90,7 @@ class Environment {
   bitboard_t combinedBlackAttacks(); // All attacked pieces of black
   bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
   // Move rockade1
-  bool legal(gameState p);
+  bool legal(gameState* p);
   bool checkMate();
   bool draw();
 
