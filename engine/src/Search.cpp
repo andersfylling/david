@@ -114,7 +114,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   int lastDepth = 0;
   startTime = clock();              //Starting clock
   //std::shared_ptr<::bitboard::gameState> bestMove = std::make_shared<::bitboard::gameState>();  //Score best node score
-  int bestMove;
+  int bestMove = -VALUE_INFINITE;
 
   //
   // Create move tree
@@ -166,27 +166,26 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
   /*std::shared_ptr<::bitboard::gameState> score;
   std::shared_ptr<::bitboard::gameState> value;*/
   int score;
-  int value;
-  int moveCounter = 0;
+  int bestScore = -VALUE_INFINITE;
 
   std::cout << "Negamax depth is: " << iDepth << std::endl;
 
-  if (0 < iDepth && iDepth <= depth || node->children.empty()) {
-    return score;
+  if (node->children.empty()) {
+    return node->score;
   }
 
   //Node->children does not return correct type atm
-  for (std::shared_ptr<::bitboard::gameState> i : node->children) {
-    value = -negamax(i, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
-    score = (score > value) ? score : value;
-    alpha = (alpha > value) ? alpha : value;
+  for (std::shared_ptr<::bitboard::gameState> child : node->children) {
+    score = -negamax(child, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
+    bestScore = std::max(bestScore, score);
+    alpha = std::max(alpha, score);
     if (alpha >= beta) {
       std::cout << "Nodes pruned" << std::endl; //debug
-      continue;
+      break;
     }
   }
   std::cout << "Score after negamax iteration: " << score << std::endl;  //Debug
-  return score;
+  return bestScore;
 }
 
 /**
@@ -195,7 +194,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
  */
 void search::Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
-  this->depth = 10;
+  this->depth = 5;
 }
 
 /**

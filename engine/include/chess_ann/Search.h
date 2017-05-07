@@ -12,8 +12,7 @@
 #include "chess_ann/GameTree.h"
 #include <time.h>
 #include <memory>
-#include <cassert>
-
+#include <algorithm>
 
 using ::bitboard::COLOR;
 
