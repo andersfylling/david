@@ -124,7 +124,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   // Create move tree
   //
   ::gameTree::GameTree rMoves(board);
-  rMoves.setMaxNumberOfNodes(100);        // Replace hard coding
+  rMoves.setMaxNumberOfNodes(100000);        // Replace hard coding
   rMoves.generateNodes();
   board = rMoves.generateNode(board);
 
@@ -201,7 +201,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
 
   ::gameTree::GameTree rMoves(node);
   rMoves.newRootNode(node);
-  rMoves.setMaxNumberOfNodes(100);
+  rMoves.setMaxNumberOfNodes(100000);
   rMoves.generateNodes();
 
   //Node->children does not return correct type atm
