@@ -132,11 +132,19 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
   std::fstream output(folder + "BUFFER_" + out, std::ios::out | std::ios::trunc);
 
   int trainingPairs = 0;
+  int skipped = 0;
+  int lines = 0;
   ::environment::Environment env(::bitboard::COLOR::WHITE);
 
   std::string line;
-  while (std::getline(infile, line) && max_iterations > trainingPairs)
+  while (std::getline(infile, line) && max_iterations > trainingPairs && !infile.eof())
   {
+    lines += 1;
+
+    if (lines % 100 == 0) {
+      std::cout << "Line#: " << lines << ", skipped: " << skipped << std::endl;
+    }
+
     if (line.length() > 1) {
       bool legit = true;
       int score = 0;
@@ -146,6 +154,7 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
       catch (...)
       {
         legit = false;
+        skipped += 1;
       }
 
       // write this to a file
@@ -186,6 +195,11 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
     outputUpdate.close();
   }
   fromBufferFile.close();
+
+  // info
+  std::cout << "TRAINING FILE GENERATED!" << std::endl;
+  std::cout << "Created # of training sets: " << trainingPairs << std::endl;
+  std::cout << "Skipped # of fen strings  : "; std::cerr << skipped << std::endl;
 
 }
 
