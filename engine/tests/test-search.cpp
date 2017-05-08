@@ -30,11 +30,11 @@ TEST_CASE("Search"){
 TEST_CASE("Abort search"){
   test_search.stopSearch();
   test_search.searchInit(node);
-  REQUIRE(test_search.returnScore() == -VALUE_INFINITE);
+  REQUIRE(test_search.returnScore() == (int)(-INFINITY));
   test_search.iterativeDeepening(node);
-  REQUIRE(test_search.returnScore() == -VALUE_INFINITE);
-  test_search.negamax(node, -VALUE_INFINITE, VALUE_INFINITE, 1);
-  REQUIRE(test_search.returnScore() == -VALUE_INFINITE);
+  REQUIRE(test_search.returnScore() ==(int)(-INFINITY));
+  test_search.negamax(node, (int)(-INFINITY), (int)(INFINITY), 1);
+  REQUIRE(test_search.returnScore() == (int)(-INFINITY));
 }
 
 TEST_CASE("Search completed?"){

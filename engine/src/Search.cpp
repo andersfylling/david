@@ -112,14 +112,13 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
  * @return
  */
 int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> board) {
-  int alpha = -VALUE_INFINITE;
-  int beta = VALUE_INFINITE;
+  int alpha = (int)(-INFINITY);
+  int beta = (int)(INFINITY);
   int iterationScore[1000];
   int lastDepth = 0;
-  int aspirationDepth = 1;
+  int aspirationDepth = 4;
   startTime = clock();              //Starting clock
-  //std::shared_ptr<::bitboard::gameState> bestMove = std::rMoves.currentmake_shared<::bitboard::gameState>();  //Score best node score
-  int bestMove = -VALUE_INFINITE;
+  int bestScore = (int)(-INFINITY);
 
 
   //
@@ -128,7 +127,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   // board->generateAllMoves();
   //
   ::gameTree::GameTree rMoves(board);
-  rMoves.setMaxNumberOfNodes(1000);
+  rMoves.setMaxNumberOfNodes(100000);
   rMoves.generateChildren(board);
 
 
@@ -138,44 +137,58 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   // Iterate down in the search tree for each search tree
   //
   time_t initTimer = std::time(nullptr);
-  auto timeout = (initTimer * 1000) + movetime;
+  auto timeout = (initTimer * 100000) + movetime;
   for (int currentDepth = 1; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
-    int currentBestMove;
-    int aspirationDelta=0;
+    int currentBestScore;
+    int aspirationDelta = 0;
 
     //
     // If UCI aborts the search, no move should be returned and -infinity will be returned
     //
-    if(isAborted){
-      bestMove = -VALUE_INFINITE;
+    if (isAborted) {
+      bestScore = (int) (-INFINITY);
       break;
     }
 
     //
     // Aspiration window, used to limit alpha beta window, which will increase cut-offs
     //
-    /*if (currentDepth >= aspirationDepth) {
+    // Reset aspiration window starting size
+    if (currentDepth >= 5) {
       const int delta = iterationScore[currentDepth - 1] - iterationScore[currentDepth - 2];
       aspirationDelta = std::max(delta, 10) + 5;
-      alpha = std::max(iterationScore[currentDepth - 1] - aspirationDelta, -VALUE_INFINITE);
-      beta = std::min(iterationScore[currentDepth - 1] + aspirationDelta, +VALUE_INFINITE);
-    }*/
-
-    // this doesnt show true depth
-    lastDepth = currentDepth;// = currentBestMove->gameTreeLevel;     //Sent to UCI or some debug when search is done
-
-    currentBestMove = negamax(board, alpha, beta, currentDepth);
+      alpha = std::max(iterationScore[currentDepth - 1] - aspirationDelta, (int) (-INFINITY));
+      beta = std::min(iterationScore[currentDepth - 1] + aspirationDelta, (int) (+INFINITY));
+    }
 
 
-    //If score from a greater depth is better than current bestScore, update
-    if (bestMove < currentBestMove)
-      bestMove = currentBestMove;
+    // Start with a small aspiration window and, in the case of a fail
+    // high/low, re-search with a bigger window until we're not failing
+    // high/low anymore.
+    bool iDone = false;
+    while (!iDone) {
+      currentBestScore = negamax(board, alpha, beta, currentDepth);
+      iterationScore[currentDepth] = currentBestScore;
+
+      //Update best score incase of a abort
+      bestScore = (bestScore > currentBestScore) ? bestScore : currentBestScore;
+
+      const bool fail = bestScore <= alpha || bestScore >= beta;
+      const bool fullWidth = alpha == (int)(-INFINITY) && beta == (int)(INFINITY);
+      iDone = !fail || fullWidth || currentDepth < aspirationDepth;
+
+      if (!iDone) {
+        alpha = std::max(alpha - aspirationDelta, (int)(-INFINITY));
+        beta = std::min(beta + aspirationDelta, (int)(INFINITY));
+        aspirationDelta = std::max(aspirationDelta * 130 / 100, 15);
+      }
+    }
   }
 
   setComplete(true);
   //Does not return a move yet, however Search.bestMove is sat in negamax
   //std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
-  return bestMove;
+  return bestScore;
 }
 
 /**
@@ -193,23 +206,19 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
  * @return
  */
 int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int iDepth) {
-  /*std::shared_ptr<::bitboard::gameState> score;
-  std::shared_ptr<::bitboard::gameState> value;*/
   int score;
-  int bestScore = -VALUE_INFINITE;
+  int bestScore = (int)(-INFINITY);
 
-  //std::cout << "Negamax depth is: " << iDepth << std::endl;
 
   //
   // If UCI aborts the search in the middle of a recursive negamax
   // return -infinity
   //
   if(isAborted){
-    return -VALUE_INFINITE;
+    return (int)(-INFINITY);
   }
 
   if (iDepth == depth) {
-    this->bestMove = node;
     return node->score;
   }
 
@@ -217,15 +226,16 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
   //Node->children does not return correct type atm
   for (auto child : node->children) {
     score = -negamax(child, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
-    if(score >= beta)
-      return beta;    //Fail hard beta-cutoff
-    if(score > alpha)
-      alpha = score;
+    bestScore = std::max(score, bestScore);
+    alpha = std::max(score, alpha);
     std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
+    if(alpha >= beta) {
+      break;
+    }
   }
-
-  return alpha;
+  return bestScore;
 }
+
 
 /**
  * Called by searchInit, reset/get settings from UCI
@@ -234,6 +244,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
 void search::Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
   this->depth = 6;
+  this->searchScore = 0;
 }
 
 /**
@@ -285,4 +296,5 @@ void search::Search::setInfinite(int infinite) {
 void search::Search::setPonder(int ponder) {
   this->ponder = ponder;
 } // bool ?
+
 

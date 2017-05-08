@@ -259,7 +259,7 @@ nodePtr GameTree::generateNode(nodePtr parent) {
   nodePtr node = std::make_shared<gameState>();
 
   node->gameTreeLevel = parent->gameTreeLevel + 1;
-  node->score = std::rand() % 2429 + 21;
+  node->score = std::rand() % 5000 + 21;
   node->fullMoves = (node->gameTreeLevel + 1) / 2;
   node->halfMoves = 0; // eh..
   node->weakParent = parent;
