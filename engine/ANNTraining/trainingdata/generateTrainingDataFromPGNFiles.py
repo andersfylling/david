@@ -6,9 +6,7 @@ import pgntofen
 pgnConverter = pgntofen.PgnToFen()
 pgnConverter.resetBoard()
 file = "PGNfiles/ficsgamesdb_201601_standard2000_nomovetimes_1462883.pgn"
-stats =  pgnConverter.pgnFile(file);
-
-stats = converter.pgnFile(file)
+stats =  pgnConverter.pgnFile(file)
 
 output = open("fenstring.txt", "w")
 
