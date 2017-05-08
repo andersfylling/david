@@ -533,7 +533,48 @@ TEST_CASE("Pawn attack"){
 }
 
 TEST_CASE("Knight movement"){
+  SECTION("Free move on board"){
+    testStruct->BlackBishop = 0;
+    testStruct->BlackKing = 0;
+    testStruct->BlackKnight = 0;
+    testStruct->BlackPawn = 0;
+    testStruct->BlackQueen = 0;
+    testStruct->BlackRook = 0;
 
+    testStruct->WhiteBishop = 0;
+    testStruct->WhiteBishop = 0;
+    testStruct->WhiteQueen = 0;
+    testStruct->WhiteKnight = 268435456;
+    testStruct->WhitePawn = 0;
+    testStruct->WhiteQueen = 0;
+    testStruct->WhiteKing = 0;
+    testStruct->WhiteRook = 0;
+    test.setGameState(testStruct);
+
+    bitboard_t knightFreeMove = test.knightMove(COLOR::WHITE)[0];
+    REQUIRE(knightFreeMove == 44272527353856ULL);
+  }
+  SECTION("Knight movement with targets"){
+    testStruct->BlackBishop = 2594073385365405696ULL;
+    testStruct->BlackKing = 1152921504606846976ULL;
+    testStruct->BlackKnight = 4755801206503243776ULL;
+    testStruct->BlackPawn = 71776119061217280ULL;
+    testStruct->BlackQueen = 576460752303423488ULL;
+    testStruct->BlackRook = 9295429630892703744ULL;
+
+    testStruct->WhiteBishop = 524292;
+    testStruct->WhiteBishop = 36;
+    testStruct->WhiteQueen = 34359738368;
+    testStruct->WhiteKnight = 8796093022208ULL;
+    testStruct->WhitePawn = 65280;
+    testStruct->WhiteQueen = 8;
+    testStruct->WhiteKing = 16;
+    testStruct->WhiteRook = 129;
+    test.setGameState(testStruct);
+
+    bitboard_t withTargets = test.knightMove(COLOR::WHITE)[0];
+    REQUIRE(withTargets == 1450722176331153408ULL);
+  }
 }
 
 TEST_CASE ("Check if move is set with capture") {
