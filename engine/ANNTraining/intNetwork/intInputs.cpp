@@ -25,13 +25,25 @@ using std::left;
 using std::right;
 using std::showpos;
 using std::noshowpos;
-
+int counter = -2;
 // Callback function that simply prints the information to cout
 int intNetwork::print_callback(FANN::neural_net &net, FANN::training_data &train,
                    unsigned int max_epochs, unsigned int epochs_between_reports,
                    float desired_error, unsigned int epochs, void *user_data) {
   cout << "Epochs     " << setw(8) << epochs << ". "
        << "Current Error: " << left << net.get_MSE() << right << endl;
+  counter += 1;
+
+  if (counter == -1 || counter == 10) {
+    counter = 0;
+    //std::string output = "Connections: " + net.get_total_connections() + '\n';
+    //std::cerr << output << std::endl;
+
+    //FANN::connection* con;
+    //con->from_neuron = 0;
+    //con->to_neuron = 1;
+    //net.get_connection_array(con);
+  }
   return 0;
 }
 
@@ -58,10 +70,10 @@ void intNetwork::train_network(
   net.set_activation_steepness_output(1.0);
 
   net.set_activation_function_hidden(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-  net.set_activation_function_output(FANN::activation_function_enum::LINEAR	);
+  net.set_activation_function_output(FANN::activation_function_enum::ELLIOT_SYMMETRIC  );
 
   // Set additional properties such as the training algorithm
-  //net.set_training_algorithm(FANN::TRAIN_QUICKPROP);
+  net.set_training_algorithm(FANN::TRAIN_QUICKPROP);
 
   // Output network type and parameters
   cout << endl << "Network Type                         :  ";
@@ -81,12 +93,12 @@ void intNetwork::train_network(
   if (data.read_train_from_file(folder + '/' + trainingdatafile))
   {
     // Initialize and train the network with the data
-    net.init_weights(data);
+    //net.init_weights(data);
 
     cout << "Max Epochs " << setw(8) << max_iterations << ". "
          << "Desired Error: " << left << desired_error << right << endl;
     net.set_callback(print_callback, NULL);
-    net.randomize_weights(-2, 2);
+    net.randomize_weights(-1, 1);
     net.train_on_data(data, max_iterations,
                       iterations_between_reports, desired_error);
 
@@ -150,52 +162,54 @@ void intNetwork::generateTrainingFile(
       ::gameTree::nodePtr node = env.generateBoardFromFen(line);
       env.setGameState(node);
       env.generateAttacks();
-      std::array<::bitboard::bitboard_t, 41> boards = {
+      std::array<::bitboard::bitboard_t, 30> boards = {
+          1, //always white
+
+
+//          node->BlackBishop,
+//          node->BlackKing,
+//          node->BlackKnight,
+//          node->BlackPawn,
+//          node->BlackQueen,
+//          node->BlackRook,
+//          node->WhiteBishop,
+//          node->WhiteQueen,
+//          node->WhiteKnight,
+//          node->WhitePawn,
+//          node->WhiteRook,
+//          node->WhiteKing,
+
+          //env.numberOfPieces(env.whitePieces() | env.blackPieces()),
+
+          env.combinedBlackAttacks(),
           env.numberOfPieces(node->BlackBishop) > 0 ? 1 : 0,
           env.numberOfPieces(node->BlackKing) > 0 ? 1 : 0,
           env.numberOfPieces(node->BlackKnight) > 0 ? 1 : 0,
           env.numberOfPieces(node->BlackPawn) > 0 ? 1 : 0,
           env.numberOfPieces(node->BlackQueen) > 0 ? 1 : 0,
           env.numberOfPieces(node->BlackRook) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : 0,
-
           env.numberOfPieces(node->BlackBishop),
           env.numberOfPieces(node->BlackKing),
           env.numberOfPieces(node->BlackKnight),
           env.numberOfPieces(node->BlackPawn),
           env.numberOfPieces(node->BlackQueen),
           env.numberOfPieces(node->BlackRook),
+          env.blackPieces(),
+
+          env.combinedWhiteAttacks(),
+          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : 0,
           env.numberOfPieces(node->WhiteBishop),
           env.numberOfPieces(node->WhiteQueen),
           env.numberOfPieces(node->WhiteKnight),
           env.numberOfPieces(node->WhitePawn),
           env.numberOfPieces(node->WhiteRook),
           env.numberOfPieces(node->WhiteKing),
-
-          node->BlackBishop,
-          node->BlackKing,
-          node->BlackKnight,
-          node->BlackPawn,
-          node->BlackQueen,
-          node->BlackRook,
-          node->WhiteBishop,
-          node->WhiteQueen,
-          node->WhiteKnight,
-          node->WhitePawn,
-          node->WhiteRook,
-          node->WhiteKing,
-
-          env.whitePieces(),
-          env.blackPieces(),
-          env.numberOfPieces(env.whitePieces() | env.blackPieces()),
-
-          env.combinedBlackAttacks(),
-          env.combinedWhiteAttacks()
+          env.whitePieces()
       };
 
       // generate inputs
@@ -250,14 +264,14 @@ void intNetwork::run()
   const float desired_error = 0.001f;
   const unsigned int max_iterations = 10000;
   const unsigned int max_trainingSets = 100001;
-  const unsigned int iterations_between_reports = 5;
+  const unsigned int iterations_between_reports = 2;
   const unsigned int nrOfLayers = 4;
-  const unsigned int layers[nrOfLayers] = {41, 41, 13, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int layers[nrOfLayers] = {30, 50, 20, 1}; // input, hidden1, ..., hiddenN, output
 
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining";
 
   // Generates the training data and returns the filename.
-  generateTrainingFile(folder, max_trainingSets, layers, nrOfLayers);
+  //generateTrainingFile(folder, max_trainingSets, layers, nrOfLayers);
 
   try {
     std::ios::sync_with_stdio(); // Syncronize cout and printf output
