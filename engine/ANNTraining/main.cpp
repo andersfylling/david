@@ -185,7 +185,7 @@ int main (int argc, char * argv[])
 
   const float learning_rate = 0.7f;
   const unsigned int num_layers = 3;
-  const unsigned int num_input = 2;
+  const unsigned int num_input = 12;
   const unsigned int num_hidden = 3;
   const unsigned int num_output = 1;
   const float desired_error = 0.001f;
