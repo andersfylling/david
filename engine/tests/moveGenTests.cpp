@@ -378,10 +378,11 @@ TEST_CASE("Combined attacks") {
 
 TEST_CASE("Creating moves") {
   move::Move m(35, 36, 15);
+  m.printMoveString();
   REQUIRE(m.number() == 36431U);
 
 
-  m.printMoveString();
+
 
 
 

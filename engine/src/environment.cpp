@@ -874,9 +874,14 @@ move_t Move::number() {
   return mv;
 }
 
+
 Move::Move(int to, int from, int flags) {
+  // USES A SIMPLE TO/FROM format
+  // | 6 bit TO | 6 bit FROM | 4 BITS FOR FLAGS |
   mv = 0U;
-  mv |= (to << 5);
+  mv |= (to << 10);   // Adds to, to the front of the FILE
+  mv |= (from << 4);  // Adds from behind to
+
 }
 
 } // End of move
