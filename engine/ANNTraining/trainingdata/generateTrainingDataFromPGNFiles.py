@@ -1,11 +1,16 @@
 import sys
+
+
 sys.path.insert(0, '../../../external/pgnToFen')
 import pgntofen
 
-converter = pgntofen.PgnToFen()
-file = "./test/Carlsen.pgn"
 
 stats = converter.pgnFile(file)
+pgnConverter = pgntofen.PgnToFen()
+pgnConverter.resetBoard()
+
+file = "PGNfiles/ficsgamesdb_201601_standard2000_nomovetimes_1462883.pgn"
+stats =  pgnConverter.pgnFile(file)
 
 output = open("fenstring.txt", "w")
 

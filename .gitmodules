@@ -12,4 +12,4 @@
 	url = https://github.com/google/benchmark
 [submodule "external/pgnToFen"]
 	path = external/pgnToFen
-	url = https://github.com/SindreSvendby/pgnToFen
+	url = https://github.com/klyngen/pgnToFen
