@@ -7,6 +7,7 @@
 
 #include "chess_ann/bitboard.h"
 #include <memory>
+#include <iomanip>
 
 namespace gameTree {
 using ::bitboard::gameState;
@@ -52,6 +53,7 @@ class GameTree {
   void generateChildren(nodePtr node);
   void sortChildren(nodePtr node);
   int getDepth();
+  void printAllScores(nodePtr root);
   
 };
 

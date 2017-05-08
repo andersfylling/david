@@ -18,13 +18,13 @@ using ::bitboard::COLOR;
 
 namespace search {
 
-/*struct Signals{
-  std::atomic_bool stop;
-};
 
-
-extern Signals Signal;*/
-
+/**
+ * Search class is responsible for searching through a gamestate tree
+ * bestScore is stored in object, this is the heuristic og a move
+ * bestMove stores the gamestate which is the best throughout.
+ * Should return a fen string or something to UCI
+ */
 class Search {
  public:
   Search(); // This can be used for unit testing and benchmarking.
@@ -40,6 +40,7 @@ class Search {
   int returnTimeToSearch();
   int returnScore();
   bool returnComplete();
+  bool setDebug();
 
   // uci protocol methods, this can be used in unit testing
   void stopSearch();
@@ -93,13 +94,19 @@ class Search {
     return this->isComplete;
   }
 
-  //
-  //
-  //
+
+  /**
+   * Set aborted search
+   * @param isAborted
+   */
   inline void Search::setAbort(bool isAborted) {
     this->isAborted = isAborted;
   }
 
+  /**
+   * Set complete search
+   * @param isComplete
+   */
   inline void Search::setComplete(bool isComplete) {
     this->isComplete = isComplete;
   }

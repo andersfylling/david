@@ -137,6 +137,7 @@ void ::gameTree::GameTree::setMaxNumberOfNodes(int n) {
   }
 }
 
+
 /**
  * Retrieve the max allowed number of nodes in memory.
  * This amount is only limited to this instance.
@@ -231,6 +232,21 @@ void ::gameTree::GameTree::getDepth(nodePtr node, int& depth) {
   }
 }
 
+/**
+ * Print score and depth of all nodes
+ * @param root
+ */
+void ::gameTree::GameTree::printAllScores(nodePtr root) {
+  std::cout << "Node scores: (Game tree level)";
+  for(auto child : root->children){
+    if(child->children.empty()){
+      std::cout << ' ' << child->score  << '(' << child->gameTreeLevel << ") ";
+    } else
+      printAllScores(child);
+  }
+  std::cout << std::endl;
+}
+
 namespace gameTree { // why..
 
 /**
@@ -281,5 +297,6 @@ nodePtr GameTree::regretNewRootNode() {
 
   return this->current;
 }
+
 
 }

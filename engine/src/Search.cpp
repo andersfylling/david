@@ -100,12 +100,15 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
 
   this->searchScore = iterativeDeepening(node);
   std::cout << "Search objects score after complete search: " << this->searchScore<< std::endl;  //Debug
+  //
+  // Send some values/fenstring or whatever to UCI
+  //
 }
 
 /**
  * Main iterative loop, calls negamax until desired depth is reached
  * or the time limit is run out.
- * @param node
+ * @param board
  * @return
  */
 int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> board) {
@@ -121,8 +124,10 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   // Create move tree
   //
   ::gameTree::GameTree rMoves(board);
-  rMoves.setMaxNumberOfNodes(100);        // Replace hard coding
+  rMoves.setMaxNumberOfNodes(5);        // Replace hard coding
   rMoves.generateNodes();
+
+  rMoves.printAllScores(board);
 
 
   //
@@ -155,7 +160,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
 
   setComplete(true);
   //Does not return a move yet, however Search.bestMove is sat in negamax
-  std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
+  //std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
   return bestMove;
 }
 
@@ -189,13 +194,14 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
     return -VALUE_INFINITE;
   }
 
-  if (node->children.empty()) {
+  if (iDepth == depth || node->children.empty()) {
     this->bestMove = node;
     return node->score;
   }
 
   ::gameTree::GameTree rMoves(node);
   rMoves.newRootNode(node);
+  rMoves.setMaxNumberOfNodes(5);
   rMoves.generateNodes();
 
   //Node->children does not return correct type atm
@@ -208,7 +214,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
       break;
     }
   }
-  std::cout << "Score after negamax iteration: " << score << std::endl;  //Debug
+  //std::cout << "Score after negamax iteration: " << score << std::endl;  //Debug
   return bestScore;
 }
 
@@ -218,7 +224,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
  */
 void search::Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
-  this->depth = 5;
+  this->depth = 6;
 }
 
 /**
