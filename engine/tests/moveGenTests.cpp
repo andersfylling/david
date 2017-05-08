@@ -397,3 +397,99 @@ TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.genera
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
 }
 
+TEST_CASE("Pawn move"){
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
+
+  testStruct->WhiteBishop = 524292;
+  testStruct->WhiteBishop = 36;
+  testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
+
+  test.setGameState(testStruct);
+
+  //test.printBoard(testStruct.WhiteBishop);
+  bitboard_t t1 = test.pawnMoves(COLOR::WHITE)[0];
+  bitboard_t t2 = test.pawnMoves(COLOR::WHITE)[1];
+
+
+  REQUIRE(t1 ==65536);
+  REQUIRE(t2 == 131072);
+}
+
+TEST_CASE("King move"){
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
+
+  testStruct->WhiteBishop = 524292;
+  testStruct->WhiteBishop = 36;
+  testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
+
+  test.setGameState(testStruct);
+
+  //test.printBoard(testStruct.WhiteBishop);
+  bitboard_t fail = test.KingMove(COLOR::WHITE)[0];
+
+
+
+  //Must fail because of neighbouring pieces
+  REQUIRE_FALSE(fail == 14376);
+
+  // King in the middle of board to test free movement
+  testStruct->WhiteKing = 34359738368ULL;
+  test.setGameState(testStruct);
+  bitboard_t success = test.KingMove(COLOR::WHITE)[0];
+  REQUIRE(success == 30872694685696ULL);
+}
+
+TEST_CASE("Queen move"){
+  //Free movement
+  testStruct->WhiteQueen = 34359738368ULL;
+  testStruct->WhiteKing = 16;
+  test.setGameState(testStruct);
+
+  bitboard_t freemovement = test.QueenMove(COLOR::WHITE)[0];
+  REQUIRE(freemovement == 11853796676861952ULL);
+
+  //Fail movement in start position
+  testStruct->WhiteQueen = 8;
+  test.setGameState(testStruct);
+  bitboard_t failMovement = test.QueenMove(COLOR::WHITE)[0];
+  REQUIRE_FALSE(failMovement == 7188);
+}
+
+TEST_CASE("Pawn attack"){
+  SECTION("Fail head on"){
+      testStruct->WhiteQueen = 8; //Place white queen back to start from previous test_case
+      testStruct->BlackPawn = 16711680;
+
+      test.setGameState(testStruct);
+      bitboard_t failHeadOn = test.pawnMoves(COLOR::WHITE)[4];
+      REQUIRE_FALSE(failHeadOn == 1835008);
+
+  }
+  SECTION("Fail behind"){
+
+  }
+  SECTION("Succeed main diagonal up and anti diagonal up"){
+
+  }
+}
+
