@@ -137,13 +137,18 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
   ::environment::Environment env(::bitboard::COLOR::WHITE);
 
   std::string line;
+  std::clock_t initTimer = std::clock();
+  std::array<double, 6> timers;
   while (std::getline(infile, line) && max_iterations > trainingPairs && !infile.eof())
   {
+    //timers[0] = ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
     lines += 1;
 
     if (lines % 100 == 0) {
       std::cout << "Line#: " << lines << ", skipped: " << skipped << std::endl;
     }
+
+    //timers[1] =  ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
 
     if (line.length() > 1) {
       bool legit = true;
@@ -156,12 +161,15 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
         legit = false;
         skipped += 1;
       }
+      //timers[2] =  ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
 
       // write this to a file
       if (output.is_open() && legit) {
+        //timers[3] = ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
 
 
         ::gameTree::nodePtr node = env.generateBoardFromFen(line);
+        //timers[4] = ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
 
         output << node->BlackBishop << ' ';
         output << node->BlackKing << ' ';
@@ -179,6 +187,13 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
         output << score << std::endl;
         trainingPairs += 1;
 
+        //timers[5] = ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
+
+        //for (auto t : timers) {
+          //std::cout << t * 10000 << std::endl;
+          //}
+
+        //break;
 
       }
     }
