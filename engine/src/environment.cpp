@@ -3,7 +3,6 @@
 //
 
 #include "chess_ann/environment.h"
-#include "chess_ann/environment.h"
 #include "chess_ann/bitboard.h"
 #include <string>
 #include <bitset>
@@ -25,6 +24,7 @@ using ::bitboard::gameState;
 using ::bitboard::DIRECTION;
 using ::bitboard::COLOR;
 using ::bitboard::pieceAttack;
+using ::bitboard::move_t;
 
 void Environment::setGameState(std::shared_ptr<::bitboard::gameState> st) {
   state = (*st); // dereferrence
@@ -233,37 +233,37 @@ bitboard_t *Environment::knightMovement(bitboard_t board) {
     }
 
     // Two steps up, one right
-    else if (row-2 == (index-17)/8 && index-17 < 64) {
+    if (row-2 == (index-17)/8 && index-17 < 64) {
       flipBit(temp, index-17);
     }
 
     // One step up, two left
-    else if (row-1 == (index-10)/8 && index-10 < 64) {
+    if (row-1 == (index-10)/8 && index-10 < 64) {
       flipBit(temp, index-10);
     }
 
     // One step up, two right
-    else if (row-1 == (index-6)/8 && index-6 < 64) {
+    if (row-1 == (index-6)/8 && index-6 < 64) {
       flipBit(temp, index-6);
     }
 
     // Two steps down, one left
-    else if (row+2 == (index+15)/8 && index+15 < 64) {
+    if (row+2 == (index+15)/8 && index+15 < 64) {
       flipBit(temp, index+15);
     }
 
     // Two steps down, one right
-    else if (row+2 == (index+17)/8 && index+17 < 64) {
+    if (row+2 == (index+17)/8 && index+17 < 64) {
       flipBit(temp, index+17);
     }
 
     // One step down, two left
-    else if (row+1 == (index+6)/8 && index+6 < 64) {
+    if (row+1 == (index+6)/8 && index+6 < 64) {
       flipBit(temp, index+6);
     }
 
     // One step down, two right
-    else if (row+1 == (index+10)/8 && index+10 < 64) {
+    if (row+1 == (index+10)/8 && index+10 < 64) {
       flipBit(temp, index+10);
     }
     boards[boardValue] = temp;
@@ -283,8 +283,6 @@ bitboard_t Environment::blackPieces() {
 }
 
 Environment::Environment(COLOR color) {
-  whiteCastling = true;
-  blackCastling = true;
   moves = 0;
   hostColor = color;
 
@@ -304,34 +302,39 @@ Environment::Environment(COLOR color) {
 
   generateAttacks();
 
+    generateMoves(color);
+    std::cout << moveList.size() << std::endl;
+
+
   // IF COLOR WHITE
   // INITIATE AUTO MOVES
 
 }
 
+
+// ############ LEVEL 2 FUNCTIONS ##################
+
 bitboard_t *Environment::pawnMoves(COLOR color) {
-  bitboard_t opponent = (color == COLOR::WHITE) ? whitePieces() : blackPieces();
-  bitboard_t own = (color == COLOR::WHITE) ? blackPieces() : whitePieces();
+  bitboard_t opponent = (color != COLOR::WHITE) ? whitePieces() : blackPieces();
+  bitboard_t own = (color != COLOR::WHITE) ? blackPieces() : whitePieces();
   DIRECTION dir = (color == COLOR::WHITE) ? DIRECTION::UP : DIRECTION::DOWN;
 
   // Generates attack-vectors for pawns
-  bitboard_t *bits =
-      (color == COLOR::WHITE) ? getDiagYAxis(state.WhitePawn, DIRECTION::UP, true, 1) : getDiagYAxis(state.BlackPawn,
-                                                                                                     DIRECTION::UP,
-                                                                                                     true,
-                                                                                                     2);
+  bitboard_t * bits = (color == COLOR::WHITE) ? getDiagYAxis(state.WhitePawn, DIRECTION::UP, true, 1) : getDiagYAxis(state.BlackPawn, DIRECTION::UP, true, 2);
 
   // Adds possibility for double moves
+
   for (bitboard_t i = 0; i < numberOfPieces((color == COLOR::WHITE) ? state.WhitePawn : state.BlackPawn); i++) {
-    if (bits[i] < 65536LL && bits[i] > 128LL) {
-      flipBit(bits[i], LSB(bits[i] + 8));
-    } else if (bits[i] < 72057594037927936LL && bits[i] > 1099511627776LL) {
-      flipBit(bits[i], LSB(bits[i] - 8));
+    //std::cout << bits[i] << std::endl;
+    if (bits[i] < 16777216ULL && bits[i] > 32768ULL) {
+      flipBit(bits[i], LSB(bits[i] )+8);
+    } else if (bits[i] < 72057594037927936ULL && bits[i] > 1099511627775ULL) {
+      flipBit(bits[i], LSB(bits[i])-8);
     }
+    //std::cout << bits[i] << std::endl;
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] &= ~(generateBlock(bits[i], dir, own) | own);  // Removes collision with own pieces
-    bits[i] &= ~(generateBlock(bits[i], dir, opponent)); // Removes collision with oponent pieces
+    bits[i] = reduceVector(bits[i], opponent, own, DIRECTION::UP);
 
     if (COLOR::WHITE == color) {
       bitboard_t index = 0LL;
@@ -809,6 +812,69 @@ bitboard_t Environment::combinedWhiteAttacks() {
 
   return comb;
 }
+// Checks if the pit is present in opposing color's bitboards
+bool Environment::moveIsCapture(bitboard_t bit, COLOR color) {
+  if (color == COLOR::WHITE) {
+    return bitIsSet(blackPieces(), LSB(bit));
+  } else {
+    return bitIsSet(whitePieces(), LSB(bit));
+  }
+}
+
+void Environment::generateMove(bitboard_t st, bitboard_t *attack, COLOR color) {
+  bitboard_t tempBoard, tempAttack, index, indexTo;
+  move::Move mo;
+  using ::bitboard::move_t;
+  int flag;
+  move_t tempMove;
+  tempBoard = st;
+  index = LSB(tempBoard);
+  for (bitboard_t i = 0; i < numberOfPieces(st); i++) {
+    tempAttack = attack[i];
+    indexTo = LSB(tempAttack);
+    for (int j = 0; j < numberOfPieces(attack[i]); j++) {
+
+      flag = (moveIsCapture(indexTo, color)) ? 4 : 0;
+      tempMove = mo.setGetValue(index, indexTo,flag);
+      moveList.push_back(tempMove);
+      indexTo = NSB(tempAttack);
+    }
+    index = NSB(tempBoard);
+  }
+}
+
+
+void Environment::generateMoves(COLOR color) {
+  // Loop a piece attack-vector
+  // See if it is a capture
+  // Make the move
+  // Add to vector
+  // Repeat for all
+  if (color == COLOR::WHITE) {
+    generateMove(state.WhitePawn, attacks.WhitePawn, color);
+    generateMove(state.WhiteBishop, attacks.WhiteBishop, color);
+    generateMove(state.WhiteRook, attacks.WhiteRook, color);
+    generateMove(state.WhiteKnight, attacks.WhiteKnight, color);
+    generateMove(state.WhiteKing, attacks.WhiteKing, color);
+    generateMove(state.WhiteQueen, attacks.WhiteQueen, color);
+  } else {
+    generateMove(state.BlackPawn, attacks.BlackPawn, color);
+    generateMove(state.BlackBishop, attacks.BlackBishop, color);
+    generateMove(state.BlackRook, attacks.BlackRook, color);
+    generateMove(state.BlackKnight, attacks.BlackKnight, color);
+    generateMove(state.BlackKing, attacks.BlackKing, color);
+    generateMove(state.BlackQueen, attacks.BlackQueen, color);
+  }
+
+}
+
+
+void Environment::caputrePiece(COLOR opponent, move_t m) {
+
+}
+
+
+/* ################ END OF ENVIRONMENT FUNCTIONS ################ */
 
 // Needs compiler support for Microsoft c++ compiler
 // Works with gcc based compilers
@@ -837,11 +903,15 @@ void flipBit(bitboard_t &board, bitboard_t index) {
   board |= (1LL << index);
 }
 
+// YEAH tell that bit to flipp off!!!
+// Nobody wants you bit... NOBODY WANTS YOU
 void flipOff(bitboard_t &board, bitboard_t index) {
   board &= (0LL << index);
 }
 
-
+bool bitIsSet(bitboard_t board, bitboard_t index) {
+  return (board & (1 << index)) ? true : false;
+}
 
 
 }// end namespace
@@ -856,20 +926,19 @@ using std::string;
 
 
 
-void Move::printMoveString() {
-  string bits = std::bitset<16>(mv).to_string();
+void Move::printMoveString(move_t m) {
+\
+  string bits = std::bitset<16>(m).to_string();
   for (int i = 0; i < 16; i++) {
+    if (i == 6 || i == 12)
+      std::cout << " | ";
     std::cout << bits.at(i) << " ";
   }
   std::cout << '\n';
 }
 
-move_t Move::number() {
-  return mv;
-}
 
-
-Move::Move(int to, int from, int flags) {
+move_t Move::setGetValue(bitboard_t to, bitboard_t from, int flags) {
   // USES A SIMPLE TO/FROM format
   // | 6 bit TO | 6 bit FROM | 4 BITS FOR FLAGS |
   mv = 0U;
@@ -877,10 +946,34 @@ Move::Move(int to, int from, int flags) {
   mv |= (from << 4);  // Adds from behind to
   mv |= (flags << 0);
 
+  return mv;
 }
 
-bool bitIsSet(move_t board, move_t index) {
+bool bitIsSet(bitboard_t board, bitboard_t index) {
   return (board & (1 << index)) ? true : false;
 }
+
+bool Move::captures() {
+  if (mv & (1U << 2)) {
+    return true;
+  }
+  return false;
+}
+
+int Move::getTo() {
+  return (mv >> 10) & 63;
+}
+
+int Move::getFrom() {
+  return (mv >> 4) & 63;
+}
+Move::Move(move_t m) {
+  mv = m;
+}
+
+Move::Move() {
+  mv = 0U;
+}
+
 
 } // End of move

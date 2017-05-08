@@ -31,6 +31,7 @@ using ::bitboard::DIRECTION;
 using ::environment::NSB;
 using ::environment::LSB;
 using ::environment::flipBit;
+using ::bitboard::move_t;
 
 
 bitboard_t WP = makeBoardFromArray(WPc);
@@ -377,15 +378,28 @@ TEST_CASE("Combined attacks") {
 }
 
 TEST_CASE("Creating moves") {
-  move::Move m(35, 36, 15);
-  m.printMoveString();
-  REQUIRE(m.number() == 36431U);
+  move::Move m;
+
+  move_t mt = m.setGetValue(35ULL, 36ULL, 15);
+  move_t hm1 = m.setGetValue(1ULL, 16ULL, 4);
+  //m.printMoveString();
+  move_t hm11 = m.setGetValue(1ULL, 18ULL, 4);
+  //m.printMoveString();
+  move_t hm2 = m.setGetValue(6ULL, 21ULL, 4);
+  //m.printMoveString();
+  move_t hm22 = m.setGetValue(6ULL, 23ULL, 4);
+  //m.printMoveString();
+  std::cout << hm1 << std::endl;
+  std::cout << hm11 << std::endl;
+  std::cout << hm2 << std::endl;
+  std::cout << hm22 << std::endl;
+  std::cout << std::endl;
+  std::cout << std::endl;
 
 
 
-
-
-
+  //m.printMoveString();
+  REQUIRE(mt == 36431U);
 }
 
 TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
@@ -397,3 +411,47 @@ TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.genera
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
 }
 
+TEST_CASE("King and Queen segfault test") {
+  bitboard_t * bits;
+  bits = test.KingMove(COLOR::WHITE);
+  bits = test.QueenMove(COLOR::WHITE);
+}
+
+TEST_CASE("Move-Generation") {
+  //test.printBoard(*test.knightMove(COLOR::BLACK));
+  test.generateMoves(COLOR::WHITE);
+
+}
+
+
+
+TEST_CASE("Knight-Movement finish") {
+  bitboard_t h1 = *test.knightMove(COLOR::WHITE);
+  REQUIRE(h1 == 327680ULL);
+  ::environment::Environment t2(COLOR::BLACK);
+}
+
+
+TEST_CASE ("Check if move is set with capture") {
+  move_t t1 = 6516U;
+  move_t t2 = 6484U;
+  move_t t3 = 1316U;
+
+  move::Move m;
+  move_t t4 = m.setGetValue(2ULL, 3ULL, 4);
+
+  int to = m.getTo();
+  int from = m.getFrom();
+
+  m.printMoveString(t4);
+
+  REQUIRE(to == 2);
+  REQUIRE(from == 3);
+
+  REQUIRE(m.captures());
+
+  m.setGetValue(2ULL, 3ULL, 0);
+
+  REQUIRE_FALSE(m.captures());
+
+}

@@ -7,6 +7,7 @@
 
 #include "./bitboard.h"
 #include <array>
+#include <vector>
 
 
 
@@ -18,6 +19,8 @@ using ::bitboard::COLOR;
 using ::bitboard::bitboard_t;
 using ::bitboard::DIRECTION;
 using ::bitboard::pieceAttack;
+using ::bitboard::move_t;
+using std::vector;
 
 enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
 
@@ -38,9 +41,9 @@ class Environment {
   // If the king has been moved, or been set in check.
   // Castling is not allowed. These values are then set to false
   // This is an important strategic factor in chess
-  bool whiteCastling;
-  bool blackCastling;
   COLOR hostColor;
+  vector<move_t> moveList;
+
 
 
 
@@ -93,8 +96,12 @@ class Environment {
 
   // LEVEL 3 of moveGen - Advanced game logic
   void generateAttacks();  // Sets the attacs-values
+  void generateMove(bitboard_t st, bitboard_t * attack, COLOR color);
+  void generateMoves(COLOR color);    // Adds moves to move-vector
   bitboard_t combinedBlackAttacks(); // All attacked pieces of black
   bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
+  bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
+  void caputrePiece(COLOR opponent, move_t m);
   // Move rockade1
   bool legal(gameState* p);
   bool checkMate();
@@ -129,13 +136,16 @@ using ::bitboard::bitboard_t ;
 
 bool bitIsSet(move_t board, move_t index);
 
-
+// Move class interpritates the 16-bit move values
+// And makes them ineracable with human beings
   class Move {
    private:
     move_t mv;
    public:
-    Move(int to, int from, int flags);
-    void printMoveString();
+    move_t setGetValue(bitboard_t to, bitboard_t from, int flags);
+    void printMoveString(move_t m);
+    Move(move_t m);
+    Move();
 
     bool doublePawnPush();
     bool kingCastle();
@@ -146,7 +156,8 @@ bool bitIsSet(move_t board, move_t index);
     bool queenPromo();
     bool knightPromo();
     bool bishopPromo();
-    move_t number();
+    int getTo();
+    int getFrom();
   };
 
 }
