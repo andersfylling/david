@@ -128,7 +128,6 @@ using ::bitboard::bitboard_t ;
     move_t mv;
    public:
     Move(int to, int from, int flags);
-    Move();
     void printMoveString();
 
     bool doublePawnPush();

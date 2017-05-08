@@ -855,12 +855,6 @@ using std::bitset;
 using std::string;
 
 
-Move::Move() {
-  // This function will never be used
-  // The function will disappear when development getting better
-  mv = 0U;
-
-}
 
 void Move::printMoveString() {
   string bits = std::bitset<16>(mv).to_string();
@@ -881,7 +875,10 @@ Move::Move(int to, int from, int flags) {
   mv = 0U;
   mv |= (to << 10);   // Adds to, to the front of the FILE
   mv |= (from << 4);  // Adds from behind to
+  mv |= (flags << 0);
 
 }
+
+
 
 } // End of move
