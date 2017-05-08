@@ -510,7 +510,8 @@ TEST_CASE("Queen move"){
 TEST_CASE("Pawn attack"){
   SECTION("Fail head on"){
       testStruct->WhiteQueen = 8; //Place white queen back to start from previous test_case
-      testStruct->BlackPawn = 16711680;
+      testStruct->BlackPawn = 1310720;
+      testStruct->WhitePawn = 2048;
 
       test.setGameState(testStruct);
       bitboard_t failHeadOn = test.pawnMoves(COLOR::WHITE)[4];
@@ -518,12 +519,21 @@ TEST_CASE("Pawn attack"){
 
   }
   SECTION("Succeed main diagonal up and anti diagonal up"){
-    bitboard_t successAttack = test.pawnMoves(COLOR::WHITE)[4];
-    REQUIRE(successAttack == 1310720);
+    bitboard_t successAttack = test.pawnMoves(COLOR::WHITE)[0];
+    REQUIRE(successAttack == 136052736);
   }
   SECTION("Fail behind"){
+    testStruct->BlackPawn = 458752;
+    testStruct->WhitePawn = 33554432;
+    test.setGameState(testStruct);
 
+    bitboard_t failOnBackTrack = test.pawnMoves(COLOR::WHITE)[1];
+    REQUIRE_FALSE(failOnBackTrack == 33554432);
   }
+}
+
+TEST_CASE("Knight movement"){
+
 }
 
 TEST_CASE ("Check if move is set with capture") {

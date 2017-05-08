@@ -337,15 +337,15 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     bits[i] = reduceVector(bits[i], opponent, own, DIRECTION::UP);
 
     if (COLOR::WHITE == color) {
-      bitboard_t index = 0LL;
-      index |= (1LL << LSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1)) & opponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1)) & opponent;
+      bitboard_t index = 0ULL;
+      index |= (1ULL << LSB(bits[i]));
+      bits[i] |= *(getXAxisFromBoard(index, true, 1)) & opponent;
+      bits[i] |= *(getXAxisFromBoard(index, true, 2)) & opponent;
     } else {
-      bitboard_t index = 0LL;
-      index |= (1LL << MSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1)) & opponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1)) & opponent;
+      bitboard_t index = 0ULL;
+      index |= (1ULL << MSB(bits[i]));
+      bits[i] |= *(getXAxisFromBoard(index, true, 2)) & opponent;
+      bits[i] |= *(getXAxisFromBoard(index, true, 1)) & opponent;
     }
 
   }
