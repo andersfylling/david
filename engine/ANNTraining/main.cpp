@@ -123,14 +123,13 @@ std::string getStockfishScore(std::string fen) {
   return std::to_string(::stockfishMock::evaluate(fen));
 }
 
-void generateTrainingFile(std::string in, std::string out,
+void generateTrainingFile(std::string folder, std::string in, std::string out,
 
                           const unsigned int max_iterations,
                           const unsigned int num_input,
                           const unsigned int num_output) {
-  std::ifstream infile(in);
-  std::ofstream output;
-  output.open("BUFFER_" + out, std::ios::out | std::ios::trunc);
+  std::ifstream infile(folder + in);
+  std::fstream output(folder + "BUFFER_" + out, std::ios::out | std::ios::trunc);
 
   int trainingPairs = 0;
   ::environment::Environment env(::bitboard::COLOR::WHITE);
@@ -138,7 +137,7 @@ void generateTrainingFile(std::string in, std::string out,
   std::string line;
   while (std::getline(infile, line) && max_iterations > trainingPairs)
   {
-    if (line.length() > 5) {
+    if (line.length() > 1) {
 
       // write this to a file
       if (output.is_open()) {
@@ -160,6 +159,8 @@ void generateTrainingFile(std::string in, std::string out,
 
         output << score << std::endl;
         trainingPairs += 1;
+
+
       }
     }
   }
@@ -167,8 +168,8 @@ void generateTrainingFile(std::string in, std::string out,
   output.close();
 
   // update file info
-  std::ifstream fromBufferFile("BUFFER_" + out);
-  std::ofstream outputUpdate(out, std::ios::out | std::ios::trunc);
+  std::ifstream fromBufferFile(folder + "BUFFER_" + out);
+  std::ofstream outputUpdate(folder + out, std::ios::out | std::ios::trunc);
   if (output.is_open()) {
     outputUpdate << std::to_string(trainingPairs) << " " << std::to_string(num_input) << " " << std::to_string(num_output) << std::endl;
     outputUpdate << fromBufferFile.rdbuf();
@@ -192,7 +193,12 @@ int main (int argc, char * argv[])
   const unsigned int max_iterations = 300000;
   const unsigned int iterations_between_reports = 1000;
 
-  generateTrainingFile("trainingdata/fenstring.txt", "trainingdata/fenAndStockfishScore.data", max_iterations, num_input, num_output);
+  auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining/trainingdata/";
+  auto infile = "fenstring.txt";
+  auto outfile = "fenAndStockfishScore.data";
+  //auto infile = "trainingdata/fenstring.txt";
+  //auto outfile = "trainingdata/fenAndStockfishScore.data";
+  generateTrainingFile(folder, infile, outfile, max_iterations, num_input, num_output);
 
   try
   {
