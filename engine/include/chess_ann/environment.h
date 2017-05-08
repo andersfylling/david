@@ -25,6 +25,7 @@ bitboard_t LSB (bitboard_t board);          // Gets least signifigant bit
 bitboard_t MSB (bitboard_t board);
 bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit
 bitboard_t NSB_t(bitboard_t & board);
+bool bitIsSet(bitboard_t, bitboard_t index);
 
 void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
 void flipOff(bitboard_t &bord, bitboard_t index);
@@ -121,8 +122,14 @@ class Environment {
 
 
 namespace move {
+
+
 using ::bitboard::move_t;
 using ::bitboard::bitboard_t ;
+
+bool bitIsSet(move_t board, move_t index);
+
+
   class Move {
    private:
     move_t mv;
@@ -141,6 +148,7 @@ using ::bitboard::bitboard_t ;
     bool bishopPromo();
     move_t number();
   };
+
 }
 
 #endif //CHESS_ANN_ENVIORNMENT_H

@@ -12,7 +12,7 @@
 #include <array>
 #include <algorithm>
 #include <chess_ann/utils.h>
-#include <ibase.h>
+//#include <ibase.h>
 #include <chess_ann/GameTree.h>
 #include <map>
 
@@ -879,6 +879,8 @@ Move::Move(int to, int from, int flags) {
 
 }
 
+bool bitIsSet(move_t board, move_t index) {
 
+}
 
 } // End of move
