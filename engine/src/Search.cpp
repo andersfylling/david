@@ -116,6 +116,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   //std::shared_ptr<::bitboard::gameState> bestMove = std::make_shared<::bitboard::gameState>();  //Score best node score
   int bestMove = -VALUE_INFINITE;
 
+
   //
   // Create move tree
   //
@@ -132,6 +133,14 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   for (int currentDepth = 1; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
     int currentBestMove;
 
+    //
+    // If UCI aborts the search, no move should be returned and -infinity will be returned
+    //
+    if(isAborted){
+      bestMove = -VALUE_INFINITE;
+      break;
+    }
+
     // this doesnt show true depth
     lastDepth = currentDepth;// = currentBestMove->gameTreeLevel;     //Sent to UCI or some debug when search is done
 
@@ -143,7 +152,9 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
     if (bestMove < currentBestMove)
       bestMove = currentBestMove;
   }
-  //Does not return a move yet
+
+  setComplete(true);
+  //Does not return a move yet, however Search.bestMove is sat in negamax
   std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
   return bestMove;
 }
@@ -169,6 +180,14 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
   int bestScore = -VALUE_INFINITE;
 
   std::cout << "Negamax depth is: " << iDepth << std::endl;
+
+  //
+  // If UCI aborts the search in the middle of a recursive negamax
+  // return -infinity
+  //
+  if(isAborted){
+    return -VALUE_INFINITE;
+  }
 
   if (node->children.empty()) {
     this->bestMove = node;
@@ -206,7 +225,7 @@ void search::Search::resetSearchValues() {
  * If the UCI at any time tells search to abort
  */
 void search::Search::stopSearch() {
-  // return bestMove maybe..
+  setAbort(true);
 }
 
 void search::Search::quitSearch() {

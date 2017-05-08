@@ -27,6 +27,21 @@ TEST_CASE("Search"){
   REQUIRE_NOTHROW(test_search.searchInit(node));
 }
 
+TEST_CASE("Abort search"){
+  test_search.stopSearch();
+  test_search.searchInit(node);
+  REQUIRE(test_search.returnScore() == -VALUE_INFINITE);
+  test_search.iterativeDeepening(node);
+  REQUIRE(test_search.returnScore() == -VALUE_INFINITE);
+  test_search.negamax(node, -VALUE_INFINITE, VALUE_INFINITE, 1);
+  REQUIRE(test_search.returnScore() == -VALUE_INFINITE);
+}
+
+TEST_CASE("Search completed?"){
+  test_search.searchInit(node);
+  REQUIRE(test_search.returnComplete() == true);
+}
+
 
 
 

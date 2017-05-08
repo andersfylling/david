@@ -32,11 +32,14 @@ class Search {
   void searchInit(std::shared_ptr<::bitboard::gameState> node);
   int iterativeDeepening(std::shared_ptr<::bitboard::gameState> node);
   int negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth);
-  void setIterationComplete(bool isCompleted);
+  void setAbort(bool isAborted);
+  void setComplete(bool isComplete);
 
   //Test/debug
   int returnDepth();
   int returnTimeToSearch();
+  int returnScore();
+  bool returnComplete();
 
   // uci protocol methods, this can be used in unit testing
   void stopSearch();
@@ -67,8 +70,13 @@ class Search {
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
+  bool isAborted;
+  bool isComplete;
 };
 
+  //
+  // Debug functions
+  //
   inline int Search::returnDepth()  {
     return this->depth;
   }
@@ -76,6 +84,27 @@ class Search {
   inline int Search::returnTimeToSearch(){
     return this->movetime;
   }
+
+  inline int Search::returnScore() {
+    return this->searchScore;
+  }
+
+  inline bool Search::returnComplete() {
+    return this->isComplete;
+  }
+
+  //
+  //
+  //
+  inline void Search::setAbort(bool isAborted) {
+    this->isAborted = isAborted;
+  }
+
+  inline void Search::setComplete(bool isComplete) {
+    this->isComplete = isComplete;
+  }
+
+
 
 }
 
