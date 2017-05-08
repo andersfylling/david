@@ -2,9 +2,6 @@
 #include "catch.hpp"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/environment.h"
-#include <math.h>
-#include <memory>
-#include <iostream>
 #include <chess_ann/GameTree.h>
 #include "stockfish/stockfishMock.h"
 
