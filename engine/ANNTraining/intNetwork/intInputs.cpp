@@ -1,4 +1,4 @@
-#include "fann/fann.h"
+#include "fann/floatfann.h"
 #include "fann/fann_cpp.h"
 #include "chess_ann/utils.h"
 
@@ -57,8 +57,8 @@ void intNetwork::train_network(
   net.set_activation_steepness_hidden(1.0);
   net.set_activation_steepness_output(1.0);
 
-  net.set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC_STEPWISE);
-  net.set_activation_function_output(FANN::SIGMOID_SYMMETRIC_STEPWISE);
+  net.set_activation_function_hidden(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
+  net.set_activation_function_output(FANN::activation_function_enum::LINEAR	);
 
   // Set additional properties such as the training algorithm
   //net.set_training_algorithm(FANN::TRAIN_QUICKPROP);
@@ -86,6 +86,7 @@ void intNetwork::train_network(
     cout << "Max Epochs " << setw(8) << max_iterations << ". "
          << "Desired Error: " << left << desired_error << right << endl;
     net.set_callback(print_callback, NULL);
+    net.randomize_weights(-2, 2);
     net.train_on_data(data, max_iterations,
                       iterations_between_reports, desired_error);
 
@@ -95,11 +96,11 @@ void intNetwork::train_network(
       // Run the network on the test data
       fann_type *calc_out = net.run(data.get_input()[i]);
 
-//      cout << "Stockfish test (" << showpos << data.get_input()[i][0] << ", "
-//           << data.get_input()[i][1] << ") -> " << *calc_out
-//           << ", should be " << data.get_output()[i][0] << ", "
-//           << "difference = " << noshowpos
-//           << fann_abs(*calc_out - data.get_output()[i][0]) << endl;
+      cout << "Stockfish test (" << showpos << data.get_input()[i][0] << ", "
+           << data.get_input()[i][1] << ") -> " << *calc_out
+           << ", should be " << data.get_output()[i][0] << ", "
+           << "difference = " << noshowpos
+           << fann_abs(*calc_out - data.get_output()[i][0]) << endl;
     }
 
     cout << endl << "Saving network." << endl;
@@ -128,7 +129,7 @@ void intNetwork::generateTrainingFile(
     const unsigned int nrOfLayers)
 {
   std::ifstream infile(folder + "/trainingdata/fenAndStockfishScores.data");
-  std::fstream output(folder + "/binaryNetwork/BUFFER_" + trainingdatafile, std::ios::out | std::ios::trunc);
+  std::fstream output(folder + "/intNetwork/BUFFER_" + trainingdatafile, std::ios::out | std::ios::trunc);
 
   int trainingPairs = 0;
   int lines = 0;
@@ -149,7 +150,20 @@ void intNetwork::generateTrainingFile(
       ::gameTree::nodePtr node = env.generateBoardFromFen(line);
       env.setGameState(node);
       env.generateAttacks();
-      std::array<::bitboard::bitboard_t, 29> boards = {
+      std::array<::bitboard::bitboard_t, 41> boards = {
+          env.numberOfPieces(node->BlackBishop) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackKing) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackKnight) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackPawn) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackQueen) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackRook) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : 0,
+
           env.numberOfPieces(node->BlackBishop),
           env.numberOfPieces(node->BlackKing),
           env.numberOfPieces(node->BlackKnight),
@@ -162,6 +176,7 @@ void intNetwork::generateTrainingFile(
           env.numberOfPieces(node->WhitePawn),
           env.numberOfPieces(node->WhiteRook),
           env.numberOfPieces(node->WhiteKing),
+
           node->BlackBishop,
           node->BlackKing,
           node->BlackKnight,
@@ -174,16 +189,23 @@ void intNetwork::generateTrainingFile(
           node->WhitePawn,
           node->WhiteRook,
           node->WhiteKing,
+
           env.whitePieces(),
           env.blackPieces(),
           env.numberOfPieces(env.whitePieces() | env.blackPieces()),
+
           env.combinedBlackAttacks(),
           env.combinedWhiteAttacks()
       };
 
       // generate inputs
+      int currentInputs = 0;
       for (auto b : boards) {
         output << b << ' ';
+        currentInputs += 1;
+        if (currentInputs >= layers[0]) {
+          break;
+        }
       }
       output << std::endl;
 
@@ -202,8 +224,8 @@ void intNetwork::generateTrainingFile(
   // update file info
   // set training information in the top of the file
   // and the rest of the content below
-  std::ifstream fromBufferFile(folder + "/binaryNetwork/BUFFER_" + trainingdatafile);
-  std::ofstream outputUpdate(folder + "/binaryNetwork/" + trainingdatafile, std::ios::out | std::ios::trunc);
+  std::ifstream fromBufferFile(folder + "/intNetwork/BUFFER_" + trainingdatafile);
+  std::ofstream outputUpdate(folder + "/intNetwork/" + trainingdatafile, std::ios::out | std::ios::trunc);
   if (outputUpdate.is_open()) {
     outputUpdate << std::to_string(trainingPairs) << " "
                  << std::to_string(layers[0]) << " "
@@ -224,13 +246,13 @@ void intNetwork::generateTrainingFile(
  */
 void intNetwork::run()
 {
-  const float learning_rate = 0.7f;
+  const float learning_rate = 0.9f;
   const float desired_error = 0.001f;
-  const unsigned int max_iterations = 100000;
+  const unsigned int max_iterations = 10000;
   const unsigned int max_trainingSets = 100001;
-  const unsigned int iterations_between_reports = 100;
+  const unsigned int iterations_between_reports = 5;
   const unsigned int nrOfLayers = 4;
-  const unsigned int layers[nrOfLayers] = {29, 29, 12, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int layers[nrOfLayers] = {41, 41, 13, 1}; // input, hidden1, ..., hiddenN, output
 
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining";
 
@@ -240,7 +262,7 @@ void intNetwork::run()
   try {
     std::ios::sync_with_stdio(); // Syncronize cout and printf output
     train_network(
-        folder + "/binaryNetwork",
+        folder + "/intNetwork",
         layers,
         nrOfLayers,
         learning_rate,

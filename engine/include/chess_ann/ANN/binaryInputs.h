@@ -43,6 +43,15 @@ int print_callback(
 void train_network(
     const std::string folder,
     const unsigned int* layers,
+    const unsigned int nrOfLayers,
+    const float learning_rate,
+    const float desired_error,
+    const unsigned int max_iterations,
+    const unsigned int iterations_between_reports);
+void train_network_parallel(
+    const std::string folder,
+    const unsigned int* layers,
+    const unsigned int nrOfLayers,
     const float learning_rate,
     const float desired_error,
     const unsigned int max_iterations,
@@ -51,7 +60,8 @@ void train_network(
 void generateTrainingFile(
     const std::string folder,
     const unsigned int max_trainingSets,
-    const unsigned int* layers);
+    const unsigned int* layers,
+    const unsigned int nrOfLayers);
 
 void run();
 

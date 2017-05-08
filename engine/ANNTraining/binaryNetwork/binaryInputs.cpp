@@ -16,6 +16,7 @@
 #include <fstream>
 #include <chess_ann/environment.h>
 #include <chess_ann/GameTree.h>
+#include <fann/parallel_fann.h>
 #include "chess_ann/ANN/binaryInputs.h"
 using std::cout;
 using std::cerr;
@@ -39,6 +40,7 @@ int binaryNetwork::print_callback(FANN::neural_net &net, FANN::training_data &tr
 void binaryNetwork::train_network(
     const std::string folder,
     const unsigned int* layers,
+    const unsigned int nrOfLayers,
     const float learning_rate,
     const float desired_error,
     const unsigned int max_iterations,
@@ -48,8 +50,8 @@ void binaryNetwork::train_network(
 
   cout << endl << "Creating network." << endl;
 
-  FANN::neural_net net;
-  net.create_standard_array(3, layers);
+  FANN::neural_net net(FANN::network_type_enum::LAYER, nrOfLayers, layers);
+  //net.create_standard_array(nrOfLayers, layers);
 
   net.set_learning_rate(learning_rate);
 
@@ -112,6 +114,43 @@ void binaryNetwork::train_network(
   }
 }
 
+void binaryNetwork::train_network_parallel(
+    const std::string folder,
+    const unsigned int* layers,
+    const unsigned int nrOfLayers,
+    const float learning_rate,
+    const float desired_error,
+    const unsigned int max_iterations,
+    const unsigned int iterations_between_reports)
+{
+  cout << endl << "training started." << endl;
+
+  cout << endl << "Creating network." << endl;
+
+  const unsigned int max_epochs = 1000;
+  unsigned int num_threads = 4;
+  struct fann_train_data *data;
+  struct fann *ann;
+  float error;
+  unsigned int i;
+
+  auto fiStr = folder + '/' + trainingdatafile;
+  data = fann_read_train_from_file(fiStr.c_str());
+  ann = fann_create_standard(nrOfLayers, layers);
+
+  fann_set_activation_function_hidden(ann, FANN_SIGMOID_SYMMETRIC);
+  fann_set_activation_function_output(ann, FANN_SIGMOID);
+
+  for(i = 1; i <= max_epochs; i++)
+  {
+    error = num_threads > 1 ? fann_train_epoch_irpropm_parallel(ann, data, num_threads) : fann_train_epoch(ann, data);
+    printf("Epochs     %8d. Current error: %.10f\n", i, error);
+  }
+
+  fann_destroy(ann);
+  fann_destroy_train(data);
+}
+
 
 /**
  * Creates a unique training file for this specific neural network.
@@ -123,7 +162,8 @@ void binaryNetwork::train_network(
 void binaryNetwork::generateTrainingFile(
     const std::string folder,
     const unsigned int max_trainingSets,
-    const unsigned int* layers)
+    const unsigned int* layers,
+    const unsigned int nrOfLayers)
 {
   std::ifstream infile(folder + "/trainingdata/fenAndStockfishScores.data");
   std::fstream output(folder + "/binaryNetwork/BUFFER_" + trainingdatafile, std::ios::out | std::ios::trunc);
@@ -145,6 +185,52 @@ void binaryNetwork::generateTrainingFile(
     if (output.is_open()) {
 
       ::gameTree::nodePtr node = env.generateBoardFromFen(line);
+      env.setGameState(node);
+      env.generateAttacks();
+      std::array<::bitboard::bitboard_t, 41> inputs = {
+          env.numberOfPieces(node->BlackBishop) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackKing) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackKnight) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackPawn) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackQueen) > 0 ? 1 : 0,
+          env.numberOfPieces(node->BlackRook) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : 0,
+          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : 0,
+
+          env.numberOfPieces(node->BlackBishop),
+          env.numberOfPieces(node->BlackKing),
+          env.numberOfPieces(node->BlackKnight),
+          env.numberOfPieces(node->BlackPawn),
+          env.numberOfPieces(node->BlackQueen),
+          env.numberOfPieces(node->BlackRook),
+          env.numberOfPieces(node->WhiteBishop),
+          env.numberOfPieces(node->WhiteQueen),
+          env.numberOfPieces(node->WhiteKnight),
+          env.numberOfPieces(node->WhitePawn),
+          env.numberOfPieces(node->WhiteRook),
+          env.numberOfPieces(node->WhiteKing),
+
+          env.whitePieces(),
+          env.blackPieces(),
+          env.numberOfPieces(env.whitePieces() | env.blackPieces()),
+
+          env.combinedBlackAttacks(),
+          env.combinedWhiteAttacks()
+      };
+
+      // generate inputs
+      int currentInputs = 12;
+      for (auto b : inputs) {
+        output << b << ' ';
+        currentInputs += 1;
+        if (currentInputs >= layers[0]) {
+          break;
+        }
+      }
       std::array<::bitboard::bitboard_t, 12> boards = {
           node->BlackBishop,
           node->BlackKing,
@@ -189,7 +275,7 @@ void binaryNetwork::generateTrainingFile(
   if (outputUpdate.is_open()) {
     outputUpdate << std::to_string(trainingPairs) << " "
                  << std::to_string(layers[0]) << " "
-                 << std::to_string(layers[(sizeof(layers) / sizeof(layers[0]))])
+                 << std::to_string(layers[nrOfLayers - 1])
                  << std::endl;
     outputUpdate << fromBufferFile.rdbuf();
     outputUpdate.close();
@@ -208,21 +294,23 @@ void binaryNetwork::run()
 {
   const float learning_rate = 0.7f;
   const float desired_error = 0.001f;
-  const unsigned int max_iterations = 1000;
+  const unsigned int max_iterations = 10000;
   const unsigned int max_trainingSets = 30000;
   const unsigned int iterations_between_reports = 1;
-  const unsigned int layers[3] = {768, 112, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int nrOfLayers = 3;
+  const unsigned int layers[nrOfLayers] = {797, 84, 1}; // input, hidden1, ..., hiddenN, output
 
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining";
 
   // Generates the training data and returns the filename.
-  //generateTrainingFile(folder, max_trainingSets, layers);
+  generateTrainingFile(folder, max_trainingSets, layers, nrOfLayers);
 
   try {
     std::ios::sync_with_stdio(); // Syncronize cout and printf output
     train_network(
         folder + "/binaryNetwork",
         layers,
+        nrOfLayers,
         learning_rate,
         desired_error,
         max_iterations,
