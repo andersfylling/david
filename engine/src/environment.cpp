@@ -880,7 +880,7 @@ Move::Move(int to, int from, int flags) {
 }
 
 bool bitIsSet(move_t board, move_t index) {
-
+  return (board & (1 << index)) ? true : false;
 }
 
 } // End of move
