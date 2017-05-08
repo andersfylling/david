@@ -2,6 +2,12 @@
 #include "fann/fann_cpp.h"
 #include "chess_ann/utils.h"
 
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <array>
 #include <ios>
 #include <iostream>
 #include <iomanip>
@@ -49,7 +55,7 @@ void xor_test(
   cout << endl << "Creating network." << endl;
 
   FANN::neural_net net;
-  net.create_standard(num_layers, num_input, num_hidden, num_output);
+  net.create_standard(5, num_input, 400, 200, 100, num_output);
 
   net.set_learning_rate(learning_rate);
 
@@ -119,8 +125,15 @@ void xor_test(
 }
 
 
-std::string getStockfishScore(std::string fen) {
-  return std::to_string(::stockfishMock::evaluate(fen));
+std::string getScoreFromStockfish(std::shared_ptr<FILE> pipe, std::string fen) {
+  std::array<char, 128> buffer;
+  std::string result;
+  if (!pipe) throw std::runtime_error("popen() failed!");
+  while (!feof(pipe.get())) {
+    if (fgets(buffer.data(), 128, pipe.get()) != NULL)
+      result += buffer.data();
+  }
+  return result;
 }
 
 void generateTrainingFile(std::string folder, std::string in, std::string out,
@@ -135,6 +148,7 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
   int skipped = 0;
   int lines = 0;
   ::environment::Environment env(::bitboard::COLOR::WHITE);
+  //std::shared_ptr<FILE> pipe(popen("./Stockfish_src", "r"), pclose);
 
   std::string line;
   std::clock_t initTimer = std::clock();
@@ -170,19 +184,30 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
 
         ::gameTree::nodePtr node = env.generateBoardFromFen(line);
         //timers[4] = ( std::clock() - initTimer ) / (double) CLOCKS_PER_SEC;
+        
+        std::array<::bitboard::bitboard_t, 12> boards = {
+            node->BlackBishop,
+            node->BlackKing,
+            node->BlackKnight,
+            node->BlackPawn,
+            node->BlackQueen,
+            node->BlackRook,
+            node->WhiteBishop,
+            node->WhiteQueen,
+            node->WhiteKnight,
+            node->WhitePawn,
+            node->WhiteRook,
+            node->WhiteKing
+        };
 
-        output << node->BlackBishop << ' ';
-        output << node->BlackKing << ' ';
-        output << node->BlackKnight << ' ';
-        output << node->BlackPawn << ' ';
-        output << node->BlackQueen << ' ';
-        output << node->BlackRook << ' ';
-        output << node->WhiteBishop << ' ';
-        output << node->WhiteQueen << ' ';
-        output << node->WhiteKnight << ' ';
-        output << node->WhitePawn << ' ';
-        output << node->WhiteRook << ' ';
-        output << node->WhiteKing << std::endl;
+        // inputs
+        for (auto b : boards) {
+          auto ba = std::bitset<64>(b);
+          for (int i = 0; i < ba.size(); i++) {
+            output << ba[i] << ' ';
+          }
+        }
+        output << std::endl;
 
         output << score << std::endl;
         trainingPairs += 1;
@@ -219,30 +244,29 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
 }
 
 
-
 int main (int argc, char * argv[])
 {
 
-  const float learning_rate = 0.7f;
+  const float learning_rate = 0.9f;
   const unsigned int num_layers = 3;
-  const unsigned int num_input = 12;
-  const unsigned int num_hidden = 3;
+  const unsigned int num_input = 768;
+  const unsigned int num_hidden = 768;
   const unsigned int num_output = 1;
   const float desired_error = 0.001f;
-  const unsigned int max_iterations = 300000;
-  const unsigned int iterations_between_reports = 1000;
+  const unsigned int max_iterations = 10000;
+  const unsigned int iterations_between_reports = 10;
 
   auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining/trainingdata/";
   auto infile = "fenstring.txt";
   auto outfile = "fenAndStockfishScore.data";
   //auto infile = "trainingdata/fenstring.txt";
   //auto outfile = "trainingdata/fenAndStockfishScore.data";
-  generateTrainingFile(folder, infile, outfile, max_iterations, num_input, num_output);
+  //generateTrainingFile(folder, infile, outfile, max_iterations, num_input, num_output);
 
   try
   {
     std::ios::sync_with_stdio(); // Syncronize cout and printf output
-    //xor_test();
+    xor_test(learning_rate, num_layers, num_input, num_hidden, num_output, desired_error, max_iterations, iterations_between_reports);
   }
   catch (...)
   {

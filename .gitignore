@@ -7,8 +7,8 @@
 # Ignore intellij "CLion" project configurations
 .idea
 
-engine/ANNTraining/trainingdata/fenstring.txt
-engine/ANNTraining/trainingdata/fenAndStockfishScore.data
+#engine/ANNTraining/trainingdata/fenstring.txt
+#engine/ANNTraining/trainingdata/fenAndStockfishScore.data
 
 # Ignore Mac specific files
 .DS_Store
