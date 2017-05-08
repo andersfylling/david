@@ -118,17 +118,6 @@ void xor_test(
   }
 }
 
-void runTesting() {
-  try
-  {
-    std::ios::sync_with_stdio(); // Syncronize cout and printf output
-    xor_test();
-  }
-  catch (...)
-  {
-    cerr << endl << "Abnormal exception." << endl;
-  }
-}
 
 std::string getStockfishScore(std::string fen) {
   return std::to_string(::stockfishMock::evaluate(fen));
@@ -204,6 +193,16 @@ int main (int argc, char * argv[])
   const unsigned int iterations_between_reports = 1000;
 
   generateTrainingFile("trainingdata/fenstring.txt", "trainingdata/fenAndStockfishScore.data", max_iterations, num_input, num_output);
+
+  try
+  {
+    std::ios::sync_with_stdio(); // Syncronize cout and printf output
+    //xor_test();
+  }
+  catch (...)
+  {
+    cerr << endl << "Abnormal exception." << endl;
+  }
 
   // Close program with exit code 0.
   return 0;
