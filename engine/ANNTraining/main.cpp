@@ -138,10 +138,20 @@ void generateTrainingFile(std::string folder, std::string in, std::string out,
   while (std::getline(infile, line) && max_iterations > trainingPairs)
   {
     if (line.length() > 1) {
+      bool legit = true;
+      int score = 0;
+      try {
+        score = ::stockfishMock::evaluate(line);
+      }
+      catch (...)
+      {
+        legit = false;
+      }
 
       // write this to a file
-      if (output.is_open()) {
-        auto score = getStockfishScore(line);
+      if (output.is_open() && legit) {
+
+
         ::gameTree::nodePtr node = env.generateBoardFromFen(line);
 
         output << node->BlackBishop << ' ';
