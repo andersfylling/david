@@ -5,7 +5,6 @@ sys.path.insert(0, '../../../external/pgnToFen')
 import pgntofen
 
 
-stats = converter.pgnFile(file)
 pgnConverter = pgntofen.PgnToFen()
 pgnConverter.resetBoard()
 
