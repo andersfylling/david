@@ -1,21 +1,20 @@
 import sys
 sys.path.insert(0, '../../../external/pgnToFen')
-
 import pgntofen
 
-pgnConverter = pgntofen.PgnToFen()
-pgnConverter.resetBoard()
-file = "PGNfiles/ficsgamesdb_201601_standard2000_nomovetimes_1462883.pgn"
-stats =  pgnConverter.pgnFile(file);
+converter = pgntofen.PgnToFen()
+file = "./test/Carlsen.pgn"
 
 stats = converter.pgnFile(file)
 
 output = open("fenstring.txt", "w")
 
-for lists in stats['succeeded']:
-    for nlist in lists:
-        for fenstring in nlist:
-            output.write(fenstring)
-            output.write('\n')
+items = stats['succeeded'][0][1]
+
+for x in range(0, len(items), 3):
+    output.write(items[x]);
+    output.write('\n')
 
 output.close()
+
+
