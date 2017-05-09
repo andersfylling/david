@@ -54,6 +54,7 @@ class Environment {
   Environment(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
   void setGameState(std::shared_ptr<::bitboard::gameState> st);  // Setting the gamestate for testing
+  gameState getGameState();
   void printBitboards();            // Prints number values of all 12 boards
 
 
@@ -82,6 +83,7 @@ class Environment {
   bitboard_t whitePieces(); // Returns all white pieces
   bitboard_t blackPieces(); // Returns all black pieces
 
+
   // Funksjonen skal returnere et bitboard som trekker fra motstandere og egne riktig
   // Får tilbake et bitboard som er modifisert
   bitboard_t reduceVector(bitboard_t vector, bitboard_t opponent, bitboard_t own, DIRECTION dir);
@@ -104,7 +106,7 @@ class Environment {
   bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
   void capturePiece(COLOR opponent, bitboard_t index, gameState & st);
   gameState movePiece(COLOR own, bitboard_t to, bitboard_t from);
-  void computeGameStates();
+  std::vector<gameState> computeGameStates();
   // Move rockade1
   bool legal(gameState p);
   bitboard_t initiate();
@@ -114,6 +116,7 @@ class Environment {
 
 
   // LEVEL 4 of moveGen - tree generation
+  //gameState getCurrentGameState();
 
 
   // INTERPRETATION
@@ -124,7 +127,6 @@ class Environment {
   bitboard_t chessIndexToBitboard(std::string chessIndex);
   bitboard_t intToUint64(int i);
 
-  std::string fen(gameState* node, bool whiteMovesNext);
   void setFen(std::string fen);
   std::shared_ptr<::bitboard::gameState> generateBoardFromFen(const std::string fen);
 

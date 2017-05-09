@@ -258,7 +258,7 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
  */
 void search::Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
-  this->depth = 6;
+  this->depth = 2;
   this->searchScore = 0;
   this->nodesSearched = 0;
 }
@@ -269,6 +269,15 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
   //
   double iterationsArray[iterations][2];
   std::mutex performancetest;
+
+
+  //
+  // Output / statistics
+  //
+  std::string s = "μs";
+  std::cout << "--+---------------------+-----------------+\n" <<
+            "   | Time used in iter   |  Nodes searched |\n" <<
+            "--+---------------------+-----------------+\n";
 
   //
   // Iterations loop, run the test as many times as needed
@@ -288,20 +297,10 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
     auto diff = end - start;
     iterationsArray[i][0] = std::chrono::duration <double, std::milli> (diff).count();
     iterationsArray[i][1] = this->nodesSearched;
-  }
 
-
-  //
-  // Output / statistics
-  //
-  std::string s = "μs";
-  std::cout << "--+---------------------+-----------------+\n" <<
-               "   | Time used in iter   |  Nodes searched |\n" <<
-               "--+---------------------+-----------------+\n";
-  for (int i = 0; i < iterations; i++) {
     std::cout << i + 1 << " | ";
     std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
-      " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
+              " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
     std::cout << '\n';
     std::cout << "  +---------------------+-----------------+\n";
   }

@@ -3,6 +3,9 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <chess_ann/environment.h>
+#include <chess_ann/utils.h>
+#include <stockfish/stockfishMock.h>
 
 /**
  * Constructor
@@ -99,8 +102,13 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
 
   // mock test
   node->children.resize(0);
-  for (int i = 0; i < 35 && i < livingNodes; livingNodes++, i++) {
-    this->generateNode(node);
+
+  ::environment::Environment env(node->playerColor);
+  env.setGameState(node);
+  auto states = env.computeGameStates();
+
+  for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
+    this->generateNode(node, states.at(i));
   }
 
   this->sortChildren(node);
@@ -159,15 +167,27 @@ void ::gameTree::GameTree::generateNodes() {
     return;
   }
 
-  int livingNodes = this->getNumberOfNodes();
-
   nodePtr node = this->current;
-  while (livingNodes < this->maxNumberOfNodes) {
-    this->generateNode(node);
-    livingNodes += 1;
+
+  while (this->getNumberOfNodes() < this->maxNumberOfNodes) {
+
+    ::environment::Environment env(node->playerColor);
+    env.setGameState(node);
+    auto states = env.computeGameStates();
+
+    int children = 0;
+    for (int i = 0; i < states.size(); i++) {
+      this->generateNode(node, states.at(i));
+      children += 1;
+    }
+    this->sortChildren(node);
+
+
+    if (children > 0) {
+      node = node->children.at(0);
+    }
   }
 
-  this->sortChildren(node);
 
 }
 
@@ -201,8 +221,8 @@ int ::gameTree::GameTree::getNumberOfNodes(nodePtr node) {
   if (node->children.size() == 0) {
     return 1;
   }
-  for (std::shared_ptr<gameState> node : this->current->children) {
-    return this->getNumberOfNodes(node);
+  for (std::shared_ptr<gameState> child : node->children) {
+    return this->getNumberOfNodes(child);
   }
 }
 
@@ -256,16 +276,44 @@ namespace gameTree { // why..
  * @param parent nodePtr
  * @return nodePtr of the new child, however parent will link to this anyways.
  */
-nodePtr GameTree::generateNode(nodePtr parent) {
+nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
+  using ::bitboard::COLOR::WHITE;
+  using ::bitboard::COLOR::BLACK;
+  using ::bitboard::bitboard_t;
   nodePtr node = std::make_shared<gameState>();
 
+  node->BlackRook = child.BlackRook;
+  node->BlackQueen = child.BlackQueen;
+  node->BlackPawn = child.BlackPawn;
+  node->BlackKnight = child.BlackKnight;
+  node->BlackKing = child.BlackKing;
+  node->BlackBishop = child.BlackBishop;
+  node->WhiteRook = child.WhiteRook;
+  node->WhiteQueen = child.WhiteQueen;
+  node->WhitePawn = child.WhitePawn;
+  node->WhiteKnight = child.WhiteKnight;
+  node->WhiteKing = child.WhiteKing;
+  node->WhiteBishop = child.WhiteBishop;
+  node->playerColor = child.playerColor;
+  node->blackKingCastling = child.blackKingCastling;
+  node->blackQueenCastling = child.blackQueenCastling;
+  node->whiteKingCastling = child.whiteKingCastling;
+  node->whiteQueenCastling = child.whiteQueenCastling;
+
+  //::environment::Environment env(node->playerColor);
+  //env.setGameState(node);
+
+
   node->gameTreeLevel = parent->gameTreeLevel + 1;
-  node->score = std::rand() % 5000 + 21;
+  node->score = ::stockfishMock::evaluate(::utils::generateFen(node));
   node->fullMoves = (node->gameTreeLevel + 1) / 2;
-  node->halfMoves = 0; // eh..
+  node->halfMoves = parent->halfMoves + 1;
   node->weakParent = parent;
 
-  // do bitboard stuff when applicable
+  // Validate half moves
+  if (!::utils::isHalfMove(parent, node)) {
+    node->halfMoves = 0;
+  }
 
   // add child to parent
   parent->children.push_back(node);

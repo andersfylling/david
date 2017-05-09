@@ -24,12 +24,18 @@ TEST_CASE("Search creation") {
 
 TEST_CASE("Search"){
   test_search.setDebug(false);
-  test_search.performanceTest(node, 1000);
+  test_search.performanceTest(node, 10);
   REQUIRE_NOTHROW(test_search.searchInit(node));
 }
 
 TEST_CASE("Abort search"){
-  test_search.stopSearch();
+  SECTION("Stopping search") {
+    std::cout << "stopping search" << std::endl;
+    test_search.stopSearch();
+  }
+
+  std::cout << "INIT search" << std::endl;
+
   test_search.searchInit(node);
   REQUIRE(test_search.returnScore() == (int)(-INFINITY));
   test_search.iterativeDeepening(node);

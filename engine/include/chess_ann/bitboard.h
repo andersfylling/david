@@ -103,10 +103,12 @@ struct gameState {
 
   int gameTreeLevel = 0;
 
-  bool blackQueenCastling;
-  bool blackKingCastling;
-  bool whiteQueenCastling;
-  bool whiteKingCastling;
+  bool blackQueenCastling = true;
+  bool blackKingCastling = true;
+  bool whiteQueenCastling = true;
+  bool whiteKingCastling = true;
+
+  ::bitboard::COLOR playerColor = ::bitboard::COLOR::WHITE;
 
 
   std::weak_ptr<::bitboard::gameState> weakParent; //...
