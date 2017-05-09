@@ -10,6 +10,7 @@
 #include "chess_ann/uci/events.h"
 #include <chess_ann/uci/Listener.h>
 #include "chess_ann/GameTree.h"
+#include <fstream>
 #include <chrono>
 #include <time.h>
 #include <memory>

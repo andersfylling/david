@@ -276,6 +276,7 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
   // a more accurate result
   //
   for(int i = 0; i <= iterations && !this->isAborted; i++){
+    resetSearchValues();
     //
     // Clock time it takes to execute iterative deepening and negamax
     //
@@ -304,6 +305,16 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
     std::cout << '\n';
     std::cout << "  +---------------------+-----------------+\n";
   }
+
+  //
+  // Write statistic to csv file
+  //
+  std::ofstream searchStats;
+  searchStats.open ("search_statistics.csv");
+  for(int i = 0; i < iterations; i++){
+    searchStats << iterationsArray[i][0] << ',' << iterationsArray[i][1] << ',' << i << std::endl;
+  }
+  searchStats.close();
 }
 
 /**
