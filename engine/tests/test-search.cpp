@@ -3,7 +3,6 @@
 //
 
 #include "chess_ann/Search.h"
-
 #include "catch.hpp"
 
 ::search::Search test_search;
@@ -24,6 +23,8 @@ TEST_CASE("Search creation") {
 }
 
 TEST_CASE("Search"){
+  test_search.setDebug(false);
+  test_search.performanceTest(node, 200);
   REQUIRE_NOTHROW(test_search.searchInit(node));
 }
 

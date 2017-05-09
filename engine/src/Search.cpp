@@ -99,7 +99,9 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
 
   this->searchScore = iterativeDeepening(node);
-  std::cout << "Search objects score after complete search: " << this->searchScore<< std::endl;  //Debug
+
+  if(this->debug)
+    std::cout << "Search objects score after complete search: " << this->searchScore<< std::endl;  //Debug
   //
   // Send some values/fenstring or whatever to UCI
   //
@@ -137,7 +139,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   // Iterate down in the search tree for each search tree
   //
   time_t initTimer = std::time(nullptr);
-  auto timeout = (initTimer * 100000) + movetime;
+  auto timeout = (initTimer * 10000) + movetime;
   for (int currentDepth = 1; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
     int currentBestScore;
     int aspirationDelta = 0;
@@ -219,6 +221,9 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
     return (int)(-INFINITY);
   }
 
+  //
+  // Need to regenerate the incomming nodes children
+  //
 
   //
   // Should do a quiescence search after to ensure we are not encountering
@@ -232,10 +237,14 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
   //Node->children does not return correct type atm
   for (auto child : node->children) {
     score = -negamax(child, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
+    this->nodesSearched++;
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);
-    std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
+    if(this->debug)
+      std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
     if(alpha >= beta) {
+      if(this->debug)
+        std::cout << "Nodes children pruned\n";
       break;
     }
   }
@@ -251,6 +260,50 @@ void search::Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
   this->depth = 6;
   this->searchScore = 0;
+  this->nodesSearched = 0;
+}
+
+void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node, int iterations) {
+  //
+  // For each iteration, save time and nodes searched
+  //
+  double iterationsArray[iterations][2];
+  std::mutex performancetest;
+
+  //
+  // Iterations loop, run the test as many times as needed
+  // Mutex to avoid any one else taking cpu time away for
+  // a more accurate result
+  //
+  for(int i = 0; i <= iterations && !this->isAborted; i++){
+    //
+    // Clock time it takes to execute iterative deepening and negamax
+    //
+    performancetest.lock();
+    auto start = std::chrono::steady_clock::now();
+    searchInit(node);
+    auto end = std::chrono::steady_clock::now();
+    performancetest.unlock();
+    auto diff = end - start;
+    iterationsArray[i][0] = std::chrono::duration <double, std::milli> (diff).count();
+    iterationsArray[i][1] = this->nodesSearched;
+  }
+
+
+  //
+  // Output / statistics
+  //
+  std::string s = "μs";
+  std::cout << "--+---------------------+-----------------+\n" <<
+               "   | Time used in iter   |  Nodes searched |\n" <<
+               "--+---------------------+-----------------+\n";
+  for (int i = 0; i < iterations; i++) {
+    std::cout << i + 1 << " | ";
+    std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
+      " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
+    std::cout << '\n';
+    std::cout << "  +---------------------+-----------------+\n";
+  }
 }
 
 /**

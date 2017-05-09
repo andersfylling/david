@@ -10,9 +10,11 @@
 #include "chess_ann/uci/UCIEvent.h"
 #include <chess_ann/uci/Listener.h>
 #include "chess_ann/GameTree.h"
+#include <chrono>
 #include <time.h>
 #include <memory>
 #include <algorithm>
+#include <mutex>
 
 using ::bitboard::COLOR;
 
@@ -40,7 +42,8 @@ class Search {
   int returnTimeToSearch();
   int returnScore();
   bool returnComplete();
-  bool setDebug();
+  void setDebug(bool debug);
+  void performanceTest(std::shared_ptr<::bitboard::gameState> node, int iterations);
 
   // uci protocol methods, this can be used in unit testing
   void stopSearch();
@@ -73,6 +76,8 @@ class Search {
   void resetSearchValues();
   bool isAborted;
   bool isComplete;
+  bool debug;
+  int nodesSearched;
 };
 
   //
@@ -109,6 +114,14 @@ class Search {
    */
   inline void Search::setComplete(bool isComplete) {
     this->isComplete = isComplete;
+  }
+
+  /**
+   * Disable/enable some window output
+   * @param debug
+   */
+  inline void Search::setDebug(bool debug) {
+    this->debug == debug;
   }
 
 
