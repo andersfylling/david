@@ -264,7 +264,7 @@ void binaryNetwork::generateTrainingFile(
         auto ba = std::bitset<64>(b);
         double arr[1] = {-1.0};
         auto prog = 0;
-        for (int i = 0; i < ba.size(); i++) {
+        for (uint8_t i = 0; i < ba.size(); i++) {
           if (::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
@@ -281,7 +281,7 @@ void binaryNetwork::generateTrainingFile(
         auto ba = std::bitset<64>(b);
         double arr[2] = {-1.0, -1.0};
         auto prog = 0;
-        for (int i = 0; i < ba.size(); i++) {
+        for (uint8_t i = 0; i < ba.size(); i++) {
           if (::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
@@ -296,7 +296,7 @@ void binaryNetwork::generateTrainingFile(
         auto ba = std::bitset<64>(b);
         double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
         auto prog = 0;
-        for (int i = 0; i < ba.size(); i++) {
+        for (uint8_t i = 0; i < ba.size(); i++) {
           if (::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
