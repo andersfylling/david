@@ -188,6 +188,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   setComplete(true);
   //Does not return a move yet, however Search.bestMove is sat in negamax
   //std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
+  this->bestMove = board;
   return bestScore;
 }
 
@@ -218,6 +219,11 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
     return (int)(-INFINITY);
   }
 
+
+  //
+  // Should do a quiescence search after to ensure we are not encountering
+  // a danger move in the next depth in this branch
+  //
   if (iDepth == depth) {
     return node->score;
   }
