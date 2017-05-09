@@ -3,6 +3,7 @@
 #ifdef __linux__
 //linux code goes here
 #include <unistd.h>
+#include <bitset>
 #elif _WIN32
 // windows code goes here
 #endif
