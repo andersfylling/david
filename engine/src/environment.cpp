@@ -933,7 +933,6 @@ void Environment::generateMove(bitboard_t st, bitboard_t *attack, COLOR color) {
     tempAttack = attack[i];
     indexTo = LSB(tempAttack);
     for (int j = 0; j < numberOfPieces(attack[i]); j++) {
-
       flag = (moveIsCapture(indexTo, color)) ? 4 : 0;
       tempMove = mo.setGetValue(indexTo, index, flag);
       if(tempMove > 0U)
@@ -958,6 +957,7 @@ void Environment::generateMoves(COLOR color) {
     generateMove(state.WhiteKnight, attacks.WhiteKnight, color);
     generateMove(state.WhiteKing, attacks.WhiteKing, color);
     generateMove(state.WhiteQueen, attacks.WhiteQueen, color);
+    canWhiteCastleK(); canBlackCastleQ();
   } else {
     generateMove(state.BlackPawn, attacks.BlackPawn, color);
     generateMove(state.BlackBishop, attacks.BlackBishop, color);
@@ -965,6 +965,7 @@ void Environment::generateMoves(COLOR color) {
     generateMove(state.BlackKnight, attacks.BlackKnight, color);
     generateMove(state.BlackKing, attacks.BlackKing, color);
     generateMove(state.BlackQueen, attacks.BlackQueen, color);
+    canBlackCastleQ(); canBlackCastleK();
   }
   std::cout << moveList.size() << std::endl;
   //std::cout << moveList.size() << std::endl;
@@ -989,7 +990,7 @@ void Environment::capturePiece(COLOR opponent, bitboard_t index, gameState &st) 
   }
 }
 
-gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from) {
+gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from, int flag) {
   gameState returnState = state;
   // A move on the white pieces are being made
 
@@ -1008,6 +1009,14 @@ gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from) {
       else if(from == 128ULL)
         returnState.whiteQueenCastling = false;
     } else if (bitIsSet(returnState.WhiteKing, from)) {   // WHITE KING
+      if (flag == 2 ) {
+        flipOff(returnState.WhiteRook, LSB(returnState.WhiteRook));
+        flipBit(returnState.WhiteRook, LSB(returnState.WhiteRook)+2ULL);
+
+      } else if (flag == 3) {
+        flipOff(returnState.WhiteRook, MSB(returnState.WhiteRook));
+        flipBit(returnState.WhiteRook, MSB(returnState.WhiteRook)-3ULL);
+      }
       flipOff(returnState.WhiteKing, from);
       flipBit(returnState.WhiteKing, to);
       returnState.whiteKingCastling = false;
@@ -1034,6 +1043,14 @@ gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from) {
       else if(from == 9223372036854775808ULL)
         returnState.blackQueenCastling = false;
     } else if (bitIsSet(returnState.BlackKing, from)) {   // Black KING
+      if (flag == 2 ) { // King side
+        flipOff(returnState.BlackRook, LSB(returnState.BlackRook));
+        flipBit(returnState.WhiteRook, LSB(returnState.BlackRook)+2ULL);
+
+      } else if (flag == 3) { // Queen side
+        flipOff(returnState.BlackRook, MSB(returnState.BlackRook));
+        flipBit(returnState.BlackRook, MSB(returnState.BlackRook)-3ULL);
+      }
       flipOff(returnState.BlackKing, from);
       flipBit(returnState.BlackKing, to);
       returnState.blackKingCastling = false;
@@ -1063,7 +1080,7 @@ void Environment::computeGameStates() {
   while (!moveList.empty()) {
     moveInter.set(moveList[moveList.size()]);     // Gets the last item
     moveList.pop_back();
-    temp = movePiece(currentMoveColor, intToUint64(moveInter.getTo()), intToUint64(moveInter.getFrom()));
+    temp = movePiece(currentMoveColor, intToUint64(moveInter.getTo()), intToUint64(moveInter.getFrom()), 0);
     if (moveInter.captures()) {
       COLOR opc = (currentMoveColor == COLOR::WHITE) ? COLOR::BLACK : COLOR::WHITE;
       bitboard_t tempB = intToUint64(moveInter.getTo());

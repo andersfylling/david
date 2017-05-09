@@ -110,7 +110,7 @@ class Environment {
   bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
   bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
   void capturePiece(COLOR opponent, bitboard_t index, gameState & st);
-  gameState movePiece(COLOR own, bitboard_t to, bitboard_t from);
+  gameState movePiece(COLOR own, bitboard_t to, bitboard_t from, int flag);
   void computeGameStates();
   // Move rockade1
   bool legal(gameState p);
