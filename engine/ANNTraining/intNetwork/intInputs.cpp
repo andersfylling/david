@@ -69,8 +69,8 @@ void intNetwork::train_network(
   net.set_activation_steepness_hidden(1.0);
   net.set_activation_steepness_output(1.0);
 
-  net.set_activation_function_hidden(FANN::activation_function_enum::ELLIOT_SYMMETRIC);
-  net.set_activation_function_output(FANN::activation_function_enum::ELLIOT_SYMMETRIC  );
+  net.set_activation_function_hidden(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
+  net.set_activation_function_output(FANN::activation_function_enum::SIGMOID_SYMMETRIC);
 
   // Set additional properties such as the training algorithm
   net.set_training_algorithm(FANN::TRAIN_QUICKPROP);
@@ -162,7 +162,7 @@ void intNetwork::generateTrainingFile(
       ::gameTree::nodePtr node = env.generateBoardFromFen(line);
       env.setGameState(node);
       env.generateAttacks();
-      std::array<::bitboard::bitboard_t, 30> boards = {
+      std::array<long int, 26> boards = {
           1, //always white
 
 
@@ -181,35 +181,35 @@ void intNetwork::generateTrainingFile(
 
           //env.numberOfPieces(env.whitePieces() | env.blackPieces()),
 
-          env.combinedBlackAttacks(),
-          env.numberOfPieces(node->BlackBishop) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackKing) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackKnight) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackPawn) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackQueen) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackRook) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackBishop),
-          env.numberOfPieces(node->BlackKing),
-          env.numberOfPieces(node->BlackKnight),
-          env.numberOfPieces(node->BlackPawn),
-          env.numberOfPieces(node->BlackQueen),
-          env.numberOfPieces(node->BlackRook),
-          env.blackPieces(),
+          //env.combinedBlackAttacks(),
+          -1 * (env.numberOfPieces(node->BlackBishop) > 0 ? 1 : -1),
+              -1 * (env.numberOfPieces(node->BlackKing) > 0 ? 1 : -1),
+              -1 * (env.numberOfPieces(node->BlackKnight) > 0 ? 1 : -1),
+              -1 * (env.numberOfPieces(node->BlackPawn) > 0 ? 1 : -1),
+              -1 * (env.numberOfPieces(node->BlackQueen) > 0 ? 1 : -1),
+              -1 * (env.numberOfPieces(node->BlackRook) > 0 ? 1 : -1),
+              -1 * (env.numberOfPieces(node->BlackBishop) == 0 ? -1 : env.numberOfPieces(node->BlackBishop) / 10),
+              -1 * (env.numberOfPieces(node->BlackKing) == 0 ? -1 : env.numberOfPieces(node->BlackKing) / 10),
+              -1 * (env.numberOfPieces(node->BlackKnight) == 0 ? -1 : env.numberOfPieces(node->BlackKnight) / 10),
+              -1 * (env.numberOfPieces(node->BlackPawn) == 0 ? -1 : env.numberOfPieces(node->BlackPawn) / 10),
+              -1 * (env.numberOfPieces(node->BlackQueen) == 0 ? -1 : env.numberOfPieces(node->BlackQueen) / 10),
+              -1 * (env.numberOfPieces(node->BlackRook) == 0 ? -1 : env.numberOfPieces(node->BlackRook) / 10),
+          //env.blackPieces(),
 
-          env.combinedWhiteAttacks(),
-          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteBishop),
-          env.numberOfPieces(node->WhiteQueen),
-          env.numberOfPieces(node->WhiteKnight),
-          env.numberOfPieces(node->WhitePawn),
-          env.numberOfPieces(node->WhiteRook),
-          env.numberOfPieces(node->WhiteKing),
-          env.whitePieces()
+          //env.combinedWhiteAttacks(),
+          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : -1,
+          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : -1,
+          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : -1,
+          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : -1,
+          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : -1,
+          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : -1,
+          env.numberOfPieces(node->WhiteBishop) == 0 ? -1 : env.numberOfPieces(node->WhiteBishop) / 10,
+          env.numberOfPieces(node->WhiteQueen) == 0 ? -1 : env.numberOfPieces(node->WhiteQueen) / 10,
+          env.numberOfPieces(node->WhiteKnight) == 0 ? -1 : env.numberOfPieces(node->WhiteKnight) / 10,
+          env.numberOfPieces(node->WhitePawn) == 0 ? -1 : env.numberOfPieces(node->WhitePawn) / 10,
+          env.numberOfPieces(node->WhiteRook) == 0 ? -1 : env.numberOfPieces(node->WhiteRook) / 10,
+          env.numberOfPieces(node->WhiteKing) == 0 ? -1 : env.numberOfPieces(node->WhiteKing) / 10
+          //env.whitePieces()
       };
 
       // generate inputs
@@ -266,12 +266,12 @@ void intNetwork::run()
   const unsigned int max_trainingSets = 100001;
   const unsigned int iterations_between_reports = 2;
   const unsigned int nrOfLayers = 4;
-  const unsigned int layers[nrOfLayers] = {30, 50, 20, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int layers[nrOfLayers] = {26, 52, 20, 1}; // input, hidden1, ..., hiddenN, output
 
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining";
 
   // Generates the training data and returns the filename.
-  //generateTrainingFile(folder, max_trainingSets, layers, nrOfLayers);
+  generateTrainingFile(folder, max_trainingSets, layers, nrOfLayers);
 
   try {
     std::ios::sync_with_stdio(); // Syncronize cout and printf output

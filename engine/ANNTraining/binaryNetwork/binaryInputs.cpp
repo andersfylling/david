@@ -1,4 +1,4 @@
-#include "fann/fann.h"
+#include "fann/floatfann.h"
 #include "fann/fann_cpp.h"
 #include "chess_ann/utils.h"
 
@@ -58,11 +58,11 @@ void binaryNetwork::train_network(
   net.set_activation_steepness_hidden(1.0);
   net.set_activation_steepness_output(1.0);
 
-  net.set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC_STEPWISE);
-  net.set_activation_function_output(FANN::SIGMOID_SYMMETRIC_STEPWISE);
+  net.set_activation_function_hidden(FANN::SIGMOID_SYMMETRIC);
+  net.set_activation_function_output(FANN::SIGMOID_SYMMETRIC);
 
   // Set additional properties such as the training algorithm
-  //net.set_training_algorithm(FANN::TRAIN_QUICKPROP);
+  net.set_training_algorithm(FANN::TRAIN_QUICKPROP);
 
   // Output network type and parameters
   cout << endl << "Network Type                         :  ";
@@ -173,11 +173,14 @@ void binaryNetwork::generateTrainingFile(
   ::environment::Environment env(::bitboard::COLOR::WHITE);
 
   std::string line;
-  while (std::getline(infile, line) && max_trainingSets > trainingPairs && !infile.eof()) {
+  int lineNr = 1;
+  int skippedtrainingSets = 0;
+  std::stringstream fileStringInput;
+  while (std::getline(infile, line) && max_trainingSets > (trainingPairs - skippedtrainingSets) && !infile.eof()) {
     lines += 1;
 
     if (lines % 1000 == 0) {
-      std::cout << "Line#: " << lines << std::endl;
+      std::cout << 100 * (trainingPairs - skippedtrainingSets) / (max_trainingSets) << '%' << std::endl;
     }
 
 
@@ -185,83 +188,150 @@ void binaryNetwork::generateTrainingFile(
     if (output.is_open()) {
 
       ::gameTree::nodePtr node = env.generateBoardFromFen(line);
+      std::stringstream strm(line);
+      std::string blackTurn = "";
+      strm >> blackTurn;
+      blackTurn = "";
+      strm >> blackTurn;
       env.setGameState(node);
       env.generateAttacks();
-      std::array<::bitboard::bitboard_t, 41> inputs = {
-          env.numberOfPieces(node->BlackBishop) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackKing) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackKnight) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackPawn) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackQueen) > 0 ? 1 : 0,
-          env.numberOfPieces(node->BlackRook) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteBishop) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteQueen) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteKnight) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhitePawn) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteRook) > 0 ? 1 : 0,
-          env.numberOfPieces(node->WhiteKing) > 0 ? 1 : 0,
+      bool isB = blackTurn == "b";
+      std::array<double, 30> inputs = {
+          blackTurn == "b" ? -1.0 : 1.0,
+          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackBishop) > 0.1 ? 1 : -1),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) > 0.1 ? 1 : -1),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKnight) > 0.1 ? 1 : -1),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackPawn) > 0.1 ? 1 : -1),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackQueen) > 0.1 ? 1 : -1),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackRook) > 0.1 ? 1 : -1),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackBishop) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackBishop)) / 10.0),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackKing)) / 10.0),
+          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKnight) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackKnight)) / 10.0),
+          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackPawn) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackPawn)) / 10.0),
+          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackQueen) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 10.0),
+          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackRook) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 10.0),
 
-          env.numberOfPieces(node->BlackBishop),
-          env.numberOfPieces(node->BlackKing),
-          env.numberOfPieces(node->BlackKnight),
-          env.numberOfPieces(node->BlackPawn),
-          env.numberOfPieces(node->BlackQueen),
-          env.numberOfPieces(node->BlackRook),
-          env.numberOfPieces(node->WhiteBishop),
-          env.numberOfPieces(node->WhiteQueen),
-          env.numberOfPieces(node->WhiteKnight),
-          env.numberOfPieces(node->WhitePawn),
-          env.numberOfPieces(node->WhiteRook),
-          env.numberOfPieces(node->WhiteKing),
 
-          env.whitePieces(),
-          env.blackPieces(),
-          env.numberOfPieces(env.whitePieces() | env.blackPieces()),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) > 0.1 ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) > 0.1 ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) > 0.1 ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhitePawn) > 0.1 ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteRook) > 0.1 ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) > 0.1 ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 10.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 10.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 10.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhitePawn) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 10.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteRook) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 10.0),
+          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 10.0),
 
-          env.combinedBlackAttacks(),
-          env.combinedWhiteAttacks()
+
+          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.whitePieces())) / 10.0, // is never 0
+          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.blackPieces())) / 10.0, // is never 0
+          static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 10.0,
+
+          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 10.0),
+          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 10.0,
       };
 
       // generate inputs
-      int currentInputs = 12;
+      int nInputs = 0;
       for (auto b : inputs) {
-        output << b << ' ';
-        currentInputs += 1;
-        if (currentInputs >= layers[0]) {
-          break;
-        }
+        fileStringInput << std::setprecision(2) << b << ' '; // limit to one decimal... I think
+        nInputs += 1;
       }
-      std::array<::bitboard::bitboard_t, 12> boards = {
-          node->BlackBishop,
+      std::array<::bitboard::bitboard_t, 2> boards1 = {
           node->BlackKing,
+          node->WhiteKing
+      };
+      std::array<::bitboard::bitboard_t, 8> boards2 = {
+          node->BlackBishop,
           node->BlackKnight,
-          node->BlackPawn,
           node->BlackQueen,
           node->BlackRook,
           node->WhiteBishop,
           node->WhiteQueen,
           node->WhiteKnight,
-          node->WhitePawn,
-          node->WhiteRook,
-          node->WhiteKing
+          node->WhiteRook
+      };
+      std::array<::bitboard::bitboard_t, 2> boards8 = {
+          node->BlackPawn,
+          node->WhitePawn
       };
 
       // generate inputs
-      for (auto b : boards) {
+      for (auto b : boards1) {
         auto ba = std::bitset<64>(b);
+        double arr[1] = {-1.0};
+        auto prog = 0;
         for (int i = 0; i < ba.size(); i++) {
-          output << ba[i] << ' ';
+          if (::utils::bitAt(b, i)) {
+            arr[prog++] = i == 0 ? 0 : i / 10.0;
+          }
+        }
+
+        for (auto e : arr) {
+          fileStringInput << std::setprecision(2) << e << ' ';
+          nInputs += 1;
         }
       }
-      output << std::endl;
+
+      // Issue, what if the first on is gone? same on boards8
+      for (auto b : boards2) {
+        auto ba = std::bitset<64>(b);
+        double arr[2] = {-1.0, -1.0};
+        auto prog = 0;
+        for (int i = 0; i < ba.size(); i++) {
+          if (::utils::bitAt(b, i)) {
+            arr[prog++] = i == 0 ? 0 : i / 10.0;
+          }
+        }
+
+        for (auto e : arr) {
+          fileStringInput << std::setprecision(2) << e << ' ';
+          nInputs += 1;
+        }
+      }
+      for (auto b : boards8) {
+        auto ba = std::bitset<64>(b);
+        double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
+        auto prog = 0;
+        for (int i = 0; i < ba.size(); i++) {
+          if (::utils::bitAt(b, i)) {
+            arr[prog++] = i == 0 ? 0 : i / 10.0;
+          }
+        }
+
+        for (auto e : arr) {
+          fileStringInput << std::setprecision(2) << e << ' ';
+          nInputs += 1;
+        }
+      }
+      fileStringInput << std::endl;
+
 
       // expected output
       std::string score;
       std::getline(infile, score);
-      output << score << std::endl;
+      fileStringInput << score << std::endl;
 
       // inc record
       trainingPairs += 1;
+      lineNr += 1;
+
+
+      // make sure u have the right amount of inputs
+      if (nInputs != layers[0]) {
+        //std::cerr << "nInputs: " << nInputs << ", expected: " << layers[0] << ". Line#" << lineNr << std::endl;
+        skippedtrainingSets += 1;
+        fileStringInput.clear();
+        continue;
+      }
+      else {
+        output << fileStringInput.str();
+      }
+      //assert(nInputs == layers[0]);
+
     }
   }
   infile.close();
@@ -273,7 +343,7 @@ void binaryNetwork::generateTrainingFile(
   std::ifstream fromBufferFile(folder + "/binaryNetwork/BUFFER_" + trainingdatafile);
   std::ofstream outputUpdate(folder + "/binaryNetwork/" + trainingdatafile, std::ios::out | std::ios::trunc);
   if (outputUpdate.is_open()) {
-    outputUpdate << std::to_string(trainingPairs) << " "
+    outputUpdate << std::to_string(trainingPairs - skippedtrainingSets) << " "
                  << std::to_string(layers[0]) << " "
                  << std::to_string(layers[nrOfLayers - 1])
                  << std::endl;
@@ -284,7 +354,7 @@ void binaryNetwork::generateTrainingFile(
 
   // info
   std::cout << "TRAINING FILE GENERATED!" << std::endl;
-  std::cout << "Created # of training sets: " << trainingPairs << std::endl;
+  std::cout << "Created # of training sets: " << (trainingPairs - skippedtrainingSets) << " / " << trainingPairs << std::endl;
 }
 
 /**
@@ -298,7 +368,7 @@ void binaryNetwork::run()
   const unsigned int max_trainingSets = 30000;
   const unsigned int iterations_between_reports = 1;
   const unsigned int nrOfLayers = 3;
-  const unsigned int layers[nrOfLayers] = {797, 84, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int layers[nrOfLayers] = {64, 84, 1}; // input, hidden1, ..., hiddenN, output
 
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining";
 

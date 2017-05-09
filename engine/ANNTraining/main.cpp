@@ -31,8 +31,8 @@ using std::noshowpos;
 
 int main(int argc, char *argv[]) {
 
-  //::binaryNetwork::run();
-  ::intNetwork::run();
+  ::binaryNetwork::run();
+  //::intNetwork::run();
 
   // Close program with exit code 0.
   return 0;
