@@ -324,11 +324,14 @@ void binaryNetwork::generateTrainingFile(
       if (nInputs != layers[0]) {
         //std::cerr << "nInputs: " << nInputs << ", expected: " << layers[0] << ". Line#" << lineNr << std::endl;
         skippedtrainingSets += 1;
+        fileStringInput.str("");
         fileStringInput.clear();
         continue;
       }
       else {
         output << fileStringInput.str();
+        fileStringInput.str("");
+        fileStringInput.clear();
       }
       //assert(nInputs == layers[0]);
 
