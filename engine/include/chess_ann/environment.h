@@ -96,6 +96,13 @@ class Environment {
   // Generate a bitboard_t based on a chess position: E6
 
   // LEVEL 3 of moveGen - Advanced game logic
+
+  // Castling
+  void canWhiteCastleK();
+  void canWhiteCastleQ();
+  void canBlackCastleK();
+  void canBlackCastleQ();
+
   void generateAttacks();  // Sets the attacs-values
   void generateMove(bitboard_t st, bitboard_t * attack, COLOR color);
   void generateMoves(COLOR color);    // Adds moves to move-vector

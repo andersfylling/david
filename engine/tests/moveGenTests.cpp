@@ -59,6 +59,36 @@ TEST_CASE ("Num-Pieces") {
   // All pieces
 }
 
+TEST_CASE ("Castling") {
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  //testStruct->BlackBishop = 0;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  //testStruct->BlackKnight = 0;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  //testStruct->BlackQueen = 0;
+  testStruct->BlackRook = 9295429630892703744ULL;
+
+  testStruct->WhiteBishop = 36;
+  //testStruct->WhiteBishop = 0;
+  testStruct->WhiteKnight = 66;
+  //testStruct->WhiteKnight = 0;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  //testStruct->WhiteQueen = 0;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
+
+  test.setGameState(testStruct);
+  test.printBoard(test.whitePieces() | test.blackPieces());
+  test.generateAttacks();
+
+  // Tests were done with std::cout variables used
+  // various places in canColorCastleK/Q functions
+
+}
+
 TEST_CASE("Flip-bit") {
   bitboard_t temp = 0ULL;
   bitboard_t control = 0ULL;
