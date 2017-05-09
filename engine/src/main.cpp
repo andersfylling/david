@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "chess_ann/uci/Listener.h"
-#include "chess_ann/uci/UCIEvent.h"
+#include "chess_ann/uci/events.h"
 #include <chess_ann/Search.h>
 #include <chess_ann/GameTree.h>
 #include "chess_ann/genericUCIResponses.h"

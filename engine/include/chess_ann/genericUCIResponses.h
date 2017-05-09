@@ -2,7 +2,7 @@
 #define CHESS_ANN_GENERICUCIRESPONSES_H
 
 
-#include "chess_ann/uci/Definitions.h"
+#include "chess_ann/uci/definitions.h"
 #include "chess_ann/uci/Response.h"
 #include "engineInformation.h"
 namespace uciResponses {

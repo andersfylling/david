@@ -8,6 +8,7 @@
 #include <iostream>
 
 namespace engineInformation{
+static const std::string PROJECT_NAME = "chess_ann"; // MUST BE THE SAME AS FOLDER NAME
 static const std::string ENGINE_NAME = "chess_ann";
 static const std::string ENGINE_AUTHOR = "Anders Øen Fylling, Martin Klingenberg, Markus Jacobsen, Martin Trehjørning";
 static const std::string ENGINE_VERSION = "0.2.3";

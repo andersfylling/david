@@ -5,6 +5,7 @@
 #include <math.h>
 #include <memory>
 #include <iostream>
+#include <chess_ann/GameTree.h>
 #include "stockfish/stockfishMock.h"
 
 
@@ -27,6 +28,11 @@ using ::bitboard::BKc;
 using ::bitboard::COLOR;
 using ::bitboard::makeBoardFromArray;
 using ::bitboard::DIRECTION;
+using ::environment::NSB;
+using ::environment::LSB;
+using ::environment::flipBit;
+using ::bitboard::move_t;
+
 
 bitboard_t WP = makeBoardFromArray(WPc);
 bitboard_t WC = makeBoardFromArray(WCc);
@@ -60,7 +66,7 @@ TEST_CASE("Flip-bit") {
   // Tests setting bits opposed to using slow power function
   for (bitboard_t i = 0ULL; i < 64ULL; i++) {
     temp = 0ULL;
-    test.flipBit(temp, i);
+    flipBit(temp, i);
     control = static_cast<unsigned long long>(pow(2.0, static_cast<float>(i)));
     REQUIRE(temp == control);
   }
@@ -69,7 +75,7 @@ TEST_CASE("Flip-bit") {
   temp = 0ULL;
   control = 0ULL;
   for (bitboard_t i = 0ULL; i < 64ULL; i++) {
-    test.flipBit(temp, i);
+    flipBit(temp, i);
     control += static_cast<unsigned long long>(pow(2.0, static_cast<float>(i)));
     REQUIRE(temp == control);
   }
@@ -115,16 +121,16 @@ TEST_CASE("LSB MSB NSB") {
   // Tests that LSB can find the correct index
   for (bitboard_t i = 0; i < 64; i++) {
     testBrett = 0ULL;
-    test.flipBit(testBrett, i);
-    REQUIRE(test.LSB(testBrett) == i);
+    flipBit(testBrett, i);
+    REQUIRE(LSB(testBrett) == i);
   }
 
   for (bitboard_t i = 0; i < 64; i++)
-    test.flipBit(testBrett, i);
+    flipBit(testBrett, i);
 
   // Tests that NSB works with all possible fields
   for (bitboard_t i = 0; i < 63; i++) {
-    REQUIRE(test.NSB(testBrett) == i+1);
+    REQUIRE(NSB(testBrett) == i+1);
   }
 }
 
@@ -242,10 +248,10 @@ TEST_CASE("Queen move BLOCK") {
 }
 
 TEST_CASE ("REDUCE VECTOR") {
-  bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368ULL, DIRECTION::UP, false, 1), test.blackPieces(), test.whitePieces(), DIRECTION::UP);
+  bitboard_t board = test.reduceVector(*test.getDiagYAxis(34359738368LL, DIRECTION::UP, false, 1), test.blackPieces(), test.whitePieces(), DIRECTION::UP);
   REQUIRE(board == 2260595906707456ULL);
 
-  board = test.reduceVector(*test.getDiagYAxis(34359738368ULL, DIRECTION::UP, false, 2), test.blackPieces(), test.whitePieces(), DIRECTION::DOWN);
+  board = test.reduceVector(*test.getDiagYAxis(34359738368LL, DIRECTION::UP, false, 2), test.blackPieces(), test.whitePieces(), DIRECTION::DOWN);
   REQUIRE(board == 134742016ULL);
 }
 
@@ -356,9 +362,263 @@ TEST_CASE("Validate fen string from gameState node") {
   //node.WhitePawn = 0;
 
   //auto fen = test.fen(&node, true);
-  std::cout << ::stockfishMock::evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1") << std::endl;
+  //std::cout << ::stockfishMock::evaluate("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1") << std::endl;
 
   //auto fen = test.fen(n_p, false);
 
   //std::cout << fen << std::endl;
 }
+
+TEST_CASE("Combined attacks") {
+  bitboard_t t = test.combinedWhiteAttacks();
+  //test.printBoard(t);
+
+  bitboard_t  tt = test.combinedBlackAttacks();
+  //test.printBoard(tt);
+}
+
+TEST_CASE("Creating moves") {
+  move::Move m;
+
+  move_t mt = m.setGetValue(35ULL, 36ULL, 15);
+  move_t hm1 = m.setGetValue(1ULL, 16ULL, 4);
+  //m.printMoveString();
+  move_t hm11 = m.setGetValue(1ULL, 18ULL, 4);
+  //m.printMoveString();
+  move_t hm2 = m.setGetValue(6ULL, 21ULL, 4);
+  //m.printMoveString();
+  move_t hm22 = m.setGetValue(6ULL, 23ULL, 4);
+  //m.printMoveString();
+
+
+
+
+  //m.printMoveString();
+  REQUIRE(mt == 36431U);
+}
+
+TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
+  ::environment::Environment env(::bitboard::COLOR::BLACK);
+
+  ::gameTree::nodePtr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  env.setGameState(node);
+
+  REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
+}
+
+TEST_CASE("King and Queen segfault test") {
+  bitboard_t * bits;
+  bits = test.KingMove(COLOR::WHITE);
+  bits = test.QueenMove(COLOR::WHITE);
+}
+
+TEST_CASE("Move-Generation") {
+  //test.printBoard(*test.knightMove(COLOR::BLACK));
+  test.generateMoves(COLOR::WHITE);
+
+}
+
+
+
+TEST_CASE("Knight-Movement finish") {
+  bitboard_t h1 = *test.knightMove(COLOR::WHITE);
+  REQUIRE(h1 == 327680ULL);
+  ::environment::Environment t2(COLOR::BLACK);
+}
+
+TEST_CASE("Pawn move"){
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
+
+  testStruct->WhiteBishop = 524292;
+  testStruct->WhiteBishop = 36;
+  testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
+
+  test.setGameState(testStruct);
+
+  bitboard_t t1 = test.pawnMoves(COLOR::WHITE)[0];
+  bitboard_t t2 = test.pawnMoves(COLOR::WHITE)[1];
+
+  REQUIRE(t1 ==16842752);
+  REQUIRE(t2 == 33685504);
+}
+
+TEST_CASE("King move"){
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  testStruct->BlackRook = 9295429630892703744ULL;
+
+  testStruct->WhiteBishop = 524292;
+  testStruct->WhiteBishop = 36;
+  testStruct->WhiteQueen = 34359738368;
+  testStruct->WhiteKnight = 66;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
+
+  test.setGameState(testStruct);
+
+  //test.printBoard(testStruct.WhiteBishop);
+  bitboard_t fail = test.KingMove(COLOR::WHITE)[0];
+
+
+
+  //Must fail because of neighbouring pieces
+  REQUIRE_FALSE(fail == 14376);
+
+  // King in the middle of board to test free movement
+  testStruct->WhiteKing = 34359738368ULL;
+  test.setGameState(testStruct);
+  bitboard_t success = test.KingMove(COLOR::WHITE)[0];
+  REQUIRE(success == 30872694685696ULL);
+}
+
+TEST_CASE("Queen move"){
+  //Free movement
+  testStruct->WhiteQueen = 34359738368ULL;
+  testStruct->WhiteKing = 16;
+  test.setGameState(testStruct);
+
+  bitboard_t freemovement = test.QueenMove(COLOR::WHITE)[0];
+  REQUIRE(freemovement == 11853796676861952ULL);
+
+  //Fail movement in start position
+  testStruct->WhiteQueen = 8;
+  test.setGameState(testStruct);
+  bitboard_t failMovement = test.QueenMove(COLOR::WHITE)[0];
+  REQUIRE_FALSE(failMovement == 7188);
+}
+
+TEST_CASE("Pawn attack"){
+  SECTION("Fail head on"){
+      testStruct->WhiteQueen = 8; //Place white queen back to start from previous test_case
+      testStruct->BlackPawn = 1310720;
+      testStruct->WhitePawn = 2048;
+
+      test.setGameState(testStruct);
+      bitboard_t failHeadOn = test.pawnMoves(COLOR::WHITE)[4];
+      REQUIRE_FALSE(failHeadOn == 1835008);
+
+  }
+  SECTION("Succeed main diagonal up and anti diagonal up"){
+    bitboard_t successAttack = test.pawnMoves(COLOR::WHITE)[0];
+    REQUIRE(successAttack == 136052736);
+  }
+  SECTION("Fail behind"){
+    testStruct->BlackPawn = 458752;
+    testStruct->WhitePawn = 33554432;
+    test.setGameState(testStruct);
+
+    bitboard_t failOnBackTrack = test.pawnMoves(COLOR::WHITE)[1];
+    REQUIRE_FALSE(failOnBackTrack == 33554432);
+  }
+}
+
+TEST_CASE("Knight movement"){
+  SECTION("Free move on board"){
+    testStruct->BlackBishop = 0;
+    testStruct->BlackKing = 0;
+    testStruct->BlackKnight = 0;
+    testStruct->BlackPawn = 0;
+    testStruct->BlackQueen = 0;
+    testStruct->BlackRook = 0;
+
+    testStruct->WhiteBishop = 0;
+    testStruct->WhiteBishop = 0;
+    testStruct->WhiteQueen = 0;
+    testStruct->WhiteKnight = 268435456;
+    testStruct->WhitePawn = 0;
+    testStruct->WhiteQueen = 0;
+    testStruct->WhiteKing = 0;
+    testStruct->WhiteRook = 0;
+    test.setGameState(testStruct);
+
+    bitboard_t knightFreeMove = test.knightMove(COLOR::WHITE)[0];
+    REQUIRE(knightFreeMove == 44272527353856ULL);
+  }
+  SECTION("Knight movement with targets"){
+    testStruct->BlackBishop = 2594073385365405696ULL;
+    testStruct->BlackKing = 1152921504606846976ULL;
+    testStruct->BlackKnight = 4755801206503243776ULL;
+    testStruct->BlackPawn = 71776119061217280ULL;
+    testStruct->BlackQueen = 576460752303423488ULL;
+    testStruct->BlackRook = 9295429630892703744ULL;
+
+    testStruct->WhiteBishop = 524292;
+    testStruct->WhiteBishop = 36;
+    testStruct->WhiteQueen = 34359738368;
+    testStruct->WhiteKnight = 8796093022208ULL;
+    testStruct->WhitePawn = 65280;
+    testStruct->WhiteQueen = 8;
+    testStruct->WhiteKing = 16;
+    testStruct->WhiteRook = 129;
+    test.setGameState(testStruct);
+
+    bitboard_t withTargets = test.knightMove(COLOR::WHITE)[0];
+    REQUIRE(withTargets == 1450722176331153408ULL);
+  }
+}
+
+TEST_CASE ("Check if move is set with capture") {
+  move_t t1 = 6516U;
+  move_t t2 = 6484U;
+  move_t t3 = 1316U;
+
+  move::Move m;
+  move_t t4 = m.setGetValue(2ULL, 3ULL, 4);
+
+  int to = m.getTo();
+  int from = m.getFrom();
+
+
+  REQUIRE(to == 2);
+  REQUIRE(from == 3);
+
+  REQUIRE(m.captures());
+
+  m.setGetValue(2ULL, 3ULL, 0);
+
+  REQUIRE_FALSE(m.captures());
+
+}
+
+
+TEST_CASE("test if bitisset can see if index is set") {
+  using ::environment::bitIsSet;
+  bitboard_t opponent = test.blackPieces();
+  bitboard_t a = test.whitePieces();
+  bitboard_t  b = *test.getDiagYAxis(524288ULL, DIRECTION::ANTI_DIAGONAL, true, 1) & 335544320ULL;
+
+  //test.printBoard(b);
+  //test.printBoard(a);
+  REQUIRE(bitIsSet(a, 0ULL));
+  REQUIRE_FALSE(bitIsSet(a, 35ULL));
+
+
+
+}
+
+
+TEST_CASE("Game initiation and generation of trees") {
+  ::environment::Environment lastTest(COLOR::WHITE);
+  lastTest.initiate();
+  //lastTest.printBoard(lastTest.combinedBlackAttacks() | lastTest.combinedWhiteAttacks());
+  bitboard_t flipTest = 65280ULL;
+  //test.printBoard(flipTest);
+  ::environment::flipOff(flipTest, 8ULL);
+  //test.printBoard(flipTest);
+}
+

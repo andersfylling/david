@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <map>
-#include "Definitions.h"
+#include "definitions.h"
 
 namespace uci {
 class Parser {

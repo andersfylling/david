@@ -8,4 +8,4 @@ list(REMOVE_ITEM chess_ann_benchmarksfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/m
 
 add_executable(chess_ann_benchmarks ${chess_ann_benchmarksfiles})
 
-target_link_libraries(chess_ann_benchmarks benchmark stockfish -lpthread)
+target_link_libraries(chess_ann_benchmarks benchmark stockfish fann -lpthread)
