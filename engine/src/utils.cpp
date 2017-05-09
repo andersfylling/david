@@ -193,6 +193,22 @@ bool utils::bitAt(uint64_t b, uint8_t i) {
 }
 
 
+void ::utils::setDefaultChessLayout(::gameTree::nodePtr node) {
+  node->BlackBishop = 2594073385365405696ULL;
+  node->BlackKing = 576460752303423488ULL;
+  node->BlackKnight = 4755801206503243776ULL;
+  node->BlackPawn = 71776119061217280ULL;
+  node->BlackQueen = 1152921504606846976ULL;
+  node->BlackRook = 9295429630892703744ULL;
+
+  node->WhiteBishop = 36;
+  node->WhiteKnight = 66;
+  node->WhitePawn = 65280;
+  node->WhiteQueen = 8;
+  node->WhiteKing = 16;
+  node->WhiteRook = 129;
+
+}
 
 std::string utils::getAbsoluteProjectPath() {
 #ifdef __linux__

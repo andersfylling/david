@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chess_ann/utils.h>
 #include "catch.hpp"
 #include "chess_ann/GameTree.h"
 
@@ -10,11 +11,20 @@ TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
 
   nodePtr root = std::make_shared<gameState>();
+  ::utils::setDefaultChessLayout(root);
 
   GameTree gt(root);
 
   SECTION("Verifying that only one node exists when a GameTree is initiated") {
     REQUIRE(gt.getNumberOfNodes() == 1);
+  }
+
+
+  SECTION("Setting max nr of nodes to 10 and generating them") {
+    gt.setMaxNumberOfNodes(10);
+    gt.generateNodes();
+
+    REQUIRE(gt.getNumberOfNodes() == 10);
   }
 
 

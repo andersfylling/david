@@ -20,6 +20,7 @@ bool bitAt(uint64_t b, uint8_t i);
 std::string getAbsoluteProjectPath();
 bool isHalfMove(::gameTree::nodePtr parent, ::gameTree::nodePtr child);
 std::string generateFen(::gameTree::nodePtr node);
+void setDefaultChessLayout(::gameTree::nodePtr node);
 };
 
 #endif //CHESS_ANN_UTILS_H
