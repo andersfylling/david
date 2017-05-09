@@ -189,7 +189,7 @@ std::string utils::generateFen(::gameTree::nodePtr node) {
  * @return true if bit is 1 at index i
  */
 bool utils::bitAt(uint64_t b, uint8_t i) {
-  return (b & (1 << i)) != 0;
+  return (b & (1ULL << i)) != 0;
 }
 
 

@@ -636,6 +636,99 @@ std::shared_ptr<::bitboard::gameState> Environment::generateBoardFromFen(const s
   return node;
 }
 
+void Environment::canWhiteCastleK() { // King startpos is 4
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t blackAttacks = combinedBlackAttacks();
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 5) &&
+      !::utils::bitAt(all, 6)) {
+    // king is not in, passes through, or passes into check
+    if (!::utils::bitAt(blackAttacks, 4) &&
+        !::utils::bitAt(blackAttacks, 5) &&
+        !::utils::bitAt(blackAttacks, 6)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 6, from startpos 4, code castle Kingside
+      tempMove = mo.setGetValue(6, 4, 2);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
+
+void Environment::canWhiteCastleQ() { // King startpos is 4
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t blackAttacks = combinedBlackAttacks();
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 3) &&
+      !::utils::bitAt(all, 2) &&
+      !::utils::bitAt(all, 1)) {
+    // king is not in, passes through, or passes into check
+    if (!::utils::bitAt(blackAttacks, 4) &&
+        !::utils::bitAt(blackAttacks, 3) &&
+        !::utils::bitAt(blackAttacks, 2)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 2, from startpos 4, code castle Queenside
+      tempMove = mo.setGetValue(2, 4, 3);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
+
+void Environment::canBlackCastleK() { // King startpos is 60
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t whiteAttacks = combinedWhiteAttacks();
+
+  std::cout << "canBlackCastleK's whiteattacks:\n";
+  printBoard(whiteAttacks);
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 61) &&
+      !::utils::bitAt(all, 62)) {
+    std::cout << "canBlackCastleK ingen imellom\n";
+    // king is not in, passes through, or passes into check
+    if (!::utils::bitAt(whiteAttacks, 60) &&
+        !::utils::bitAt(whiteAttacks, 61) &&
+        !::utils::bitAt(whiteAttacks, 62)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 62, from startpos 60, code castle Kingside
+      tempMove = mo.setGetValue(62, 60, 2);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
+
+void Environment::canBlackCastleQ() { // King startpos is 60
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t whiteAttacks = combinedWhiteAttacks();
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 59) &&
+      !::utils::bitAt(all, 58) &&
+      !::utils::bitAt(all, 57)) {
+    // king is not in, passes through, or passes into checkk
+    if (!::utils::bitAt(whiteAttacks, 60) &&
+        !::utils::bitAt(whiteAttacks, 59) &&
+        !::utils::bitAt(whiteAttacks, 58)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 58, from startpos 60, code castle Queenside
+      tempMove = mo.setGetValue(58, 60, 3);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
 
 void Environment::generateAttacks() {
   attacks.WhitePawn = pawnMoves(COLOR::WHITE);
