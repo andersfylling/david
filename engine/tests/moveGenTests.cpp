@@ -389,12 +389,7 @@ TEST_CASE("Creating moves") {
   //m.printMoveString();
   move_t hm22 = m.setGetValue(6ULL, 23ULL, 4);
   //m.printMoveString();
-  std::cout << hm1 << std::endl;
-  std::cout << hm11 << std::endl;
-  std::cout << hm2 << std::endl;
-  std::cout << hm22 << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
+
 
 
 
@@ -443,7 +438,6 @@ TEST_CASE ("Check if move is set with capture") {
   int to = m.getTo();
   int from = m.getFrom();
 
-  m.printMoveString(t4);
 
   REQUIRE(to == 2);
   REQUIRE(from == 3);
@@ -453,5 +447,28 @@ TEST_CASE ("Check if move is set with capture") {
   m.setGetValue(2ULL, 3ULL, 0);
 
   REQUIRE_FALSE(m.captures());
+
+}
+
+TEST_CASE("test if bitisset can see if index is set") {
+  using ::environment::bitIsSet;
+  bitboard_t opponent = test.blackPieces();
+  bitboard_t a = test.whitePieces();
+  bitboard_t  b = *test.getDiagYAxis(524288ULL, DIRECTION::ANTI_DIAGONAL, true, 1) & 335544320ULL;
+
+  //test.printBoard(b);
+  //test.printBoard(a);
+  REQUIRE(bitIsSet(a, 0ULL));
+  REQUIRE_FALSE(bitIsSet(a, 35ULL));
+
+
+
+}
+
+
+TEST_CASE("Game initiation and generation of trees") {
+  ::environment::Environment lastTest(COLOR::WHITE);
+  lastTest.initiate();
+  //lastTest.printBoard(lastTest.combinedBlackAttacks() | lastTest.combinedWhiteAttacks());
 
 }

@@ -31,7 +31,7 @@ bitboard_t NSB_t(bitboard_t & board);
 bool bitIsSet(bitboard_t, bitboard_t index);
 
 void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
-void flipOff(bitboard_t &bord, bitboard_t index);
+void flipOff(bitboard_t &board, bitboard_t index);
 
 class Environment {
  private:
@@ -43,6 +43,7 @@ class Environment {
   // This is an important strategic factor in chess
   COLOR hostColor;
   vector<move_t> moveList;
+  COLOR currentMoveColor;
 
 
 
@@ -101,9 +102,12 @@ class Environment {
   bitboard_t combinedBlackAttacks(); // All attacked pieces of black
   bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
   bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
-  void caputrePiece(COLOR opponent, move_t m);
+  void capturePiece(COLOR opponent, bitboard_t index, gameState & st);
+  gameState movePiece(COLOR own, bitboard_t to, bitboard_t from);
+  void computeGameStates();
   // Move rockade1
-  bool legal(gameState* p);
+  bool legal(gameState p);
+  bitboard_t initiate();
   bool checkMate();
   bool draw();
 
@@ -118,7 +122,7 @@ class Environment {
   // Converters
   int chessIndexToArrayIndex(std::string chessIndex);
   bitboard_t chessIndexToBitboard(std::string chessIndex);
-  uint64_t intToUint64(int i);
+  bitboard_t intToUint64(int i);
 
   std::string fen(gameState* node, bool whiteMovesNext);
   void setFen(std::string fen);
@@ -144,8 +148,10 @@ bool bitIsSet(move_t board, move_t index);
    public:
     move_t setGetValue(bitboard_t to, bitboard_t from, int flags);
     void printMoveString(move_t m);
+    void printOwn();
     Move(move_t m);
     Move();
+    void set(move_t m);
 
     bool doublePawnPush();
     bool kingCastle();
