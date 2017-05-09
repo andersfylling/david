@@ -98,7 +98,8 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
   int livingNodes = this->getNumberOfNodes();
 
   // mock test
-  for (int i = 0; i < 35 && i < livingNodes; livingNodes++, i++) {
+  int i = node->children.size();
+  for (; i < 35 && i < livingNodes; livingNodes++, i++) {
     this->generateNode(node);
   }
 
