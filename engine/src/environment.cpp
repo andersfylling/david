@@ -342,15 +342,15 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     bits[i] = reduceVector(bits[i], opponent, own, DIRECTION::UP);
 
     if (COLOR::WHITE == color) {
-      bitboard_t index = 0LL;
+      bitboard_t index = 0ULL;
       index |= (1ULL << LSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1)) & opponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1)) & opponent;
+      bits[i] |= *(getXAxisFromBoard(index, true, 1)) & opponent;
+      bits[i] |= *(getXAxisFromBoard(index, true, 2)) & opponent;
     } else {
-      bitboard_t index = 0LL;
+      bitboard_t index = 0ULL;
       index |= (1ULL << MSB(bits[i]));
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::MAIN_DIAGONAL, true, 1)) & opponent;
-      bits[i] |= *(getDiagYAxis(index, DIRECTION::ANTI_DIAGONAL, true, 1)) & opponent;
+      bits[i] |= *(getXAxisFromBoard(index, true, 2)) & opponent;
+      bits[i] |= *(getXAxisFromBoard(index, true, 1)) & opponent;
     }
 
   }
@@ -416,7 +416,7 @@ bitboard_t * Environment::KingMove(COLOR color) {
   // Subtract moves into own
   movement &= ~own;
   bitboard_t * bits = new bitboard_t;
-  bits = &movement;
+  bits[0] = movement;
   return bits;
 }
 
@@ -573,6 +573,7 @@ bitboard_t Environment::chessIndexToBitboard(std::string chessIndex) {
 
   return board;
 }
+
 uint64_t Environment::intToUint64(int i) {
   return (uint64_t)i;
 }
@@ -805,7 +806,6 @@ bitboard_t Environment::combinedWhiteAttacks() {
 
   for (bitboard_t i = 0; i < numberOfPieces(state.WhiteKing); i++) {
     comb |= attacks.WhiteKing[i];
-    printBoard(attacks.WhiteKing[i]);
   }
 
   for (bitboard_t i = 0; i < numberOfPieces(state.WhiteRook); i++) {
@@ -843,14 +843,14 @@ void Environment::generateMove(bitboard_t st, bitboard_t *attack, COLOR color) {
 
       flag = (moveIsCapture(indexTo, color)) ? 4 : 0;
       tempMove = mo.setGetValue(indexTo, index, flag);
-      if(tempMove > 0)
+      if(tempMove > 0U)
         moveList.push_back(tempMove);
+
       indexTo = NSB(tempAttack);
     }
     index = NSB(tempBoard);
   }
 }
-
 
 void Environment::generateMoves(COLOR color) {
   // Loop a piece attack-vector
@@ -896,15 +896,12 @@ void Environment::capturePiece(COLOR opponent, bitboard_t index, gameState &st) 
   }
 }
 
-
 gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from) {
   gameState returnState = state;
   // A move on the white pieces are being made
 
   if(own == COLOR::WHITE) {
-    std::cout << "Hvit farge" << std::endl;
-    if (bitIsSet(state.WhitePawn, from)) {    // WHITE PAWN MOVE SET
-      std::cout << "Bonde" << std::endl;
+    if (bitIsSet(returnState.WhitePawn, from)) {    // WHITE PAWN MOVE SET
       flipOff(returnState.WhitePawn, from);
       flipBit(returnState.WhitePawn, to);
     } else if (bitIsSet(returnState.WhiteBishop, from)) {   // WHITE BISHOP
@@ -974,15 +971,15 @@ void Environment::computeGameStates() {
     moveInter.set(moveList[moveList.size()]);     // Gets the last item
     moveList.pop_back();
     temp = movePiece(currentMoveColor, intToUint64(moveInter.getTo()), intToUint64(moveInter.getFrom()));
-    moveInter.printOwn();
     if (moveInter.captures()) {
       COLOR opc = (currentMoveColor == COLOR::WHITE) ? COLOR::BLACK : COLOR::WHITE;
       bitboard_t tempB = intToUint64(moveInter.getTo());
       capturePiece(opc, tempB, temp);
     }
 
-    if(1) { // Should be legal
-      printBoard(temp.WhitePawn | temp.WhiteBishop | temp.WhiteKing | temp.WhiteQueen | temp.WhiteRook | temp.WhiteKnight);
+    if(legal(temp)) { // Should be legal
+      //printBoard(temp.WhitePawn | temp.WhiteBishop | temp.WhiteKing | temp.WhiteQueen | temp.WhiteRook | temp.WhiteKnight);
+      // ADD NODE HERE
     } else {
       //THE NODE IS SHIT
     }
@@ -1000,13 +997,13 @@ bool Environment::legal(gameState p) {
     if(state.BlackKing & combinedWhiteAttacks())
       return false;
   }
-  state = p;
+  state = temp;
   return true;
 }
 
 bitboard_t Environment::initiate() {
   //printBoard(combinedWhiteAttacks());
-  //computeGameStates();
+  computeGameStates();
 
 
 
@@ -1044,7 +1041,7 @@ void flipBit(bitboard_t &board, bitboard_t index) {
 // YEAH tell that bit to flipp off!!!
 // Nobody wants you bit... NOBODY WANTS YOU
 void flipOff(bitboard_t &board, bitboard_t index) {
-  board &= (0LL << index);
+  board &= ~(1ULL << index);
 }
 
 bool bitIsSet(bitboard_t board, bitboard_t index) {
