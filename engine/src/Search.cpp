@@ -275,9 +275,11 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
   // Output / statistics
   //
   std::string s = "μs";
-  std::cout << "--+---------------------+-----------------+\n" <<
-            "   | Time used in iter   |  Nodes searched |\n" <<
-            "--+---------------------+-----------------+\n";
+  if (this->debug) {
+    std::cout << "--+---------------------+-----------------+\n" <<
+              "   | Time used in iter   |  Nodes searched |\n" <<
+              "--+---------------------+-----------------+\n";
+  }
 
   //
   // Iterations loop, run the test as many times as needed
@@ -298,11 +300,13 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
     iterationsArray[i][0] = std::chrono::duration <double, std::milli> (diff).count();
     iterationsArray[i][1] = this->nodesSearched;
 
-    std::cout << i + 1 << " | ";
-    std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
-              " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
-    std::cout << '\n';
-    std::cout << "  +---------------------+-----------------+\n";
+    if (this->debug) {
+      std::cout << i + 1 << " | ";
+      std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
+                " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
+      std::cout << '\n';
+      std::cout << "  +---------------------+-----------------+\n";
+    }
   }
 
   //

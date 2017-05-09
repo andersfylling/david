@@ -943,7 +943,7 @@ gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from) {
 }
 
 
-std::vector<gameState> Environment::computeGameStates() {
+void Environment::computeGameStates(std::vector<gameState>& states) {
   // Select a move
   // Move the piece
   // remove eventual capture
@@ -951,7 +951,6 @@ std::vector<gameState> Environment::computeGameStates() {
   // If legal-generate node
   generateMoves(currentMoveColor);
   gameState g;
-  std::vector<gameState> states;
   ::move::Move moveInter;
 
   while (!moveList.empty()) {
@@ -968,8 +967,6 @@ std::vector<gameState> Environment::computeGameStates() {
       states.push_back(g);
     }
   }
-
-  return states;
 }
 
 bool Environment::legal(gameState p) {
@@ -989,7 +986,7 @@ bool Environment::legal(gameState p) {
 
 bitboard_t Environment::initiate() {
   //printBoard(combinedWhiteAttacks());
-  computeGameStates();
+  //computeGameStates();
 
 
 

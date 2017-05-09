@@ -2,6 +2,7 @@
 // Created by markus on 5/5/17.
 //
 
+#include <chess_ann/utils.h>
 #include "chess_ann/Search.h"
 #include "catch.hpp"
 
@@ -10,6 +11,8 @@ std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameS
 
 
 TEST_CASE("Search creation") {
+  ::utils::setDefaultChessLayout(node);
+
   test_search.setDepth(10);
   REQUIRE(test_search.returnDepth() == 10);
   test_search.setDepth(3);
@@ -23,18 +26,17 @@ TEST_CASE("Search creation") {
 }
 
 TEST_CASE("Search"){
+  ::utils::setDefaultChessLayout(node);
   test_search.setDebug(false);
   test_search.performanceTest(node, 10);
   REQUIRE_NOTHROW(test_search.searchInit(node));
 }
 
 TEST_CASE("Abort search"){
+  ::utils::setDefaultChessLayout(node);
   SECTION("Stopping search") {
-    std::cout << "stopping search" << std::endl;
     test_search.stopSearch();
   }
-
-  std::cout << "INIT search" << std::endl;
 
   test_search.searchInit(node);
   REQUIRE(test_search.returnScore() == (int)(-INFINITY));
@@ -45,10 +47,7 @@ TEST_CASE("Abort search"){
 }
 
 TEST_CASE("Search completed?"){
+  ::utils::setDefaultChessLayout(node);
   test_search.searchInit(node);
   REQUIRE(test_search.returnComplete() == true);
 }
-
-
-
-

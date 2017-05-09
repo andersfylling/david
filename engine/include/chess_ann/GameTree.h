@@ -32,7 +32,7 @@ class GameTree {
   nodePtr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory
 
-  int getNumberOfNodes(nodePtr node);
+  void getNumberOfNodes(nodePtr node, int& counter);
   void getDepth(nodePtr node, int& depth);
 
  public:

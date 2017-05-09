@@ -103,14 +103,22 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
   // mock test
   node->children.resize(0);
 
+  // created a environ instance based on parent node
   ::environment::Environment env(node->playerColor);
   env.setGameState(node);
-  auto states = env.computeGameStates();
 
+  // create a holdere for possible game outputs
+  std::vector<gameState> states;
+
+  // generate possible game oputputs
+  //env.computeGameStates(states);
+
+  // create node pointers, and set some internal data
   for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
     this->generateNode(node, states.at(i));
   }
 
+  // once all the nodes are set, we need to sort the children.
   this->sortChildren(node);
 }
 
@@ -160,6 +168,8 @@ int ::gameTree::GameTree::getMaxNumberOfNodes() {
 /**
  * Just starts generating nodes until the max allowed number of nodes has been reached.
  * Also sorts children.
+ *
+ * I hate this function @deprecated, see generateChildren in stead.
  */
 void ::gameTree::GameTree::generateNodes() {
   if (this->current == nullptr) {
@@ -168,15 +178,18 @@ void ::gameTree::GameTree::generateNodes() {
   }
 
   nodePtr node = this->current;
+  int nrOfNodes = this->getNumberOfNodes();
 
-  while (this->getNumberOfNodes() < this->maxNumberOfNodes) {
+  while (nrOfNodes < this->maxNumberOfNodes) {
 
     ::environment::Environment env(node->playerColor);
     env.setGameState(node);
-    auto states = env.computeGameStates();
+    std::vector<gameState> states;
+    //env.computeGameStates(states);
+
 
     int children = 0;
-    for (int i = 0; i < states.size(); i++) {
+    for (int i = 0; i < states.size() && nrOfNodes < this->maxNumberOfNodes; nrOfNodes++, i++) {
       this->generateNode(node, states.at(i));
       children += 1;
     }
@@ -184,7 +197,7 @@ void ::gameTree::GameTree::generateNodes() {
 
 
     if (children > 0) {
-      node = node->children.at(0);
+      //node = node->children.at(0);
     }
   }
 
@@ -205,7 +218,7 @@ int ::gameTree::GameTree::getNumberOfNodes() {
   int count = 1;
 
   for (std::shared_ptr<gameState> node : this->current->children) {
-    count += this->getNumberOfNodes(node);
+    this->getNumberOfNodes(node, count);
   }
 
   return count;
@@ -217,12 +230,12 @@ int ::gameTree::GameTree::getNumberOfNodes() {
  * @param node
  * @return int from 0 to N, N <= maxNumberOfNodes
  */
-int ::gameTree::GameTree::getNumberOfNodes(nodePtr node) {
+void ::gameTree::GameTree::getNumberOfNodes(nodePtr node, int& count) {
   if (node->children.size() == 0) {
-    return 1;
+    count += 1;
   }
   for (std::shared_ptr<gameState> child : node->children) {
-    return this->getNumberOfNodes(child);
+    this->getNumberOfNodes(child, count);
   }
 }
 

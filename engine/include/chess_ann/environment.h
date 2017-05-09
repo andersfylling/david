@@ -113,7 +113,7 @@ class Environment {
   bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
   void capturePiece(COLOR opponent, bitboard_t index, gameState & st);
   gameState movePiece(COLOR own, bitboard_t to, bitboard_t from);
-  std::vector<gameState> computeGameStates();
+  void computeGameStates(std::vector<gameState>& states);
   // Move rockade1
   bool legal(gameState p);
   bitboard_t initiate();
