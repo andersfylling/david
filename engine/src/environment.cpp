@@ -793,13 +793,11 @@ void Environment::canBlackCastleK() { // King startpos is 60
   bitboard_t all = whitePieces() | blackPieces();
   bitboard_t whiteAttacks = combinedWhiteAttacks();
 
-  std::cout << "canBlackCastleK's whiteattacks:\n";
   printBoard(whiteAttacks);
 
   // No pieces between king and chosen rook
   if (!::utils::bitAt(all, 61) &&
       !::utils::bitAt(all, 62)) {
-    std::cout << "canBlackCastleK ingen imellom\n";
     // king is not in, passes through, or passes into check
     if (!::utils::bitAt(whiteAttacks, 60) &&
         !::utils::bitAt(whiteAttacks, 61) &&
@@ -967,7 +965,7 @@ void Environment::generateMoves(COLOR color) {
     generateMove(state.BlackQueen, attacks.BlackQueen, color);
     canBlackCastleQ(); canBlackCastleK();
   }
-  std::cout << moveList.size() << std::endl;
+  //std::cout << moveList.size() << std::endl;
   //std::cout << moveList.size() << std::endl;
 
 }
