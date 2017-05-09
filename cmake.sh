@@ -12,3 +12,7 @@ cd build
 # Run tests and build
 cmake ../..
 make 
+
+cd bin
+chmod +x chess_ann_tests
+./chess_ann_tests
