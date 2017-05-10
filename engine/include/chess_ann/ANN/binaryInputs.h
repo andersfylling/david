@@ -27,7 +27,7 @@ using std::showpos;
 using std::noshowpos;
 
 namespace binaryNetwork {
-const std::string trainingdatafile = "binaryNetworkTrainingFile.txt";
+const std::string trainingdatafile = "binaryNetworkTrainingFile";
 
 // Callback function that simply prints the information to cout
 int print_callback(
@@ -42,14 +42,7 @@ int print_callback(
 // Test function that demonstrates usage of the fann C++ wrapper
 void train_network(
     const std::string folder,
-    const unsigned int* layers,
-    const unsigned int nrOfLayers,
-    const float learning_rate,
-    const float desired_error,
-    const unsigned int max_iterations,
-    const unsigned int iterations_between_reports);
-void train_network_parallel(
-    const std::string folder,
+    const std::string filename,
     const unsigned int* layers,
     const unsigned int nrOfLayers,
     const float learning_rate,
@@ -59,6 +52,7 @@ void train_network_parallel(
 
 void generateTrainingFile(
     const std::string folder,
+    const std::string filename,
     const unsigned int max_trainingSets,
     const unsigned int* layers,
     const unsigned int nrOfLayers);

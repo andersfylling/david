@@ -31,14 +31,18 @@ using std::noshowpos;
 int binaryNetwork::print_callback(FANN::neural_net &net, FANN::training_data &train,
                    unsigned int max_epochs, unsigned int epochs_between_reports,
                    float desired_error, unsigned int epochs, void *user_data) {
+  //float engine = net.run(train.get_input()[epochs])[0];
+  //float expected = train.get_output()[epochs][0];
   cout << "Epochs     " << setw(8) << epochs << ". "
-       << "Current Error: " << left << net.get_MSE() << right << endl;
+       << "Current Error: " << left << net.get_MSE() << right << endl; // << " <> " << engine << " == " << expected
+
   return 0;
 }
 
 // Test function that demonstrates usage of the fann C++ wrapper
 void binaryNetwork::train_network(
     const std::string folder,
+    const std::string filename,
     const unsigned int* layers,
     const unsigned int nrOfLayers,
     const float learning_rate,
@@ -79,10 +83,11 @@ void binaryNetwork::train_network(
   cout << endl << "Training network." << endl;
 
   FANN::training_data data;
-  if (data.read_train_from_file(folder + '/' + trainingdatafile))
+  if (data.read_train_from_file(folder + "/ANNTraining/binaryNetwork/" + filename + ".data"))
   {
     // Initialize and train the network with the data
-    net.init_weights(data);
+    //net.init_weights(data);
+    net.randomize_weights(-0.301, 0.301);
 
     cout << "Max Epochs " << setw(8) << max_iterations << ". "
          << "Desired Error: " << left << desired_error << right << endl;
@@ -106,49 +111,16 @@ void binaryNetwork::train_network(
     cout << endl << "Saving network." << endl;
 
     // Save the network in floating point and fixed point
-    net.save(folder + "/save_float.net");
-    unsigned int decimal_point = net.save_to_fixed(folder + "/save_fixed.net");
-    data.save_train_to_fixed(folder + "/save_fixed.data", decimal_point);
+
+    std::time_t id = std::time(nullptr);
+
+    std::string idStr = std::to_string(id);
+    net.save(folder + "/src/ANN/Networks/float_" + filename + "_" + idStr + ".net");
+    unsigned int decimal_point = net.save_to_fixed(folder + "/src/ANN/Networks/fixed_" + filename + "_" + idStr + ".net");
+    data.save_train_to_fixed(folder + "src/ANN/Networks/fixed_" + filename + "_" + idStr + ".data", decimal_point);
 
     cout << endl << "Test completed." << endl;
   }
-}
-
-void binaryNetwork::train_network_parallel(
-    const std::string folder,
-    const unsigned int* layers,
-    const unsigned int nrOfLayers,
-    const float learning_rate,
-    const float desired_error,
-    const unsigned int max_iterations,
-    const unsigned int iterations_between_reports)
-{
-  cout << endl << "training started." << endl;
-
-  cout << endl << "Creating network." << endl;
-
-  const unsigned int max_epochs = 1000;
-  unsigned int num_threads = 4;
-  struct fann_train_data *data;
-  struct fann *ann;
-  float error;
-  unsigned int i;
-
-  auto fiStr = folder + '/' + trainingdatafile;
-  data = fann_read_train_from_file(fiStr.c_str());
-  ann = fann_create_standard(nrOfLayers, layers);
-
-  fann_set_activation_function_hidden(ann, FANN_SIGMOID_SYMMETRIC);
-  fann_set_activation_function_output(ann, FANN_SIGMOID);
-
-  for(i = 1; i <= max_epochs; i++)
-  {
-    error = num_threads > 1 ? fann_train_epoch_irpropm_parallel(ann, data, num_threads) : fann_train_epoch(ann, data);
-    printf("Epochs     %8d. Current error: %.10f\n", i, error);
-  }
-
-  fann_destroy(ann);
-  fann_destroy_train(data);
 }
 
 
@@ -161,12 +133,13 @@ void binaryNetwork::train_network_parallel(
  */
 void binaryNetwork::generateTrainingFile(
     const std::string folder,
+    const std::string filename,
     const unsigned int max_trainingSets,
     const unsigned int* layers,
     const unsigned int nrOfLayers)
 {
   std::ifstream infile(folder + "/trainingdata/fenAndStockfishScores.data");
-  std::fstream output(folder + "/binaryNetwork/BUFFER_" + trainingdatafile, std::ios::out | std::ios::trunc);
+  std::fstream output(folder + "/binaryNetwork/BUFFER_" + filename + ".data", std::ios::out | std::ios::trunc);
 
   int trainingPairs = 0;
   int lines = 0;
@@ -226,12 +199,12 @@ void binaryNetwork::generateTrainingFile(
           (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 10.0),
 
 
-          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.whitePieces())) / 10.0, // is never 0
-          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.blackPieces())) / 10.0, // is never 0
-          static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 10.0,
+          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0, // is never 0
+          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0, // is never 0
+          static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 100.0,
 
-          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 10.0),
-          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 10.0,
+          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 100.0),
+          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0,
       };
 
       // generate inputs
@@ -313,7 +286,8 @@ void binaryNetwork::generateTrainingFile(
       // expected output
       std::string score;
       std::getline(infile, score);
-      fileStringInput << score << std::endl;
+      double fScore = std::stoi(score) * 0.0001;
+      fileStringInput << fScore << std::endl;
 
       // inc record
       trainingPairs += 1;
@@ -343,8 +317,8 @@ void binaryNetwork::generateTrainingFile(
   // update file info
   // set training information in the top of the file
   // and the rest of the content below
-  std::ifstream fromBufferFile(folder + "/binaryNetwork/BUFFER_" + trainingdatafile);
-  std::ofstream outputUpdate(folder + "/binaryNetwork/" + trainingdatafile, std::ios::out | std::ios::trunc);
+  std::ifstream fromBufferFile(folder + "/binaryNetwork/BUFFER_" + filename + ".data");
+  std::ofstream outputUpdate(folder + "/binaryNetwork/" + filename + ".data", std::ios::out | std::ios::trunc);
   if (outputUpdate.is_open()) {
     outputUpdate << std::to_string(trainingPairs - skippedtrainingSets) << " "
                  << std::to_string(layers[0]) << " "
@@ -370,18 +344,20 @@ void binaryNetwork::run()
   const unsigned int max_iterations = 10000;
   const unsigned int max_trainingSets = 30000;
   const unsigned int iterations_between_reports = 1;
-  const unsigned int nrOfLayers = 3;
-  const unsigned int layers[nrOfLayers] = {64, 84, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int nrOfLayers = 5;
+  const unsigned int layers[nrOfLayers] = {64, 300, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
 
-  const auto folder = ::utils::getAbsoluteProjectPath() + "/engine/ANNTraining";
+  const auto folder = ::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.
-  generateTrainingFile(folder, max_trainingSets, layers, nrOfLayers);
+  std::string fileNameSuffix = trainingdatafile + "_" + std::to_string(nrOfLayers) + "_" + std::to_string(layers[0]) + "_" + std::to_string(layers[nrOfLayers - 1]);
+  generateTrainingFile(folder + "/ANNTraining", fileNameSuffix, max_trainingSets, layers, nrOfLayers);
 
   try {
     std::ios::sync_with_stdio(); // Syncronize cout and printf output
     train_network(
-        folder + "/binaryNetwork",
+        folder,
+        fileNameSuffix,
         layers,
         nrOfLayers,
         learning_rate,

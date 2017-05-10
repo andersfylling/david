@@ -93,6 +93,8 @@ struct gameState {
   bitboard_t BlackQueen;
   bitboard_t BlackKing;
 
+  ::bitboard::COLOR playerColor = ::bitboard::COLOR::WHITE;
+
   std::vector<std::shared_ptr<gameState>> children;
 
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
