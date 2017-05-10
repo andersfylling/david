@@ -22,6 +22,8 @@ std::string getAbsoluteProjectPath();
 bool fileExists(const std::string& file);
 fann_type* convertGameStateToInputs(::gameTree::nodePtr node);
 std::string generateFen(::gameTree::nodePtr node);
+bool isHalfMove(::gameTree::nodePtr parent, ::gameTree::nodePtr child);
+void setDefaultChessLayout(::gameTree::nodePtr node);
 };
 
 #endif //CHESS_ANN_UTILS_H

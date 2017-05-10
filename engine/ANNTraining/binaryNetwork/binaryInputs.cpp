@@ -371,7 +371,6 @@ void binaryNetwork::run()
   const unsigned int iterations_between_reports = 1;
   const unsigned int nrOfLayers = 5;
   const unsigned int layers[nrOfLayers] = {71, 200, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
-
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.
