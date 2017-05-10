@@ -185,7 +185,7 @@ void ::gameTree::GameTree::generateNodes() {
     ::environment::Environment env(node->playerColor);
     env.setGameState(node);
     std::vector<gameState> states;
-    //env.computeGameStates(states);
+    env.computeGameStates(states);
 
 
     int children = 0;

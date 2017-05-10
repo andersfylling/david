@@ -305,6 +305,8 @@ Environment::Environment(COLOR color) {
   state.whiteKingCastling  = true;
   state.whiteQueenCastling = true;
 
+  state.playerColor = color;
+
   generateAttacks();
   //computeGameStates();
   //generateMoves(COLOR::WHITE);
@@ -339,7 +341,7 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     //std::cout << bits[i] << std::endl;
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] = reduceVector(bits[i], opponent, own, DIRECTION::UP);
+    bits[i] = reduceVector(bits[i], opponent, own, dir);
 
     if (COLOR::WHITE == color) {
       bitboard_t index = 0ULL;
@@ -858,7 +860,7 @@ void Environment::generateMoves(COLOR color) {
     generateMove(state.BlackKing, attacks.BlackKing, color);
     generateMove(state.BlackQueen, attacks.BlackQueen, color);
   }
-  std::cout << moveList.size() << std::endl;
+  //std::cout << moveList.size() << std::endl;
   //std::cout << moveList.size() << std::endl;
 
 }
@@ -949,16 +951,16 @@ void Environment::computeGameStates(std::vector<gameState>& states) {
   // remove eventual capture
   // See if legal
   // If legal-generate node
-  generateMoves(currentMoveColor);
+  generateMoves(state.playerColor);
   gameState g;
   ::move::Move moveInter;
 
   while (!moveList.empty()) {
     moveInter.set(moveList[moveList.size()]);     // Gets the last item
     moveList.pop_back();
-    g = movePiece(currentMoveColor, intToUint64(moveInter.getTo()), intToUint64(moveInter.getFrom()));
+    g = movePiece(state.playerColor, intToUint64(moveInter.getTo()), intToUint64(moveInter.getFrom()));
     if (moveInter.captures()) {
-      COLOR opc = (currentMoveColor == COLOR::WHITE) ? COLOR::BLACK : COLOR::WHITE;
+      COLOR opc = (state.playerColor == COLOR::WHITE) ? COLOR::BLACK : COLOR::WHITE;
       bitboard_t tempB = intToUint64(moveInter.getTo());
       capturePiece(opc, tempB, g);
     }
@@ -984,17 +986,13 @@ bool Environment::legal(gameState p) {
   return true;
 }
 
-bitboard_t Environment::initiate() {
-  //printBoard(combinedWhiteAttacks());
-  //computeGameStates();
-
-
-
-}
-
 gameState Environment::getGameState() {
   return this->state;
 }
+
+
+// ###################### TEST FUNCTIONS ########################
+
 
 /* ################ END OF ENVIRONMENT FUNCTIONS ################ */
 
