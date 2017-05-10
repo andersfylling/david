@@ -83,10 +83,11 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
   gameTree::nodePtr currentGame = currentPlayer->getGameState();
   while (currentGame->halfMoves < 50 && !(eng1->lost() || eng2->lost())) {
 
-
+    // update game state of new current player
+    currentPlayer->setGameState(currentGame);
 
     // ask for player / engine move decision
-
+    currentPlayer->findBestMove();
 
     // update current game state
     currentGame = currentPlayer->getGameState();

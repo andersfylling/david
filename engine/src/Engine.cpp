@@ -245,3 +245,11 @@ bool chess_ann::Engine::setGameState(gameTree::nodePtr state) {
 bool chess_ann::Engine::lost() {
   return this->currentGameState->possibleSubMoves == 0;
 }
+
+
+/**
+ * Find the best move, and update the current game state.
+ */
+void chess_ann::Engine::findBestMove() {
+  // TODO: Markus
+}

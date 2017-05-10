@@ -152,6 +152,11 @@ class Engine {
    */
   bool lost();
 
+  /**
+   * Find the best move, and update the current game state.
+   */
+  void findBestMove();
+
 
 };
 
