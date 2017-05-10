@@ -331,7 +331,9 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
   // check if there are any possible moves after this state
 
   // use ann to get score
-
+  if (this->context->engine != nullptr) {
+    node->score = this->context->engine->ANNEvaluate(node);
+  }
 
 
   // add child to parent

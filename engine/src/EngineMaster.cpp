@@ -102,6 +102,19 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
     currentPlayer = color == "w" ? eng2 : eng1;
   }
 
+  auto winnerID = -1;
+  if (eng1->lost()) {
+    winnerID = engineID2;
+  }
+  else if (eng2->lost()) {
+    winnerID = engineID1;
+  }
+
+  this->lastEngineBattleID += 1;
+  this->engineBattleWinnerLog.insert( std::pair<int, int>(this->lastEngineBattleID, winnerID) );
+
+  return this->lastEngineBattleID;
+
 }
 bool chess_ann::EngineMaster::battleWinner(int battleID, int mainEngineID) {
   if (this->engineBattleWinnerLog.count(battleID) == 0) {
