@@ -109,9 +109,6 @@ struct gameState {
   bool whiteQueenCastling = true;
   bool whiteKingCastling = true;
 
-  ::bitboard::COLOR playerColor = ::bitboard::COLOR::WHITE;
-
-
   std::weak_ptr<::bitboard::gameState> weakParent; //...
 };
 
