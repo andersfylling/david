@@ -7,6 +7,7 @@
 
 #include "chess_ann/bitboard.h"
 #include <memory>
+#include <iomanip>
 
 namespace gameTree {
 using ::bitboard::gameState;
@@ -27,11 +28,13 @@ typedef std::shared_ptr<gameState> nodePtr;
  */
 class GameTree {
  private:
+  // previous can be used for en passant
   nodePtr previous;// in case a player regrets their move?
   nodePtr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory
 
-  int getNumberOfNodes(nodePtr node);
+  void getNumberOfNodes(nodePtr node, int& counter);
+  void getDepth(nodePtr node, int& depth);
 
  public:
   GameTree();
@@ -45,11 +48,13 @@ class GameTree {
   void setMaxNumberOfNodes(int n);
   int getMaxNumberOfNodes();
   void generateNodes();
-  nodePtr generateNode(nodePtr parent);
+  nodePtr generateNode(nodePtr parent, gameState child);
   nodePtr getCurrentNode();
   int getNumberOfNodes();
   void generateChildren(nodePtr node);
   void sortChildren(nodePtr node);
+  int getDepth();
+  void printAllScores(nodePtr root);
   
 };
 

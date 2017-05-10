@@ -2,6 +2,7 @@
 
 git pull
 git submodule update --init
+git submodule foreach git stash
 git submodule foreach git pull origin master
 
 # I don't like this test since we use cpp14, ruin it.

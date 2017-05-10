@@ -81,7 +81,7 @@ TEST_CASE ("Castling") {
   testStruct->WhiteRook = 129;
 
   test.setGameState(testStruct);
-  test.printBoard(test.whitePieces() | test.blackPieces());
+  //test.printBoard(test.whitePieces() | test.blackPieces());
   test.generateAttacks();
 
   // Tests were done with std::cout variables used
@@ -644,11 +644,17 @@ TEST_CASE("test if bitisset can see if index is set") {
 
 TEST_CASE("Game initiation and generation of trees") {
   ::environment::Environment lastTest(COLOR::WHITE);
-  lastTest.initiate();
-  //lastTest.printBoard(lastTest.combinedBlackAttacks() | lastTest.combinedWhiteAttacks());
-  bitboard_t flipTest = 65280ULL;
-  //test.printBoard(flipTest);
-  ::environment::flipOff(flipTest, 8ULL);
-  //test.printBoard(flipTest);
+
+  std::vector <::bitboard::gameState> tt;
+  lastTest.computeGameStates(tt);
+  std::cout << tt.size() << std::endl;
+
+  std::vector<::bitboard::gameState>::iterator it;
+
+  for (it = tt.begin(); it != tt.end(); it++) {
+    //test.printBoard(it->WhiteKing | it->WhiteKnight | it->WhiteRook | it->WhitePawn | it->WhiteQueen | it->WhiteBishop);
+  }
+
+  //lastTest.printBoard(lastTest.combinedWhiteAttacks());
 }
 
