@@ -8,7 +8,9 @@
 
 
 chess_ann::EngineMaster::EngineMaster(const std::string filename)
-    :filename(filename)
+    :filename(filename),
+     lastEngineInstanceID(1),
+     lastEngineBattleID(1)
 {}
 
 int chess_ann::EngineMaster::spawnEngine() {
@@ -87,7 +89,7 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
 
   // lets start the game!
   gameTree::nodePtr currentGame = currentPlayer->getGameState();
-  while (currentGame->halfMoves < 50 && !(eng1->lost() || eng2->lost())) {
+  do {
 
     // update game state of new current player
     currentPlayer->setGameState(currentGame);
@@ -100,7 +102,9 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
 
     // update active player / engine
     currentPlayer = color == "w" ? eng2 : eng1;
-  }
+  } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0);
+
+  std::cout << currentGame->fullMoves << std::endl;
 
   auto winnerID = -1;
   if (eng1->lost()) {

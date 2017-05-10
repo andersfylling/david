@@ -13,7 +13,7 @@ std::string getAbsoluteProjectPath();
 namespace chess_ann {
 class Engine;
 typedef std::shared_ptr<chess_ann::Engine> enginePtr;
-const std::string annExecFile = utils::getAbsoluteProjectPath() + "/engine/src/ANN/networks/";
+const std::string annExecFile = "/engine/src/ANN/networks/";
 
 class EngineMaster {
  private:

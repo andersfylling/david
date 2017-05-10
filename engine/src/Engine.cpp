@@ -19,7 +19,8 @@ chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context)
       searchAgent(context, uciProtocol),
       player(),
       ANNFile(""),
-      ANNInstance(nullptr)
+      ANNInstance(nullptr),
+      UCIProtocolActivated(false)
 
 {}
 chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player self)
@@ -28,7 +29,8 @@ chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player se
       searchAgent(context, uciProtocol),
       player(self),
       ANNFile(""),
-      ANNInstance(nullptr)
+      ANNInstance(nullptr),
+      UCIProtocolActivated(false)
 
 {}
 chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, std::string ANNFile)
@@ -36,8 +38,9 @@ chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, std::stri
       uciProtocol(),
       searchAgent(context, uciProtocol),
       player(),
-      ANNFile(""),
-      ANNInstance(nullptr)
+      ANNFile(::utils::getAbsoluteProjectPath() + ANNFile),
+      ANNInstance(nullptr),
+      UCIProtocolActivated(false)
 
 {}
 chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player self, std::string ANNFile)
@@ -46,7 +49,8 @@ chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player se
       searchAgent(context, uciProtocol),
       player(self),
       ANNFile(ANNFile),
-      ANNInstance(nullptr)
+      ANNInstance(nullptr),
+      UCIProtocolActivated(false)
 
 {}
 
@@ -152,16 +156,19 @@ void chess_ann::Engine::sayUCICommand(std::string command) {
 void chess_ann::Engine::createANNInstance() {
   // make sure there is no instance already running
   if (this->hasANNInstance()) {
+    std::cerr << "ANN instance already exists" << std::endl;
     return;
   }
 
   // make sure a file has been given
-  if (this->hasANNFile()) {
+  if (!this->hasANNFile()) {
+    std::cerr << "ANN file was not set" << std::endl;
     return;
   }
 
   // Check that the file exists on the machine
   if (!::utils::fileExists(this->ANNFile)) {
+    std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
     return;
   }
 
