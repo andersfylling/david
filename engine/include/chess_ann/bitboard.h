@@ -103,6 +103,8 @@ struct gameState {
   int score = 0; // board score
 
   int gameTreeLevel = 0;
+  
+  int possibleSubMoves = 0;
 
   bool blackQueenCastling = true;
   bool blackKingCastling = true;
