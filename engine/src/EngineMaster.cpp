@@ -84,6 +84,14 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
   while (currentGame->halfMoves < 50 && !(eng1->lost() || eng2->lost())) {
 
 
+
+    // ask for player / engine move decision
+
+
+    // update current game state
+    currentGame = currentPlayer->getGameState();
+
+    // update active player / engine
     currentPlayer = color == "w" ? eng2 : eng1;
   }
 
