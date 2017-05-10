@@ -27,7 +27,7 @@ TEST_CASE("Search creation") {
 }
 
 TEST_CASE("Search"){
-  ::utils::setDefaultChessLayout(node);
+  //::utils::setDefaultChessLayout(node);
   test_search.setDebug(false);
   test_search.performanceTest(node, 10);
   REQUIRE_NOTHROW(test_search.searchInit(node));

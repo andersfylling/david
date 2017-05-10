@@ -216,8 +216,8 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
  * @return
  */
 int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int iDepth) {
-  std::shared_ptr<::bitboard::gameState> score;
-  std::shared_ptr<::bitboard::gameState> bestScore;
+  std::shared_ptr<::bitboard::gameState> score = std::make_shared<::bitboard::gameState>();
+  std::shared_ptr<::bitboard::gameState> bestScore = std::make_shared<::bitboard::gameState>();
   bestScore->score = (int)(-INFINITY);
 
 
