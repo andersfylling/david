@@ -258,4 +258,5 @@ bool chess_ann::Engine::lost() {
 void chess_ann::Engine::findBestMove() {
   // TODO: Markus
   // update currentGameState
+  this->currentGameState = this->searchAgent.searchInit(this->currentGameState);
 }

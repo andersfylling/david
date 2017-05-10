@@ -99,7 +99,7 @@ search::Search::Search(std::shared_ptr<chess_ann::Context> context, ::uci::Liste
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
  */
-void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
+std::shared_ptr<::bitboard::gameState> search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
@@ -111,6 +111,7 @@ void search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
   //
   // Send some values/fenstring or whatever to UCI
   //
+  return this->bestMove;
 }
 
 /**
@@ -215,8 +216,9 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
  * @return
  */
 int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int iDepth) {
-  int score;
-  int bestScore = (int)(-INFINITY);
+  std::shared_ptr<::bitboard::gameState> score;
+  std::shared_ptr<::bitboard::gameState> bestScore;
+  bestScore->score = (int)(-INFINITY);
 
 
   //
@@ -242,10 +244,10 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
 
   //Node->children does not return correct type atm
   for (auto child : node->children) {
-    score = -negamax(child, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
+    score->score = -negamax(child, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
     this->nodesSearched++;
-    bestScore = std::max(score, bestScore);
-    alpha = std::max(score, alpha);
+    bestScore->score = std::max(score->score, bestScore->score);
+    alpha = std::max(score->score, alpha);
     if(this->debug)
       std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
     if(alpha >= beta) {
@@ -254,7 +256,8 @@ int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alp
       break;
     }
   }
-  return bestScore;
+  this->bestMove = bestScore;
+  return bestScore->score;
 }
 
 

@@ -33,7 +33,7 @@ TEST_CASE("Search"){
   REQUIRE_NOTHROW(test_search.searchInit(node));
 }
 
-TEST_CASE("Abort search"){
+/*TEST_CASE("Abort search"){
   ::utils::setDefaultChessLayout(node);
   SECTION("Stopping search") {
     test_search.stopSearch();
@@ -45,7 +45,7 @@ TEST_CASE("Abort search"){
   REQUIRE(test_search.returnScore() ==(int)(-INFINITY));
   test_search.negamax(node, (int)(-INFINITY), (int)(INFINITY), 1);
   REQUIRE(test_search.returnScore() == (int)(-INFINITY));
-}
+}*/
 
 TEST_CASE("Search completed?"){
   ::utils::setDefaultChessLayout(node);

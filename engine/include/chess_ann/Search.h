@@ -33,7 +33,7 @@ class Search {
  public:
   Search(std::shared_ptr<chess_ann::Context> context); // This can be used for unit testing and benchmarking.
   Search(std::shared_ptr<chess_ann::Context> context, ::uci::Listener &uci);
-  void searchInit(std::shared_ptr<::bitboard::gameState> node);
+  std::shared_ptr<::bitboard::gameState> searchInit(std::shared_ptr<::bitboard::gameState> node);
   int iterativeDeepening(std::shared_ptr<::bitboard::gameState> node);
   int negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth);
   void setAbort(bool isAborted);
