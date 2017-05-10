@@ -56,6 +56,36 @@ TEST_CASE ("Num-Pieces") {
   // All pieces
 }
 
+TEST_CASE ("Castling") {
+  testStruct->BlackBishop = 2594073385365405696ULL;
+  //testStruct->BlackBishop = 0;
+  testStruct->BlackKing = 1152921504606846976ULL;
+  testStruct->BlackKnight = 4755801206503243776ULL;
+  //testStruct->BlackKnight = 0;
+  testStruct->BlackPawn = 71776119061217280ULL;
+  testStruct->BlackQueen = 576460752303423488ULL;
+  //testStruct->BlackQueen = 0;
+  testStruct->BlackRook = 9295429630892703744ULL;
+
+  testStruct->WhiteBishop = 36;
+  //testStruct->WhiteBishop = 0;
+  testStruct->WhiteKnight = 66;
+  //testStruct->WhiteKnight = 0;
+  testStruct->WhitePawn = 65280;
+  testStruct->WhiteQueen = 8;
+  //testStruct->WhiteQueen = 0;
+  testStruct->WhiteKing = 16;
+  testStruct->WhiteRook = 129;
+
+  test.setGameState(testStruct);
+  //test.printBoard(test.whitePieces() | test.blackPieces());
+  test.generateAttacks();
+
+  // Tests were done with std::cout variables used
+  // various places in canColorCastleK/Q functions
+
+}
+
 TEST_CASE("Flip-bit") {
   bitboard_t temp = 0ULL;
   bitboard_t control = 0ULL;
@@ -386,12 +416,7 @@ TEST_CASE("Creating moves") {
   //m.printMoveString();
   move_t hm22 = m.setGetValue(6ULL, 23ULL, 4);
   //m.printMoveString();
-  std::cout << hm1 << std::endl;
-  std::cout << hm11 << std::endl;
-  std::cout << hm2 << std::endl;
-  std::cout << hm22 << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
+
 
 
 
@@ -585,7 +610,6 @@ TEST_CASE ("Check if move is set with capture") {
   int to = m.getTo();
   int from = m.getFrom();
 
-  m.printMoveString(t4);
 
   REQUIRE(to == 2);
   REQUIRE(from == 3);
@@ -597,3 +621,37 @@ TEST_CASE ("Check if move is set with capture") {
   REQUIRE_FALSE(m.captures());
 
 }
+
+
+TEST_CASE("test if bitisset can see if index is set") {
+  using ::environment::bitIsSet;
+  bitboard_t opponent = test.blackPieces();
+  bitboard_t a = test.whitePieces();
+  bitboard_t  b = *test.getDiagYAxis(524288ULL, DIRECTION::ANTI_DIAGONAL, true, 1) & 335544320ULL;
+
+  //test.printBoard(b);
+  //test.printBoard(a);
+  REQUIRE(bitIsSet(a, 0ULL));
+  REQUIRE_FALSE(bitIsSet(a, 35ULL));
+
+
+
+}
+
+
+TEST_CASE("Game initiation and generation of trees") {
+  ::environment::Environment lastTest(COLOR::WHITE);
+
+  std::vector <::bitboard::gameState> tt;
+  lastTest.computeGameStates(tt);
+  std::cout << tt.size() << std::endl;
+
+  std::vector<::bitboard::gameState>::iterator it;
+
+  for (it = tt.begin(); it != tt.end(); it++) {
+    //test.printBoard(it->WhiteKing | it->WhiteKnight | it->WhiteRook | it->WhitePawn | it->WhiteQueen | it->WhiteBishop);
+  }
+
+  //lastTest.printBoard(lastTest.combinedWhiteAttacks());
+}
+

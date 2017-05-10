@@ -3,6 +3,7 @@
 #define CHESS_ANN_BITBOARD_H
 
 #include <array>
+#include <memory>
 #include <vector>
 #include <stdint.h>
 #include <math.h>
@@ -93,7 +94,8 @@ struct gameState {
   bitboard_t BlackQueen;
   bitboard_t BlackKing;
 
-  std::vector<std::shared_ptr<gameState>> children;
+  ::bitboard::COLOR playerColor = ::bitboard::COLOR::WHITE;
+  std::vector<std::shared_ptr<::bitboard::gameState>> children;
 
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
   int fullMoves = 1; // starts at 1, increments after every time black moves.
@@ -101,6 +103,13 @@ struct gameState {
   int score = 0; // board score
 
   int gameTreeLevel = 0;
+  
+  int possibleSubMoves = 0;
+
+  bool blackQueenCastling = true;
+  bool blackKingCastling = true;
+  bool whiteQueenCastling = true;
+  bool whiteKingCastling = true;
 
 
   std::weak_ptr<::bitboard::gameState> weakParent; //...

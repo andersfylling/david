@@ -31,7 +31,7 @@ bitboard_t NSB_t(bitboard_t & board);
 bool bitIsSet(bitboard_t, bitboard_t index);
 
 void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
-void flipOff(bitboard_t &bord, bitboard_t index);
+void flipOff(bitboard_t &board, bitboard_t index);
 
 class Environment {
  private:
@@ -43,6 +43,7 @@ class Environment {
   // This is an important strategic factor in chess
   COLOR hostColor;
   vector<move_t> moveList;
+  COLOR currentMoveColor;
 
 
 
@@ -53,6 +54,7 @@ class Environment {
   Environment(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
   void setGameState(std::shared_ptr<::bitboard::gameState> st);  // Setting the gamestate for testing
+  gameState getGameState();
   void printBitboards();            // Prints number values of all 12 boards
 
 
@@ -81,6 +83,7 @@ class Environment {
   bitboard_t whitePieces(); // Returns all white pieces
   bitboard_t blackPieces(); // Returns all black pieces
 
+
   // Funksjonen skal returnere et bitboard som trekker fra motstandere og egne riktig
   // Får tilbake et bitboard som er modifisert
   bitboard_t reduceVector(bitboard_t vector, bitboard_t opponent, bitboard_t own, DIRECTION dir);
@@ -95,21 +98,31 @@ class Environment {
   // Generate a bitboard_t based on a chess position: E6
 
   // LEVEL 3 of moveGen - Advanced game logic
+
+  // Castling
+  void canWhiteCastleK();
+  void canWhiteCastleQ();
+  void canBlackCastleK();
+  void canBlackCastleQ();
+
   void generateAttacks();  // Sets the attacs-values
   void generateMove(bitboard_t st, bitboard_t * attack, COLOR color);
   void generateMoves(COLOR color);    // Adds moves to move-vector
   bitboard_t combinedBlackAttacks(); // All attacked pieces of black
   bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
   bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
-  void caputrePiece(COLOR opponent, move_t m);
+  void capturePiece(COLOR opponent, bitboard_t index, gameState & st);
+  void computeGameStates(std::vector<gameState>& states);
+  gameState movePiece(COLOR own, bitboard_t to, bitboard_t from, int flag);
   // Move rockade1
-  bool legal(gameState* p);
+  bool legal(gameState p);
   bool checkMate();
   bool draw();
 
-
-
+  // TEST FUNCTIONS
+  vector<bitboard_t> getMoves();
   // LEVEL 4 of moveGen - tree generation
+  //gameState getCurrentGameState();
 
 
   // INTERPRETATION
@@ -118,9 +131,8 @@ class Environment {
   // Converters
   int chessIndexToArrayIndex(std::string chessIndex);
   bitboard_t chessIndexToBitboard(std::string chessIndex);
-  uint64_t intToUint64(int i);
+  bitboard_t intToUint64(int i);
 
-  std::string fen(gameState* node, bool whiteMovesNext);
   void setFen(std::string fen);
   std::shared_ptr<::bitboard::gameState> generateBoardFromFen(const std::string fen);
 
@@ -144,8 +156,10 @@ bool bitIsSet(move_t board, move_t index);
    public:
     move_t setGetValue(bitboard_t to, bitboard_t from, int flags);
     void printMoveString(move_t m);
+    void printOwn();
     Move(move_t m);
     Move();
+    void set(move_t m);
 
     bool doublePawnPush();
     bool kingCastle();

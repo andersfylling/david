@@ -11,7 +11,6 @@
 #include <array>
 #include <algorithm>
 #include <chess_ann/utils.h>
-//#include <ibase.h>
 #include <chess_ann/GameTree.h>
 #include <map>
 
@@ -46,19 +45,19 @@ void Environment::printBitboards() {
 }
 
 void Environment::printBoard(bitboard_t board) {
-  string bits = std::bitset<64>(board).to_string();
+string bits = std::bitset<64>(board).to_string();
   cout << "\n  ";
-  for (int i = 'A'; i < 'A' + 8; i++)
+  for (int i = 'A'; i < 'A'+8; i++)
     cout << "  " << (char) i << " ";
   cout << std::endl;
   cout << "  +---+---+---+---+---+---+---+---+\n";
   for (int i = 0; i < 8; i++) {
-    cout << i + 1 << " | ";
-    for (int j = 0; j < 8; j++) {
-      cout << bits.at((i * 8) + j) << " | ";
-    }
-    cout << '\n';
-    cout << "  +---+---+---+---+---+---+---+---+\n";
+    cout << i+1 << " | ";
+  for (int j = 0; j < 8; j++) {
+    cout << bits.at((i * 8) + j) << " | ";
+  }
+  cout << '\n';
+  cout << "  +---+---+---+---+---+---+---+---+\n";
   }
   cout << '\n';
 }
@@ -287,10 +286,10 @@ Environment::Environment(COLOR color) {
   hostColor = color;
 
   state.BlackBishop = 2594073385365405696ULL;
-  state.BlackKing = 1152921504606846976ULL;
+  state.BlackKing = 576460752303423488ULL;
   state.BlackKnight = 4755801206503243776ULL;
   state.BlackPawn = 71776119061217280ULL;
-  state.BlackQueen = 576460752303423488ULL;
+  state.BlackQueen = 1152921504606846976ULL;
   state.BlackRook = 9295429630892703744ULL;
 
   state.WhiteBishop = 36;
@@ -300,10 +299,17 @@ Environment::Environment(COLOR color) {
   state.WhiteKing = 16;
   state.WhiteRook = 129;
 
-  generateAttacks();
+  state.blackKingCastling = true;
+  state.blackQueenCastling = true;
+  state.whiteKingCastling  = true;
+  state.whiteQueenCastling = true;
 
-    generateMoves(color);
-    std::cout << moveList.size() << std::endl;
+  state.playerColor = color;
+
+  generateAttacks();
+  //computeGameStates();
+  //generateMoves(COLOR::WHITE);
+  currentMoveColor = COLOR::WHITE;
 
 
   // IF COLOR WHITE
@@ -334,7 +340,7 @@ bitboard_t *Environment::pawnMoves(COLOR color) {
     //std::cout << bits[i] << std::endl;
 
     // We now have forward movement. Needs a attack, but that logic is different with pawns.
-    bits[i] = reduceVector(bits[i], opponent, own, DIRECTION::UP);
+    bits[i] = reduceVector(bits[i], opponent, own, dir);
 
     if (COLOR::WHITE == color) {
       bitboard_t index = 0ULL;
@@ -411,7 +417,7 @@ bitboard_t * Environment::KingMove(COLOR color) {
   // Subtract moves into own
   movement &= ~own;
   bitboard_t * bits = new bitboard_t;
-  bits = &movement;
+  bits[0] = movement;
   return bits;
 }
 
@@ -568,118 +574,11 @@ bitboard_t Environment::chessIndexToBitboard(std::string chessIndex) {
 
   return board;
 }
+
 uint64_t Environment::intToUint64(int i) {
   return (uint64_t)i;
 }
 
-/**
- * A FEN record contains six fields. The separator between fields is a space. The fields are:
-
-    1. Piece placement (from white's perspective). Each rank is described, starting with rank 8 and ending with rank 1; within each rank, the contents of each square are described from file "a" through file "h". Following the Standard Algebraic Notation (SAN), each piece is identified by a single letter taken from the standard English names (pawn = "P", knight = "N", bishop = "B", rook = "R", queen = "Q" and king = "K").[1] White pieces are designated using upper-case letters ("PNBRQK") while black pieces use lowercase ("pnbrqk"). Empty squares are noted using digits 1 through 8 (the number of empty squares), and "/" separates ranks.
-
-    2. Active color. "w" means White moves next, "b" means Black.
-
-    3. Castling availability. If neither side can castle, this is "-". Otherwise, this has one or more letters: "K" (White can castle kingside), "Q" (White can castle queenside), "k" (Black can castle kingside), and/or "q" (Black can castle queenside).
-
-    4. En passant target square in algebraic notation. If there's no en passant target square, this is "-". If a pawn has just made a two-square move, this is the position "behind" the pawn. This is recorded regardless of whether there is a pawn in position to make an en passant capture.[2]
-
-    5. Halfmove clock: This is the number of halfmoves since the last capture or pawn advance. This is used to determine if a draw can be claimed under the fifty-move rule.
-
-    6. Fullmove number: The number of the full move. It starts at 1, and is incremented after Black's move.
-
- * @param node
- * @param whiteMovesNext
- * @return
- */
-std::string Environment::fen(gameState* node, bool whiteMovesNext) {
-
-
-  std::array<bitboard_t, 12> boards = {
-      node->BlackBishop,
-      node->BlackKing,
-      node->BlackKnight,
-      node->BlackPawn,
-      node->BlackQueen,
-      node->BlackRook,
-
-      node->WhiteBishop,
-      node->WhiteKing,
-      node->WhiteKnight,
-      node->WhitePawn,
-      node->WhiteQueen,
-      node->WhiteRook
-  };
-
-  std::array<char, 12> symbols = {
-      'b',
-      'k',
-      'n',
-      'p',
-      'q',
-      'r',
-
-      'B',
-      'K',
-      'N',
-      'P',
-      'Q',
-      'R'
-  };
-
-  char spaces[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8'};
-
-  int spacing = 0;
-  int pos = 1;
-  std::string fen = "";
-
-  for (uint8_t i = 0; i < 64; i++) {
-    if (pos == 9) {
-      pos = 1;
-      fen += '/';
-    }
-
-
-    char p = ' ';
-    for (uint8_t j = 0; j < 12; j++) {
-      if (::utils::bitAt(boards[j], i)) {
-        p = symbols[j];
-        break;
-      }
-    }
-
-    if (p == ' ') {
-      spacing += 1;
-    }
-
-    if (pos == 8 || p != ' ') {
-      fen += spaces[spacing];
-      spacing = 0;
-    }
-
-    if (p != ' ') {
-      fen += p;
-    }
-
-    pos += 1;
-  }
-
-  // who is to move next
-  fen += whiteMovesNext ? " w" : " b";
-
-  // missing castling verification support
-  fen += " -";
-
-  // missing passant target verification support
-  fen += " -";
-
-  // missing halfmove verification support
-  fen += " " + std::to_string(node->halfMoves);
-
-  // missing fullmove verification support
-  fen += " " + std::to_string(node->fullMoves);
-
-  return fen;
-}
 
 void Environment::setFen(std::string fen) {
 
@@ -738,6 +637,97 @@ std::shared_ptr<::bitboard::gameState> Environment::generateBoardFromFen(const s
   return node;
 }
 
+void Environment::canWhiteCastleK() { // King startpos is 4
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t blackAttacks = combinedBlackAttacks();
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 5) &&
+      !::utils::bitAt(all, 6)) {
+    // king is not in, passes through, or passes into check
+    if (!::utils::bitAt(blackAttacks, 4) &&
+        !::utils::bitAt(blackAttacks, 5) &&
+        !::utils::bitAt(blackAttacks, 6)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 6, from startpos 4, code castle Kingside
+      tempMove = mo.setGetValue(6, 4, 2);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
+
+void Environment::canWhiteCastleQ() { // King startpos is 4
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t blackAttacks = combinedBlackAttacks();
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 3) &&
+      !::utils::bitAt(all, 2) &&
+      !::utils::bitAt(all, 1)) {
+    // king is not in, passes through, or passes into check
+    if (!::utils::bitAt(blackAttacks, 4) &&
+        !::utils::bitAt(blackAttacks, 3) &&
+        !::utils::bitAt(blackAttacks, 2)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 2, from startpos 4, code castle Queenside
+      tempMove = mo.setGetValue(2, 4, 3);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
+
+void Environment::canBlackCastleK() { // King startpos is 60
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t whiteAttacks = combinedWhiteAttacks();
+
+  printBoard(whiteAttacks);
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 61) &&
+      !::utils::bitAt(all, 62)) {
+    // king is not in, passes through, or passes into check
+    if (!::utils::bitAt(whiteAttacks, 60) &&
+        !::utils::bitAt(whiteAttacks, 61) &&
+        !::utils::bitAt(whiteAttacks, 62)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 62, from startpos 60, code castle Kingside
+      tempMove = mo.setGetValue(62, 60, 2);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
+
+void Environment::canBlackCastleQ() { // King startpos is 60
+  bitboard_t all = whitePieces() | blackPieces();
+  bitboard_t whiteAttacks = combinedWhiteAttacks();
+
+  // No pieces between king and chosen rook
+  if (!::utils::bitAt(all, 59) &&
+      !::utils::bitAt(all, 58) &&
+      !::utils::bitAt(all, 57)) {
+    // king is not in, passes through, or passes into checkk
+    if (!::utils::bitAt(whiteAttacks, 60) &&
+        !::utils::bitAt(whiteAttacks, 59) &&
+        !::utils::bitAt(whiteAttacks, 58)) {
+      move::Move mo;
+      using ::bitboard::move_t;
+      move_t tempMove;
+      // to pos 58, from startpos 60, code castle Queenside
+      tempMove = mo.setGetValue(58, 60, 3);
+      // Add move to moveList
+      moveList.push_back(tempMove);
+    }
+  }
+}
 
 void Environment::generateAttacks() {
   attacks.WhitePawn = pawnMoves(COLOR::WHITE);
@@ -829,20 +819,21 @@ void Environment::generateMove(bitboard_t st, bitboard_t *attack, COLOR color) {
   move_t tempMove;
   tempBoard = st;
   index = LSB(tempBoard);
+
   for (bitboard_t i = 0; i < numberOfPieces(st); i++) {
     tempAttack = attack[i];
     indexTo = LSB(tempAttack);
     for (int j = 0; j < numberOfPieces(attack[i]); j++) {
-
       flag = (moveIsCapture(indexTo, color)) ? 4 : 0;
-      tempMove = mo.setGetValue(index, indexTo,flag);
-      moveList.push_back(tempMove);
+      tempMove = mo.setGetValue(indexTo, index, flag);
+      if(tempMove > 0U)
+        moveList.push_back(tempMove);
+
       indexTo = NSB(tempAttack);
     }
     index = NSB(tempBoard);
   }
 }
-
 
 void Environment::generateMoves(COLOR color) {
   // Loop a piece attack-vector
@@ -857,6 +848,7 @@ void Environment::generateMoves(COLOR color) {
     generateMove(state.WhiteKnight, attacks.WhiteKnight, color);
     generateMove(state.WhiteKing, attacks.WhiteKing, color);
     generateMove(state.WhiteQueen, attacks.WhiteQueen, color);
+    canWhiteCastleK(); canBlackCastleQ();
   } else {
     generateMove(state.BlackPawn, attacks.BlackPawn, color);
     generateMove(state.BlackBishop, attacks.BlackBishop, color);
@@ -864,14 +856,156 @@ void Environment::generateMoves(COLOR color) {
     generateMove(state.BlackKnight, attacks.BlackKnight, color);
     generateMove(state.BlackKing, attacks.BlackKing, color);
     generateMove(state.BlackQueen, attacks.BlackQueen, color);
+    canBlackCastleQ(); canBlackCastleK();
   }
+  //std::cout << moveList.size() << std::endl;
+  //std::cout << moveList.size() << std::endl;
 
 }
 
-
-void Environment::caputrePiece(COLOR opponent, move_t m) {
-
+void Environment::capturePiece(COLOR opponent, bitboard_t index, gameState &st) {
+  if (opponent == COLOR::WHITE) {
+    flipOff(st.WhitePawn, index);
+    flipOff(st.WhiteBishop, index);
+    flipOff(st.WhiteRook, index);
+    flipOff(st.WhiteKnight, index);
+    flipOff(st.WhiteKing, index);
+    flipOff(st.WhiteQueen, index);
+  } else {
+    flipOff(st.BlackPawn, index);
+    flipOff(st.BlackBishop, index);
+    flipOff(st.BlackRook, index);
+    flipOff(st.BlackKnight, index);
+    flipOff(st.BlackKing, index);
+    flipOff(st.BlackQueen, index);
+  }
 }
+
+gameState Environment::movePiece(COLOR own, bitboard_t to, bitboard_t from, int flag) {
+  gameState returnState = state;
+  // A move on the white pieces are being made
+
+  if(own == COLOR::WHITE) {
+    if (bitIsSet(returnState.WhitePawn, from)) {    // WHITE PAWN MOVE SET
+      flipOff(returnState.WhitePawn, from);
+      flipBit(returnState.WhitePawn, to);
+    } else if (bitIsSet(returnState.WhiteBishop, from)) {   // WHITE BISHOP
+      flipOff(returnState.WhiteBishop, from);
+      flipBit(returnState.WhiteBishop, to);
+    } else if (bitIsSet(returnState.WhiteRook, from)) {   // WHITE ROOK
+      flipOff(returnState.WhiteRook, from);
+      flipBit(returnState.WhiteRook, to);
+      if (from == 0ULL)
+        returnState.whiteKingCastling = false;
+      else if(from == 128ULL)
+        returnState.whiteQueenCastling = false;
+    } else if (bitIsSet(returnState.WhiteKing, from)) {   // WHITE KING
+      if (flag == 2 ) {
+        flipOff(returnState.WhiteRook, LSB(returnState.WhiteRook));
+        flipBit(returnState.WhiteRook, LSB(returnState.WhiteRook)+2ULL);
+
+      } else if (flag == 3) {
+        flipOff(returnState.WhiteRook, MSB(returnState.WhiteRook));
+        flipBit(returnState.WhiteRook, MSB(returnState.WhiteRook)-3ULL);
+      }
+      flipOff(returnState.WhiteKing, from);
+      flipBit(returnState.WhiteKing, to);
+      returnState.whiteKingCastling = false;
+      returnState.whiteQueenCastling = false;
+    } else if (bitIsSet(returnState.WhiteQueen, from)) {  // WHITE QUEEN
+      flipOff(returnState.WhiteQueen, from);
+      flipBit(returnState.WhiteQueen, to);
+    } else if (bitIsSet(returnState.WhiteKnight, from)) {
+      flipOff(returnState.WhiteKnight, from);
+      flipBit(returnState.WhiteKnight, to);
+    }
+  } else {
+    if (bitIsSet(returnState.BlackPawn, from)) {    // Black PAWN MOVE SET
+      flipOff(returnState.BlackPawn, from);
+      flipBit(returnState.BlackPawn, to);
+    } else if (bitIsSet(returnState.BlackBishop, from)) {   // Black BISHOP
+      flipOff(returnState.BlackBishop, from);
+      flipBit(returnState.BlackBishop, to);
+    } else if (bitIsSet(returnState.BlackRook, from)) {   // Black ROOK
+      flipOff(returnState.BlackRook, from);
+      flipBit(returnState.BlackRook, to);
+      if (from == 72057594037927936ULL)
+        returnState.blackKingCastling = false;
+      else if(from == 9223372036854775808ULL)
+        returnState.blackQueenCastling = false;
+    } else if (bitIsSet(returnState.BlackKing, from)) {   // Black KING
+      if (flag == 2 ) { // King side
+        flipOff(returnState.BlackRook, LSB(returnState.BlackRook));
+        flipBit(returnState.WhiteRook, LSB(returnState.BlackRook)+2ULL);
+
+      } else if (flag == 3) { // Queen side
+        flipOff(returnState.BlackRook, MSB(returnState.BlackRook));
+        flipBit(returnState.BlackRook, MSB(returnState.BlackRook)-3ULL);
+      }
+      flipOff(returnState.BlackKing, from);
+      flipBit(returnState.BlackKing, to);
+      returnState.blackKingCastling = false;
+      returnState.blackQueenCastling = false;
+    } else if (bitIsSet(returnState.BlackQueen, from)) {  // Black QUEEN
+      flipOff(returnState.BlackQueen, from);
+      flipBit(returnState.BlackQueen, to);
+    } else if (bitIsSet(returnState.BlackKnight, from)) {
+      flipOff(returnState.BlackKnight, from);
+      flipBit(returnState.BlackKnight, to);
+    }
+  }
+  //printBoard(returnState.WhitePawn | returnState.WhiteKnight);
+  return returnState;
+}
+
+
+void Environment::computeGameStates(std::vector<gameState>& states) {
+  // Select a move
+  // Move the piece
+  // remove eventual capture
+  // See if legal
+  // If legal-generate node
+  generateMoves(state.playerColor);
+  gameState g;
+  ::move::Move moveInter;
+
+  while (!moveList.empty()) {
+    moveInter.set(moveList[moveList.size()]);     // Gets the last item
+    moveList.pop_back();
+    g = movePiece(currentMoveColor, intToUint64(moveInter.getTo()), intToUint64(moveInter.getFrom()), 0);
+    if (moveInter.captures()) {
+      COLOR opc = (state.playerColor == COLOR::WHITE) ? COLOR::BLACK : COLOR::WHITE;
+      bitboard_t tempB = intToUint64(moveInter.getTo());
+      capturePiece(opc, tempB, g);
+    }
+
+    if(legal(g)) { // Should be legal
+      states.push_back(g);
+    }
+  }
+}
+
+bool Environment::legal(gameState p) {
+  gameState temp = state;
+  state = p;
+  generateAttacks();
+  if(currentMoveColor == COLOR::WHITE) {
+    if(state.WhiteKing & combinedBlackAttacks())
+      return false;
+  } else {
+    if(state.BlackKing & combinedWhiteAttacks())
+      return false;
+  }
+  state = temp;
+  return true;
+}
+
+gameState Environment::getGameState() {
+  return this->state;
+}
+
+
+// ###################### TEST FUNCTIONS ########################
 
 
 /* ################ END OF ENVIRONMENT FUNCTIONS ################ */
@@ -906,11 +1040,11 @@ void flipBit(bitboard_t &board, bitboard_t index) {
 // YEAH tell that bit to flipp off!!!
 // Nobody wants you bit... NOBODY WANTS YOU
 void flipOff(bitboard_t &board, bitboard_t index) {
-  board &= (0LL << index);
+  board &= ~(1ULL << index);
 }
 
 bool bitIsSet(bitboard_t board, bitboard_t index) {
-  return (board & (1 << index)) ? true : false;
+  return (board & (1ULL << index)) ? true : false;
 }
 
 
@@ -927,7 +1061,7 @@ using std::string;
 
 
 void Move::printMoveString(move_t m) {
-\
+
   string bits = std::bitset<16>(m).to_string();
   for (int i = 0; i < 16; i++) {
     if (i == 6 || i == 12)
@@ -937,15 +1071,24 @@ void Move::printMoveString(move_t m) {
   std::cout << '\n';
 }
 
+void Move::printOwn() {
+
+  string bits = std::bitset<16>(mv).to_string();
+  for (int i = 0; i < 16; i++) {
+    if (i == 6 || i == 12)
+      std::cout << " | ";
+    std::cout << bits.at(i) << " ";
+  }
+  std::cout << '\n';
+}
 
 move_t Move::setGetValue(bitboard_t to, bitboard_t from, int flags) {
   // USES A SIMPLE TO/FROM format
   // | 6 bit TO | 6 bit FROM | 4 BITS FOR FLAGS |
   mv = 0U;
-  mv |= (to << 10);   // Adds to, to the front of the FILE
-  mv |= (from << 4);  // Adds from behind to
+  mv |= (static_cast<move_t>(to) << 10U);   // Adds to, to the front of the FILE
+  mv |= (static_cast<move_t>(from) << 4U);  // Adds from behind to
   mv |= (flags << 0);
-
   return mv;
 }
 
@@ -975,5 +1118,8 @@ Move::Move() {
   mv = 0U;
 }
 
+void Move::set(move_t m) {
+  mv = m;
+}
 
 } // End of move
