@@ -120,7 +120,16 @@ void chess_ann::Engine::activateUCIProtocol() {
 
   // ###
   // Creates a forever listening UCI thread, this is to not block everything else.
-  this->uciProtocol.setupListener();
+  this->UCIProtocolActivated = this->uciProtocol.setupListener();
+}
+
+/**
+ * Check if UCI is activated on this engine or not.
+ *
+ * @return bool if UCI protocol has been activated.
+ */
+bool chess_ann::Engine::hasInitiatedUCIProtocol() {
+  return this->UCIProtocolActivated;
 }
 
 /**
@@ -184,4 +193,55 @@ int chess_ann::Engine::ANNEvaluate(std::string fen) {
   ::gameTree::nodePtr board = env.generateBoardFromFen(fen);
 
   return this->ANNEvaluate(board);
+}
+
+/**
+ * Used to reset old data, and construct a new fresh game for this engine.
+ *
+ * @param fen a FEN string, must be correctly parsed otherwise worlds will collide.
+ */
+void chess_ann::Engine::setNewGameBoard(const std::string fen) {
+  this->currentGameState = nullptr;
+}
+
+
+/**
+ * Update this players color, color means what piece this player can move..
+ *
+ * @param color
+ */
+void chess_ann::Engine::setPlayerColor(bitboard::COLOR color) {
+  this->player.color = color;
+}
+
+
+/**
+ * Get the game node from a engine. Will be known as the root node for the search class.
+ *
+ * @return shared_ptr of gameState
+ */
+gameTree::nodePtr chess_ann::Engine::getGameState() {
+  return this->currentGameState;
+}
+
+
+/**
+ * Sets the game state based on a node.
+ * Used when updating board states during battles.
+ *
+ * @param state shared_ptr of a gameState
+ * @return true if the state was updated
+ */
+bool chess_ann::Engine::setGameState(gameTree::nodePtr state) {
+  this->currentGameState = state;
+}
+
+
+/**
+ * Check if the engine has lost.
+ *
+ * @return true on losing
+ */
+bool chess_ann::Engine::lost() {
+  return this->currentGameState->possibleSubMoves == 0;
 }

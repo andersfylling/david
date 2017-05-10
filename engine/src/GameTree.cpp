@@ -327,6 +327,8 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
   if (!::utils::isHalfMove(parent, node)) {
     node->halfMoves = 0;
   }
+  // check if there are any possible moves after this state
+
 
   // add child to parent
   parent->children.push_back(node);

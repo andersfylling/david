@@ -109,6 +109,7 @@ struct gameState {
   bool whiteQueenCastling = true;
   bool whiteKingCastling = true;
 
+
   std::weak_ptr<::bitboard::gameState> weakParent; //...
 };
 

@@ -4,7 +4,7 @@
 
 int main (int argc, char * argv[])
 {
-  chess_ann::EngineMaster em;
+  chess_ann::EngineMaster em("");
 
   int mainEngineID      = em.spawnEngine();
   int opponentEngineID  = em.spawnEngine();
