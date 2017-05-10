@@ -6,16 +6,27 @@
 #include "chess_ann/Engine.h"
 
 namespace chess_ann {
+
+typedef std::shared_ptr<::chess_ann::Engine> enginePtr;
+const std::string annExecFile = ::utils::getAbsoluteProjectPath() + "/engine/src/ANN/networks/";
+
 class EngineMaster {
  private:
-  std::map<int, ::chess_ann::Engine> engineInstances; // id => instance
-  std::map<int, std::array<int, 2>> engineDuals;
+  std::map<int, enginePtr> engineInstances; // id => instance
+  std::map<int, std::array<int, 2>> engineBattle;
+  std::map<int, int> engineBattleWinnerLog; // battle id => winner id (engineInstance)
+
+  int lastEngineInstanceID;
+  int lastEngineBattleID;
+
+  const std::string filename;
 
  public:
-  EngineMaster();
+  EngineMaster(const std::string filename);
 
   int spawnEngine();
-  int battle(int engineID1, int engineID2);
+  int battle(const int engineID1, const int engineID2);
+  int battle(const int engineID1, const int engineID2, const std::string fen);
   bool battleWinner(int battleID, int mainEngineID);
   int battleWinner(int battleID);
   void trainUntilWinner(int mainEngineID, int opponentEngineID);

@@ -221,7 +221,8 @@ nodePtr GameTree::generateNode(nodePtr parent) {
   node->halfMoves = 0; // eh..
   node->weakParent = parent;
 
-  // do bitboard stuff when applicable
+  // check if there are any possible moves after this state
+
 
   // add child to parent
   parent->children.push_back(node);
