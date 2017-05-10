@@ -28,6 +28,7 @@ typedef std::shared_ptr<gameState> nodePtr;
  */
 class GameTree {
  private:
+  // previous can be used for en passant
   nodePtr previous;// in case a player regrets their move?
   nodePtr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory

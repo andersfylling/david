@@ -116,12 +116,11 @@ class Environment {
   void computeGameStates(std::vector<gameState>& states);
   // Move rockade1
   bool legal(gameState p);
-  bitboard_t initiate();
   bool checkMate();
   bool draw();
 
-
-
+  // TEST FUNCTIONS
+  vector<bitboard_t> getMoves();
   // LEVEL 4 of moveGen - tree generation
   //gameState getCurrentGameState();
 

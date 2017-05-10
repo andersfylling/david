@@ -11,19 +11,22 @@ TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
   gameTree::GameTree gt(root);
 
-  SECTION("Verifying that only one node exists when a GameTree is initiated") {
+ // SECTION("Verifying that only one node exists when a GameTree is initiated") {
     REQUIRE(gt.getNumberOfNodes() == 1);
-  }
+ // }
 
 
   gt.setMaxNumberOfNodes(10);
-  //gt.generateNodes(); // KLINGEN ERROR IN HERE, korfor blir tallet 20 printet ut? wtf.
-  SECTION("Setting max nr of nodes to 10 and generate them") {
+  gt.generateNodes(); // KLINGEN ERROR IN HERE, korfor blir tallet 20 printet ut? wtf.
+ // SECTION("Setting max nr of nodes to 10 and generate them") {
 
     REQUIRE(gt.getNumberOfNodes() == 10);
-  }
 
-  std::cout << "asdasd" << std::endl;
+
+ // }
+
+
+
 
 }
 
