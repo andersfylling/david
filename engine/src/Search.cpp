@@ -5,6 +5,8 @@
 #include "chess_ann/Search.h"
 #include "chess_ann/utils.h"
 #include <ctime>
+#include <chess_ann/EngineMaster.h>
+#include "chess_ann/Context.h"
 
 namespace search {
 //Signals Signal; //Scrapped for now
@@ -14,11 +16,15 @@ clock_t startTime;
 /**
  * Constructor used in debug/test
  */
-search::Search::Search() {
+search::Search::Search(std::shared_ptr<chess_ann::Context> context)
+    : context(context)
+{
 
 };
 
-search::Search::Search(::uci::Listener &uci) {
+search::Search::Search(std::shared_ptr<chess_ann::Context> context, ::uci::Listener &uci)
+    : context(context)
+{
   using ::uci::event::GO;
   using ::uci::event::STOP;
   using ::uci::event::QUIT;
@@ -128,7 +134,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   //
   // board->generateAllMoves();
   //
-  ::gameTree::GameTree rMoves(board);
+  ::gameTree::GameTree rMoves(this->context, board);
   rMoves.setMaxNumberOfNodes(100000);
   rMoves.generateChildren(board);
 

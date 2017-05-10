@@ -8,6 +8,7 @@
 #include "chess_ann/bitboard.h"
 #include <memory>
 #include <iomanip>
+#include "chess_ann/Context.h"
 
 namespace gameTree {
 using ::bitboard::gameState;
@@ -36,9 +37,11 @@ class GameTree {
   void getNumberOfNodes(nodePtr node, int& counter);
   void getDepth(nodePtr node, int& depth);
 
+  std::shared_ptr<chess_ann::Context> context;
+
  public:
-  GameTree();
-  GameTree(std::shared_ptr<gameState> node);
+  GameTree(std::shared_ptr<chess_ann::Context> context);
+  GameTree(std::shared_ptr<chess_ann::Context> context, std::shared_ptr<gameState> node);
   ~GameTree();
   void reset();
   void reset(nodePtr node);

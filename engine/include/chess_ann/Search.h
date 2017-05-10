@@ -16,6 +16,7 @@
 #include <memory>
 #include <algorithm>
 #include <mutex>
+#include "chess_ann/Context.h"
 
 using ::bitboard::COLOR;
 
@@ -30,8 +31,8 @@ namespace search {
  */
 class Search {
  public:
-  Search(); // This can be used for unit testing and benchmarking.
-  Search(::uci::Listener &uci);
+  Search(std::shared_ptr<chess_ann::Context> context); // This can be used for unit testing and benchmarking.
+  Search(std::shared_ptr<chess_ann::Context> context, ::uci::Listener &uci);
   void searchInit(std::shared_ptr<::bitboard::gameState> node);
   int iterativeDeepening(std::shared_ptr<::bitboard::gameState> node);
   int negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth);
@@ -79,6 +80,7 @@ class Search {
   bool isComplete;
   bool debug;
   int nodesSearched;
+  std::shared_ptr<chess_ann::Context> context;
 };
 
   //

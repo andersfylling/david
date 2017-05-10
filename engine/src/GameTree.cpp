@@ -5,21 +5,22 @@
 #include <algorithm>
 #include <chess_ann/environment.h>
 #include <chess_ann/utils.h>
-#include <stockfish/stockfishMock.h>
 
 /**
  * Constructor
  */
-::gameTree::GameTree::GameTree()
-    : maxNumberOfNodes(100)
+::gameTree::GameTree::GameTree(std::shared_ptr<chess_ann::Context> context)
+    : context(context),
+      maxNumberOfNodes(100)
 {}
 
 /**
  * Constructor
  * @param node std::share_ptr<::bitboard::gameState>, pass by copy(!!)
  */
-::gameTree::GameTree::GameTree(std::shared_ptr<gameState> node)
-    : current(node),
+::gameTree::GameTree::GameTree(std::shared_ptr<chess_ann::Context> context, std::shared_ptr<gameState> node)
+    : context(context),
+      current(node),
       maxNumberOfNodes(100)
 {
 }
@@ -111,7 +112,7 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
   std::vector<gameState> states;
 
   // generate possible game oputputs
-  //env.computeGameStates(states);
+  env.computeGameStates(states);
 
   // create node pointers, and set some internal data
   for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
@@ -318,7 +319,7 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
 
 
   node->gameTreeLevel = parent->gameTreeLevel + 1;
-  node->score = ::stockfishMock::evaluate(::utils::generateFen(node));
+  node->score = 0;
   node->fullMoves = (node->gameTreeLevel + 1) / 2;
   node->halfMoves = parent->halfMoves + 1;
   node->weakParent = parent;
@@ -328,6 +329,9 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
     node->halfMoves = 0;
   }
   // check if there are any possible moves after this state
+
+  // use ann to get score
+
 
 
   // add child to parent

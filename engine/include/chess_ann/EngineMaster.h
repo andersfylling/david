@@ -3,12 +3,17 @@
 
 #include "map"
 #include "array"
-#include "chess_ann/Engine.h"
+//#include "chess_ann/Engine.h"
+#include "chess_ann/utils.h"
+
+namespace utils {
+std::string getAbsoluteProjectPath();
+}
 
 namespace chess_ann {
-
-typedef std::shared_ptr<::chess_ann::Engine> enginePtr;
-const std::string annExecFile = ::utils::getAbsoluteProjectPath() + "/engine/src/ANN/networks/";
+class Engine;
+typedef std::shared_ptr<chess_ann::Engine> enginePtr;
+const std::string annExecFile = utils::getAbsoluteProjectPath() + "/engine/src/ANN/networks/";
 
 class EngineMaster {
  private:

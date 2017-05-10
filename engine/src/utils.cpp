@@ -1,4 +1,5 @@
 #include "chess_ann/utils.h"
+#include "fann/floatfann.h"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
@@ -9,6 +10,8 @@
 #include <bitset>
 #include <chess_ann/GameTree.h>
 #include <chess_ann/environment.h>
+#include <chess_ann/Engine.h>
+#include <assert.h>
 #elif _WIN32
 // windows code goes here
 #endif
@@ -201,156 +204,168 @@ bool utils::fileExists(const std::string &file) {
   return (stat(file.c_str(), &buffer) == 0);
 }
 
-fann_type *utils::convertGameStateToInputs(::gameTree::nodePtr node) {
-//  ::environment::Environment env();
-//  std::stringstream strm(line);
-//  std::string blackTurn = "";
-//  strm >> blackTurn;
-//  blackTurn = "";
-//  strm >> blackTurn;
-//  env.setGameState(node);
-//  env.generateAttacks();
-//  bool isB = blackTurn == "b";
-//  std::array<double, 30> inputs = {
-//      blackTurn == "b" ? -1.0 : 1.0,
-//      (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackBishop) > 0.1 ? 1 : -1),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) > 0.1 ? 1 : -1),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKnight) > 0.1 ? 1 : -1),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackPawn) > 0.1 ? 1 : -1),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackQueen) > 0.1 ? 1 : -1),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackRook) > 0.1 ? 1 : -1),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackBishop) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackBishop)) / 10.0),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackKing)) / 10.0),
-//      (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKnight) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackKnight)) / 10.0),
-//      (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackPawn) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackPawn)) / 10.0),
-//      (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackQueen) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 10.0),
-//      (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackRook) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 10.0),
-//
-//
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) > 0.1 ? 1.0 : -1.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) > 0.1 ? 1.0 : -1.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) > 0.1 ? 1.0 : -1.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhitePawn) > 0.1 ? 1.0 : -1.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteRook) > 0.1 ? 1.0 : -1.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) > 0.1 ? 1.0 : -1.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 10.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 10.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 10.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhitePawn) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 10.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteRook) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 10.0),
-//      (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 10.0),
-//
-//
-//      (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.whitePieces())) / 10.0, // is never 0
-//      (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.blackPieces())) / 10.0, // is never 0
-//      static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 10.0,
-//
-//      (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 10.0),
-//      (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 10.0,
-//  };
-//
-//  // generate inputs
-//  int nInputs = 0;
-//  for (auto b : inputs) {
-//    fileStringInput << std::setprecision(2) << b << ' '; // limit to one decimal... I think
-//    nInputs += 1;
-//  }
-//  std::array<::bitboard::bitboard_t, 2> boards1 = {
-//      node->BlackKing,
-//      node->WhiteKing
-//  };
-//  std::array<::bitboard::bitboard_t, 8> boards2 = {
-//      node->BlackBishop,
-//      node->BlackKnight,
-//      node->BlackQueen,
-//      node->BlackRook,
-//      node->WhiteBishop,
-//      node->WhiteQueen,
-//      node->WhiteKnight,
-//      node->WhiteRook
-//  };
-//  std::array<::bitboard::bitboard_t, 2> boards8 = {
-//      node->BlackPawn,
-//      node->WhitePawn
-//  };
-//
-//  // generate inputs
-//  for (auto b : boards1) {
-//    auto ba = std::bitset<64>(b);
-//    double arr[1] = {-1.0};
-//    auto prog = 0;
-//    for (uint8_t i = 0; i < ba.size(); i++) {
-//      if (::utils::bitAt(b, i)) {
-//        arr[prog++] = i == 0 ? 0 : i / 10.0;
-//      }
-//    }
-//
-//    for (auto e : arr) {
-//      fileStringInput << std::setprecision(2) << e << ' ';
-//      nInputs += 1;
-//    }
-//  }
-//
-//  // Issue, what if the first on is gone? same on boards8
-//  for (auto b : boards2) {
-//    auto ba = std::bitset<64>(b);
-//    double arr[2] = {-1.0, -1.0};
-//    auto prog = 0;
-//    for (uint8_t i = 0; i < ba.size(); i++) {
-//      if (::utils::bitAt(b, i)) {
-//        arr[prog++] = i == 0 ? 0 : i / 10.0;
-//      }
-//    }
-//
-//    for (auto e : arr) {
-//      fileStringInput << std::setprecision(2) << e << ' ';
-//      nInputs += 1;
-//    }
-//  }
-//  for (auto b : boards8) {
-//    auto ba = std::bitset<64>(b);
-//    double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
-//    auto prog = 0;
-//    for (uint8_t i = 0; i < ba.size(); i++) {
-//      if (::utils::bitAt(b, i)) {
-//        arr[prog++] = i == 0 ? 0 : i / 10.0;
-//      }
-//    }
-//
-//    for (auto e : arr) {
-//      fileStringInput << std::setprecision(2) << e << ' ';
-//      nInputs += 1;
-//    }
-//  }
-//  fileStringInput << std::endl;
-//
-//
-//  // expected output
-//  std::string score;
-//  std::getline(infile, score);
-//  fileStringInput << score << std::endl;
-//
-//  // inc record
-//  trainingPairs += 1;
-//  lineNr += 1;
-//
-//
-//  // make sure u have the right amount of inputs
-//  if (nInputs != layers[0]) {
-//    //std::cerr << "nInputs: " << nInputs << ", expected: " << layers[0] << ". Line#" << lineNr << std::endl;
-//    skippedtrainingSets += 1;
-//    fileStringInput.str("");
-//    fileStringInput.clear();
-//    continue;
-//  }
-//  else {
-//    output << fileStringInput.str();
-//    fileStringInput.str("");
-//    fileStringInput.clear();
-//  }
-//  //assert(nInputs == layers[0]);
+/**
+ * Issue, what if there is more pieces of one type than the normal in a chess game?
+ * Issue, should be floats and not doubles.
+ *
+ * @param node
+ * @param player
+ * @return
+ */
+fann_type *utils::convertGameStateToInputs(::gameTree::nodePtr node, chess_ann::Player player) {
+  ::environment::Environment env(node->playerColor);
+  env.setGameState(node);
+  env.generateAttacks();
 
-  return nullptr;
+  // These are used to define whats benefitial and negative inputs
+  double multiplier = player.color == node->playerColor ? 1.0 : -1.0;
+  double mWhite = player.color == bitboard::COLOR::WHITE ? 1.0 : -1.0;
+  double mBlack = player.color == bitboard::COLOR::WHITE ? -1.0 : 1.0;
+
+  auto nrOfBlackBishop  = static_cast<double>(env.numberOfPieces(node->BlackBishop));
+  auto nrOfBlackKing    = static_cast<double>(env.numberOfPieces(node->BlackKing));
+  auto nrOfBlackKnight  = static_cast<double>(env.numberOfPieces(node->BlackKnight));
+  auto nrOfBlackPawn    = static_cast<double>(env.numberOfPieces(node->BlackPawn));
+  auto nrOfBlackQueen   = static_cast<double>(env.numberOfPieces(node->BlackQueen));
+  auto nrOfBlackRook    = static_cast<double>(env.numberOfPieces(node->BlackRook));
+
+  auto nrOfWhiteBishop  = static_cast<double>(env.numberOfPieces(node->WhiteBishop));
+  auto nrOfWhiteKing    = static_cast<double>(env.numberOfPieces(node->WhiteKing));
+  auto nrOfWhiteKnight  = static_cast<double>(env.numberOfPieces(node->WhiteKnight));
+  auto nrOfWhitePawn    = static_cast<double>(env.numberOfPieces(node->WhitePawn));
+  auto nrOfWhiteQueen   = static_cast<double>(env.numberOfPieces(node->WhiteQueen));
+  auto nrOfWhiteRook    = static_cast<double>(env.numberOfPieces(node->WhiteRook));
+
+  std::array<double, 37> boardInfo = {
+      multiplier * 1.0,
+
+      // Does a piece exist
+      mBlack * (nrOfBlackBishop > 0.1 ?  1.0 : -1.0),
+      mBlack * (nrOfBlackKing   > 0.1 ?  1.0 : -1.0),
+      mBlack * (nrOfBlackKnight > 0.1 ?  1.0 : -1.0),
+      mBlack * (nrOfBlackPawn   > 0.1 ?  1.0 : -1.0),
+      mBlack * (nrOfBlackQueen  > 0.1 ?  1.0 : -1.0),
+      mBlack * (nrOfBlackRook   > 0.1 ?  1.0 : -1.0),
+
+      // how many of that piece exist
+      mBlack * (nrOfBlackBishop < 1.0 ? -1.0 : nrOfBlackBishop / 10.0),
+      mBlack * (nrOfBlackKing   < 1.0 ? -1.0 : nrOfBlackKing   / 10.0),
+      mBlack * (nrOfBlackKnight < 1.0 ? -1.0 : nrOfBlackKnight / 10.0),
+      mBlack * (nrOfBlackPawn   < 1.0 ? -1.0 : nrOfBlackPawn   / 10.0),
+      mBlack * (nrOfBlackQueen  < 1.0 ? -1.0 : nrOfBlackQueen  / 10.0),
+      mBlack * (nrOfBlackRook   < 1.0 ? -1.0 : nrOfBlackRook   / 10.0),
+
+      // does a piece exist
+      mWhite * (nrOfWhiteBishop > 0.1 ?  1.0 : -1.0),
+      mWhite * (nrOfWhiteQueen  > 0.1 ?  1.0 : -1.0),
+      mWhite * (nrOfWhiteKnight > 0.1 ?  1.0 : -1.0),
+      mWhite * (nrOfWhitePawn   > 0.1 ?  1.0 : -1.0),
+      mWhite * (nrOfWhiteRook   > 0.1 ?  1.0 : -1.0),
+      mWhite * (nrOfWhiteKing   > 0.1 ?  1.0 : -1.0),
+
+      // how many of that piece exist
+      mWhite * (nrOfWhiteBishop < 1.0 ? -1.0 : nrOfWhiteBishop / 10.0),
+      mWhite * (nrOfWhiteQueen  < 1.0 ? -1.0 : nrOfWhiteQueen  / 10.0),
+      mWhite * (nrOfWhiteKnight < 1.0 ? -1.0 : nrOfWhiteKnight / 10.0),
+      mWhite * (nrOfWhitePawn   < 1.0 ? -1.0 : nrOfWhitePawn   / 10.0),
+      mWhite * (nrOfWhiteRook   < 1.0 ? -1.0 : nrOfWhiteRook   / 10.0),
+      mWhite * (nrOfWhiteKing   < 1.0 ? -1.0 : nrOfWhiteKing   / 10.0),
+
+
+      // how many of that color exists
+      mWhite * static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0, // is never 0
+      mBlack * static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0, // is never 0
+
+      // how many pieces in total
+      static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 100.0,
+
+      // how many white pieces can the black attack and vise versa
+      mBlack * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 10.0,
+      mWhite * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 10.0,
+
+      // who can castle
+      mBlack * (node->blackQueenCastling ? 1.0 : -1.0),
+      mBlack * (node->blackKingCastling  ? 1.0 : -1.0),
+      mWhite * (node->whiteQueenCastling ? 1.0 : -1.0),
+      mWhite * (node->whiteKingCastling  ? 1.0 : -1.0),
+
+      // how long is the game
+      // how long is it since last half move
+      node->halfMoves / 100.0,
+      node->fullMoves / 100.0,
+
+      // if the color playing is not yours, and the number here is high, it should be a good thing.
+      // as it means you have more possibilities.
+      -1.0 * multiplier * (node->possibleSubMoves / 100.0) // will always be 0 unless children are generated before comparing score.
+  };
+
+  // input
+  fann_type* inputs = new fann_type[71]; // should be a const
+
+  // generate inputs
+  int n = 0;
+  for (auto b : boardInfo) {
+    inputs[n++] = b;
+  }
+  std::array<::bitboard::bitboard_t, 2> boards1 = {
+      node->BlackKing,
+      node->WhiteKing
+  };
+  std::array<::bitboard::bitboard_t, 8> boards2 = {
+      node->BlackBishop,
+      node->BlackKnight,
+      node->BlackQueen,
+      node->BlackRook,
+      node->WhiteBishop,
+      node->WhiteQueen,
+      node->WhiteKnight,
+      node->WhiteRook
+  };
+  std::array<::bitboard::bitboard_t, 2> boards8 = {
+      node->BlackPawn,
+      node->WhitePawn
+  };
+
+  // generate inputs
+  for (auto b : boards1) {
+    //auto ba = std::bitset<64>(b);
+    //double arr[1] = {-1.0};
+    auto prog = 0;
+    for (uint8_t i = 0; i < 64 && prog < 1; i++) {
+      if (::utils::bitAt(b, i) ) {
+        inputs[n++] = i == 0 ? 0 : i / 10.0;
+        prog += 1;
+      }
+    }
+  }
+
+  // Issue, what if the first on is gone? same on boards8
+  for (auto b : boards2) {
+    //auto ba = std::bitset<64>(b);
+    //double arr[2] = {-1.0, -1.0};
+    auto prog = 0;
+    for (uint8_t i = 0; i < 64 && prog < 2; i++) {
+      if (::utils::bitAt(b, i)) {
+        inputs[n++] = i == 0 ? 0 : i / 10.0;
+        prog += 1;
+      }
+    }
+  }
+  for (auto b : boards8) {
+    //auto ba = std::bitset<64>(b);
+    //double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
+    auto prog = 0;
+    for (uint8_t i = 0; i < 64 && prog < 8; i++) {
+      if (::utils::bitAt(b, i)) {
+        inputs[n++] = i == 0 ? 0 : i / 10.0;
+      }
+    }
+  }
+
+  // verify that the number of inputs are correct.
+  assert(n == 71);
+
+  return inputs;
 }
 
 /**

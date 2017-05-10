@@ -6,7 +6,8 @@
 #include "chess_ann/Search.h"
 #include "catch.hpp"
 
-::search::Search test_search;
+std::shared_ptr<chess_ann::Context> context = std::make_shared<chess_ann::Context>();
+::search::Search test_search(context);
 std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameState>();
 
 

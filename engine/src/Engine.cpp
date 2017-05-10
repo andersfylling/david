@@ -3,6 +3,7 @@
 //
 
 #include "chess_ann/Engine.h"
+#include "chess_ann/Context.h"
 #include "fann/floatfann.h"
 #include "chess_ann/uci/Listener.h"
 #include "chess_ann/uci/events.h"
@@ -12,33 +13,37 @@
 #include <chess_ann/environment.h>
 #include "chess_ann/genericUCIResponses.h"
 
-chess_ann::Engine::Engine()
-    : uciProtocol(),
-      searchAgent(uciProtocol),
+chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context)
+    : context(context),
+      uciProtocol(),
+      searchAgent(context, uciProtocol),
       player(),
       ANNFile(""),
       ANNInstance(nullptr)
 
 {}
-chess_ann::Engine::Engine(Player self)
-    : uciProtocol(),
-      searchAgent(uciProtocol),
+chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player self)
+    : context(context),
+      uciProtocol(),
+      searchAgent(context, uciProtocol),
       player(self),
       ANNFile(""),
       ANNInstance(nullptr)
 
 {}
-chess_ann::Engine::Engine(std::string ANNFile)
-    : uciProtocol(),
-      searchAgent(uciProtocol),
+chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, std::string ANNFile)
+    : context(context),
+      uciProtocol(),
+      searchAgent(context, uciProtocol),
       player(),
       ANNFile(""),
       ANNInstance(nullptr)
 
 {}
-chess_ann::Engine::Engine(Player self, std::string ANNFile)
-    : uciProtocol(),
-      searchAgent(uciProtocol),
+chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player self, std::string ANNFile)
+    : context(context),
+      uciProtocol(),
+      searchAgent(context, uciProtocol),
       player(self),
       ANNFile(ANNFile),
       ANNInstance(nullptr)
@@ -171,7 +176,7 @@ void chess_ann::Engine::createANNInstance() {
  * @return int board evaluation
  */
 int chess_ann::Engine::ANNEvaluate(::gameTree::nodePtr board) {
-  fann_type* inputs = ::utils::convertGameStateToInputs(board); // float array
+  fann_type* inputs = ::utils::convertGameStateToInputs(board, this->player); // float array
   fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
 
   int output = static_cast<int>(outputs[0]);

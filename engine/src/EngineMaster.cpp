@@ -3,16 +3,22 @@
 //
 
 #include <sstream>
-#include "chess_ann/EngineMaster.h"
+#include <chess_ann/Context.h>
+#include <chess_ann/EngineMaster.h>
+
 
 chess_ann::EngineMaster::EngineMaster(const std::string filename)
     :filename(filename)
 {}
 
 int chess_ann::EngineMaster::spawnEngine() {
-  auto engine = std::make_shared<chess_ann::Engine>(annExecFile + this->filename);
-  engine->createANNInstance();
+  auto context = std::make_shared<chess_ann::Context>();
+  auto engine = std::make_shared<chess_ann::Engine>(context, annExecFile + this->filename);
 
+  // add engine to context class pointer
+  context->engine = engine;
+
+  engine->createANNInstance();
   if (engine->hasANNInstance()) {
     // insert engine and update last id
     this->lastEngineInstanceID += 1;

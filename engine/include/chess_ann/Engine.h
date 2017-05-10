@@ -8,11 +8,14 @@
 #include "chess_ann/bitboard.h"
 #include "chess_ann/uci/Listener.h"
 #include "chess_ann/uci/events.h"
-#include <chess_ann/Search.h>
 #include <chess_ann/GameTree.h>
 #include <chess_ann/utils.h>
 #include <chess_ann/environment.h>
 #include "chess_ann/genericUCIResponses.h"
+#include "chess_ann/Context.h"
+#include <chess_ann/Search.h>
+
+namespace search {}
 
 namespace chess_ann {
 
@@ -25,8 +28,8 @@ struct Player {
 
 
 class Engine {
-  ::uci::Listener uciProtocol;
-  ::search::Search searchAgent;
+  uci::Listener uciProtocol;
+  search::Search searchAgent;
 
   bool UCIProtocolActivated;
 
@@ -36,12 +39,15 @@ class Engine {
 
   gameTree::nodePtr currentGameState;
 
+  std::shared_ptr<Context> context;
+
+
  public:
 
-  Engine();
-  Engine(Player self);
-  Engine(std::string ANNFile);
-  Engine(Player self, std::string ANNFile);
+  Engine(std::shared_ptr<chess_ann::Context> context);
+  Engine(std::shared_ptr<chess_ann::Context> context, Player self);
+  Engine(std::shared_ptr<chess_ann::Context> context, std::string ANNFile);
+  Engine(std::shared_ptr<chess_ann::Context> context, Player self, std::string ANNFile);
   ~Engine();
 
   /**

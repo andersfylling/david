@@ -2,10 +2,7 @@
 // Created by anders on 5/10/17.
 //
 
-#include "Context.h"
+#include "chess_ann/Context.h"
 
-Context::Context(chess_ann::Engine* const& engine)
-    : engine(engine)
-{
-
-}
+chess_ann::Context::Context()
+{}

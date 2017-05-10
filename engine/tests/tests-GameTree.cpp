@@ -6,10 +6,11 @@
 
 TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
+  auto context = std::make_shared<chess_ann::Context>();
   gameTree::nodePtr root = std::make_shared<bitboard::gameState>();
   ::utils::setDefaultChessLayout(root);
 
-  gameTree::GameTree gt(root);
+  gameTree::GameTree gt(context, root);
 
  // SECTION("Verifying that only one node exists when a GameTree is initiated") {
     REQUIRE(gt.getNumberOfNodes() == 1);
@@ -17,7 +18,7 @@ TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
 
   gt.setMaxNumberOfNodes(10);
-  gt.generateNodes(); // KLINGEN ERROR IN HERE, korfor blir tallet 20 printet ut? wtf.
+  gt.generateNodes();
  // SECTION("Setting max nr of nodes to 10 and generate them") {
 
     REQUIRE(gt.getNumberOfNodes() == 10);
