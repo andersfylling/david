@@ -115,9 +115,21 @@ void binaryNetwork::train_network(
     std::time_t id = std::time(nullptr);
 
     std::string idStr = std::to_string(id);
-    net.save(folder + "/src/ANN/Networks/float_" + filename + "_" + idStr + ".net");
-    unsigned int decimal_point = net.save_to_fixed(folder + "/src/ANN/Networks/fixed_" + filename + "_" + idStr + ".net");
-    data.save_train_to_fixed(folder + "src/ANN/Networks/fixed_" + filename + "_" + idStr + ".data", decimal_point);
+    net.save(folder + "/src/ANN/networks/float_" + filename + "_" + idStr + ".net");
+    unsigned int decimal_point = net.save_to_fixed(folder + "/src/ANN/networks/fixed_" + filename + "_" + idStr + ".net");
+    data.save_train_to_fixed(folder + "src/ANN/networks/fixed_" + filename + "_" + idStr + ".data", decimal_point);
+
+
+
+    //
+    // Write statistic to csv file
+    //
+//    std::ofstream searchStats;
+//    searchStats.open ("search_statistics.csv");
+//    for(int i = 0; i < iterations; i++){
+//      searchStats << iterationsArray[i][0] << ',' << iterationsArray[i][1] << ',' << i << std::endl;
+//    }
+//    searchStats.close();
 
     cout << endl << "Test completed." << endl;
   }
@@ -169,7 +181,7 @@ void binaryNetwork::generateTrainingFile(
       env.setGameState(node);
       env.generateAttacks();
       bool isB = blackTurn == "b";
-      std::array<double, 30> inputs = {
+      std::array<double, 37> inputs = {
           blackTurn == "b" ? -1.0 : 1.0,
           (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackBishop) > 0.1 ? 1 : -1),
           (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) > 0.1 ? 1 : -1),
@@ -184,7 +196,8 @@ void binaryNetwork::generateTrainingFile(
           (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackQueen) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 10.0),
           (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackRook) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 10.0),
 
-
+          // should be a const that shows who this board is being evaluated for
+          // then seperate it into, friendly & enemies.
           (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) > 0.1 ? 1.0 : -1.0),
           (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) > 0.1 ? 1.0 : -1.0),
           (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) > 0.1 ? 1.0 : -1.0),
@@ -199,12 +212,24 @@ void binaryNetwork::generateTrainingFile(
           (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 10.0),
 
 
-          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0, // is never 0
-          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0, // is never 0
+          (isB ? 1 : -1 ) * (static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0), // is never 0
+          (isB ? -1 : 1 ) * (static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0), // is never 0
           static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 100.0,
 
-          (isB ? -1 : 1 ) * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 100.0),
-          (isB ? 1 : -1 ) * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0,
+          (isB ? -1 : 1 ) * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 100.0)),
+          (isB ? 1 : -1 ) * (static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0),
+
+          (isB ? 1 : -1 ) * (node->blackQueenCastling ? 1.0 : -1.0),
+          (isB ? 1 : -1 ) * (node->blackKingCastling  ? 1.0 : -1.0),
+          (isB ? -1 : 1 ) * (node->whiteQueenCastling ? 1.0 : -1.0),
+          (isB ? -1 : 1 ) * (node->whiteKingCastling  ? 1.0 : -1.0),
+
+          static_cast<double>(node->halfMoves) / 100.0,
+          static_cast<double>(node->fullMoves) / 100.0,
+
+          // if the color playing is not yours, and the number here is high, it should not be a good thing.
+          (isB ? -1 : 1 ) * static_cast<double>(node->children.size()) / 100.0 // will always be 0 unless children are generated before comparing score.
+
       };
 
       // generate inputs
@@ -345,7 +370,7 @@ void binaryNetwork::run()
   const unsigned int max_trainingSets = 30000;
   const unsigned int iterations_between_reports = 1;
   const unsigned int nrOfLayers = 5;
-  const unsigned int layers[nrOfLayers] = {64, 300, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int layers[nrOfLayers] = {71, 200, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
 
   const auto folder = ::utils::getAbsoluteProjectPath() + "/engine";
 
