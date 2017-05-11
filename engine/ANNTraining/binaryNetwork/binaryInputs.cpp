@@ -268,6 +268,10 @@ void binaryNetwork::generateTrainingFile(
           }
         }
 
+        for (; prog < 1; prog++) {
+          arr[prog] = -1.0;
+        }
+
         for (auto e : arr) {
           fileStringInput << std::setprecision(2) << e << ' ';
           nInputs += 1;
@@ -284,6 +288,9 @@ void binaryNetwork::generateTrainingFile(
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
         }
+        for (; prog < 2; prog++) {
+          arr[prog] = -1.0;
+        }
 
         for (auto e : arr) {
           fileStringInput << std::setprecision(2) << e << ' ';
@@ -298,6 +305,9 @@ void binaryNetwork::generateTrainingFile(
           if (::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
+        }
+        for (; prog < 8; prog++) {
+          arr[prog] = -1.0;
         }
 
         for (auto e : arr) {

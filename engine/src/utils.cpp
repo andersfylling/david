@@ -339,7 +339,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
     }
     // fill in missing pieces
     for (; prog < 1; prog++) {
-      inputs[n++] = 0.0;
+      inputs[n++] = -1.0;
     }
   }
 
@@ -357,7 +357,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
 
     // fill in missing pieces
     for (; prog < 2;  prog++) {
-      inputs[n++] = 0.0;
+      inputs[n++] = -1.0;
     }
   }
   for (auto b : boards8) {
@@ -373,7 +373,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
 
     // fill in missing pieces
     for (; prog < 8;  prog++) {
-      inputs[n++] = 0.0;
+      inputs[n++] = -1.0;
     }
   }
 
