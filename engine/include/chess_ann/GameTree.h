@@ -8,9 +8,6 @@
 namespace gameTree {
 using ::bitboard::gameState;
 
-typedef std::shared_ptr<gameState> nodePtr;
-
-
 /**
  * This class instance lives through the whole engine lifetime.
  *
@@ -25,12 +22,12 @@ typedef std::shared_ptr<gameState> nodePtr;
 class GameTree {
  private:
   // previous can be used for en passant
-  nodePtr previous;// in case a player regrets their move?
-  nodePtr current; // this represent the active game board
+  definitions::gameState_ptr previous;// in case a player regrets their move?
+  definitions::gameState_ptr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory
 
-  void getNumberOfNodes(nodePtr node, int& counter);
-  void getDepth(nodePtr node, int& depth);
+  void getNumberOfNodes(definitions::gameState_ptr node, int& counter);
+  void getDepth(definitions::gameState_ptr node, int& depth);
 
   definitions::engineContext_ptr engineContextPtr;
 

@@ -4,9 +4,9 @@
 #include "chess_ann/definitions.h"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/uci/Listener.h"
-#include "chess_ann/Search.h"
 
 // forward declarations
+#include "chess_ann/forwards/Search.h"
 
 
 namespace chess_ann {
@@ -19,16 +19,17 @@ struct Player {
 };
 
 
-class Engine {
+class ChessEngine {
   ::uci::Listener uciProtocol;
   bool UCIProtocolActivated;
+
+  // this is sent to other classes so they can communicate with each other
+  definitions::engineContext_ptr engineContextPtr;
 
   definitions::search_ptr        searchPtr;
   definitions::neuralNetwork_ptr neuralNetworkPtr;
   definitions::gameTree_ptr      gameTreePtr;
 
-  // this is sent to other classes so they can communicate with each other
-  definitions::engineContext_ptr engineContextPtr;
 
   definitions::gameState_ptr currentGameState;
 
@@ -36,11 +37,13 @@ class Engine {
 
  public:
 
-  Engine();
-  Engine(Player self);
-  Engine(std::string ANNFile);
-  Engine(Player self, std::string ANNFile);
-  ~Engine();
+  ChessEngine();
+  ChessEngine(Player self);
+  ChessEngine(std::string ANNFile);
+  ChessEngine(Player self, std::string ANNFile);
+  ~ChessEngine();
+
+  void setupEngine(std::string ANNFile);
 
   /**
    * Adds typical UCI responses to the engine
@@ -102,7 +105,7 @@ class Engine {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(::gameTree::nodePtr board);
+  int ANNEvaluate(definitions::gameState_ptr board);
 
 
   /**
@@ -132,7 +135,7 @@ class Engine {
    *
    * @return shared_ptr of gameState
    */
-  gameTree::nodePtr getGameState();
+  definitions::gameState_ptr getGameState();
 
   /**
    * Sets the game state based on a node.
@@ -141,7 +144,7 @@ class Engine {
    * @param state shared_ptr of a gameState
    * @return true if the state was updated
    */
-  bool setGameState(gameTree::nodePtr state);
+  bool setGameState(definitions::gameState_ptr state);
 
   /**
    * Check if the engine has lost.

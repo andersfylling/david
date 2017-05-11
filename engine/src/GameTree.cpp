@@ -47,7 +47,7 @@ void ::gameTree::GameTree::reset() {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::reset(nodePtr node) {
+void ::gameTree::GameTree::reset(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
@@ -59,12 +59,12 @@ void ::gameTree::GameTree::reset(nodePtr node) {
  * This deletes a nodes children, and potentially the childrens children.
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::resetChildren(nodePtr node) {
+void ::gameTree::GameTree::resetChildren(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
 
-  for (nodePtr child : node->children) {
+  for (auto& child : node->children) {
     this->reset(child);
   }
 }
@@ -77,7 +77,7 @@ void ::gameTree::GameTree::resetChildren(nodePtr node) {
  * @see ::gameTree::GameTree::regretNewRootNode()
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::newRootNode(nodePtr node) {
+void ::gameTree::GameTree::newRootNode(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
@@ -92,7 +92,7 @@ void ::gameTree::GameTree::newRootNode(nodePtr node) {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::generateChildren(nodePtr node) {
+void ::gameTree::GameTree::generateChildren(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
@@ -129,13 +129,13 @@ void ::gameTree::GameTree::generateChildren(nodePtr node) {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::sortChildren(nodePtr node) {
+void ::gameTree::GameTree::sortChildren(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
 
   std::sort(node->children.begin(), node->children.end(),
-       [](const nodePtr a, const nodePtr b) -> bool
+       [](const definitions::gameState_ptr a, const definitions::gameState_ptr b) -> bool
        {
          return a->score > b->score;
        });
@@ -179,7 +179,7 @@ void ::gameTree::GameTree::generateNodes() {
     return;
   }
 
-  nodePtr node = this->current;
+  definitions::gameState_ptr node = this->current;
   int nrOfNodes = this->getNumberOfNodes();
 
   while (nrOfNodes < this->maxNumberOfNodes) {
@@ -232,7 +232,7 @@ int ::gameTree::GameTree::getNumberOfNodes() {
  * @param node
  * @return int from 0 to N, N <= maxNumberOfNodes
  */
-void ::gameTree::GameTree::getNumberOfNodes(nodePtr node, int& count) {
+void ::gameTree::GameTree::getNumberOfNodes(definitions::gameState_ptr node, int& count) {
   if (node->children.size() == 0) {
     count += 1;
   }
@@ -254,7 +254,7 @@ int ::gameTree::GameTree::getDepth() {
 
   return depth;
 }
-void ::gameTree::GameTree::getDepth(nodePtr node, int& depth) {
+void ::gameTree::GameTree::getDepth(definitions::gameState_ptr node, int& depth) {
   if (node == nullptr) {
     return; // this should never fire.
   }
@@ -272,7 +272,7 @@ void ::gameTree::GameTree::getDepth(nodePtr node, int& depth) {
  * Print score and depth of all nodes
  * @param root
  */
-void ::gameTree::GameTree::printAllScores(nodePtr root) {
+void ::gameTree::GameTree::printAllScores(definitions::gameState_ptr root) {
   std::cout << "Node scores: (Game tree level)";
   for(auto child : root->children){
     if(child->children.empty()){
@@ -291,11 +291,11 @@ namespace gameTree { // why..
  * @param parent nodePtr
  * @return nodePtr of the new child, however parent will link to this anyways.
  */
-nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
+definitions::gameState_ptr GameTree::generateNode(definitions::gameState_ptr parent, gameState child) {
   using ::bitboard::COLOR::WHITE;
   using ::bitboard::COLOR::BLACK;
   using ::bitboard::bitboard_t;
-  nodePtr node = std::make_shared<gameState>();
+  auto node = std::make_shared<gameState>();
 
   node->BlackRook = child.BlackRook;
   node->BlackQueen = child.BlackQueen;
@@ -333,7 +333,7 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
 
   // use ann to get score
   if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
-    node->score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(node);
+    node->score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(node, this->engineContextPtr->playerColor);
   }
 
   // set sub possibilities
@@ -355,7 +355,7 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
  *
  * @return nodePtr
  */
-nodePtr GameTree::getCurrentNode() {
+definitions::gameState_ptr GameTree::getCurrentNode() {
   return this->current;
 }
 
@@ -365,7 +365,7 @@ nodePtr GameTree::getCurrentNode() {
  *
  * @return The new node, which was the old one.
  */
-nodePtr GameTree::regretNewRootNode() {
+definitions::gameState_ptr GameTree::regretNewRootNode() {
   if (this->previous == nullptr) {
     return nullptr;
   }

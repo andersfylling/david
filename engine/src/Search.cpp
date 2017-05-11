@@ -6,6 +6,7 @@
 #include "chess_ann/utils.h"
 #include <ctime>
 #include <chess_ann/EngineMaster.h>
+#include <fstream>
 #include "chess_ann/EngineContext.h"
 #include "chess_ann/uci/events.h"
 #include "chess_ann/uci/definitions.h"
@@ -25,7 +26,7 @@ search::Search::Search(definitions::engineContext_ptr ctx)
 
 };
 
-search::Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener &uci)
+search::Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener& uci)
     : engineContextPtr(ctx)
 {
   using ::uci::event::GO;
@@ -102,7 +103,7 @@ search::Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener &uci)
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
  */
-std::shared_ptr<::bitboard::gameState> search::Search::searchInit(std::shared_ptr<::bitboard::gameState> node) {
+std::shared_ptr<::bitboard::gameState> search::Search::searchInit(definitions::gameState_ptr node) {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
@@ -123,7 +124,7 @@ std::shared_ptr<::bitboard::gameState> search::Search::searchInit(std::shared_pt
  * @param board
  * @return
  */
-int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> board) {
+int search::Search::iterativeDeepening(definitions::gameState_ptr board) {
   int alpha = (int)(-INFINITY);
   int beta = (int)(INFINITY);
   int iterationScore[1000];
@@ -138,7 +139,7 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
   //
   // board->generateAllMoves();
   //
-  ::gameTree::GameTree rMoves(this->context, board);
+  ::gameTree::GameTree rMoves(this->engineContextPtr, board);
   rMoves.setMaxNumberOfNodes(100000);
   rMoves.generateChildren(board);
 
@@ -218,9 +219,9 @@ int search::Search::iterativeDeepening(std::shared_ptr<::bitboard::gameState> bo
  * @param depth
  * @return
  */
-int search::Search::negamax(std::shared_ptr<::bitboard::gameState> node, int alpha, int beta, int iDepth) {
-  std::shared_ptr<::bitboard::gameState> score = std::make_shared<::bitboard::gameState>();
-  std::shared_ptr<::bitboard::gameState> bestScore = std::make_shared<::bitboard::gameState>();
+int search::Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iDepth) {
+  auto score = std::make_shared<::bitboard::gameState>();
+  auto bestScore = std::make_shared<::bitboard::gameState>();
   bestScore->score = (int)(-INFINITY);
 
 

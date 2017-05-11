@@ -33,6 +33,41 @@ std::string ANN::getANNFile() {
   return this->ANNFile;
 }
 
+
+/**
+ * Update the ANN file even if already set or not.
+ * This requires the ANN to not be running.
+ *
+ * This function does not validate the file.
+ *
+ * The file must end with '.data'
+ *
+ * @param std::string filename, a file that resides within the engine/src/ANN/networks/ folder.
+ */
+void ANN::setANNFile(std::string filename) {
+  // make sure that the filename isn't empty
+  if (filename.length() < 6) { // these should end with '.data' so it has to be larger than 5 chars.
+    std::cerr << "Filename is too short. Missing '.data' suffix." << std::endl;
+    return;
+  }
+
+  // make sure there is no instance already running
+  if (this->hasANNInstance()) {
+    std::cerr << "ANN instance already exists" << std::endl;
+    return;
+  }
+
+  // Check that the file exists on the machine
+  std::string file = ::utils::getAbsoluteProjectPath() + ::chess_ann::neuralNetworksFolder + filename;
+  if (!::utils::fileExists(file)) {
+    std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
+    return;
+  }
+
+  // everything seems ok
+  this->ANNFile = file;
+}
+
 /**
  * Check if there exists a ANN instance
  */

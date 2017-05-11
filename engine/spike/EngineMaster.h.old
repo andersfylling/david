@@ -2,6 +2,7 @@
 
 #include "chess_ann/utils.h"
 #include "chess_ann/definitions.h"
+#include "chess_ann/ChessEngine.h"
 
 #include <map>
 #include <array>
@@ -11,7 +12,7 @@
 namespace chess_ann {
 class EngineMaster {
  private:
-  std::map<int, definitions::engine_ptr> engineInstances; // id => instance
+  std::map<int, ChessEngine> engineInstances; // id => instance
   std::map<int, std::array<int, 2>> engineBattle;
   std::map<int, int> engineBattleWinnerLog; // battle id => winner id (engineInstance)
 

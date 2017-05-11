@@ -10,7 +10,7 @@
 #include <bitset>
 #include <chess_ann/GameTree.h>
 #include <chess_ann/environment.h>
-#include <chess_ann/Engine.h>
+#include <chess_ann/ChessEngine.h>
 #include <assert.h>
 #elif _WIN32
 // windows code goes here
@@ -29,7 +29,7 @@ int utils::stoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
 
-bool utils::isHalfMove(::gameTree::nodePtr parent, ::gameTree::nodePtr child) {
+bool utils::isHalfMove(definitions::gameState_ptr parent, definitions::gameState_ptr child) {
   using ::bitboard::COLOR::WHITE;
   using ::bitboard::COLOR::BLACK;
   using ::bitboard::bitboard_t;
@@ -90,7 +90,7 @@ bool utils::isHalfMove(::gameTree::nodePtr parent, ::gameTree::nodePtr child) {
  * @param whiteMovesNext
  * @return
  */
-std::string utils::generateFen(::gameTree::nodePtr node) {
+std::string utils::generateFen(definitions::gameState_ptr node) {
   using ::bitboard::COLOR::WHITE;
   using ::bitboard::COLOR::BLACK;
   using ::bitboard::bitboard_t;
@@ -212,7 +212,7 @@ bool utils::fileExists(const std::string &file) {
  * @param player
  * @return
  */
-fann_type *utils::convertGameStateToInputs(::gameTree::nodePtr node, ::bitboard::COLOR color) {
+fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bitboard::COLOR color) {
   ::environment::Environment env(node->playerColor);
   env.setGameState(node);
   env.generateAttacks();

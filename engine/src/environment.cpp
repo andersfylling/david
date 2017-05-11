@@ -594,7 +594,7 @@ void Environment::setFen(std::string fen) {
  * @return new shared_ptr of gameState
  */
 std::shared_ptr<::bitboard::gameState> Environment::generateBoardFromFen(const std::string fen) {
-  gameTree::nodePtr node = std::make_shared<::bitboard::gameState>();
+  definitions::gameState_ptr node = std::make_shared<::bitboard::gameState>();
 
   std::map<const char, ::bitboard::bitboard_t&> links = {
       {'b', node->BlackBishop},

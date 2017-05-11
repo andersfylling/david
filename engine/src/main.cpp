@@ -16,9 +16,6 @@ int main (int argc, char * argv[])
   }
   std::cout << "lost" << std::endl;
 
-
-
-
   // Close program with exit code 0 after all threads have joined.
   return 0;
 }

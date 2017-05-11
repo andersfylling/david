@@ -1,14 +1,14 @@
 #pragma once
 
 // local dependencies
-#import "chess_ann/definitions.h"
+#include "chess_ann/definitions.h"
 #include <chess_ann/bitboard.h>
 
 // git submodule libraries
-#import "fann/floatfann.h"
+#include "fann/floatfann.h"
 
 // system dependencies
-#import <iostream>
+#include <iostream>
 
 // forward decleration
 
@@ -29,6 +29,14 @@ class ANN {
    * Check if there exists a ANNFile
    */
   bool hasANNFile();
+
+  /**
+   * Update the ANN file even if already set or not.
+   * This requires the ANN to not be running.
+   *
+   * @param std::string filename, a file that resides within the engine/src/ANN/networks/ folder.
+   */
+  void setANNFile(std::string filename);
 
   /**
    * Check if there exists a ANN instance

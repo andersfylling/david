@@ -9,7 +9,7 @@
 #include "chess_ann/forwards/Search.h"
 namespace chess_ann {
 class EngineContext;
-class Engine;
+class ChessEngine;
 }
 
 namespace bitboard {
@@ -25,7 +25,7 @@ class GameTree;
 // all dem typedefs
 namespace definitions {
 typedef std::shared_ptr<chess_ann::EngineContext> engineContext_ptr;
-typedef std::shared_ptr<chess_ann::Engine>        engine_ptr;
+typedef std::shared_ptr<chess_ann::ChessEngine>   engine_ptr;
 typedef std::shared_ptr<search::Search>           search_ptr;
 typedef std::shared_ptr<ANN>                      neuralNetwork_ptr;
 typedef std::shared_ptr<gameTree::GameTree>       gameTree_ptr;
