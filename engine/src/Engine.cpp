@@ -1,63 +1,71 @@
-//
-// Created by anders on 5/10/17.
-//
-
 #include "chess_ann/Engine.h"
-#include "chess_ann/Context.h"
-#include "fann/floatfann.h"
-#include "chess_ann/uci/Listener.h"
+
+// local dependencies
+#include "chess_ann/EngineContext.h"
 #include "chess_ann/uci/events.h"
-#include <chess_ann/Search.h>
-#include <chess_ann/GameTree.h>
-#include <chess_ann/utils.h>
-#include <chess_ann/environment.h>
-#include "chess_ann/genericUCIResponses.h"
 
-chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context)
-    : context(context),
+// git submodule dependencies
+#include "fann/floatfann.h"
+
+// system dependencies
+
+
+chess_ann::Engine::Engine()
+    : engineContextPtr(),
       uciProtocol(),
-      searchAgent(context, uciProtocol),
+      searchPtr(engineContextPtr, uciProtocol),
+      neuralNetworkPtr(nullptr),
       player(),
-      ANNFile(""),
-      ANNInstance(nullptr),
       UCIProtocolActivated(false)
 
-{}
-chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player self)
-    : context(context),
+{
+  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
+  this->engineContextPtr->searchPtr         = this->searchPtr;
+  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
+}
+chess_ann::Engine::Engine(Player self)
+    : engineContextPtr(),
       uciProtocol(),
-      searchAgent(context, uciProtocol),
+      searchPtr(engineContextPtr, uciProtocol),
+      neuralNetworkPtr(nullptr),
       player(self),
-      ANNFile(""),
-      ANNInstance(nullptr),
       UCIProtocolActivated(false)
 
-{}
-chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, std::string ANNFile)
-    : context(context),
+{
+  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
+  this->engineContextPtr->searchPtr         = this->searchPtr;
+  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
+}
+chess_ann::Engine::Engine(std::string ANNFile)
+    : engineContextPtr(),
       uciProtocol(),
-      searchAgent(context, uciProtocol),
+      searchPtr(engineContextPtr, uciProtocol),
+      neuralNetworkPtr(engineContextPtr, ANNFile),
       player(),
-      ANNFile(::utils::getAbsoluteProjectPath() + ANNFile),
-      ANNInstance(nullptr),
       UCIProtocolActivated(false)
 
-{}
-chess_ann::Engine::Engine(std::shared_ptr<chess_ann::Context> context, Player self, std::string ANNFile)
-    : context(context),
+{
+  this->createANNInstance(ANNFile);
+  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
+  this->engineContextPtr->searchPtr         = this->searchPtr;
+  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
+}
+chess_ann::Engine::Engine(Player self, std::string ANNFile)
+    : engineContextPtr(),
       uciProtocol(),
-      searchAgent(context, uciProtocol),
+      searchPtr(engineContextPtr, uciProtocol),
+      neuralNetworkPtr(engineContextPtr, ANNFile),
       player(self),
-      ANNFile(ANNFile),
-      ANNInstance(nullptr),
       UCIProtocolActivated(false)
 
-{}
+{
+  this->createANNInstance(ANNFile);
+  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
+  this->engineContextPtr->searchPtr         = this->searchPtr;
+  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
+}
 
 chess_ann::Engine::~Engine() {
-  if (this->hasANNInstance()) {
-    fann_destroy(this->ANNInstance);
-  }
 }
 
 /**
@@ -65,7 +73,12 @@ chess_ann::Engine::~Engine() {
  * @return std::string absolute path of ann file.
  */
 std::string chess_ann::Engine::getANNFile() {
-  return this->ANNFile;
+  if (this->hasANNInstance()) {
+    return this->neuralNetwork.getANNFile();
+  }
+  else {
+    return "";
+  }
 }
 
 /**
@@ -79,7 +92,7 @@ bool chess_ann::Engine::hasANNFile() {
  * Check if there exists a ANN instance
  */
 bool chess_ann::Engine::hasANNInstance() {
-  return this->ANNInstance != nullptr;
+  return this->neuralNetworkPtr != nullptr && this->neuralNetworkPtr->hasANNInstance();
 }
 
 /**
@@ -153,7 +166,7 @@ void chess_ann::Engine::sayUCICommand(std::string command) {
 /**
  * Creates the neural network based on the ANNFile
  */
-void chess_ann::Engine::createANNInstance() {
+void chess_ann::Engine::createANNInstance(std::string ANNFile) {
   // make sure there is no instance already running
   if (this->hasANNInstance()) {
     std::cerr << "ANN instance already exists" << std::endl;

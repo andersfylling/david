@@ -1,21 +1,13 @@
-//
-// Created by anders on 5/10/17.
-//
+#pragma once
 
-#ifndef CHESS_ANN_ENGINE_H
-#define CHESS_ANN_ENGINE_H
-
+// local dependencies
+#include "chess_ann/definitions.h"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/uci/Listener.h"
-#include "chess_ann/uci/events.h"
-#include <chess_ann/GameTree.h>
-#include <chess_ann/utils.h>
-#include <chess_ann/environment.h>
-#include "chess_ann/genericUCIResponses.h"
-#include "chess_ann/Context.h"
-#include <chess_ann/Search.h>
+#include "chess_ann/Search.h"
 
-namespace search {}
+// forward declarations
+
 
 namespace chess_ann {
 
@@ -28,26 +20,26 @@ struct Player {
 
 
 class Engine {
-  uci::Listener uciProtocol;
-  search::Search searchAgent;
-
+  ::uci::Listener uciProtocol;
   bool UCIProtocolActivated;
 
-  std::string ANNFile;
-  fann* ANNInstance;
+  definitions::search_ptr        searchPtr;
+  definitions::neuralNetwork_ptr neuralNetworkPtr;
+  definitions::gameTree_ptr      gameTreePtr;
+
+  // this is sent to other classes so they can communicate with each other
+  definitions::engineContext_ptr engineContextPtr;
+
+  definitions::gameState_ptr currentGameState;
+
   Player player;
-
-  gameTree::nodePtr currentGameState;
-
-  std::shared_ptr<Context> context;
-
 
  public:
 
-  Engine(std::shared_ptr<chess_ann::Context> context);
-  Engine(std::shared_ptr<chess_ann::Context> context, Player self);
-  Engine(std::shared_ptr<chess_ann::Context> context, std::string ANNFile);
-  Engine(std::shared_ptr<chess_ann::Context> context, Player self, std::string ANNFile);
+  Engine();
+  Engine(Player self);
+  Engine(std::string ANNFile);
+  Engine(Player self, std::string ANNFile);
   ~Engine();
 
   /**
@@ -102,7 +94,7 @@ class Engine {
   /**
    * Start the ANN from given files.
    */
-  void createANNInstance();
+  void createANNInstance(std::string ANNFile);
 
   /**
    * Run the boards through the trained neural network to get a generated output.
@@ -167,5 +159,3 @@ class Engine {
 };
 
 }
-
-#endif //CHESS_ANN_ENGINE_H

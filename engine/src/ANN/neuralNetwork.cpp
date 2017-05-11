@@ -1,7 +1,7 @@
 #include "fann/floatfann.h"
 #include "fann/fann_cpp.h"
 #include "chess_ann/utils.h"
-#include "chess_ann/ANN/ann.h"
+#include "chess_ann/ANN/neuralNetwork.h"
 
 #include <ios>
 #include <iostream>

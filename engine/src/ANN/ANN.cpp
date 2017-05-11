@@ -1,0 +1,116 @@
+// local dependencies
+#include "chess_ann/ANN/ANN.h"
+#include "chess_ann/chess_ann.h"
+#include "chess_ann/utils.h"
+#include "chess_ann/environment.h"
+
+// system dependencies
+#include <sstream>
+
+
+ANN::ANN(std::string filename)
+    : engineContextPtr(nullptr),
+      ANNFile(::utils::getAbsoluteProjectPath() + ::chess_ann::neuralNetworksFolder + filename),
+      ANNInstance(nullptr)
+{}
+ANN::ANN(definitions::engineContext_ptr ctx, std::string filename)
+    : engineContextPtr(ctx),
+      ANNFile(::utils::getAbsoluteProjectPath() + ::chess_ann::neuralNetworksFolder + filename),
+      ANNInstance(nullptr)
+{}
+ANN::~ANN() {
+  if (this->hasANNInstance()) {
+    fann_destroy(this->ANNInstance);
+  }
+}
+
+
+/**
+ * Retrieve the ANN file this engine instance uses for evaluating game boards.
+ * @return std::string absolute path of ann file.
+ */
+std::string ANN::getANNFile() {
+  return this->ANNFile;
+}
+
+/**
+ * Check if there exists a ANN instance
+ */
+bool ANN::hasANNFile() {
+  return this->ANNFile != "";
+}
+
+/**
+ * Check if there exists a ANN instance
+ */
+bool ANN::hasANNInstance() {
+  return this->ANNInstance != nullptr;
+}
+
+
+/**
+ * Creates the neural network based on the ANNFile
+ */
+void ANN::createANNInstance() {
+  // make sure there is no instance already running
+  if (this->hasANNInstance()) {
+    std::cerr << "ANN instance already exists" << std::endl;
+    return;
+  }
+
+  // make sure a file has been given
+  if (!this->hasANNFile()) {
+    std::cerr << "ANN file was not set" << std::endl;
+    return;
+  }
+
+  // Check that the file exists on the machine
+  if (!::utils::fileExists(this->ANNFile)) {
+    std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
+    return;
+  }
+
+  // create instance from file
+  this->ANNInstance = fann_create_from_file(this->ANNFile.c_str());
+}
+
+/**
+ * Run the boards through the trained neural network to get a generated output.
+ *
+ * @param board ::gameTree::gameState, of shared_ptr type
+ * @return int board evaluation
+ */
+int ANN::ANNEvaluate(::definitions::gameState_ptr board, ::bitboard::COLOR color) {
+  fann_type* inputs = ::utils::convertGameStateToInputs(board, color); // float array
+  fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
+
+  int output = static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
+  delete inputs;
+  delete outputs;
+
+  return output;
+}
+
+
+/**
+ * Run the boards through the trained neural network to get a generated output.
+ *
+ * @param fen std::string FEN(Forsyth–Edwards Notation)
+ * @return int board evaluation
+ */
+int ANN::ANNEvaluate(std::string fen) {
+  using ::bitboard::COLOR::WHITE;
+  using ::bitboard::COLOR::BLACK;
+  using ::bitboard::COLOR;
+
+  // get color from fen string
+  std::stringstream sstr(fen);
+  std::string color = "w";
+  sstr >> color >> color; // skip the board layouts and get the color
+  COLOR c = color == "w" ? WHITE : BLACK;
+
+  ::environment::Environment env(c);
+  ::definitions::gameState_ptr board = env.generateBoardFromFen(fen);
+
+  return this->ANNEvaluate(board, c);
+}

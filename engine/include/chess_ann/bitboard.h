@@ -115,7 +115,6 @@ struct gameState {
   std::weak_ptr<::bitboard::gameState> weakParent; //...
 };
 
-const std::string startFENPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 
 struct pieceAttack {

@@ -1,26 +1,23 @@
-#ifndef PROJECT_SEARCH_H
-#define PROJECT_SEARCH_H
+#pragma once
 
-#include <iostream>
-#include <string>
-#include <map>
+
+// local dependencies
+#include "chess_ann/definitions.h"
 #include "chess_ann/bitboard.h"
 #include "chess_ann/variables.h"
-#include "chess_ann/uci/Parser.h"
-#include "chess_ann/uci/events.h"
-#include <chess_ann/uci/Listener.h>
 #include "chess_ann/GameTree.h"
-#include <fstream>
-#include <chrono>
-#include <time.h>
-#include <memory>
-#include <algorithm>
-#include <mutex>
-#include "chess_ann/Context.h"
 
-using ::bitboard::COLOR;
+// system dependencies
+#include <string>
+
+
+// forward declarations
+#include "chess_ann/forwards/EngineContext.h"
+#include "chess_ann/forwards/uci/Listener.h"
+
 
 namespace search {
+using ::bitboard::COLOR;
 
 
 /**
@@ -31,11 +28,11 @@ namespace search {
  */
 class Search {
  public:
-  Search(std::shared_ptr<chess_ann::Context> context); // This can be used for unit testing and benchmarking.
-  Search(std::shared_ptr<chess_ann::Context> context, ::uci::Listener &uci);
-  std::shared_ptr<::bitboard::gameState> searchInit(std::shared_ptr<::bitboard::gameState> node);
-  int iterativeDeepening(std::shared_ptr<::bitboard::gameState> node);
-  int negamax(std::shared_ptr<::bitboard::gameState> board, int alpha, int beta, int depth);
+  Search(definitions::engineContext_ptr ctx); // This can be used for unit testing and benchmarking.
+  Search(definitions::engineContext_ptr ctx, ::uci::Listener& uci);
+  definitions::gameState_ptr searchInit(definitions::gameState_ptr node);
+  int iterativeDeepening(definitions::gameState_ptr node);
+  int negamax(definitions::gameState_ptr board, int alpha, int beta, int depth);
   void setAbort(bool isAborted);
   void setComplete(bool isComplete);
 
@@ -45,7 +42,7 @@ class Search {
   int returnScore();
   bool returnComplete();
   void setDebug(bool debug);
-  void performanceTest(std::shared_ptr<::bitboard::gameState> node, int iterations);
+  void performanceTest(definitions::gameState_ptr node, int iterations);
 
   // uci protocol methods, this can be used in unit testing
   void stopSearch();
@@ -72,7 +69,7 @@ class Search {
   int ponder;
   std::string searchMoves;
   int searchScore;
-  std::shared_ptr<::bitboard::gameState> bestMove;
+  definitions::gameState_ptr bestMove;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
@@ -80,7 +77,7 @@ class Search {
   bool isComplete;
   bool debug;
   int nodesSearched;
-  std::shared_ptr<chess_ann::Context> context;
+  definitions::engineContext_ptr engineContextPtr;
 };
 
   //
@@ -130,5 +127,3 @@ class Search {
 
 
 }
-
-#endif //PROJECT_SEARCH_H

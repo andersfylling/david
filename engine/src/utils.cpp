@@ -212,15 +212,15 @@ bool utils::fileExists(const std::string &file) {
  * @param player
  * @return
  */
-fann_type *utils::convertGameStateToInputs(::gameTree::nodePtr node, chess_ann::Player player) {
+fann_type *utils::convertGameStateToInputs(::gameTree::nodePtr node, ::bitboard::COLOR color) {
   ::environment::Environment env(node->playerColor);
   env.setGameState(node);
   env.generateAttacks();
 
   // These are used to define whats benefitial and negative inputs
-  double multiplier = player.color == node->playerColor ? 1.0 : -1.0;
-  double mWhite = player.color == bitboard::COLOR::WHITE ? 1.0 : -1.0;
-  double mBlack = player.color == bitboard::COLOR::WHITE ? -1.0 : 1.0;
+  double multiplier = color == node->playerColor      ?  1.0 : -1.0;
+  double mWhite =     color == bitboard::COLOR::WHITE ?  1.0 : -1.0;
+  double mBlack =     color == bitboard::COLOR::WHITE ? -1.0 :  1.0;
 
   auto nrOfBlackBishop  = static_cast<double>(env.numberOfPieces(node->BlackBishop));
   auto nrOfBlackKing    = static_cast<double>(env.numberOfPieces(node->BlackKing));
@@ -406,7 +406,7 @@ fann_type *utils::convertGameStateToInputs(::gameTree::nodePtr node, chess_ann::
 
  */
 
-void ::utils::setDefaultChessLayout(::gameTree::nodePtr node) {
+void ::utils::setDefaultChessLayout(definitions::gameState_ptr node) {
   node->BlackBishop = 2594073385365405696ULL;
   node->BlackKing = 576460752303423488ULL;
   node->BlackKnight = 4755801206503243776ULL;

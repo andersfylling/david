@@ -6,7 +6,10 @@
 #include "chess_ann/utils.h"
 #include <ctime>
 #include <chess_ann/EngineMaster.h>
-#include "chess_ann/Context.h"
+#include "chess_ann/EngineContext.h"
+#include "chess_ann/uci/events.h"
+#include "chess_ann/uci/definitions.h"
+#include "chess_ann/uci/Listener.h"
 
 namespace search {
 //Signals Signal; //Scrapped for now
@@ -16,14 +19,14 @@ clock_t startTime;
 /**
  * Constructor used in debug/test
  */
-search::Search::Search(std::shared_ptr<chess_ann::Context> context)
-    : context(context)
+search::Search::Search(definitions::engineContext_ptr ctx)
+    : engineContextPtr(ctx)
 {
 
 };
 
-search::Search::Search(std::shared_ptr<chess_ann::Context> context, ::uci::Listener &uci)
-    : context(context)
+search::Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener &uci)
+    : engineContextPtr(ctx)
 {
   using ::uci::event::GO;
   using ::uci::event::STOP;

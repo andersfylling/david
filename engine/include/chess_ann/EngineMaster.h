@@ -1,30 +1,22 @@
-#ifndef CHESS_ANN_ENGINEMASTER_H
-#define CHESS_ANN_ENGINEMASTER_H
+#pragma once
 
-#include "map"
-#include "array"
-//#include "chess_ann/Engine.h"
 #include "chess_ann/utils.h"
+#include "chess_ann/definitions.h"
 
-namespace utils {
-std::string getAbsoluteProjectPath();
-}
+#include <map>
+#include <array>
 
 namespace chess_ann {
-class Engine;
-typedef std::shared_ptr<chess_ann::Engine> enginePtr;
-const std::string annExecFile = "/engine/src/ANN/networks/";
-
 class EngineMaster {
  private:
-  std::map<int, enginePtr> engineInstances; // id => instance
+  std::map<int, definitions::engine_ptr> engineInstances; // id => instance
   std::map<int, std::array<int, 2>> engineBattle;
   std::map<int, int> engineBattleWinnerLog; // battle id => winner id (engineInstance)
 
   int lastEngineInstanceID;
   int lastEngineBattleID;
 
-  const std::string filename;
+  const std::string ANNFilename;
 
  public:
   EngineMaster(const std::string filename);
@@ -39,5 +31,3 @@ class EngineMaster {
 
 };
 }
-
-#endif //CHESS_ANN_ENGINEMASTER_H

@@ -5,12 +5,13 @@
 #include <algorithm>
 #include <chess_ann/environment.h>
 #include <chess_ann/utils.h>
+#include "chess_ann/ANN/ANN.h"
 
 /**
  * Constructor
  */
-::gameTree::GameTree::GameTree(std::shared_ptr<chess_ann::Context> context)
-    : context(context),
+::gameTree::GameTree::GameTree(definitions::engineContext_ptr ctx)
+    : engineContextPtr(ctx),
       maxNumberOfNodes(100)
 {}
 
@@ -18,8 +19,8 @@
  * Constructor
  * @param node std::share_ptr<::bitboard::gameState>, pass by copy(!!)
  */
-::gameTree::GameTree::GameTree(std::shared_ptr<chess_ann::Context> context, std::shared_ptr<gameState> node)
-    : context(context),
+::gameTree::GameTree::GameTree(definitions::engineContext_ptr ctx, definitions::gameState_ptr node)
+    : engineContextPtr(ctx),
       current(node),
       maxNumberOfNodes(100)
 {
@@ -331,8 +332,8 @@ nodePtr GameTree::generateNode(nodePtr parent, gameState child) {
   // check if there are any possible moves after this state
 
   // use ann to get score
-  if (this->context->engine != nullptr) {
-    node->score = this->context->engine->ANNEvaluate(node);
+  if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
+    node->score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(node);
   }
 
   // set sub possibilities

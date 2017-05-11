@@ -1,30 +1,24 @@
-//
-// Created by anders on 5/10/17.
-//
 
+#include "chess_ann/EngineMaster.h"
+#include "chess_ann/Engine.h"
+
+#include <memory>
 #include <sstream>
-#include <chess_ann/Context.h>
-#include <chess_ann/EngineMaster.h>
-
+#include <chess_ann/chess_ann.h>
 
 chess_ann::EngineMaster::EngineMaster(const std::string filename)
-    :filename(filename),
+    :ANNFilename(filename),
      lastEngineInstanceID(1),
      lastEngineBattleID(1)
 {}
 
 int chess_ann::EngineMaster::spawnEngine() {
-  auto context = std::make_shared<chess_ann::Context>();
-  auto engine = std::make_shared<chess_ann::Engine>(context, annExecFile + this->filename);
+  auto engine = std::make_shared<chess_ann::Engine>(this->ANNFilename);
 
-  // add engine to context class pointer
-  context->engine = engine;
-
-  engine->createANNInstance();
   if (engine->hasANNInstance()) {
     // insert engine and update last id
     this->lastEngineInstanceID += 1;
-    this->engineInstances.insert( std::pair<int, enginePtr>(this->lastEngineInstanceID, engine) );
+    this->engineInstances.insert( std::pair<int, definitions::engine_ptr>(this->lastEngineInstanceID, engine) );
     return this->lastEngineInstanceID;
   }
   else {
@@ -40,7 +34,7 @@ int chess_ann::EngineMaster::spawnEngine() {
  * @return
  */
 int chess_ann::EngineMaster::battle(int engineID1, int engineID2) {
-  return this->battle(engineID1, engineID2, bitboard::startFENPosition);
+  return this->battle(engineID1, engineID2, chess_ann::FENStartPosition);
 }
 
 /**
@@ -62,8 +56,8 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
   }
 
   // make sure they don't use UCI
-  enginePtr eng1 = this->engineInstances[engineID1];
-  enginePtr eng2 = this->engineInstances[engineID2];
+  definitions::engine_ptr eng1 = this->engineInstances[engineID1];
+  definitions::engine_ptr eng2 = this->engineInstances[engineID2];
   if (eng1->hasInitiatedUCIProtocol()) {
     return -1;
   }
@@ -85,7 +79,7 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
   sstr >> color; // now it contains the board layout
   sstr >> color; // now it gets the color
 
-  enginePtr currentPlayer = color == "w" ? eng1 : eng2;
+  definitions::engine_ptr currentPlayer = color == "w" ? eng1 : eng2;
 
   // lets start the game!
   gameTree::nodePtr currentGame = currentPlayer->getGameState();

@@ -1,14 +1,9 @@
-//
-// Created by anders on 5/5/17.
-//
-
-#ifndef CHESS_ANN_GAMETREE_H
-#define CHESS_ANN_GAMETREE_H
+#pragma once
 
 #include "chess_ann/bitboard.h"
 #include <memory>
 #include <iomanip>
-#include "chess_ann/Context.h"
+#include "chess_ann/EngineContext.h"
 
 namespace gameTree {
 using ::bitboard::gameState;
@@ -37,30 +32,28 @@ class GameTree {
   void getNumberOfNodes(nodePtr node, int& counter);
   void getDepth(nodePtr node, int& depth);
 
-  std::shared_ptr<chess_ann::Context> context;
+  definitions::engineContext_ptr engineContextPtr;
 
  public:
-  GameTree(std::shared_ptr<chess_ann::Context> context);
-  GameTree(std::shared_ptr<chess_ann::Context> context, std::shared_ptr<gameState> node);
+  GameTree(definitions::engineContext_ptr ctx);
+  GameTree(definitions::engineContext_ptr ctx, definitions::gameState_ptr node);
   ~GameTree();
   void reset();
-  void reset(nodePtr node);
-  void resetChildren(nodePtr node);
-  void newRootNode(nodePtr node);
-  nodePtr regretNewRootNode();
+  void reset(definitions::gameState_ptr node);
+  void resetChildren(definitions::gameState_ptr node);
+  void newRootNode(definitions::gameState_ptr node);
+  definitions::gameState_ptr regretNewRootNode();
   void setMaxNumberOfNodes(int n);
   int getMaxNumberOfNodes();
   void generateNodes();
-  nodePtr generateNode(nodePtr parent, gameState child);
-  nodePtr getCurrentNode();
+  definitions::gameState_ptr generateNode(definitions::gameState_ptr parent, gameState child);
+  definitions::gameState_ptr getCurrentNode();
   int getNumberOfNodes();
-  void generateChildren(nodePtr node);
-  void sortChildren(nodePtr node);
+  void generateChildren(definitions::gameState_ptr node);
+  void sortChildren(definitions::gameState_ptr node);
   int getDepth();
-  void printAllScores(nodePtr root);
+  void printAllScores(definitions::gameState_ptr root);
   
 };
 
 }
-
-#endif //CHESS_ANN_GAMETREE_H
