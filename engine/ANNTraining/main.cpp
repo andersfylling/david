@@ -17,7 +17,6 @@
 #include <chess_ann/environment.h>
 #include <chess_ann/GameTree.h>
 #include "chess_ann/ANN/binaryInputs.h"
-#include "chess_ann/ANN/intInputs.h"
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -32,7 +31,6 @@ using std::noshowpos;
 int main(int argc, char *argv[]) {
 
   ::binaryNetwork::run();
-  //::intNetwork::run();
 
   // Close program with exit code 0.
   return 0;
