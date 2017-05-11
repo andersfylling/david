@@ -7,6 +7,9 @@
 #include "chess_ann/genericUCIResponses.h"
 #include "chess_ann/uci/Listener.h"
 #include "chess_ann/Search.h"
+#include "chess_ann/chess_ann.h"
+#include "chess_ann/utils.h"
+#include "chess_ann/environment.h"
 
 // git submodule dependencies
 #include "fann/floatfann.h"
@@ -21,7 +24,8 @@ chess_ann::ChessEngine::ChessEngine()
       gameTreePtr(std::make_shared<::gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(nullptr),
       player(),
-      UCIProtocolActivated(false)
+      UCIProtocolActivated(false),
+      currentGameState(std::make_shared<::bitboard::gameState>())
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -35,7 +39,8 @@ chess_ann::ChessEngine::ChessEngine(Player self)
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(nullptr),
       player(self),
-      UCIProtocolActivated(false)
+      UCIProtocolActivated(false),
+      currentGameState(std::make_shared<::bitboard::gameState>())
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -49,7 +54,8 @@ chess_ann::ChessEngine::ChessEngine(std::string ANNFile)
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(),
-      UCIProtocolActivated(false)
+      UCIProtocolActivated(false),
+      currentGameState(std::make_shared<::bitboard::gameState>())
 
 {
   this->createANNInstance(ANNFile);
@@ -64,7 +70,8 @@ chess_ann::ChessEngine::ChessEngine(Player self, std::string ANNFile)
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(self),
-      UCIProtocolActivated(false)
+      UCIProtocolActivated(false),
+      currentGameState(std::make_shared<::bitboard::gameState>())
 
 {
   this->createANNInstance(ANNFile);
@@ -74,13 +81,6 @@ chess_ann::ChessEngine::ChessEngine(Player self, std::string ANNFile)
 }
 
 chess_ann::ChessEngine::~ChessEngine() {
-}
-
-
-void chess_ann::ChessEngine::setupEngine(std::string ANNFile) {
-  this->neuralNetworkPtr = std::make_shared<ANN>(this->engineContextPtr, ANNFile);
-  this->searchPtr = std::make_shared<::search::Search>(this->engineContextPtr, this->uciProtocol);
-  this->gameTreePtr = std::make_shared<::gameTree::GameTree>(this->engineContextPtr);
 }
 
 /**
@@ -206,15 +206,6 @@ int chess_ann::ChessEngine::ANNEvaluate(std::string fen) {
   return this->neuralNetworkPtr->ANNEvaluate(fen);
 }
 
-/**
- * Used to reset old data, and construct a new fresh game for this engine.
- *
- * @param fen a FEN string, must be correctly parsed otherwise worlds will collide.
- */
-void chess_ann::ChessEngine::setNewGameBoard(const std::string fen) {
-  this->currentGameState = nullptr;
-}
-
 
 /**
  * Update this players color, color means what piece this player can move..
@@ -265,4 +256,30 @@ void chess_ann::ChessEngine::findBestMove() {
   // TODO: Markus
   // update currentGameState
   this->currentGameState = this->searchPtr->searchInit(this->currentGameState);
+}
+
+
+/**
+ * Used to reset old data, and construct a new fresh game for this engine.
+ *
+ * @param fen a FEN string, must be correctly parsed otherwise worlds will collide.
+ */
+void chess_ann::ChessEngine::setNewGameBoard(const std::string fen) {
+
+  // first clear any children
+  this->gameTreePtr->resetChildren(this->currentGameState);
+
+  // check if its a default setup
+  if (fen == chess_ann::FENStartPosition) {
+    ::utils::setDefaultChessLayout(this->currentGameState);
+    return;
+  }
+
+  // otherwise we need to correctly parse it
+  std::stringstream sstr(fen);
+  std::string color = "w";
+  sstr >> color >> color; // now it gets the color
+
+  ::environment::Environment env(color == "w" ? ::bitboard::COLOR::WHITE : ::bitboard::COLOR::BLACK);
+  this->currentGameState = env.generateBoardFromFen(fen);
 }

@@ -4,9 +4,11 @@
 
 #include <chess_ann/utils.h>
 #include "chess_ann/Search.h"
+#include "chess_ann/definitions.h"
 #include "catch.hpp"
 
-std::shared_ptr<chess_ann::Context> context = std::make_shared<chess_ann::Context>();
+
+definitions::engineContext_ptr context = std::make_shared<chess_ann::EngineContext>();
 ::search::Search test_search(context);
 std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameState>();
 

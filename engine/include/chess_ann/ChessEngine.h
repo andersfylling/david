@@ -43,8 +43,6 @@ class ChessEngine {
   ChessEngine(Player self, std::string ANNFile);
   ~ChessEngine();
 
-  void setupEngine(std::string ANNFile);
-
   /**
    * Adds typical UCI responses to the engine
    */

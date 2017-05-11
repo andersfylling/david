@@ -25,5 +25,7 @@ fann_type*  convertGameStateToInputs(::definitions::gameState_ptr node, ::bitboa
 std::string generateFen(::definitions::gameState_ptr node);
 bool        isHalfMove(::definitions::gameState_ptr parent, ::definitions::gameState_ptr child);
 void        setDefaultChessLayout(::definitions::gameState_ptr node);
+
+void printGameState(definitions::gameState_ptr gs);
 };
 

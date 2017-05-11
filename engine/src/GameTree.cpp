@@ -333,7 +333,8 @@ definitions::gameState_ptr GameTree::generateNode(definitions::gameState_ptr par
 
   // use ann to get score
   if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
-    node->score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(node, this->engineContextPtr->playerColor);
+    int score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(node, this->engineContextPtr->playerColor);
+    node->score = score;
   }
 
   // set sub possibilities

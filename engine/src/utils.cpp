@@ -300,7 +300,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
   };
 
   // input
-  fann_type* inputs = new fann_type[71]; // should be a const
+  fann_type* inputs = new fann_type[71]; // size should be a const
 
   // generate inputs
   int n = 0;
@@ -333,9 +333,13 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 1; i++) {
       if (::utils::bitAt(b, i) ) {
-        inputs[n++] = i == 0 ? 0 : i / 10.0;
+        inputs[n++] = i == 0 ? 0.0 : i / 10.0;
         prog += 1;
       }
+    }
+    // fill in missing pieces
+    for (; prog < 1; prog++) {
+      inputs[n++] = 0.0;
     }
   }
 
@@ -350,6 +354,11 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
         prog += 1;
       }
     }
+
+    // fill in missing pieces
+    for (; prog < 2;  prog++) {
+      inputs[n++] = 0.0;
+    }
   }
   for (auto b : boards8) {
     //auto ba = std::bitset<64>(b);
@@ -358,11 +367,18 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
     for (uint8_t i = 0; i < 64 && prog < 8; i++) {
       if (::utils::bitAt(b, i)) {
         inputs[n++] = i == 0 ? 0 : i / 10.0;
+        prog += 1;
       }
+    }
+
+    // fill in missing pieces
+    for (; prog < 8;  prog++) {
+      inputs[n++] = 0.0;
     }
   }
 
   // verify that the number of inputs are correct.
+  if (n != 71) { std::cerr << "n was: " << n << std::endl; }
   assert(n == 71);
 
   return inputs;
@@ -421,6 +437,53 @@ void ::utils::setDefaultChessLayout(definitions::gameState_ptr node) {
   node->WhiteKing = 16;
   node->WhiteRook = 129;
 
+}
+
+void utils::printGameState(definitions::gameState_ptr gs) {
+
+  std::map<const char, ::bitboard::bitboard_t&> links = {
+      {'b', gs->BlackBishop},
+      {'k', gs->BlackKing},
+      {'n', gs->BlackKnight},
+      {'p', gs->BlackPawn},
+      {'q', gs->BlackQueen},
+      {'r', gs->BlackRook},
+
+      {'B', gs->WhiteBishop},
+      {'K', gs->WhiteKing},
+      {'N', gs->WhiteKnight},
+      {'P', gs->WhitePawn},
+      {'Q', gs->WhiteQueen},
+      {'R', gs->WhiteRook}
+  };
+
+  std::string board(64, '-');
+
+  for (auto entry : links) {
+    const char piece = entry.first;
+    const auto bitboard = entry.second;
+
+    for (uint8_t i = 0; i < 64; i++) {
+      if (bitAt(bitboard, i)) {
+        board.at(i) = piece;
+      }
+    }
+  }
+
+  std::cout << "\n  ";
+  for (int i = 'A'; i < 'A'+8; i++)
+    std::cout << "  " << (char) i << " ";
+  std::cout << std::endl;
+  std::cout << "  +---+---+---+---+---+---+---+---+\n";
+  for (int i = 0; i < 8; i++) {
+    std::cout << i+1 << " | ";
+    for (int j = 0; j < 8; j++) {
+      std::cout << board.at((i * 8) + j) << " | ";
+    }
+    std::cout << '\n';
+    std::cout << "  +---+---+---+---+---+---+---+---+\n";
+  }
+  std::cout << '\n';
 }
 
 std::string utils::getAbsoluteProjectPath() {

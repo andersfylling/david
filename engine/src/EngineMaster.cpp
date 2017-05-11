@@ -86,6 +86,8 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
   definitions::gameState_ptr currentGame = currentPlayer->getGameState();
   do {
 
+    utils::printGameState(currentGame);
+
     // update game state of new current player
     currentPlayer->setGameState(currentGame);
 
