@@ -7,6 +7,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <fstream>
 #include <array>
 #include <ios>
 #include <iostream>
@@ -27,14 +28,22 @@ using std::right;
 using std::showpos;
 using std::noshowpos;
 
+namespace binaryNetwork {
+std::ofstream trainingAccuracy;
+std::ofstream trainingMSE;
+}
+
 // Callback function that simply prints the information to cout
 int binaryNetwork::print_callback(FANN::neural_net &net, FANN::training_data &train,
                    unsigned int max_epochs, unsigned int epochs_between_reports,
                    float desired_error, unsigned int epochs, void *user_data) {
-  //float engine = net.run(train.get_input()[epochs])[0];
-  //float expected = train.get_output()[epochs][0];
+  float engine = net.run(train.get_input()[epochs])[0];
+  float expected = train.get_output()[epochs][0];
   cout << "Epochs     " << setw(8) << epochs << ". "
-       << "Current Error: " << left << net.get_MSE() << right << endl; // << " <> " << engine << " == " << expected
+       << "Current Error: " << left << net.get_MSE() << " <> " << desired_error << right << endl; // << " <> " << engine << " == " << expected
+
+  trainingAccuracy << epochs << ", " << engine << ", " << expected << std::endl;
+  trainingMSE << epochs << ", " << net.get_MSE() << std::endl;
 
   return 0;
 }
@@ -50,6 +59,8 @@ void binaryNetwork::train_network(
     const unsigned int max_iterations,
     const unsigned int iterations_between_reports)
 {
+  trainingMSE.open ("training_mse.csv");
+  trainingAccuracy.open ("training_accuracy.csv");
   cout << endl << "training started." << endl;
 
   cout << endl << "Creating network." << endl;
@@ -132,6 +143,8 @@ void binaryNetwork::train_network(
 //    searchStats.close();
 
     cout << endl << "Test completed." << endl;
+    trainingAccuracy.close();
+    trainingMSE.close();
   }
 }
 
@@ -375,9 +388,9 @@ void binaryNetwork::generateTrainingFile(
 void binaryNetwork::run()
 {
   const float learning_rate = 0.7f;
-  const float desired_error = 0.001f;
-  const unsigned int max_iterations = 10000;
-  const unsigned int max_trainingSets = 30000;
+  const float desired_error = 0.00001f;
+  const unsigned int max_iterations = 120000;
+  const unsigned int max_trainingSets = 150000;
   const unsigned int iterations_between_reports = 1;
   const unsigned int nrOfLayers = 5;
   const unsigned int layers[nrOfLayers] = {71, 200, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
