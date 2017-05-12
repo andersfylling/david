@@ -12,6 +12,11 @@ This project is written in C++14 and is built using CMake 2.6, with the compiler
 
 * How to run tests: See https://github.com/philsquared/Catch
 
+* Use CMake to compile
+
+Please see develop branch for latest releases, master is way behind.
+The executable "chess_ann_source" is the only one that compiles at the moment.
+
 ### Contribution guidelines ###
 The style guide: https://google.github.io/styleguide/cppguide.html
 
