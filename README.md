@@ -1,5 +1,12 @@
-# PROJECT_NAME #
-PROJECT_NAME is a university project that tries to implement a Artificial Neural Network to evaluate board score.
+┌────────────────────┐
+│░█▀▄░█▀█░█░█░▀█▀░█▀▄│
+│░█░█░█▀█░▀▄▀░░█░░█░█│
+│░▀▀░░▀░▀░░▀░░▀▀▀░▀▀░│
+└────────────────────┘
+
+
+# David #
+David is a university project that tries to implement a Artificial Neural Network to evaluate board score.
 This project is written in C++14 and is built using CMake 2.6, with the compiler gcc version 6.2.
 
 # Trello
