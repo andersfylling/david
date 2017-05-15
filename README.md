@@ -1,9 +1,10 @@
+```
 ┌────────────────────┐
 │░█▀▄░█▀█░█░█░▀█▀░█▀▄│
 │░█░█░█▀█░▀▄▀░░█░░█░█│
 │░▀▀░░▀░▀░░▀░░▀▀▀░▀▀░│
 └────────────────────┘
-
+```
 
 # David #
 David is a university project that tries to implement a Artificial Neural Network to evaluate board score.
