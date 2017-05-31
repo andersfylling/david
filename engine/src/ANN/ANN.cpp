@@ -7,17 +7,32 @@
 // system dependencies
 #include <sstream>
 
-
+/**
+ * Constructor
+ * @param filename The ANN weight file.
+ */
 ANN::ANN(std::string filename)
     : engineContextPtr(nullptr),
       ANNFile(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr)
 {}
+
+/**
+ * Constructor
+ *
+ * @param ctx engineContext_ptr which holds links to other initiated classes
+ * @param filename The ANN weight file.
+ * @see /engine/includes/david/definitions.h
+ */
 ANN::ANN(definitions::engineContext_ptr ctx, std::string filename)
     : engineContextPtr(ctx),
       ANNFile(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr)
 {}
+
+/**
+ * Destructor
+ */
 ANN::~ANN() {
   if (this->hasANNInstance()) {
     fann_destroy(this->ANNInstance);
