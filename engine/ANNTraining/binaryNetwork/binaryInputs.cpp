@@ -35,8 +35,8 @@ std::ofstream trainingMSE;
 
 // Callback function that simply prints the information to cout
 int binaryNetwork::print_callback(FANN::neural_net &net, FANN::training_data &train,
-                   unsigned int max_epochs, unsigned int epochs_between_reports,
-                   float desired_error, unsigned int epochs, void *user_data) {
+                                  unsigned int max_epochs, unsigned int epochs_between_reports,
+                                  float desired_error, unsigned int epochs, void *user_data) {
   float engine = net.run(train.get_input()[epochs])[0];
   float expected = train.get_output()[epochs][0];
   cout << "Epochs     " << setw(8) << epochs << ". "
@@ -94,7 +94,7 @@ void binaryNetwork::train_network(
   cout << endl << "Training network." << endl;
 
   FANN::training_data data;
-  if (data.read_train_from_file(folder + "/ANNTraining/binaryNetwork/" + filename + ".data"))
+  if (data.read_train_from_file(folder + "/ANNTraining/binaryNetwork/tmp/" + filename + ".data"))
   {
     // Initialize and train the network with the data
     //net.init_weights(data);
@@ -164,7 +164,7 @@ void binaryNetwork::generateTrainingFile(
     const unsigned int nrOfLayers)
 {
   std::ifstream infile(folder + "/trainingdata/fenAndStockfishScores.data");
-  std::fstream output(folder + "/binaryNetwork/BUFFER_" + filename + ".data", std::ios::out | std::ios::trunc);
+  std::fstream output(folder + "/binaryNetwork/tmp/BUFFER_" + filename + ".data", std::ios::out | std::ios::trunc);
 
   int trainingPairs = 0;
   int lines = 0;
@@ -365,8 +365,8 @@ void binaryNetwork::generateTrainingFile(
   // update file info
   // set training information in the top of the file
   // and the rest of the content below
-  std::ifstream fromBufferFile(folder + "/binaryNetwork/BUFFER_" + filename + ".data");
-  std::ofstream outputUpdate(folder + "/binaryNetwork/" + filename + ".data", std::ios::out | std::ios::trunc);
+  std::ifstream fromBufferFile(folder + "/binaryNetwork/tmp/BUFFER_" + filename + ".data");
+  std::ofstream outputUpdate(folder + "/binaryNetwork/tmp/" + filename + ".data", std::ios::out | std::ios::trunc);
   if (outputUpdate.is_open()) {
     outputUpdate << std::to_string(trainingPairs - skippedtrainingSets) << " "
                  << std::to_string(layers[0]) << " "

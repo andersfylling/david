@@ -13,6 +13,9 @@
 # Ignore Mac specific files
 .DS_Store
 
+# tmp data created by neural network training
+engine/ANNTraining/binaryNetwork/tmp/*.data
+
 
 
 # DO NOT SKIP THESE
