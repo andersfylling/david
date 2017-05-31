@@ -1,2 +1,2 @@
-#include "david/BitboardsNode.h"
+#include "BitboardsNode.h"
 david::BitboardsNode::BitboardsNode(){}

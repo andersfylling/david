@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "bitboard.h"
+#include "david/bitboard.h"
 
 namespace david {
 class BitboardsNode {

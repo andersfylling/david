@@ -4,7 +4,7 @@
 // local dependencies
 #include "david/definitions.h"
 #include "david/bitboard.h"
-#include "david/variables.h"
+#include "../../spike/variables.h"
 #include "david/GameTree.h"
 
 // system dependencies

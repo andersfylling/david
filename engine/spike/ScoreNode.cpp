@@ -2,7 +2,7 @@
 // Created by anders on 5/2/17.
 //
 
-#include "david/ScoreNode.h"
+#include "ScoreNode.h"
 
 namespace david {
 ScoreNode::ScoreNode() {
