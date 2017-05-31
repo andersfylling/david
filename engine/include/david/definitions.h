@@ -25,12 +25,23 @@ class GameTree;
 // all dem typedefs
 namespace david {
 namespace definitions {
-typedef std::shared_ptr<::david::EngineContext>       engineContext_ptr;
-typedef std::shared_ptr<::david::ChessEngine>         engine_ptr;
-typedef std::shared_ptr<::david::Search>              search_ptr;
-typedef std::shared_ptr<::david::ANN>                 neuralNetwork_ptr;
-typedef std::shared_ptr<::david::gameTree::GameTree>  gameTree_ptr;
-typedef std::shared_ptr<::david::bitboard::gameState> gameState_ptr;
 
+// Used by classes to communicate with other instances not directly related except on a parent level
+typedef std::shared_ptr<::david::EngineContext>       engineContext_ptr;
+
+// a pointer to an chess engine instance
+typedef std::shared_ptr<::david::ChessEngine>         engine_ptr;
+
+// a pointer to the search class
+typedef std::shared_ptr<::david::Search>              search_ptr;
+
+// a pointer to a ANN instance
+typedef std::shared_ptr<::david::ANN>                 neuralNetwork_ptr;
+
+// a gameTree is the node tree which the Search class search through
+typedef std::shared_ptr<::david::gameTree::GameTree>  gameTree_ptr;
+
+// gameState is a node in the gameTree. Each one contains a board score and some other details.
+typedef std::shared_ptr<::david::bitboard::gameState> gameState_ptr;
 }
 }
