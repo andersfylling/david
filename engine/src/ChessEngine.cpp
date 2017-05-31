@@ -20,12 +20,12 @@
 david::ChessEngine::ChessEngine()
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
-      searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
-      gameTreePtr(std::make_shared<::gameTree::GameTree>(engineContextPtr)),
+      searchPtr(std::make_shared<Search>(engineContextPtr, uciProtocol)),
+      gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(nullptr),
       player(),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<::bitboard::gameState>())
+      currentGameState(std::make_shared<bitboard::gameState>())
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -35,12 +35,12 @@ david::ChessEngine::ChessEngine()
 david::ChessEngine::ChessEngine(Player self)
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
-      searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
+      searchPtr(std::make_shared<Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(nullptr),
       player(self),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<::bitboard::gameState>())
+      currentGameState(std::make_shared<bitboard::gameState>())
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -50,12 +50,12 @@ david::ChessEngine::ChessEngine(Player self)
 david::ChessEngine::ChessEngine(std::string ANNFile)
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
-      searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
+      searchPtr(std::make_shared<Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<::bitboard::gameState>())
+      currentGameState(std::make_shared<bitboard::gameState>())
 
 {
   this->createANNInstance(ANNFile);
@@ -66,12 +66,12 @@ david::ChessEngine::ChessEngine(std::string ANNFile)
 david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
-      searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
+      searchPtr(std::make_shared<Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(self),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<::bitboard::gameState>())
+      currentGameState(std::make_shared<bitboard::gameState>())
 
 {
   this->createANNInstance(ANNFile);
@@ -114,13 +114,13 @@ bool david::ChessEngine::hasANNInstance() {
  * Check if this engine plays as white
  */
 bool david::ChessEngine::isWhite() {
-  return this->player.color == ::bitboard::COLOR::WHITE;
+  return this->player.color == bitboard::COLOR::WHITE;
 }
 
 /**
  * Get ::bitboard::COLOR color
  */
-bitboard::COLOR david::ChessEngine::getColor() {
+david::bitboard::COLOR david::ChessEngine::getColor() {
   return this->player.color;
 }
 
@@ -129,9 +129,9 @@ bitboard::COLOR david::ChessEngine::getColor() {
  * Adds typical UCI responses to the engine
  */
 void david::ChessEngine::configureUCIProtocol() {
-  using ::uci::event::UCI;
-  using ::uci::event::ISREADY;
-  using ::uci::event::QUIT;
+  using uci::event::UCI;
+  using uci::event::ISREADY;
+  using uci::event::QUIT;
 
 
   // ###
@@ -222,7 +222,7 @@ void david::ChessEngine::setPlayerColor(bitboard::COLOR color) {
  *
  * @return shared_ptr of gameState
  */
-definitions::gameState_ptr david::ChessEngine::getGameState() {
+david::definitions::gameState_ptr david::ChessEngine::getGameState() {
   return this->currentGameState;
 }
 
@@ -271,7 +271,7 @@ void david::ChessEngine::setNewGameBoard(const std::string fen) {
 
   // check if its a default setup
   if (fen == david::FENStartPosition) {
-    ::utils::setDefaultChessLayout(this->currentGameState);
+    utils::setDefaultChessLayout(this->currentGameState);
     return;
   }
 
@@ -280,6 +280,6 @@ void david::ChessEngine::setNewGameBoard(const std::string fen) {
   std::string color = "w";
   sstr >> color >> color; // now it gets the color
 
-  ::environment::Environment env(color == "w" ? ::bitboard::COLOR::WHITE : ::bitboard::COLOR::BLACK);
+  environment::Environment env(color == "w" ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK);
   this->currentGameState = env.generateBoardFromFen(fen);
 }

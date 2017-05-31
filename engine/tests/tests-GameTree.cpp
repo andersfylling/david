@@ -7,10 +7,10 @@
 TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
   auto context = std::make_shared<david::EngineContext>();
-  definitions::gameState_ptr root = std::make_shared<bitboard::gameState>();
-  ::utils::setDefaultChessLayout(root);
+  david::definitions::gameState_ptr root = std::make_shared<david::bitboard::gameState>();
+  david::utils::setDefaultChessLayout(root);
 
-  gameTree::GameTree gt(context, root);
+  david::gameTree::GameTree gt(context, root);
 
  // SECTION("Verifying that only one node exists when a GameTree is initiated") {
     REQUIRE(gt.getNumberOfNodes() == 1);

@@ -7,6 +7,7 @@
 #include <math.h>
 #include <memory>
 
+namespace david {
 namespace bitboard {
 
 using std::array;
@@ -33,7 +34,7 @@ using std::array;
 // 15 14 13 12 11 10  9  8
 //  7  6  5  4  3  2  1  0
 
-enum COLOR {BLACK, WHITE};
+enum COLOR { BLACK, WHITE };
 
 // These values are used when generating bitboards
 // Replace the whole struct for testing specific situations
@@ -92,8 +93,8 @@ struct gameState {
   bitboard_t BlackQueen;
   bitboard_t BlackKing;
 
-  ::bitboard::COLOR playerColor = ::bitboard::COLOR::WHITE;
-  std::vector<std::shared_ptr<::bitboard::gameState>> children;
+  bitboard::COLOR playerColor = bitboard::COLOR::WHITE;
+  std::vector<std::shared_ptr<bitboard::gameState>> children;
 
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
   int fullMoves = 1; // starts at 1, increments after every time black moves.
@@ -101,7 +102,7 @@ struct gameState {
   int score = 0; // board score
 
   int gameTreeLevel = 0;
-  
+
   int possibleSubMoves = 0;
 
   bool blackQueenCastling = true;
@@ -109,27 +110,24 @@ struct gameState {
   bool whiteQueenCastling = true;
   bool whiteKingCastling = true;
 
-
-  std::weak_ptr<::bitboard::gameState> weakParent; //...
+  std::weak_ptr<bitboard::gameState> weakParent; //...
 };
-
-
 
 struct pieceAttack {
-  bitboard_t * WhitePawn;
-  bitboard_t * WhiteRook;
-  bitboard_t * WhiteKnight;
-  bitboard_t * WhiteBishop;
-  bitboard_t * WhiteQueen;
-  bitboard_t * WhiteKing;
+  bitboard_t *WhitePawn;
+  bitboard_t *WhiteRook;
+  bitboard_t *WhiteKnight;
+  bitboard_t *WhiteBishop;
+  bitboard_t *WhiteQueen;
+  bitboard_t *WhiteKing;
 
-  bitboard_t * BlackPawn;
-  bitboard_t * BlackRook;
-  bitboard_t * BlackKnight;
-  bitboard_t * BlackBishop;
-  bitboard_t * BlackQueen;
-  bitboard_t * BlackKing;
+  bitboard_t *BlackPawn;
+  bitboard_t *BlackRook;
+  bitboard_t *BlackKnight;
+  bitboard_t *BlackBishop;
+  bitboard_t *BlackQueen;
+  bitboard_t *BlackKing;
 };
 
-
+}
 }

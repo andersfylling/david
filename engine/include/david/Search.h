@@ -16,9 +16,7 @@
 #include "david/forwards/uci/Listener.h"
 
 
-namespace search {
-using ::bitboard::COLOR;
-
+namespace david {
 
 /**
  * Search class is responsible for searching through a gamestate tree
@@ -29,7 +27,7 @@ using ::bitboard::COLOR;
 class Search {
  public:
   Search(definitions::engineContext_ptr ctx); // This can be used for unit testing and benchmarking.
-  Search(definitions::engineContext_ptr ctx, ::uci::Listener& uci);
+  Search(definitions::engineContext_ptr ctx, uci::Listener& uci);
   definitions::gameState_ptr searchInit(definitions::gameState_ptr node);
   int iterativeDeepening(definitions::gameState_ptr node);
   int negamax(definitions::gameState_ptr board, int alpha, int beta, int depth);
@@ -59,6 +57,8 @@ class Search {
   void setMate(int mate);
   void setInfinite(int mate); // bool ?
   void setPonder(int ponder); // bool ?
+
+  clock_t startTime;
 
  private:
   int depth;

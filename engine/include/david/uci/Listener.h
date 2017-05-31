@@ -7,6 +7,7 @@
 #include "david/uci/Parser.h"
 #include "david/uci/definitions.h"
 
+namespace david {
 namespace uci {
 class Listener {
  private:
@@ -28,7 +29,7 @@ class Listener {
   bool joinListener();
   bool setupListener();
 
-  int addListener(const uint8_t event, const callback_t& func);
+  int addListener(const uint8_t event, const callback_t &func);
   bool hasListener(int listenerID);
   void hasListener(int listenerID, std::function<void(bool exists)> lockedCallback);
   bool removeListener(int listenerID);
@@ -40,4 +41,5 @@ class Listener {
   void removeListenerThread(int listenerID);
   bool joinListenerAndStop();
 };
+}
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+namespace david {
+
 /**
  * This is what the game tree is made up of.
  */
@@ -15,3 +17,4 @@ class ScoreNode {
   int getScore();
 
 };
+}

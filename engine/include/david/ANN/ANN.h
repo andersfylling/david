@@ -12,6 +12,7 @@
 
 // forward decleration
 
+namespace david {
 class ANN {
  public:
   ANN(std::string filename);
@@ -54,7 +55,7 @@ class ANN {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(definitions::gameState_ptr board, ::bitboard::COLOR color);
+  int ANNEvaluate(definitions::gameState_ptr board, bitboard::COLOR color);
 
 
   /**
@@ -72,3 +73,4 @@ class ANN {
   std::string ANNFile;
   fann* ANNInstance;
 };
+} // namespace david end

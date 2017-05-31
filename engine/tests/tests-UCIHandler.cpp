@@ -4,25 +4,26 @@
 
 // gui to engine
 TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[Parser.parseInput]" ) {
-  uci::Parser parser;
+
+  david::uci::Parser parser;
 
   std::map<uint8_t, std::string> commands = {
-      {uci::event::NO_MATCHING_COMMAND, "akdjas"},
-      {uci::event::NO_MATCHING_COMMAND, "ucii"},
-      {uci::event::NO_MATCHING_COMMAND, "sready"},
-      {uci::event::NO_MATCHING_COMMAND, "ståp"},
-      {uci::event::NO_MATCHING_COMMAND, "sada4g432 fa4f23"},
-      {uci::event::UCI,                 "uci"},
-      {uci::event::DEBUG,               "debug"},
-      {uci::event::ISREADY,             "isready"},
-      {uci::event::SETOPTION,           "setoption"},
-      {uci::event::REGISTER,            "register"},
-      {uci::event::UCINEWGAME,          "ucinewgame"},
-      {uci::event::POSITION,            "position"},
-      {uci::event::GO,                  "go"},
-      {uci::event::STOP,                "stop"},
-      {uci::event::PONDERHIT,           "ponderhit"},
-      {uci::event::QUIT,                "quit"}
+      {david::uci::event::NO_MATCHING_COMMAND, "akdjas"},
+      {david::uci::event::NO_MATCHING_COMMAND, "ucii"},
+      {david::uci::event::NO_MATCHING_COMMAND, "sready"},
+      {david::uci::event::NO_MATCHING_COMMAND, "ståp"},
+      {david::uci::event::NO_MATCHING_COMMAND, "sada4g432 fa4f23"},
+      {david::uci::event::UCI,                 "uci"},
+      {david::uci::event::DEBUG,               "debug"},
+      {david::uci::event::ISREADY,             "isready"},
+      {david::uci::event::SETOPTION,           "setoption"},
+      {david::uci::event::REGISTER,            "register"},
+      {david::uci::event::UCINEWGAME,          "ucinewgame"},
+      {david::uci::event::POSITION,            "position"},
+      {david::uci::event::GO,                  "go"},
+      {david::uci::event::STOP,                "stop"},
+      {david::uci::event::PONDERHIT,           "ponderhit"},
+      {david::uci::event::QUIT,                "quit"}
   };
 
   for (const auto entry : commands) {
@@ -32,9 +33,9 @@ TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[Par
 
 // gui to engine
 TEST_CASE( "Making sure arguments from GUI to Engine are correctly parsed", "[Parser.parseInputForArguments]" ) {
-  uci::Parser parser;
+  david::uci::Parser parser;
 
-  std::map<std::string, uci::arguments_t> inputs = {
+  std::map<std::string, david::uci::arguments_t> inputs = {
       {"uci", {}},
       {"uci this text should be completely ignored by the parser.", {}},
 

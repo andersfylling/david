@@ -4,6 +4,7 @@
 #include <map>
 #include "david/uci/definitions.h"
 
+namespace david {
 namespace uci {
 class Parser {
  private:
@@ -66,4 +67,5 @@ class Parser {
   std::pair<uint8_t, arguments_t> parseInput(std::string input);
 };
 
+}
 }

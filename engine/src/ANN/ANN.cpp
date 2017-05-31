@@ -7,15 +7,15 @@
 // system dependencies
 #include <sstream>
 
+namespace david {
 /**
  * Constructor
  * @param filename The ANN weight file.
  */
 ANN::ANN(std::string filename)
     : engineContextPtr(nullptr),
-      ANNFile(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
-      ANNInstance(nullptr)
-{}
+      ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+      ANNInstance(nullptr) {}
 
 /**
  * Constructor
@@ -26,9 +26,8 @@ ANN::ANN(std::string filename)
  */
 ANN::ANN(definitions::engineContext_ptr ctx, std::string filename)
     : engineContextPtr(ctx),
-      ANNFile(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
-      ANNInstance(nullptr)
-{}
+      ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+      ANNInstance(nullptr) {}
 
 /**
  * Destructor
@@ -39,7 +38,6 @@ ANN::~ANN() {
   }
 }
 
-
 /**
  * Retrieve the ANN file this engine instance uses for evaluating game boards.
  * @return std::string absolute path of ann file.
@@ -47,7 +45,6 @@ ANN::~ANN() {
 std::string ANN::getANNFile() {
   return this->ANNFile;
 }
-
 
 /**
  * Update the ANN file even if already set or not.
@@ -73,8 +70,8 @@ void ANN::setANNFile(std::string filename) {
   }
 
   // Check that the file exists on the machine
-  std::string file = ::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename;
-  if (!::utils::fileExists(file)) {
+  std::string file = utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename;
+  if (!utils::fileExists(file)) {
     std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
     return;
   }
@@ -97,7 +94,6 @@ bool ANN::hasANNInstance() {
   return this->ANNInstance != nullptr;
 }
 
-
 /**
  * Creates the neural network based on the ANNFile
  */
@@ -115,7 +111,7 @@ void ANN::createANNInstance() {
   }
 
   // Check that the file exists on the machine
-  if (!::utils::fileExists(this->ANNFile)) {
+  if (!utils::fileExists(this->ANNFile)) {
     std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
     return;
   }
@@ -130,9 +126,9 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(::definitions::gameState_ptr board, ::bitboard::COLOR color) {
-  fann_type* inputs = ::utils::convertGameStateToInputs(board, color); // float array
-  fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
+int ANN::ANNEvaluate(definitions::gameState_ptr board, bitboard::COLOR color) {
+  fann_type *inputs = utils::convertGameStateToInputs(board, color); // float array
+  fann_type *outputs = fann_run(this->ANNInstance, inputs); // float array
 
   int output = static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
   delete inputs;
@@ -141,7 +137,6 @@ int ANN::ANNEvaluate(::definitions::gameState_ptr board, ::bitboard::COLOR color
   return output;
 }
 
-
 /**
  * Run the boards through the trained neural network to get a generated output.
  *
@@ -149,9 +144,9 @@ int ANN::ANNEvaluate(::definitions::gameState_ptr board, ::bitboard::COLOR color
  * @return int board evaluation
  */
 int ANN::ANNEvaluate(std::string fen) {
-  using ::bitboard::COLOR::WHITE;
-  using ::bitboard::COLOR::BLACK;
-  using ::bitboard::COLOR;
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
+  using bitboard::COLOR;
 
   // get color from fen string
   std::stringstream sstr(fen);
@@ -159,8 +154,10 @@ int ANN::ANNEvaluate(std::string fen) {
   sstr >> color >> color; // skip the board layouts and get the color
   COLOR c = color == "w" ? WHITE : BLACK;
 
-  ::environment::Environment env(c);
-  ::definitions::gameState_ptr board = env.generateBoardFromFen(fen);
+  environment::Environment env(c);
+  definitions::gameState_ptr board = env.generateBoardFromFen(fen);
 
   return this->ANNEvaluate(board, c);
+}
+
 }

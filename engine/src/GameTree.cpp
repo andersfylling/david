@@ -7,35 +7,33 @@
 #include <david/utils.h>
 #include "david/ANN/ANN.h"
 
+namespace david {
 /**
  * Constructor
  */
-::gameTree::GameTree::GameTree(definitions::engineContext_ptr ctx)
+gameTree::GameTree::GameTree(definitions::engineContext_ptr ctx)
     : engineContextPtr(ctx),
-      maxNumberOfNodes(100)
-{}
+      maxNumberOfNodes(100) {}
 
 /**
  * Constructor
  * @param node std::share_ptr<::bitboard::gameState>, pass by copy(!!)
  */
-::gameTree::GameTree::GameTree(definitions::engineContext_ptr ctx, definitions::gameState_ptr node)
+gameTree::GameTree::GameTree(definitions::engineContext_ptr ctx, definitions::gameState_ptr node)
     : engineContextPtr(ctx),
       current(node),
-      maxNumberOfNodes(100)
-{
+      maxNumberOfNodes(100) {
 }
 
 /**
  * Destructor
  */
-::gameTree::GameTree::~GameTree()
-{}
+gameTree::GameTree::~GameTree() {}
 
 /**
  * Remove every node in this class instance memory.
  */
-void ::gameTree::GameTree::reset() {
+void gameTree::GameTree::reset() {
   this->current.reset();
   this->previous.reset();
   this->maxNumberOfNodes = 100;
@@ -47,7 +45,7 @@ void ::gameTree::GameTree::reset() {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::reset(definitions::gameState_ptr node) {
+void gameTree::GameTree::reset(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
@@ -59,12 +57,12 @@ void ::gameTree::GameTree::reset(definitions::gameState_ptr node) {
  * This deletes a nodes children, and potentially the childrens children.
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::resetChildren(definitions::gameState_ptr node) {
+void gameTree::GameTree::resetChildren(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
 
-  for (auto& child : node->children) {
+  for (auto &child : node->children) {
     this->reset(child);
   }
 }
@@ -77,7 +75,7 @@ void ::gameTree::GameTree::resetChildren(definitions::gameState_ptr node) {
  * @see ::gameTree::GameTree::regretNewRootNode()
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::newRootNode(definitions::gameState_ptr node) {
+void gameTree::GameTree::newRootNode(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
@@ -92,7 +90,8 @@ void ::gameTree::GameTree::newRootNode(definitions::gameState_ptr node) {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::generateChildren(definitions::gameState_ptr node) {
+void gameTree::GameTree::generateChildren(definitions::gameState_ptr node) {
+  using bitboard::gameState;
   if (node == nullptr) {
     return;
   }
@@ -106,7 +105,7 @@ void ::gameTree::GameTree::generateChildren(definitions::gameState_ptr node) {
   node->children.resize(0);
 
   // created a environ instance based on parent node
-  ::environment::Environment env(node->playerColor);
+  environment::Environment env(node->playerColor);
   env.setGameState(node);
 
   // create a holdere for possible game outputs
@@ -129,16 +128,15 @@ void ::gameTree::GameTree::generateChildren(definitions::gameState_ptr node) {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::sortChildren(definitions::gameState_ptr node) {
+void gameTree::GameTree::sortChildren(definitions::gameState_ptr node) {
   if (node == nullptr) {
     return;
   }
 
   std::sort(node->children.begin(), node->children.end(),
-       [](const definitions::gameState_ptr a, const definitions::gameState_ptr b) -> bool
-       {
-         return a->score > b->score;
-       });
+            [](const definitions::gameState_ptr a, const definitions::gameState_ptr b) -> bool {
+              return a->score > b->score;
+            });
 }
 
 /**
@@ -147,15 +145,14 @@ void ::gameTree::GameTree::sortChildren(definitions::gameState_ptr node) {
  *
  * @param n std::share_ptr<::bitboard::gameState>
  */
-void ::gameTree::GameTree::setMaxNumberOfNodes(int n) {
+void gameTree::GameTree::setMaxNumberOfNodes(int n) {
   if (n >= 0) {
     this->maxNumberOfNodes = n;
-  }
-  else {
-    std::cerr << "::gameTree::GameTree::setMaxNumberOfNodes(int n): Integer 'n' can not be smaller than 0." << std::endl;
+  } else {
+    std::cerr << "::gameTree::GameTree::setMaxNumberOfNodes(int n): Integer 'n' can not be smaller than 0."
+              << std::endl;
   }
 }
-
 
 /**
  * Retrieve the max allowed number of nodes in memory.
@@ -163,7 +160,7 @@ void ::gameTree::GameTree::setMaxNumberOfNodes(int n) {
  *
  * @return int from 0 to N, N <= maxNumberOfNodes
  */
-int ::gameTree::GameTree::getMaxNumberOfNodes() {
+int gameTree::GameTree::getMaxNumberOfNodes() {
   return this->maxNumberOfNodes;
 }
 
@@ -173,7 +170,9 @@ int ::gameTree::GameTree::getMaxNumberOfNodes() {
  *
  * I hate this function @deprecated, see generateChildren in stead.
  */
-void ::gameTree::GameTree::generateNodes() {
+void gameTree::GameTree::generateNodes() {
+  using bitboard::gameState;
+
   if (this->current == nullptr) {
     std::cerr << "Need a node pointer first" << std::endl;
     return;
@@ -184,11 +183,10 @@ void ::gameTree::GameTree::generateNodes() {
 
   while (nrOfNodes < this->maxNumberOfNodes) {
 
-    ::environment::Environment env(node->playerColor);
+    environment::Environment env(node->playerColor);
     env.setGameState(node);
     std::vector<gameState> states;
     env.computeGameStates(states);
-
 
     int children = 0;
     for (int i = 0; i < states.size() && nrOfNodes < this->maxNumberOfNodes; nrOfNodes++, i++) {
@@ -197,12 +195,10 @@ void ::gameTree::GameTree::generateNodes() {
     }
     this->sortChildren(node);
 
-
     if (children > 0) {
       //node = node->children.at(0);
     }
   }
-
 
 }
 
@@ -212,7 +208,9 @@ void ::gameTree::GameTree::generateNodes() {
  *
  * @return int from 0 to N, N <= maxNumberOfNodes
  */
-int ::gameTree::GameTree::getNumberOfNodes() {
+int gameTree::GameTree::getNumberOfNodes() {
+  using bitboard::gameState;
+
   if (this->current == nullptr) {
     return 0;
   }
@@ -232,7 +230,9 @@ int ::gameTree::GameTree::getNumberOfNodes() {
  * @param node
  * @return int from 0 to N, N <= maxNumberOfNodes
  */
-void ::gameTree::GameTree::getNumberOfNodes(definitions::gameState_ptr node, int& count) {
+void gameTree::GameTree::getNumberOfNodes(definitions::gameState_ptr node, int &count) {
+  using bitboard::gameState;
+
   if (node->children.size() == 0) {
     count += 1;
   }
@@ -241,7 +241,9 @@ void ::gameTree::GameTree::getNumberOfNodes(definitions::gameState_ptr node, int
   }
 }
 
-int ::gameTree::GameTree::getDepth() {
+int gameTree::GameTree::getDepth() {
+  using bitboard::gameState;
+
   if (this->current == nullptr) {
     return 0;
   }
@@ -254,7 +256,9 @@ int ::gameTree::GameTree::getDepth() {
 
   return depth;
 }
-void ::gameTree::GameTree::getDepth(definitions::gameState_ptr node, int& depth) {
+void gameTree::GameTree::getDepth(definitions::gameState_ptr node, int &depth) {
+  using bitboard::gameState;
+
   if (node == nullptr) {
     return; // this should never fire.
   }
@@ -272,11 +276,11 @@ void ::gameTree::GameTree::getDepth(definitions::gameState_ptr node, int& depth)
  * Print score and depth of all nodes
  * @param root
  */
-void ::gameTree::GameTree::printAllScores(definitions::gameState_ptr root) {
+void gameTree::GameTree::printAllScores(definitions::gameState_ptr root) {
   std::cout << "Node scores: (Game tree level)";
-  for(auto child : root->children){
-    if(child->children.empty()){
-      std::cout << ' ' << child->score  << '(' << child->gameTreeLevel << ") ";
+  for (auto child : root->children) {
+    if (child->children.empty()) {
+      std::cout << ' ' << child->score << '(' << child->gameTreeLevel << ") ";
     } else
       printAllScores(child);
   }
@@ -291,10 +295,11 @@ namespace gameTree { // why..
  * @param parent nodePtr
  * @return nodePtr of the new child, however parent will link to this anyways.
  */
-definitions::gameState_ptr GameTree::generateNode(definitions::gameState_ptr parent, gameState child) {
-  using ::bitboard::COLOR::WHITE;
-  using ::bitboard::COLOR::BLACK;
-  using ::bitboard::bitboard_t;
+definitions::gameState_ptr GameTree::generateNode(definitions::gameState_ptr parent, bitboard::gameState child) {
+  using bitboard::gameState;
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
+  using bitboard::bitboard_t;
   auto node = std::make_shared<gameState>();
 
   node->BlackRook = child.BlackRook;
@@ -326,7 +331,7 @@ definitions::gameState_ptr GameTree::generateNode(definitions::gameState_ptr par
   node->weakParent = parent;
 
   // Validate half moves
-  if (!::utils::isHalfMove(parent, node)) {
+  if (!utils::isHalfMove(parent, node)) {
     node->halfMoves = 0;
   }
   // check if there are any possible moves after this state
@@ -338,7 +343,7 @@ definitions::gameState_ptr GameTree::generateNode(definitions::gameState_ptr par
   }
 
   // set sub possibilities
-  ::environment::Environment env(node->playerColor);
+  environment::Environment env(node->playerColor);
   env.setGameState(node);
   std::vector<gameState> states;
   env.computeGameStates(states);
@@ -377,5 +382,5 @@ definitions::gameState_ptr GameTree::regretNewRootNode() {
   return this->current;
 }
 
-
+}
 }

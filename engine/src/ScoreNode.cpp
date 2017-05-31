@@ -3,13 +3,14 @@
 //
 
 #include "david/ScoreNode.h"
+
+namespace david {
 ScoreNode::ScoreNode() {
 
 }
 
 ScoreNode::ScoreNode(int score)
-  : score(score)
-{
+    : score(score) {
 
 }
 
@@ -19,4 +20,5 @@ int ScoreNode::setScore(int score) {
 
 int ScoreNode::getScore() {
   return this->score;
+}
 }

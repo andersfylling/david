@@ -1,28 +1,29 @@
 #pragma once
 
 #include "david/bitboard.h"
+#include "david/definitions.h"
 #include <array>
 #include <vector>
 
 
-
+namespace david {
 namespace environment {
 
 // deal with bitboard_t dependencies
-using ::bitboard::gameState;
-using ::bitboard::COLOR;
-using ::bitboard::bitboard_t;
-using ::bitboard::DIRECTION;
-using ::bitboard::pieceAttack;
-using ::bitboard::move_t;
+using bitboard::gameState;
+using bitboard::COLOR;
+using bitboard::bitboard_t;
+using bitboard::DIRECTION;
+using bitboard::pieceAttack;
+using bitboard::move_t;
 using std::vector;
 
-enum COMPASS {NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST};
+enum COMPASS { NORTH, SOUTH, EAST, WEST, NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST };
 
-bitboard_t LSB (bitboard_t board);          // Gets least signifigant bit
-bitboard_t MSB (bitboard_t board);
-bitboard_t NSB (bitboard_t & board);        // Gets next sigifigant bit
-bitboard_t NSB_t(bitboard_t & board);
+bitboard_t LSB(bitboard_t board);          // Gets least signifigant bit
+bitboard_t MSB(bitboard_t board);
+bitboard_t NSB(bitboard_t &board);        // Gets next sigifigant bit
+bitboard_t NSB_t(bitboard_t &board);
 bool bitIsSet(bitboard_t, bitboard_t index);
 
 void flipBit(bitboard_t &board, bitboard_t index);           // Flips a bit in a board
@@ -40,15 +41,10 @@ class Environment {
   vector<move_t> moveList;
   COLOR currentMoveColor;
 
-
-
-
-
-
  public:
   Environment(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
-  void setGameState(std::shared_ptr<::bitboard::gameState> st);  // Setting the gamestate for testing
+  void setGameState(definitions::gameState_ptr st);  // Setting the gamestate for testing
   gameState getGameState();
   void printBitboards();            // Prints number values of all 12 boards
 
@@ -68,11 +64,10 @@ class Environment {
 
 
   // LEVEL 1 of moveGen - Basic attack vectors
-  bitboard_t * getXAxisFromBoard(bitboard_t board, bool limit = 0, int lock = 0);
-  bitboard_t * getDiagYAxis(bitboard_t board, DIRECTION dir, bool limit = false, int lock = 0);
+  bitboard_t *getXAxisFromBoard(bitboard_t board, bool limit = 0, int lock = 0);
+  bitboard_t *getDiagYAxis(bitboard_t board, DIRECTION dir, bool limit = false, int lock = 0);
   bitboard_t generateBlock(bitboard_t vector, DIRECTION dir, bitboard_t opponent);
-  bitboard_t * knightMovement(bitboard_t board);
-
+  bitboard_t *knightMovement(bitboard_t board);
 
   // LEVEL 2 of moveGen - Intermediate logic
   bitboard_t whitePieces(); // Returns all white pieces
@@ -83,12 +78,12 @@ class Environment {
   // Får tilbake et bitboard som er modifisert
   bitboard_t reduceVector(bitboard_t vector, bitboard_t opponent, bitboard_t own, DIRECTION dir);
 
-  bitboard_t * pawnMoves(COLOR color);
-  bitboard_t * knightMove(COLOR color);
-  bitboard_t * KingMove(COLOR color);
-  bitboard_t * QueenMove(COLOR color);
-  bitboard_t * BishopMove(COLOR color);
-  bitboard_t * RookMove(COLOR color);
+  bitboard_t *pawnMoves(COLOR color);
+  bitboard_t *knightMove(COLOR color);
+  bitboard_t *KingMove(COLOR color);
+  bitboard_t *QueenMove(COLOR color);
+  bitboard_t *BishopMove(COLOR color);
+  bitboard_t *RookMove(COLOR color);
 
   // Generate a bitboard_t based on a chess position: E6
 
@@ -101,13 +96,13 @@ class Environment {
   void canBlackCastleQ();
 
   void generateAttacks();  // Sets the attacs-values
-  void generateMove(bitboard_t st, bitboard_t * attack, COLOR color);
+  void generateMove(bitboard_t st, bitboard_t *attack, COLOR color);
   void generateMoves(COLOR color);    // Adds moves to move-vector
   bitboard_t combinedBlackAttacks(); // All attacked pieces of black
   bitboard_t combinedWhiteAttacks(); // All attacked pieces of white
   bool moveIsCapture(bitboard_t bit, COLOR color);     // Checks if an attack will capture a piece
-  void capturePiece(COLOR opponent, bitboard_t index, gameState & st);
-  void computeGameStates(std::vector<gameState>& states);
+  void capturePiece(COLOR opponent, bitboard_t index, gameState &st);
+  void computeGameStates(std::vector<gameState> &states);
   gameState movePiece(COLOR own, bitboard_t to, bitboard_t from, int flag);
   // Move rockade1
   bool legal(gameState p);
@@ -129,44 +124,43 @@ class Environment {
   bitboard_t intToUint64(int i);
 
   void setFen(std::string fen);
-  std::shared_ptr<::bitboard::gameState> generateBoardFromFen(const std::string fen);
+  definitions::gameState_ptr generateBoardFromFen(const std::string fen);
 
 };
 }
 
-
 namespace move {
 
-
-using ::bitboard::move_t;
-using ::bitboard::bitboard_t ;
+using bitboard::move_t;
+using bitboard::bitboard_t;
 
 bool bitIsSet(move_t board, move_t index);
 
 // Move class interpritates the 16-bit move values
 // And makes them ineracable with human beings
-  class Move {
-   private:
-    move_t mv;
-   public:
-    move_t setGetValue(bitboard_t to, bitboard_t from, int flags);
-    void printMoveString(move_t m);
-    void printOwn();
-    Move(move_t m);
-    Move();
-    void set(move_t m);
+class Move {
+ private:
+  move_t mv;
+ public:
+  move_t setGetValue(bitboard_t to, bitboard_t from, int flags);
+  void printMoveString(move_t m);
+  void printOwn();
+  Move(move_t m);
+  Move();
+  void set(move_t m);
 
-    bool doublePawnPush();
-    bool kingCastle();
-    bool queenCastle();
-    bool captures();
-    bool enPassant();
-    bool rookPromo();
-    bool queenPromo();
-    bool knightPromo();
-    bool bishopPromo();
-    int getTo();
-    int getFrom();
-  };
+  bool doublePawnPush();
+  bool kingCastle();
+  bool queenCastle();
+  bool captures();
+  bool enPassant();
+  bool rookPromo();
+  bool queenPromo();
+  bool knightPromo();
+  bool bishopPromo();
+  int getTo();
+  int getFrom();
+};
 
+}
 }

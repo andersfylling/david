@@ -16,6 +16,8 @@
 // windows code goes here
 #endif
 
+namespace david {
+
 /**
  * Converts a numeric integer string into an int, empty strings included.
  *
@@ -30,12 +32,12 @@ int utils::stoi(const char c) {
 }
 
 bool utils::isHalfMove(definitions::gameState_ptr parent, definitions::gameState_ptr child) {
-  using ::bitboard::COLOR::WHITE;
-  using ::bitboard::COLOR::BLACK;
-  using ::bitboard::bitboard_t;
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
+  using bitboard::bitboard_t;
 
-  ::environment::Environment env1(parent->playerColor);
-  ::environment::Environment env2(child->playerColor);
+  environment::Environment env1(parent->playerColor);
+  environment::Environment env2(child->playerColor);
 
   env1.setGameState(parent);
   env2.setGameState(child);
@@ -70,7 +72,6 @@ bool utils::isHalfMove(definitions::gameState_ptr parent, definitions::gameState
   return true;
 }
 
-
 /**
  * A FEN record contains six fields. The separator between fields is a space. The fields are:
 
@@ -91,9 +92,9 @@ bool utils::isHalfMove(definitions::gameState_ptr parent, definitions::gameState
  * @return
  */
 std::string utils::generateFen(definitions::gameState_ptr node) {
-  using ::bitboard::COLOR::WHITE;
-  using ::bitboard::COLOR::BLACK;
-  using ::bitboard::bitboard_t;
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
+  using bitboard::bitboard_t;
 
   std::array<bitboard_t, 12> boards = {
       node->BlackBishop,
@@ -139,10 +140,9 @@ std::string utils::generateFen(definitions::gameState_ptr node) {
       fen += '/';
     }
 
-
     char p = ' ';
     for (uint8_t j = 0; j < 12; j++) {
-      if (::utils::bitAt(boards[j], i)) {
+      if (utils::bitAt(boards[j], i)) {
         p = symbols[j];
         break;
       }
@@ -212,64 +212,64 @@ bool utils::fileExists(const std::string &file) {
  * @param player
  * @return
  */
-fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bitboard::COLOR color) {
-  ::environment::Environment env(node->playerColor);
+fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, bitboard::COLOR color) {
+  environment::Environment env(node->playerColor);
   env.setGameState(node);
   env.generateAttacks();
 
   // These are used to define whats benefitial and negative inputs
-  double multiplier = color == node->playerColor      ?  1.0 : -1.0;
-  double mWhite =     color == bitboard::COLOR::WHITE ?  1.0 : -1.0;
-  double mBlack =     color == bitboard::COLOR::WHITE ? -1.0 :  1.0;
+  double multiplier = color == node->playerColor ? 1.0 : -1.0;
+  double mWhite = color == bitboard::COLOR::WHITE ? 1.0 : -1.0;
+  double mBlack = color == bitboard::COLOR::WHITE ? -1.0 : 1.0;
 
-  auto nrOfBlackBishop  = static_cast<double>(env.numberOfPieces(node->BlackBishop));
-  auto nrOfBlackKing    = static_cast<double>(env.numberOfPieces(node->BlackKing));
-  auto nrOfBlackKnight  = static_cast<double>(env.numberOfPieces(node->BlackKnight));
-  auto nrOfBlackPawn    = static_cast<double>(env.numberOfPieces(node->BlackPawn));
-  auto nrOfBlackQueen   = static_cast<double>(env.numberOfPieces(node->BlackQueen));
-  auto nrOfBlackRook    = static_cast<double>(env.numberOfPieces(node->BlackRook));
+  auto nrOfBlackBishop = static_cast<double>(env.numberOfPieces(node->BlackBishop));
+  auto nrOfBlackKing = static_cast<double>(env.numberOfPieces(node->BlackKing));
+  auto nrOfBlackKnight = static_cast<double>(env.numberOfPieces(node->BlackKnight));
+  auto nrOfBlackPawn = static_cast<double>(env.numberOfPieces(node->BlackPawn));
+  auto nrOfBlackQueen = static_cast<double>(env.numberOfPieces(node->BlackQueen));
+  auto nrOfBlackRook = static_cast<double>(env.numberOfPieces(node->BlackRook));
 
-  auto nrOfWhiteBishop  = static_cast<double>(env.numberOfPieces(node->WhiteBishop));
-  auto nrOfWhiteKing    = static_cast<double>(env.numberOfPieces(node->WhiteKing));
-  auto nrOfWhiteKnight  = static_cast<double>(env.numberOfPieces(node->WhiteKnight));
-  auto nrOfWhitePawn    = static_cast<double>(env.numberOfPieces(node->WhitePawn));
-  auto nrOfWhiteQueen   = static_cast<double>(env.numberOfPieces(node->WhiteQueen));
-  auto nrOfWhiteRook    = static_cast<double>(env.numberOfPieces(node->WhiteRook));
+  auto nrOfWhiteBishop = static_cast<double>(env.numberOfPieces(node->WhiteBishop));
+  auto nrOfWhiteKing = static_cast<double>(env.numberOfPieces(node->WhiteKing));
+  auto nrOfWhiteKnight = static_cast<double>(env.numberOfPieces(node->WhiteKnight));
+  auto nrOfWhitePawn = static_cast<double>(env.numberOfPieces(node->WhitePawn));
+  auto nrOfWhiteQueen = static_cast<double>(env.numberOfPieces(node->WhiteQueen));
+  auto nrOfWhiteRook = static_cast<double>(env.numberOfPieces(node->WhiteRook));
 
   std::array<double, 37> boardInfo = {
       multiplier * 1.0,
 
       // Does a piece exist
-      mBlack * (nrOfBlackBishop > 0.1 ?  1.0 : -1.0),
-      mBlack * (nrOfBlackKing   > 0.1 ?  1.0 : -1.0),
-      mBlack * (nrOfBlackKnight > 0.1 ?  1.0 : -1.0),
-      mBlack * (nrOfBlackPawn   > 0.1 ?  1.0 : -1.0),
-      mBlack * (nrOfBlackQueen  > 0.1 ?  1.0 : -1.0),
-      mBlack * (nrOfBlackRook   > 0.1 ?  1.0 : -1.0),
+      mBlack * (nrOfBlackBishop > 0.1 ? 1.0 : -1.0),
+      mBlack * (nrOfBlackKing > 0.1 ? 1.0 : -1.0),
+      mBlack * (nrOfBlackKnight > 0.1 ? 1.0 : -1.0),
+      mBlack * (nrOfBlackPawn > 0.1 ? 1.0 : -1.0),
+      mBlack * (nrOfBlackQueen > 0.1 ? 1.0 : -1.0),
+      mBlack * (nrOfBlackRook > 0.1 ? 1.0 : -1.0),
 
       // how many of that piece exist
       mBlack * (nrOfBlackBishop < 1.0 ? -1.0 : nrOfBlackBishop / 10.0),
-      mBlack * (nrOfBlackKing   < 1.0 ? -1.0 : nrOfBlackKing   / 10.0),
+      mBlack * (nrOfBlackKing < 1.0 ? -1.0 : nrOfBlackKing / 10.0),
       mBlack * (nrOfBlackKnight < 1.0 ? -1.0 : nrOfBlackKnight / 10.0),
-      mBlack * (nrOfBlackPawn   < 1.0 ? -1.0 : nrOfBlackPawn   / 10.0),
-      mBlack * (nrOfBlackQueen  < 1.0 ? -1.0 : nrOfBlackQueen  / 10.0),
-      mBlack * (nrOfBlackRook   < 1.0 ? -1.0 : nrOfBlackRook   / 10.0),
+      mBlack * (nrOfBlackPawn < 1.0 ? -1.0 : nrOfBlackPawn / 10.0),
+      mBlack * (nrOfBlackQueen < 1.0 ? -1.0 : nrOfBlackQueen / 10.0),
+      mBlack * (nrOfBlackRook < 1.0 ? -1.0 : nrOfBlackRook / 10.0),
 
       // does a piece exist
-      mWhite * (nrOfWhiteBishop > 0.1 ?  1.0 : -1.0),
-      mWhite * (nrOfWhiteQueen  > 0.1 ?  1.0 : -1.0),
-      mWhite * (nrOfWhiteKnight > 0.1 ?  1.0 : -1.0),
-      mWhite * (nrOfWhitePawn   > 0.1 ?  1.0 : -1.0),
-      mWhite * (nrOfWhiteRook   > 0.1 ?  1.0 : -1.0),
-      mWhite * (nrOfWhiteKing   > 0.1 ?  1.0 : -1.0),
+      mWhite * (nrOfWhiteBishop > 0.1 ? 1.0 : -1.0),
+      mWhite * (nrOfWhiteQueen > 0.1 ? 1.0 : -1.0),
+      mWhite * (nrOfWhiteKnight > 0.1 ? 1.0 : -1.0),
+      mWhite * (nrOfWhitePawn > 0.1 ? 1.0 : -1.0),
+      mWhite * (nrOfWhiteRook > 0.1 ? 1.0 : -1.0),
+      mWhite * (nrOfWhiteKing > 0.1 ? 1.0 : -1.0),
 
       // how many of that piece exist
       mWhite * (nrOfWhiteBishop < 1.0 ? -1.0 : nrOfWhiteBishop / 10.0),
-      mWhite * (nrOfWhiteQueen  < 1.0 ? -1.0 : nrOfWhiteQueen  / 10.0),
+      mWhite * (nrOfWhiteQueen < 1.0 ? -1.0 : nrOfWhiteQueen / 10.0),
       mWhite * (nrOfWhiteKnight < 1.0 ? -1.0 : nrOfWhiteKnight / 10.0),
-      mWhite * (nrOfWhitePawn   < 1.0 ? -1.0 : nrOfWhitePawn   / 10.0),
-      mWhite * (nrOfWhiteRook   < 1.0 ? -1.0 : nrOfWhiteRook   / 10.0),
-      mWhite * (nrOfWhiteKing   < 1.0 ? -1.0 : nrOfWhiteKing   / 10.0),
+      mWhite * (nrOfWhitePawn < 1.0 ? -1.0 : nrOfWhitePawn / 10.0),
+      mWhite * (nrOfWhiteRook < 1.0 ? -1.0 : nrOfWhiteRook / 10.0),
+      mWhite * (nrOfWhiteKing < 1.0 ? -1.0 : nrOfWhiteKing / 10.0),
 
 
       // how many of that color exists
@@ -280,14 +280,16 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
       static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 100.0,
 
       // how many white pieces can the black attack and vise versa
-      mBlack * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 10.0,
-      mWhite * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 10.0,
+      mBlack * static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? -1.0 :
+      static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 10.0,
+      mWhite * static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 :
+      static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 10.0,
 
       // who can castle
       mBlack * (node->blackQueenCastling ? 1.0 : -1.0),
-      mBlack * (node->blackKingCastling  ? 1.0 : -1.0),
+      mBlack * (node->blackKingCastling ? 1.0 : -1.0),
       mWhite * (node->whiteQueenCastling ? 1.0 : -1.0),
-      mWhite * (node->whiteKingCastling  ? 1.0 : -1.0),
+      mWhite * (node->whiteKingCastling ? 1.0 : -1.0),
 
       // how long is the game
       // how long is it since last half move
@@ -296,22 +298,23 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
 
       // if the color playing is not yours, and the number here is high, it should be a good thing.
       // as it means you have more possibilities.
-      -1.0 * multiplier * (node->possibleSubMoves / 100.0) // will always be 0 unless children are generated before comparing score.
+      -1.0 * multiplier
+          * (node->possibleSubMoves / 100.0) // will always be 0 unless children are generated before comparing score.
   };
 
   // input
-  fann_type* inputs = new fann_type[71]; // size should be a const
+  fann_type *inputs = new fann_type[71]; // size should be a const
 
   // generate inputs
   int n = 0;
   for (auto b : boardInfo) {
     inputs[n++] = b;
   }
-  std::array<::bitboard::bitboard_t, 2> boards1 = {
+  std::array<bitboard::bitboard_t, 2> boards1 = {
       node->BlackKing,
       node->WhiteKing
   };
-  std::array<::bitboard::bitboard_t, 8> boards2 = {
+  std::array<bitboard::bitboard_t, 8> boards2 = {
       node->BlackBishop,
       node->BlackKnight,
       node->BlackQueen,
@@ -321,7 +324,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
       node->WhiteKnight,
       node->WhiteRook
   };
-  std::array<::bitboard::bitboard_t, 2> boards8 = {
+  std::array<bitboard::bitboard_t, 2> boards8 = {
       node->BlackPawn,
       node->WhitePawn
   };
@@ -332,7 +335,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
     //double arr[1] = {-1.0};
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 1; i++) {
-      if (::utils::bitAt(b, i) ) {
+      if (utils::bitAt(b, i)) {
         inputs[n++] = i == 0 ? 0.0 : i / 10.0;
         prog += 1;
       }
@@ -349,14 +352,14 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
     //double arr[2] = {-1.0, -1.0};
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 2; i++) {
-      if (::utils::bitAt(b, i)) {
+      if (utils::bitAt(b, i)) {
         inputs[n++] = i == 0 ? 0 : i / 10.0;
         prog += 1;
       }
     }
 
     // fill in missing pieces
-    for (; prog < 2;  prog++) {
+    for (; prog < 2; prog++) {
       inputs[n++] = -1.0;
     }
   }
@@ -365,14 +368,14 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
     //double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 8; i++) {
-      if (::utils::bitAt(b, i)) {
+      if (utils::bitAt(b, i)) {
         inputs[n++] = i == 0 ? 0 : i / 10.0;
         prog += 1;
       }
     }
 
     // fill in missing pieces
-    for (; prog < 8;  prog++) {
+    for (; prog < 8; prog++) {
       inputs[n++] = -1.0;
     }
   }
@@ -422,7 +425,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, ::bi
 
  */
 
-void ::utils::setDefaultChessLayout(definitions::gameState_ptr node) {
+void utils::setDefaultChessLayout(definitions::gameState_ptr node) {
   node->BlackBishop = 2594073385365405696ULL;
   node->BlackKing = 576460752303423488ULL;
   node->BlackKnight = 4755801206503243776ULL;
@@ -441,7 +444,7 @@ void ::utils::setDefaultChessLayout(definitions::gameState_ptr node) {
 
 void utils::printGameState(definitions::gameState_ptr gs) {
 
-  std::map<const char, ::bitboard::bitboard_t&> links = {
+  std::map<const char, bitboard::bitboard_t &> links = {
       {'b', gs->BlackBishop},
       {'k', gs->BlackKing},
       {'n', gs->BlackKnight},
@@ -471,12 +474,12 @@ void utils::printGameState(definitions::gameState_ptr gs) {
   }
 
   std::cout << "\n  ";
-  for (int i = 'A'; i < 'A'+8; i++)
+  for (int i = 'A'; i < 'A' + 8; i++)
     std::cout << "  " << (char) i << " ";
   std::cout << std::endl;
   std::cout << "  +---+---+---+---+---+---+---+---+\n";
   for (int i = 0; i < 8; i++) {
-    std::cout << i+1 << " | ";
+    std::cout << i + 1 << " | ";
     for (int j = 0; j < 8; j++) {
       std::cout << board.at((i * 8) + j) << " | ";
     }
@@ -497,9 +500,9 @@ std::string utils::getAbsoluteProjectPath() {
   }
 
   // find string until folder project name
-  std::string projectPath = path.substr(0, path.find(::engineInformation::PROJECT_NAME)); //hackz
+  std::string projectPath = path.substr(0, path.find(engineInformation::PROJECT_NAME)); //hackz
 
-  return projectPath + ::engineInformation::PROJECT_NAME;
+  return projectPath + engineInformation::PROJECT_NAME;
 #elif _WIN32
   // windows code goes here
   return "";
@@ -510,3 +513,4 @@ std::string utils::getAbsoluteProjectPath() {
 #endif
 }
 
+}

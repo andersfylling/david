@@ -12,58 +12,56 @@
 #include "david/uci/definitions.h"
 #include "david/uci/Listener.h"
 
-namespace search {
+namespace david {
 //Signals Signal; //Scrapped for now
-clock_t startTime;
-}
+//clock_t startTime; // moved to a class member
+
 
 /**
  * Constructor used in debug/test
  */
-search::Search::Search(definitions::engineContext_ptr ctx)
-    : engineContextPtr(ctx)
-{
+Search::Search(definitions::engineContext_ptr ctx)
+    : engineContextPtr(ctx) {
 
 };
 
-search::Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener& uci)
-    : engineContextPtr(ctx)
-{
-  using ::uci::event::GO;
-  using ::uci::event::STOP;
-  using ::uci::event::QUIT;
-  using ::uci::event::PONDERHIT;
-  using ::uci::event::UCINEWGAME;
-  using ::uci::arguments_t;
+Search::Search(definitions::engineContext_ptr ctx, ::david::uci::Listener &uci)
+    : engineContextPtr(ctx) {
+  using ::david::uci::event::GO;
+  using ::david::uci::event::STOP;
+  using ::david::uci::event::QUIT;
+  using ::david::uci::event::PONDERHIT;
+  using ::david::uci::event::UCINEWGAME;
+  using ::david::uci::arguments_t;
 
 
   // uci protocol functions, used for uci protocol events
   auto uci_go = [&](arguments_t args) {
     // All of the "go" parameters
     if (args.count("depth") > 0) {
-      this->setDepth(::utils::stoi(args["depth"]));
+      this->setDepth(utils::stoi(args["depth"]));
     } else if (args.count("searchmoves") > 0) {
       this->setSearchMoves(args["searchmoves"]);
     } else if (args.count("wtime") > 0) {
-      this->setWTime(::utils::stoi(args["wtime"]));
+      this->setWTime(utils::stoi(args["wtime"]));
     } else if (args.count("btime") > 0) {
-      this->setBTime(::utils::stoi(args["btime"]));
+      this->setBTime(utils::stoi(args["btime"]));
     } else if (args.count("winc") > 0) {
-      this->setWinc(::utils::stoi(args["winc"]));
+      this->setWinc(utils::stoi(args["winc"]));
     } else if (args.count("binc") > 0) {
-      this->setBinc(::utils::stoi(args["binc"]));
+      this->setBinc(utils::stoi(args["binc"]));
     } else if (args.count("movestogo") > 0) {
-      this->setMovesToGo(::utils::stoi(args["movestogo"]));
+      this->setMovesToGo(utils::stoi(args["movestogo"]));
     } else if (args.count("nodes") > 0) {
-      this->setNodes(::utils::stoi(args["nodes"]));
+      this->setNodes(utils::stoi(args["nodes"]));
     } else if (args.count("movetime") > 0) {
-      this->setMoveTime(::utils::stoi(args["movetime"]));
+      this->setMoveTime(utils::stoi(args["movetime"]));
     } else if (args.count("mate") > 0) {
-      this->setMate(::utils::stoi(args["mate"]));
+      this->setMate(utils::stoi(args["mate"]));
     } else if (args.count("infinite") > 0) {
-      this->setInfinite(::utils::stoi(args["infinite"]));
+      this->setInfinite(utils::stoi(args["infinite"]));
     } else if (args.count("ponder") > 0) {
-      this->setPonder(::utils::stoi(args["ponder"]));
+      this->setPonder(utils::stoi(args["ponder"]));
     }
   };
   auto uci_stop = [&](arguments_t args) {
@@ -103,15 +101,15 @@ search::Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener& uci)
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
  */
-std::shared_ptr<::bitboard::gameState> search::Search::searchInit(definitions::gameState_ptr node) {
+definitions::gameState_ptr Search::searchInit(definitions::gameState_ptr node) {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
 
   this->searchScore = iterativeDeepening(node);
 
-  if(this->debug)
-    std::cout << "Search objects score after complete search: " << this->searchScore<< std::endl;  //Debug
+  if (this->debug)
+    std::cout << "Search objects score after complete search: " << this->searchScore << std::endl;  //Debug
   //
   // Send some values/fenstring or whatever to UCI
   //
@@ -124,14 +122,15 @@ std::shared_ptr<::bitboard::gameState> search::Search::searchInit(definitions::g
  * @param board
  * @return
  */
-int search::Search::iterativeDeepening(definitions::gameState_ptr board) {
-  int alpha = (int)(-INFINITY);
-  int beta = (int)(INFINITY);
+int Search::iterativeDeepening(definitions::gameState_ptr board) {
+  int alpha = (int) (-INFINITY);
+  int beta = (int) (INFINITY);
   int iterationScore[1000];
   int lastDepth = 0;
   int aspirationDepth = 4;
+  int bestScore = (int) (-INFINITY);
+
   startTime = clock();              //Starting clock
-  int bestScore = (int)(-INFINITY);
 
 
   //
@@ -139,7 +138,7 @@ int search::Search::iterativeDeepening(definitions::gameState_ptr board) {
   //
   // board->generateAllMoves();
   //
-  ::gameTree::GameTree rMoves(this->engineContextPtr, board);
+  gameTree::GameTree rMoves(this->engineContextPtr, board);
   rMoves.setMaxNumberOfNodes(100000);
   rMoves.generateChildren(board);
 
@@ -187,12 +186,12 @@ int search::Search::iterativeDeepening(definitions::gameState_ptr board) {
       bestScore = (bestScore > currentBestScore) ? bestScore : currentBestScore;
 
       const bool fail = bestScore <= alpha || bestScore >= beta;
-      const bool fullWidth = alpha == (int)(-INFINITY) && beta == (int)(INFINITY);
+      const bool fullWidth = alpha == (int) (-INFINITY) && beta == (int) (INFINITY);
       iDone = !fail || fullWidth || currentDepth < aspirationDepth;
 
       if (!iDone) {
-        alpha = std::max(alpha - aspirationDelta, (int)(-INFINITY));
-        beta = std::min(beta + aspirationDelta, (int)(INFINITY));
+        alpha = std::max(alpha - aspirationDelta, (int) (-INFINITY));
+        beta = std::min(beta + aspirationDelta, (int) (INFINITY));
         aspirationDelta = std::max(aspirationDelta * 130 / 100, 15);
       }
     }
@@ -219,18 +218,18 @@ int search::Search::iterativeDeepening(definitions::gameState_ptr board) {
  * @param depth
  * @return
  */
-int search::Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iDepth) {
-  auto score = std::make_shared<::bitboard::gameState>();
-  auto bestScore = std::make_shared<::bitboard::gameState>();
-  bestScore->score = (int)(-INFINITY);
+int Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iDepth) {
+  auto score = std::make_shared<bitboard::gameState>();
+  auto bestScore = std::make_shared<bitboard::gameState>();
+  bestScore->score = (int) (-INFINITY);
 
 
   //
   // If UCI aborts the search in the middle of a recursive negamax
   // return -infinity
   //
-  if(isAborted){
-    return (int)(-INFINITY);
+  if (isAborted) {
+    return (int) (-INFINITY);
   }
 
   //
@@ -248,14 +247,15 @@ int search::Search::negamax(definitions::gameState_ptr node, int alpha, int beta
 
   //Node->children does not return correct type atm
   for (auto child : node->children) {
-    score->score = -negamax(child, -beta, -alpha, iDepth+1); // usually start at node 0, which means this will loop forever..
+    score->score =
+        -negamax(child, -beta, -alpha, iDepth + 1); // usually start at node 0, which means this will loop forever..
     this->nodesSearched++;
     bestScore->score = std::max(score->score, bestScore->score);
     alpha = std::max(score->score, alpha);
-    if(this->debug)
+    if (this->debug)
       std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
-    if(alpha >= beta) {
-      if(this->debug)
+    if (alpha >= beta) {
+      if (this->debug)
         std::cout << "Nodes children pruned\n";
       break;
     }
@@ -264,19 +264,18 @@ int search::Search::negamax(definitions::gameState_ptr node, int alpha, int beta
   return bestScore->score;
 }
 
-
 /**
  * Called by searchInit, reset/get settings from UCI
  * Mainly used for debugging and progress atm
  */
-void search::Search::resetSearchValues() {
+void Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
   this->depth = 2;
   this->searchScore = 0;
   this->nodesSearched = 0;
 }
 
-void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node, int iterations) {
+void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iterations) {
   //
   // For each iteration, save time and nodes searched
   //
@@ -299,7 +298,7 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
   // Mutex to avoid any one else taking cpu time away for
   // a more accurate result
   //
-  for(int i = 0; i <= iterations && !this->isAborted; i++){
+  for (int i = 0; i <= iterations && !this->isAborted; i++) {
     resetSearchValues();
     //
     // Clock time it takes to execute iterative deepening and negamax
@@ -310,7 +309,7 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
     auto end = std::chrono::steady_clock::now();
     performancetest.unlock();
     auto diff = end - start;
-    iterationsArray[i][0] = std::chrono::duration <double, std::milli> (diff).count();
+    iterationsArray[i][0] = std::chrono::duration<double, std::milli>(diff).count();
     iterationsArray[i][1] = this->nodesSearched;
 
     if (this->debug) {
@@ -326,8 +325,8 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
   // Write statistic to csv file
   //
   std::ofstream searchStats;
-  searchStats.open ("search_statistics.csv");
-  for(int i = 0; i < iterations; i++){
+  searchStats.open("search_statistics.csv");
+  for (int i = 0; i < iterations; i++) {
     searchStats << iterationsArray[i][0] << ',' << iterationsArray[i][1] << ',' << i << std::endl;
   }
   searchStats.close();
@@ -336,51 +335,51 @@ void search::Search::performanceTest(std::shared_ptr<::bitboard::gameState> node
 /**
  * If the UCI at any time tells search to abort
  */
-void search::Search::stopSearch() {
+void Search::stopSearch() {
   setAbort(true);
 }
 
-void search::Search::quitSearch() {
+void Search::quitSearch() {
 
 }
 
-void search::Search::setDepth(int depth) {
+void Search::setDepth(int depth) {
   this->depth = depth;
 }
 
-void search::Search::setSearchMoves(std::string moves) {
+void Search::setSearchMoves(std::string moves) {
   this->searchMoves = moves;
 }
 
-void search::Search::setWTime(int wtime) {
+void Search::setWTime(int wtime) {
   //this->wtime = wtime;
 }
-void search::Search::setBTime(int btime) {
+void Search::setBTime(int btime) {
   //this->btime = btime;
 }
-void search::Search::setWinc(int winc) {
+void Search::setWinc(int winc) {
   //this->winc = winc;
 }
-void search::Search::setBinc(int binc) {
+void Search::setBinc(int binc) {
   //this->binc = binc;
 }
-void search::Search::setMovesToGo(int movestogo) {
+void Search::setMovesToGo(int movestogo) {
   this->movestogo = movestogo;
 }
-void search::Search::setNodes(int nodes) {
+void Search::setNodes(int nodes) {
   //this->nodes = nodes;
 }
-void search::Search::setMoveTime(int movetime) {
+void Search::setMoveTime(int movetime) {
   this->movetime = movetime;
 }
-void search::Search::setMate(int mate) {
+void Search::setMate(int mate) {
   this->mate = mate;
 }
-void search::Search::setInfinite(int infinite) {
+void Search::setInfinite(int infinite) {
   this->infinite = infinite;
 } // bool ?
-void search::Search::setPonder(int ponder) {
+void Search::setPonder(int ponder) {
   this->ponder = ponder;
 } // bool ?
 
-
+}

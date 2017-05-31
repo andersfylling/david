@@ -14,7 +14,7 @@ class EngineContext {
   definitions::search_ptr         searchPtr = nullptr;
   definitions::neuralNetwork_ptr  neuralNetworkPtr = nullptr;
   definitions::gameTree_ptr       gameTreePtr = nullptr;
-  ::bitboard::COLOR               playerColor = ::bitboard::COLOR::WHITE;
+  bitboard::COLOR                 playerColor = bitboard::COLOR::WHITE;
 
 };
 }

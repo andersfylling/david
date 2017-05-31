@@ -168,7 +168,7 @@ void binaryNetwork::generateTrainingFile(
 
   int trainingPairs = 0;
   int lines = 0;
-  ::environment::Environment env(::bitboard::COLOR::WHITE);
+  ::david::environment::Environment env(::david::bitboard::COLOR::WHITE);
 
   std::string line;
   int lineNr = 1;
@@ -185,7 +185,7 @@ void binaryNetwork::generateTrainingFile(
     // write this to a file
     if (output.is_open()) {
 
-      definitions::gameState_ptr node = env.generateBoardFromFen(line);
+      ::david::definitions::gameState_ptr node = env.generateBoardFromFen(line);
       std::stringstream strm(line);
       std::string blackTurn = "";
       strm >> blackTurn;
@@ -251,11 +251,11 @@ void binaryNetwork::generateTrainingFile(
         fileStringInput << std::setprecision(2) << b << ' '; // limit to one decimal... I think
         nInputs += 1;
       }
-      std::array<::bitboard::bitboard_t, 2> boards1 = {
+      std::array<::david::bitboard::bitboard_t, 2> boards1 = {
           node->BlackKing,
           node->WhiteKing
       };
-      std::array<::bitboard::bitboard_t, 8> boards2 = {
+      std::array<::david::bitboard::bitboard_t, 8> boards2 = {
           node->BlackBishop,
           node->BlackKnight,
           node->BlackQueen,
@@ -265,7 +265,7 @@ void binaryNetwork::generateTrainingFile(
           node->WhiteKnight,
           node->WhiteRook
       };
-      std::array<::bitboard::bitboard_t, 2> boards8 = {
+      std::array<::david::bitboard::bitboard_t, 2> boards8 = {
           node->BlackPawn,
           node->WhitePawn
       };
@@ -276,7 +276,7 @@ void binaryNetwork::generateTrainingFile(
         double arr[1] = {-1.0};
         auto prog = 0;
         for (uint8_t i = 0; i < ba.size(); i++) {
-          if (::utils::bitAt(b, i)) {
+          if (::david::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
         }
@@ -297,7 +297,7 @@ void binaryNetwork::generateTrainingFile(
         double arr[2] = {-1.0, -1.0};
         auto prog = 0;
         for (uint8_t i = 0; i < ba.size(); i++) {
-          if (::utils::bitAt(b, i)) {
+          if (::david::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
         }
@@ -315,7 +315,7 @@ void binaryNetwork::generateTrainingFile(
         double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
         auto prog = 0;
         for (uint8_t i = 0; i < ba.size(); i++) {
-          if (::utils::bitAt(b, i)) {
+          if (::david::utils::bitAt(b, i)) {
             arr[prog++] = i == 0 ? 0 : i / 10.0;
           }
         }
@@ -394,7 +394,7 @@ void binaryNetwork::run()
   const unsigned int iterations_between_reports = 1;
   const unsigned int nrOfLayers = 5;
   const unsigned int layers[nrOfLayers] = {71, 200, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
-  const auto folder = ::utils::getAbsoluteProjectPath() + "/engine";
+  const auto folder = ::david::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.
   std::string fileNameSuffix = trainingdatafile + "_" + std::to_string(nrOfLayers) + "_" + std::to_string(layers[0]) + "_" + std::to_string(layers[nrOfLayers - 1]);

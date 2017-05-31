@@ -6,29 +6,29 @@
 #include "stockfish/stockfishMock.h"
 
 
-std::shared_ptr<::bitboard::gameState> testStruct = std::make_shared<::bitboard::gameState>(); // White Queen in the middle. Rest is normal
+std::shared_ptr<david::bitboard::gameState> testStruct = std::make_shared<david::bitboard::gameState>(); // White Queen in the middle. Rest is normal
 
 
-using ::bitboard::bitboard_t;
-using ::bitboard::WPc;
-using ::bitboard::WCc;
-using ::bitboard::WNc;
-using ::bitboard::WRc;
-using ::bitboard::WQc;
-using ::bitboard::WKc;
-using ::bitboard::BPc;
-using ::bitboard::BCc;
-using ::bitboard::BRc;
-using ::bitboard::BNc;
-using ::bitboard::BQc;
-using ::bitboard::BKc;
-using ::bitboard::COLOR;
-using ::bitboard::makeBoardFromArray;
-using ::bitboard::DIRECTION;
-using ::environment::NSB;
-using ::environment::LSB;
-using ::environment::flipBit;
-using ::bitboard::move_t;
+using david::bitboard::bitboard_t;
+using david::bitboard::WPc;
+using david::bitboard::WCc;
+using david::bitboard::WNc;
+using david::bitboard::WRc;
+using david::bitboard::WQc;
+using david::bitboard::WKc;
+using david::bitboard::BPc;
+using david::bitboard::BCc;
+using david::bitboard::BRc;
+using david::bitboard::BNc;
+using david::bitboard::BQc;
+using david::bitboard::BKc;
+using david::bitboard::COLOR;
+using david::bitboard::makeBoardFromArray;
+using david::bitboard::DIRECTION;
+using david::environment::NSB;
+using david::environment::LSB;
+using david::environment::flipBit;
+using david::bitboard::move_t;
 
 
 bitboard_t WP = makeBoardFromArray(WPc);
@@ -45,7 +45,7 @@ bitboard_t BQ = makeBoardFromArray(BQc);
 bitboard_t BK = makeBoardFromArray(BKc);
 bitboard_t BP = makeBoardFromArray(BPc);
 
-::environment::Environment test(COLOR::WHITE);
+david::environment::Environment test(COLOR::WHITE);
 bitboard_t *bits;
 
 TEST_CASE ("Num-Pieces") {
@@ -351,7 +351,7 @@ TEST_CASE ("Rook move") {
   //movement |= test.reduceVector(test.getDiagYAxis(testStruct.WhiteRook, DIRECTION::UP, false, 1)[1], opponent, own, DIRECTION::UP);
   //movement |= test.reduceVector(test.getDiagYAxis(testStruct.WhiteRook, DIRECTION::UP, false, 2)[1], opponent, own, DIRECTION::DOWN);
   //test.printBoard(movement);
-  ::environment::Environment test2(COLOR::WHITE);
+  david::environment::Environment test2(COLOR::WHITE);
   test2.setGameState(testStruct);
   bitboard_t * b = test2.RookMove(COLOR::WHITE);
   REQUIRE(b[1] == 2261656898371584ULL);
@@ -405,7 +405,7 @@ TEST_CASE("Combined attacks") {
 }
 
 TEST_CASE("Creating moves") {
-  move::Move m;
+  david::move::Move m;
 
   move_t mt = m.setGetValue(35ULL, 36ULL, 15);
   move_t hm1 = m.setGetValue(1ULL, 16ULL, 4);
@@ -425,9 +425,9 @@ TEST_CASE("Creating moves") {
 }
 
 TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
-  ::environment::Environment env(::bitboard::COLOR::BLACK);
+  david::environment::Environment env(david::bitboard::COLOR::BLACK);
 
-  definitions::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  david::definitions::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
   env.setGameState(node);
 
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
@@ -450,7 +450,7 @@ TEST_CASE("Move-Generation") {
 TEST_CASE("Knight-Movement finish") {
   bitboard_t h1 = *test.knightMove(COLOR::WHITE);
   REQUIRE(h1 == 327680ULL);
-  ::environment::Environment t2(COLOR::BLACK);
+  david::environment::Environment t2(COLOR::BLACK);
 }
 
 TEST_CASE("Pawn move"){
@@ -604,7 +604,7 @@ TEST_CASE ("Check if move is set with capture") {
   move_t t2 = 6484U;
   move_t t3 = 1316U;
 
-  move::Move m;
+  david::move::Move m;
   move_t t4 = m.setGetValue(2ULL, 3ULL, 4);
 
   int to = m.getTo();
@@ -624,7 +624,7 @@ TEST_CASE ("Check if move is set with capture") {
 
 
 TEST_CASE("test if bitisset can see if index is set") {
-  using ::environment::bitIsSet;
+  using david::environment::bitIsSet;
   bitboard_t opponent = test.blackPieces();
   bitboard_t a = test.whitePieces();
   bitboard_t  b = *test.getDiagYAxis(524288ULL, DIRECTION::ANTI_DIAGONAL, true, 1) & 335544320ULL;
@@ -640,13 +640,13 @@ TEST_CASE("test if bitisset can see if index is set") {
 
 
 TEST_CASE("Game initiation and generation of trees") {
-  ::environment::Environment lastTest(COLOR::WHITE);
+  david::environment::Environment lastTest(COLOR::WHITE);
 
-  std::vector <::bitboard::gameState> tt;
+  std::vector <david::bitboard::gameState> tt;
   lastTest.computeGameStates(tt);
-  std::cout << tt.size() << std::endl;
+  //std::cout << tt.size() << std::endl;
 
-  std::vector<::bitboard::gameState>::iterator it;
+  std::vector<david::bitboard::gameState>::iterator it;
 
   for (it = tt.begin(); it != tt.end(); it++) {
     //test.printBoard(it->WhiteKing | it->WhiteKnight | it->WhiteRook | it->WhitePawn | it->WhiteQueen | it->WhiteBishop);

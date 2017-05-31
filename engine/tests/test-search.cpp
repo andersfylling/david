@@ -8,13 +8,13 @@
 #include "catch.hpp"
 
 
-definitions::engineContext_ptr context = std::make_shared<david::EngineContext>();
-::search::Search test_search(context);
-std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameState>();
+david::definitions::engineContext_ptr context = std::make_shared<david::EngineContext>();
+david::Search test_search(context);
+std::shared_ptr<david::bitboard::gameState> node = std::make_shared<david::bitboard::gameState>();
 
 
 TEST_CASE("Search creation") {
-  ::utils::setDefaultChessLayout(node);
+  david::utils::setDefaultChessLayout(node);
 
   test_search.setDepth(10);
   REQUIRE(test_search.returnDepth() == 10);
@@ -50,7 +50,7 @@ TEST_CASE("Search"){
 }*/
 
 TEST_CASE("Search completed?"){
-  ::utils::setDefaultChessLayout(node);
+  david::utils::setDefaultChessLayout(node);
   test_search.searchInit(node);
   REQUIRE(test_search.returnComplete() == true);
 }

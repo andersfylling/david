@@ -1,5 +1,5 @@
 #pragma once
 
-namespace search {
+namespace david {
 class Search;
 }

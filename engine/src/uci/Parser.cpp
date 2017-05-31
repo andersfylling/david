@@ -10,6 +10,8 @@
 #include "david/uci/events.h"
 #include "david/uci/definitions.h"
 
+
+namespace david {
 namespace uci {
 Parser::Parser() {
 }
@@ -132,4 +134,5 @@ uint8_t Parser::parseInputForCommand(std::string input) {
   return event;
 }
 
+}
 }

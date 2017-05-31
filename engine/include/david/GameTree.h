@@ -5,8 +5,8 @@
 #include <iomanip>
 #include "david/EngineContext.h"
 
+namespace david {
 namespace gameTree {
-using ::bitboard::gameState;
 
 /**
  * This class instance lives through the whole engine lifetime.
@@ -26,8 +26,8 @@ class GameTree {
   definitions::gameState_ptr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory
 
-  void getNumberOfNodes(definitions::gameState_ptr node, int& counter);
-  void getDepth(definitions::gameState_ptr node, int& depth);
+  void getNumberOfNodes(definitions::gameState_ptr node, int &counter);
+  void getDepth(definitions::gameState_ptr node, int &depth);
 
   definitions::engineContext_ptr engineContextPtr;
 
@@ -43,14 +43,15 @@ class GameTree {
   void setMaxNumberOfNodes(int n);
   int getMaxNumberOfNodes();
   void generateNodes();
-  definitions::gameState_ptr generateNode(definitions::gameState_ptr parent, gameState child);
+  definitions::gameState_ptr generateNode(definitions::gameState_ptr parent, bitboard::gameState child);
   definitions::gameState_ptr getCurrentNode();
   int getNumberOfNodes();
   void generateChildren(definitions::gameState_ptr node);
   void sortChildren(definitions::gameState_ptr node);
   int getDepth();
   void printAllScores(definitions::gameState_ptr root);
-  
+
 };
 
+}
 }

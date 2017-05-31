@@ -14,16 +14,17 @@
 #include "david/uci/Parser.h"
 #include "david/uci/Listener.h"
 
+namespace david {
 uci::Listener::Listener()
     : runListener(false),
-      lastID(2)
-{
+      lastID(2) {
 }
 
 uci::Listener::~Listener() {
 }
 
-int uci::Listener::addListener(const uint8_t event, const std::function<void(std::map<std::string, std::string>)>& func) {
+int uci::Listener::addListener(const uint8_t event,
+                               const std::function<void(std::map<std::string, std::string>)> &func) {
   const int id = this->lastID += 1;
 
   // check if event key already exists, if not create it.
@@ -180,4 +181,5 @@ void uci::Listener::removeListenerThread(int listenerID) {
 }
 void uci::Listener::stopListening() {
   this->runListener = false;
+}
 }

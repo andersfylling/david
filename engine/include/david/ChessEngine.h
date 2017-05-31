@@ -15,12 +15,12 @@ namespace david {
  * A player object that will represent who this engine is on the board.
  */
 struct Player {
-  ::bitboard::COLOR color = ::bitboard::COLOR::WHITE;
+  bitboard::COLOR color = bitboard::COLOR::WHITE;
 };
 
 
 class ChessEngine {
-  ::uci::Listener uciProtocol;
+  uci::Listener uciProtocol;
   bool UCIProtocolActivated;
 
   // this is sent to other classes so they can communicate with each other
@@ -90,7 +90,7 @@ class ChessEngine {
   /**
    * Get ::bitboard::COLOR color
    */
-  ::bitboard::COLOR getColor();
+  bitboard::COLOR getColor();
 
   /**
    * Start the ANN from given files.

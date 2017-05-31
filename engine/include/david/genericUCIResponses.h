@@ -3,6 +3,8 @@
 #include "david/uci/definitions.h"
 #include "david/uci/Response.h"
 #include "engineInformation.h"
+
+namespace david {
 namespace uciResponses {
 // http://stackoverflow.com/questions/17003561/using-the-universal-chess-interface
 
@@ -13,12 +15,12 @@ namespace uciResponses {
  * @param args
  */
 auto id = [&]() {
-  ::uci::send("id name " + engineInformation::ENGINE_NAME);
-  ::uci::send("id author " + engineInformation::ENGINE_AUTHOR);
+  uci::send("id name " + engineInformation::ENGINE_NAME);
+  uci::send("id author " + engineInformation::ENGINE_AUTHOR);
 };
 
 auto uciok = [&]() {
-  ::uci::send("uciok");
+  uci::send("uciok");
 };
 
 auto option = [&]() {
@@ -33,9 +35,8 @@ auto responseToUCI = [&](const uci::arguments_t args) {
 
 // TODO: This needs to wait until everything has been setup correctly.
 auto responseToISREADY = [&](const uci::arguments_t args) {
-  ::uci::send("readyok");
+  uci::send("readyok");
 };
 
-
-
+}
 }
