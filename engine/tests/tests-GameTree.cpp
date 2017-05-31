@@ -1,13 +1,13 @@
 #include <iostream>
-#include <chess_ann/utils.h>
-#include "chess_ann/GameTree.h"
+#include <david/utils.h>
+#include "david/GameTree.h"
 #include "catch.hpp"
 
 
 TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
-  auto context = std::make_shared<chess_ann::Context>();
-  gameTree::nodePtr root = std::make_shared<bitboard::gameState>();
+  auto context = std::make_shared<david::EngineContext>();
+  definitions::gameState_ptr root = std::make_shared<bitboard::gameState>();
   ::utils::setDefaultChessLayout(root);
 
   gameTree::GameTree gt(context, root);

@@ -2,16 +2,16 @@
 // Created by lolos on 05.04.2017.
 //
 
-#include "chess_ann/environment.h"
-#include "chess_ann/bitboard.h"
+#include "david/environment.h"
+#include "david/bitboard.h"
 #include <string>
 #include <bitset>
 #include <iostream>
 #include <math.h>
 #include <array>
 #include <algorithm>
-#include <chess_ann/utils.h>
-#include <chess_ann/GameTree.h>
+#include <david/utils.h>
+#include <david/GameTree.h>
 #include <map>
 
 namespace environment {

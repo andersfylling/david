@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "chess_ann/uci/Listener.h"
-#include "chess_ann/uci/events.h"
+#include "david/uci/Listener.h"
+#include "david/uci/events.h"
 
 TEST_CASE( "Functions are added and being correctly called", "[Listener.addListener]" ) {
   uci::Listener uciListener;

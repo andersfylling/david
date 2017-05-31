@@ -1,8 +1,8 @@
 
-#include "chess_ann/uci/Response.h"
+#include "david/uci/Response.h"
 
 #include <iostream>
-#include "chess_ann/uci/definitions.h"
+#include "david/uci/definitions.h"
 
 namespace uci {
 void send(std::string res) {

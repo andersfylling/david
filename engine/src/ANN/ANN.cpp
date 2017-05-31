@@ -1,8 +1,8 @@
 // local dependencies
-#include "chess_ann/ANN/ANN.h"
-#include "chess_ann/chess_ann.h"
-#include "chess_ann/utils.h"
-#include "chess_ann/environment.h"
+#include "david/ANN/ANN.h"
+#include "david/david.h"
+#include "david/utils.h"
+#include "david/environment.h"
 
 // system dependencies
 #include <sstream>
@@ -10,12 +10,12 @@
 
 ANN::ANN(std::string filename)
     : engineContextPtr(nullptr),
-      ANNFile(::utils::getAbsoluteProjectPath() + ::chess_ann::neuralNetworksFolder + filename),
+      ANNFile(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr)
 {}
 ANN::ANN(definitions::engineContext_ptr ctx, std::string filename)
     : engineContextPtr(ctx),
-      ANNFile(::utils::getAbsoluteProjectPath() + ::chess_ann::neuralNetworksFolder + filename),
+      ANNFile(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr)
 {}
 ANN::~ANN() {
@@ -58,7 +58,7 @@ void ANN::setANNFile(std::string filename) {
   }
 
   // Check that the file exists on the machine
-  std::string file = ::utils::getAbsoluteProjectPath() + ::chess_ann::neuralNetworksFolder + filename;
+  std::string file = ::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename;
   if (!::utils::fileExists(file)) {
     std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
     return;

@@ -1,19 +1,19 @@
 
-#include "chess_ann/EngineMaster.h"
-#include "chess_ann/ChessEngine.h"
+#include "david/EngineMaster.h"
+#include "david/ChessEngine.h"
 
 #include <memory>
 #include <sstream>
-#include <chess_ann/chess_ann.h>
+#include <david/david.h>
 
-chess_ann::EngineMaster::EngineMaster(const std::string filename)
+david::EngineMaster::EngineMaster(const std::string filename)
     :ANNFilename(filename),
      lastEngineInstanceID(1),
      lastEngineBattleID(1),
      engineInstances()
 {}
 
-int chess_ann::EngineMaster::spawnEngine() {
+int david::EngineMaster::spawnEngine() {
   auto engine = std::make_shared<ChessEngine>(this->ANNFilename);
 
   if (engine->hasANNInstance()) {
@@ -34,8 +34,8 @@ int chess_ann::EngineMaster::spawnEngine() {
  * @param engineID2 an engine instance ID, != engineID1
  * @return
  */
-int chess_ann::EngineMaster::battle(int engineID1, int engineID2) {
-  return this->battle(engineID1, engineID2, chess_ann::FENStartPosition);
+int david::EngineMaster::battle(int engineID1, int engineID2) {
+  return this->battle(engineID1, engineID2, david::FENStartPosition);
 }
 
 /**
@@ -45,7 +45,7 @@ int chess_ann::EngineMaster::battle(int engineID1, int engineID2) {
  * @param engineID2 an engine instance ID, != engineID1
  * @return
  */
-int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, const std::string fen) {
+int david::EngineMaster::battle(const int engineID1, const int engineID2, const std::string fen) {
   // check if one if the engines wasn't initiated
   if (engineID1 + engineID2 <= 0) {
     return -1;
@@ -117,12 +117,12 @@ int chess_ann::EngineMaster::battle(const int engineID1, const int engineID2, co
   return this->lastEngineBattleID;
 
 }
-bool chess_ann::EngineMaster::battleWinner(int battleID, int mainEngineID) {
+bool david::EngineMaster::battleWinner(int battleID, int mainEngineID) {
   if (this->engineBattleWinnerLog.count(battleID) == 0) {
     return false;
   }
 
   return this->engineBattleWinnerLog[battleID] == mainEngineID;
 }
-int chess_ann::EngineMaster::battleWinner(int battleID) {}
-void chess_ann::EngineMaster::trainUntilWinner(int mainEngineID, int opponentEngineID) {}
+int david::EngineMaster::battleWinner(int battleID) {}
+void david::EngineMaster::trainUntilWinner(int mainEngineID, int opponentEngineID) {}

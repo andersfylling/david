@@ -2,13 +2,13 @@
 // Created by markus on 5/5/17.
 //
 
-#include <chess_ann/utils.h>
-#include "chess_ann/Search.h"
-#include "chess_ann/definitions.h"
+#include <david/utils.h>
+#include "david/Search.h"
+#include "david/definitions.h"
 #include "catch.hpp"
 
 
-definitions::engineContext_ptr context = std::make_shared<chess_ann::EngineContext>();
+definitions::engineContext_ptr context = std::make_shared<david::EngineContext>();
 ::search::Search test_search(context);
 std::shared_ptr<::bitboard::gameState> node = std::make_shared<::bitboard::gameState>();
 

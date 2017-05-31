@@ -2,15 +2,15 @@
 // Created by anders on 5/3/17.
 //
 
-#include "chess_ann/Search.h"
-#include "chess_ann/utils.h"
+#include "david/Search.h"
+#include "david/utils.h"
 #include <ctime>
-#include <chess_ann/EngineMaster.h>
+#include <david/EngineMaster.h>
 #include <fstream>
-#include "chess_ann/EngineContext.h"
-#include "chess_ann/uci/events.h"
-#include "chess_ann/uci/definitions.h"
-#include "chess_ann/uci/Listener.h"
+#include "david/EngineContext.h"
+#include "david/uci/events.h"
+#include "david/uci/definitions.h"
+#include "david/uci/Listener.h"
 
 namespace search {
 //Signals Signal; //Scrapped for now

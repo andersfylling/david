@@ -1,6 +1,6 @@
 #include "catch.hpp"
-#include "chess_ann/uci/Parser.h"
-#include "chess_ann/uci/events.h"
+#include "david/uci/Parser.h"
+#include "david/uci/events.h"
 
 // gui to engine
 TEST_CASE( "Making sure commands from GUI to Engine are correctly parsed", "[Parser.parseInput]" ) {

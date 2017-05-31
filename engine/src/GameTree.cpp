@@ -1,11 +1,11 @@
-#include "chess_ann/bitboard.h"
-#include "chess_ann/GameTree.h"
+#include "david/bitboard.h"
+#include "david/GameTree.h"
 #include <memory>
 #include <iostream>
 #include <algorithm>
-#include <chess_ann/environment.h>
-#include <chess_ann/utils.h>
-#include "chess_ann/ANN/ANN.h"
+#include <david/environment.h>
+#include <david/utils.h>
+#include "david/ANN/ANN.h"
 
 /**
  * Constructor

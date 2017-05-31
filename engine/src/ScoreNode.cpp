@@ -2,7 +2,7 @@
 // Created by anders on 5/2/17.
 //
 
-#include "chess_ann/ScoreNode.h"
+#include "david/ScoreNode.h"
 ScoreNode::ScoreNode() {
 
 }

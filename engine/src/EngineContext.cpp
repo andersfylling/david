@@ -2,7 +2,7 @@
 // Created by anders on 5/10/17.
 //
 
-#include "chess_ann/EngineContext.h"
+#include "david/EngineContext.h"
 
-chess_ann::EngineContext::EngineContext()
+david::EngineContext::EngineContext()
 {}

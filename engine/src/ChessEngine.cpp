@@ -1,15 +1,15 @@
-#include "chess_ann/ChessEngine.h"
+#include "david/ChessEngine.h"
 
 // local dependencies
-#include "chess_ann/EngineContext.h"
-#include "chess_ann/uci/events.h"
-#include "chess_ann/ANN/ANN.h"
-#include "chess_ann/genericUCIResponses.h"
-#include "chess_ann/uci/Listener.h"
-#include "chess_ann/Search.h"
-#include "chess_ann/chess_ann.h"
-#include "chess_ann/utils.h"
-#include "chess_ann/environment.h"
+#include "david/EngineContext.h"
+#include "david/uci/events.h"
+#include "david/ANN/ANN.h"
+#include "david/genericUCIResponses.h"
+#include "david/uci/Listener.h"
+#include "david/Search.h"
+#include "david/david.h"
+#include "david/utils.h"
+#include "david/environment.h"
 
 // git submodule dependencies
 #include "fann/floatfann.h"
@@ -17,8 +17,8 @@
 // system dependencies
 
 
-chess_ann::ChessEngine::ChessEngine()
-    : engineContextPtr(std::make_shared<chess_ann::EngineContext>()),
+david::ChessEngine::ChessEngine()
+    : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
       searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<::gameTree::GameTree>(engineContextPtr)),
@@ -32,8 +32,8 @@ chess_ann::ChessEngine::ChessEngine()
   this->engineContextPtr->searchPtr         = this->searchPtr;
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
-chess_ann::ChessEngine::ChessEngine(Player self)
-    : engineContextPtr(std::make_shared<chess_ann::EngineContext>()),
+david::ChessEngine::ChessEngine(Player self)
+    : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
       searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
@@ -47,8 +47,8 @@ chess_ann::ChessEngine::ChessEngine(Player self)
   this->engineContextPtr->searchPtr         = this->searchPtr;
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
-chess_ann::ChessEngine::ChessEngine(std::string ANNFile)
-    : engineContextPtr(std::make_shared<chess_ann::EngineContext>()),
+david::ChessEngine::ChessEngine(std::string ANNFile)
+    : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
       searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
@@ -63,8 +63,8 @@ chess_ann::ChessEngine::ChessEngine(std::string ANNFile)
   this->engineContextPtr->searchPtr         = this->searchPtr;
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
-chess_ann::ChessEngine::ChessEngine(Player self, std::string ANNFile)
-    : engineContextPtr(std::make_shared<chess_ann::EngineContext>()),
+david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
+    : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
       searchPtr(std::make_shared<::search::Search>(engineContextPtr, uciProtocol)),
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
@@ -80,14 +80,14 @@ chess_ann::ChessEngine::ChessEngine(Player self, std::string ANNFile)
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
 
-chess_ann::ChessEngine::~ChessEngine() {
+david::ChessEngine::~ChessEngine() {
 }
 
 /**
  * Retrieve the ANN file this engine instance uses for evaluating game boards.
  * @return std::string absolute path of ann file.
  */
-std::string chess_ann::ChessEngine::getANNFile() {
+std::string david::ChessEngine::getANNFile() {
   if (this->hasANNInstance()) {
     return this->neuralNetworkPtr->getANNFile();
   }
@@ -99,28 +99,28 @@ std::string chess_ann::ChessEngine::getANNFile() {
 /**
  * Check if there exists a ANN instance
  */
-bool chess_ann::ChessEngine::hasANNFile() {
+bool david::ChessEngine::hasANNFile() {
   return this->neuralNetworkPtr->getANNFile() != "";
 }
 
 /**
  * Check if there exists a ANN instance
  */
-bool chess_ann::ChessEngine::hasANNInstance() {
+bool david::ChessEngine::hasANNInstance() {
   return this->neuralNetworkPtr != nullptr && this->neuralNetworkPtr->hasANNInstance();
 }
 
 /**
  * Check if this engine plays as white
  */
-bool chess_ann::ChessEngine::isWhite() {
+bool david::ChessEngine::isWhite() {
   return this->player.color == ::bitboard::COLOR::WHITE;
 }
 
 /**
  * Get ::bitboard::COLOR color
  */
-bitboard::COLOR chess_ann::ChessEngine::getColor() {
+bitboard::COLOR david::ChessEngine::getColor() {
   return this->player.color;
 }
 
@@ -128,7 +128,7 @@ bitboard::COLOR chess_ann::ChessEngine::getColor() {
 /**
  * Adds typical UCI responses to the engine
  */
-void chess_ann::ChessEngine::configureUCIProtocol() {
+void david::ChessEngine::configureUCIProtocol() {
   using ::uci::event::UCI;
   using ::uci::event::ISREADY;
   using ::uci::event::QUIT;
@@ -153,7 +153,7 @@ void chess_ann::ChessEngine::configureUCIProtocol() {
 /**
  * Actives the UCI protocol, and keeps it running in another thread.
  */
-void chess_ann::ChessEngine::activateUCIProtocol() {
+void david::ChessEngine::activateUCIProtocol() {
 
   // ###
   // Creates a forever listening UCI thread, this is to not block everything else.
@@ -165,7 +165,7 @@ void chess_ann::ChessEngine::activateUCIProtocol() {
  *
  * @return bool if UCI protocol has been activated.
  */
-bool chess_ann::ChessEngine::hasInitiatedUCIProtocol() {
+bool david::ChessEngine::hasInitiatedUCIProtocol() {
   return this->UCIProtocolActivated;
 }
 
@@ -174,14 +174,14 @@ bool chess_ann::ChessEngine::hasInitiatedUCIProtocol() {
  *
  * @deprecated, hasn't been implemented yet.
  */
-void chess_ann::ChessEngine::sayUCICommand(std::string command) {
+void david::ChessEngine::sayUCICommand(std::string command) {
   // eh.. not yet
 }
 
 /**
  * Creates the neural network based on the ANNFile
  */
-void chess_ann::ChessEngine::createANNInstance(std::string ANNFile) {
+void david::ChessEngine::createANNInstance(std::string ANNFile) {
   this->neuralNetworkPtr->createANNInstance();
 }
 
@@ -191,7 +191,7 @@ void chess_ann::ChessEngine::createANNInstance(std::string ANNFile) {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int chess_ann::ChessEngine::ANNEvaluate(definitions::gameState_ptr board) {
+int david::ChessEngine::ANNEvaluate(definitions::gameState_ptr board) {
   return this->neuralNetworkPtr->ANNEvaluate(board, this->player.color);
 }
 
@@ -202,7 +202,7 @@ int chess_ann::ChessEngine::ANNEvaluate(definitions::gameState_ptr board) {
  * @param fen std::string FEN(Forsyth–Edwards Notation)
  * @return int board evaluation
  */
-int chess_ann::ChessEngine::ANNEvaluate(std::string fen) {
+int david::ChessEngine::ANNEvaluate(std::string fen) {
   return this->neuralNetworkPtr->ANNEvaluate(fen);
 }
 
@@ -212,7 +212,7 @@ int chess_ann::ChessEngine::ANNEvaluate(std::string fen) {
  *
  * @param color
  */
-void chess_ann::ChessEngine::setPlayerColor(bitboard::COLOR color) {
+void david::ChessEngine::setPlayerColor(bitboard::COLOR color) {
   this->player.color = color;
 }
 
@@ -222,7 +222,7 @@ void chess_ann::ChessEngine::setPlayerColor(bitboard::COLOR color) {
  *
  * @return shared_ptr of gameState
  */
-definitions::gameState_ptr chess_ann::ChessEngine::getGameState() {
+definitions::gameState_ptr david::ChessEngine::getGameState() {
   return this->currentGameState;
 }
 
@@ -234,7 +234,7 @@ definitions::gameState_ptr chess_ann::ChessEngine::getGameState() {
  * @param state shared_ptr of a gameState
  * @return true if the state was updated
  */
-bool chess_ann::ChessEngine::setGameState(definitions::gameState_ptr state) {
+bool david::ChessEngine::setGameState(definitions::gameState_ptr state) {
   this->currentGameState = state;
 }
 
@@ -244,7 +244,7 @@ bool chess_ann::ChessEngine::setGameState(definitions::gameState_ptr state) {
  *
  * @return true on losing
  */
-bool chess_ann::ChessEngine::lost() {
+bool david::ChessEngine::lost() {
   return this->currentGameState->possibleSubMoves == 0;
 }
 
@@ -252,7 +252,7 @@ bool chess_ann::ChessEngine::lost() {
 /**
  * Find the best move, and update the current game state.
  */
-void chess_ann::ChessEngine::findBestMove() {
+void david::ChessEngine::findBestMove() {
   // TODO: Markus
   // update currentGameState
   this->currentGameState = this->searchPtr->searchInit(this->currentGameState);
@@ -264,13 +264,13 @@ void chess_ann::ChessEngine::findBestMove() {
  *
  * @param fen a FEN string, must be correctly parsed otherwise worlds will collide.
  */
-void chess_ann::ChessEngine::setNewGameBoard(const std::string fen) {
+void david::ChessEngine::setNewGameBoard(const std::string fen) {
 
   // first clear any children
   this->gameTreePtr->resetChildren(this->currentGameState);
 
   // check if its a default setup
-  if (fen == chess_ann::FENStartPosition) {
+  if (fen == david::FENStartPosition) {
     ::utils::setDefaultChessLayout(this->currentGameState);
     return;
   }

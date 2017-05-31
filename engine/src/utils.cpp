@@ -1,4 +1,4 @@
-#include "chess_ann/utils.h"
+#include "david/utils.h"
 #include "fann/floatfann.h"
 #include <sys/stat.h>
 #include <unistd.h>
@@ -8,9 +8,9 @@
 //linux code goes here
 #include <unistd.h>
 #include <bitset>
-#include <chess_ann/GameTree.h>
-#include <chess_ann/environment.h>
-#include <chess_ann/ChessEngine.h>
+#include <david/GameTree.h>
+#include <david/environment.h>
+#include <david/ChessEngine.h>
 #include <assert.h>
 #elif _WIN32
 // windows code goes here

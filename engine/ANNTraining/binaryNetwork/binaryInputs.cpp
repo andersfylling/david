@@ -1,6 +1,6 @@
 #include "fann/floatfann.h"
 #include "fann/fann_cpp.h"
-#include "chess_ann/utils.h"
+#include "david/utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -15,10 +15,10 @@
 #include <sstream>
 #include <string>
 #include <fstream>
-#include <chess_ann/environment.h>
-#include <chess_ann/GameTree.h>
+#include <david/environment.h>
+#include <david/GameTree.h>
 #include <fann/parallel_fann.h>
-#include "chess_ann/ANN/binaryInputs.h"
+#include "david/ANN/binaryInputs.h"
 using std::cout;
 using std::cerr;
 using std::endl;

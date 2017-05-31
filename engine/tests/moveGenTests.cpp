@@ -1,8 +1,8 @@
 #include <iostream>
 #include "catch.hpp"
-#include "chess_ann/bitboard.h"
-#include "chess_ann/environment.h"
-#include <chess_ann/GameTree.h>
+#include "david/bitboard.h"
+#include "david/environment.h"
+#include <david/GameTree.h>
 #include "stockfish/stockfishMock.h"
 
 
@@ -427,7 +427,7 @@ TEST_CASE("Creating moves") {
 TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
   ::environment::Environment env(::bitboard::COLOR::BLACK);
 
-  ::gameTree::nodePtr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  definitions::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
   env.setGameState(node);
 
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);

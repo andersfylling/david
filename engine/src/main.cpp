@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "chess_ann/EngineMaster.h"
+#include "david/EngineMaster.h"
 
 int main (int argc, char * argv[])
 {
-  chess_ann::EngineMaster em("float_binaryNetworkTrainingFile_5_71_1_1494410133.net");
+  david::EngineMaster em("float_binaryNetworkTrainingFile_5_71_1_1494410133.net");
 
   int mainEngineID      = em.spawnEngine();
   int opponentEngineID  = em.spawnEngine();
