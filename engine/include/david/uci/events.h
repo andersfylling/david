@@ -1,14 +1,19 @@
 #pragma once
 
 #include <cstdint>
+
+
+
 namespace david {
 namespace uci {
+
+// Different commands created by the UCI protocol
 namespace event {
 
-// errors
+// errors, this isn't really a UCI protocol command, but used within this project.
 const uint8_t NO_MATCHING_COMMAND = 0;
 
-// commands
+// commands issued by the UCI protocol
 const uint8_t TEST = 5;
 const uint8_t UCI = 10;
 const uint8_t DEBUG = 20;
