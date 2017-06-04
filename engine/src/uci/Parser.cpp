@@ -13,11 +13,29 @@
 
 namespace david {
 namespace uci {
+
+/**
+ * Constructor
+ */
 Parser::Parser() {
 }
 
+/**
+ * Destructor
+ */
 Parser::~Parser() {
 }
+
+
+/**
+ * Converts UCI terminal inputs to a std::map of arguments/parameters.
+ * 
+ * @warning Currently this is written to handle multiple UCI commands in one string.
+ *          This is only a missunderstanding on my part and will be fixed to deal with one string as one UCI command / input 
+ *          which is correct according to protocol.
+ *
+ * @return std::pair<uint8_t, arguments_t> An UCI command and the map with all the parameters / arguments related to that command.
+ */
 std::pair<uint8_t, arguments_t> Parser::parseInput(std::string input) {
   auto command = this->parseInputForCommand(input);
   if (command == uci::event::NO_MATCHING_COMMAND) {
@@ -95,6 +113,11 @@ std::map<std::string, std::string> Parser::parseInputForArguments(std::string in
   return arguments;
 }
 
+
+/**
+ * Converts a UCI terminal input to a UCI command.
+ * @note this should be a constexpr.
+ */
 uint8_t Parser::parseInputForCommand(std::string input) {
   std::stringstream request(input);
 
