@@ -3,7 +3,7 @@
 
 #include "david/bitboard.h"
 #include "david/definitions.h"
-#include "david/engineInformation.h"
+#include "david/david.h"
 
 #include "fann/floatfann.h"
 

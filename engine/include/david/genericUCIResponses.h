@@ -2,7 +2,7 @@
 
 #include "david/uci/definitions.h"
 #include "david/uci/Response.h"
-#include "engineInformation.h"
+#include "david/david.h"
 
 namespace david {
 namespace uciResponses {
