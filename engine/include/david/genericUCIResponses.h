@@ -11,22 +11,30 @@ namespace uciResponses {
 
 /**
  * Send id information to gui.
- *
- * @param args
  */
 auto id = [&]() {
   uci::send("id name " + engineInformation::ENGINE_NAME);
   uci::send("id author " + engineInformation::ENGINE_AUTHOR);
 };
 
+/**
+ * Send uciok when all the options params have been sent.
+ */
 auto uciok = [&]() {
   uci::send("uciok");
 };
 
+/**
+ * Send different engine options to the GUI.
+ * Not required.
+ */
 auto option = [&]() {
   //::uci::send("option name Hash type spin default 1 min 1 max 128");
 };
 
+/**
+ * Typical initial response to the UCI.
+ */
 auto responseToUCI = [&](const uci::arguments_t args) {
   id();
   option();
