@@ -4,5 +4,8 @@
 
 #include "david/EngineContext.h"
 
+/**
+ * Constructor
+ */
 david::EngineContext::EngineContext()
 {}
