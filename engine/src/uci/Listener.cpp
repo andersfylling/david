@@ -1,7 +1,5 @@
-//
-// Created by anders on 4/17/17.
-//
 
+// CPP dependencies
 #include <iostream>
 #include <map>
 #include <functional>
@@ -9,20 +7,34 @@
 #include <thread>
 #include <mutex>
 
+// local dependencies
 #include "david/uci/definitions.h"
 #include "david/uci/events.h"
 #include "david/uci/Parser.h"
 #include "david/uci/Listener.h"
 
 namespace david {
+/**
+ * Constructor
+ */
 uci::Listener::Listener()
     : runListener(false),
       lastID(2) {
 }
 
+/**
+ * Destructor
+ */
 uci::Listener::~Listener() {
 }
 
+/**
+ * Add a new listener to be triggered at a given UCI event / command.
+ * 
+ * @param event uint8_t Use uci::event::? for UCI commands and uci::event::error in case a UCI error takes place.
+ * @param func std::function<void(std::map<std::string, std::string>)> The callback function / lambda to handle the incoming UCI event
+ * @return int Listener ID. This can be used later to remove and change listeners dynamically.
+ */
 int uci::Listener::addListener(const uint8_t event,
                                const std::function<void(std::map<std::string, std::string>)> &func) {
   const int id = this->lastID += 1;
@@ -43,6 +55,13 @@ int uci::Listener::addListener(const uint8_t event,
   return id;
 }
 
+/**
+ * Initiates the UCI listener in a new thread.
+ * Note that this requires you to join the thread later so the program can exit correctly.
+ *
+ * @see uci::Listener::joinListener() to do join the thread.
+ * @return bool False, always..
+ */
 bool uci::Listener::initiateListener() {
 
   this->runListener = true;
@@ -66,6 +85,12 @@ bool uci::Listener::initiateListener() {
   return false;
 }
 
+/**
+ * Joins the thread to the main thread.
+ * This makes sure there are no loose threads in the end when the program exits.
+ *
+ * @return bool True the thread joined.
+ */
 bool uci::Listener::joinListener() {
   if (this->listener.joinable()) {
     this->listener.join();
@@ -74,6 +99,12 @@ bool uci::Listener::joinListener() {
   return false;
 }
 
+/**
+ * Joins the listener thread and stops the listener thread.
+ * 
+ * @warning Not completed. Only tells the listener on next run to stop.
+ * @return bool True if the listener has joined threads and is set to stop at next run / loop round.
+ */
 bool uci::Listener::joinListenerAndStop() {
   this->runListener = false;
   bool joined = this->joinListener();
@@ -81,15 +112,31 @@ bool uci::Listener::joinListenerAndStop() {
   return joined && !this->runListener;
 }
 
+/**
+ * Setup the listener thread and join it to the main thread.
+ * 
+ * @return bool True if successfull.
+ */
 bool uci::Listener::setupListener() {
   this->initiateListener();
   return this->joinListener();
 }
 
+/**
+ * Triggers an UCI event.
+ * Every listener binded to this event is fired / called without arguments.
+ */
 void uci::Listener::fireEvent(const uint8_t event) {
   this->fireEvent(event, std::map<std::string, std::string>());
 }
 
+
+/**
+ * Triggers an UCI event.
+ * Every listener binded to this event is fired / called with arguments.
+ *
+ * @param args arguments_t A map to hold UCI parameters.
+ */
 void uci::Listener::fireEvent(const uint8_t event, const arguments_t args) {
   auto entry = this->events.find(event);
 
@@ -179,6 +226,12 @@ void uci::Listener::removeListenerThread(int listenerID) {
     this->removeListener(listenerID);
   });
 }
+
+/**
+ * Stops the listener thread.
+ * 
+ * @warning Not completed. Only tells the listener on next run to stop.
+ */
 void uci::Listener::stopListening() {
   this->runListener = false;
 }
