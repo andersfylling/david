@@ -16,7 +16,9 @@
 
 // system dependencies
 
-
+/**
+ * Constructor
+ */
 david::ChessEngine::ChessEngine()
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
@@ -32,6 +34,12 @@ david::ChessEngine::ChessEngine()
   this->engineContextPtr->searchPtr         = this->searchPtr;
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
+
+/**
+ * Constructor
+ *
+ * @param self
+ */
 david::ChessEngine::ChessEngine(Player self)
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
@@ -47,6 +55,12 @@ david::ChessEngine::ChessEngine(Player self)
   this->engineContextPtr->searchPtr         = this->searchPtr;
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
+
+/**
+ * Constructor
+ *
+ * @param ANNFile std::string The ANN network file (The product of ANN training)
+ */
 david::ChessEngine::ChessEngine(std::string ANNFile)
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
@@ -63,6 +77,13 @@ david::ChessEngine::ChessEngine(std::string ANNFile)
   this->engineContextPtr->searchPtr         = this->searchPtr;
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
+
+/**
+ * Constructor
+ *
+ * @param self Player struct Which player instance you are (black / white)
+ * @param ANNFile std::string The ANN network file (The product of ANN training)
+ */
 david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
     : engineContextPtr(std::make_shared<david::EngineContext>()),
       uciProtocol(),
@@ -80,6 +101,9 @@ david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
   this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
 }
 
+/**
+ * Destructor
+ */
 david::ChessEngine::~ChessEngine() {
 }
 
