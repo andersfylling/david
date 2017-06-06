@@ -78,6 +78,7 @@ class Search {
   bool debug;
   int nodesSearched;
   definitions::engineContext_ptr engineContextPtr;
+  std::vector<int> expanded;
 };
 
   //
@@ -121,7 +122,7 @@ class Search {
    * @param debug
    */
   inline void Search::setDebug(bool debug) {
-    this->debug == debug;
+    this->debug = debug;
   }
 
 

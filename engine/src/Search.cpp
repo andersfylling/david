@@ -108,8 +108,13 @@ definitions::gameState_ptr Search::searchInit(definitions::gameState_ptr node) {
 
   this->searchScore = iterativeDeepening(node);
 
-  if (this->debug)
+  if (this->debug) {
+    std::vector<int>::iterator it;
     std::cout << "Search objects score after complete search: " << this->searchScore << std::endl;  //Debug
+    for(it=this->expanded.begin(); it<this->expanded.end(); it++)
+      std::cout << ' ' << *it;
+    std::cout << std::endl;
+  }
   //
   // Send some values/fenstring or whatever to UCI
   //
@@ -138,9 +143,11 @@ int Search::iterativeDeepening(definitions::gameState_ptr board) {
   //
   // board->generateAllMoves();
   //
-  gameTree::GameTree rMoves(this->engineContextPtr, board);
-  rMoves.setMaxNumberOfNodes(100000);
-  rMoves.generateChildren(board);
+    if(!engineContextPtr->testing) {
+        gameTree::GameTree rMoves(this->engineContextPtr, board);
+        rMoves.setMaxNumberOfNodes(100000);
+        rMoves.generateChildren(board);
+    }
 
 
 
@@ -252,11 +259,11 @@ int Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iD
     this->nodesSearched++;
     bestScore->score = std::max(score->score, bestScore->score);
     alpha = std::max(score->score, alpha);
-    if (this->debug)
+    if (this->debug) {
       std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
+      this->expanded.push_back(child->score);
+    }
     if (alpha >= beta) {
-      if (this->debug)
-        std::cout << "Nodes children pruned\n";
       break;
     }
   }
@@ -270,9 +277,9 @@ int Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iD
  */
 void Search::resetSearchValues() {
   this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
-  this->depth = 2;
   this->searchScore = 0;
   this->nodesSearched = 0;
+  this->expanded.clear();
 }
 
 void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iterations) {
