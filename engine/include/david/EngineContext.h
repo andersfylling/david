@@ -22,5 +22,8 @@ class EngineContext {
   definitions::gameTree_ptr       gameTreePtr       = nullptr;
   bitboard::COLOR                 playerColor       = bitboard::COLOR::WHITE;
 
+  // used for testing
+  bool testing = false;
+
 };
 }
