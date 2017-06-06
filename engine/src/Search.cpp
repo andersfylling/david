@@ -34,8 +34,9 @@ Search::Search(definitions::engineContext_ptr ctx, ::david::uci::Listener &uci)
   using ::david::uci::event::UCINEWGAME;
   using ::david::uci::arguments_t;
 
-
+  //
   // uci protocol functions, used for uci protocol events
+  //
   auto uci_go = [&](arguments_t args) {
     // All of the "go" parameters
     if (args.count("depth") > 0) {
@@ -62,6 +63,8 @@ Search::Search(definitions::engineContext_ptr ctx, ::david::uci::Listener &uci)
       this->setInfinite(utils::stoi(args["infinite"]));
     } else if (args.count("ponder") > 0) {
       this->setPonder(utils::stoi(args["ponder"]));
+    } else if (args.count("difficulty") > 0) {
+      this->setDifficulty(utils::stoi(args["difficulty"]));
     }
   };
   auto uci_stop = [&](arguments_t args) {
@@ -189,7 +192,9 @@ int Search::iterativeDeepening(definitions::gameState_ptr board) {
       currentBestScore = negamax(board, alpha, beta, currentDepth);
       iterationScore[currentDepth] = currentBestScore;
 
-      //Update best score incase of a abort
+      //
+      //Update best score in case of a abort
+      //
       bestScore = (bestScore > currentBestScore) ? bestScore : currentBestScore;
 
       const bool fail = bestScore <= alpha || bestScore >= beta;
@@ -205,8 +210,6 @@ int Search::iterativeDeepening(definitions::gameState_ptr board) {
   }
 
   setComplete(true);
-  //Does not return a move yet, however Search.bestMove is sat in negamax
-  //std::cout << "Score after iterative deepening search complete: " << bestMove << std::endl;  //Debug
   this->bestMove = board;
   return bestScore;
 }
@@ -251,11 +254,9 @@ int Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iD
     return node->score;
   }
 
-
-  //Node->children does not return correct type atm
   for (auto child : node->children) {
     score->score =
-        -negamax(child, -beta, -alpha, iDepth + 1); // usually start at node 0, which means this will loop forever..
+        -negamax(child, -beta, -alpha, iDepth + 1);
     this->nodesSearched++;
     bestScore->score = std::max(score->score, bestScore->score);
     alpha = std::max(score->score, alpha);
@@ -282,6 +283,12 @@ void Search::resetSearchValues() {
   this->expanded.clear();
 }
 
+/**
+ * Used to gather statistcs over how much time and nodes a search uses and can search
+ * over some iterations
+ * @param node
+ * @param iterations
+ */
 void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iterations) {
   //
   // For each iteration, save time and nodes searched
@@ -347,12 +354,16 @@ void Search::stopSearch() {
 }
 
 void Search::quitSearch() {
-
 }
 
+/**
+ * Set search depth, recieved by uci
+ * @param depth
+ */
 void Search::setDepth(int depth) {
   this->depth = depth;
 }
+
 
 void Search::setSearchMoves(std::string moves) {
   this->searchMoves = moves;
@@ -376,6 +387,11 @@ void Search::setMovesToGo(int movestogo) {
 void Search::setNodes(int nodes) {
   //this->nodes = nodes;
 }
+
+/**
+ * Set how much time to search
+ * @param movetime
+ */
 void Search::setMoveTime(int movetime) {
   this->movetime = movetime;
 }
@@ -389,4 +405,16 @@ void Search::setPonder(int ponder) {
   this->ponder = ponder;
 } // bool ?
 
+/**
+ * Used to set game difficulty
+ * @param difficulty
+ */
+void Search::setDifficulty(int difficulty) {
+  switch (difficulty){
+    case 1: this->setDepth(4); this->setMoveTime(100000); break;
+    case 2: this->setDepth(5); this->setMoveTime(150000); break;
+    case 3: this->setDepth(7); this->setMoveTime(200000); break;
+    default: this->setDepth(5); this->setMoveTime(150000); break;
+  }
+}
 }

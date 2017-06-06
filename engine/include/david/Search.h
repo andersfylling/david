@@ -57,6 +57,7 @@ class Search {
   void setMate(int mate);
   void setInfinite(int mate); // bool ?
   void setPonder(int ponder); // bool ?
+  void setDifficulty(int difficulty);
 
   clock_t startTime;
 
@@ -81,21 +82,31 @@ class Search {
   std::vector<int> expanded;
 };
 
-  //
-  // Debug functions
-  //
+  /**
+   * Returns depth to be searched, only used in debug
+   * @return
+   */
   inline int Search::returnDepth()  {
     return this->depth;
   }
-
+  /**
+   * Returns how much time allocated to the search
+   * @return
+   */
   inline int Search::returnTimeToSearch(){
     return this->movetime;
   }
-
+  /**
+   * Returns bestScore sat by searching
+   * @return
+   */
   inline int Search::returnScore() {
     return this->searchScore;
   }
-
+  /**
+   * Returns if the search is complete, search not aborted and completed without issues
+   * @return
+   */
   inline bool Search::returnComplete() {
     return this->isComplete;
   }

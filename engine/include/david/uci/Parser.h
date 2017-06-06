@@ -45,7 +45,8 @@ class Parser {
           {"nodes"},
           {"mate"},
           {"movetime"},
-          {"infinite"}
+          {"infinite"},
+          {"difficulty"}
       }},
       {"stop", {
           {}
