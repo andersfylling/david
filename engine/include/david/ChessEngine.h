@@ -3,7 +3,7 @@
 // local dependencies
 #include "david/definitions.h"
 #include "david/bitboard.h"
-#include "david/uci/Listener.h"
+#include "uci/Listener.h"
 
 // forward declarations
 #include "david/forwards/Search.h"

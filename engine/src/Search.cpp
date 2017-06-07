@@ -8,9 +8,9 @@
 #include <david/EngineMaster.h>
 #include <fstream>
 #include "david/EngineContext.h"
-#include "david/uci/events.h"
-#include "david/uci/definitions.h"
-#include "david/uci/Listener.h"
+#include "uci/events.h"
+#include "uci/definitions.h"
+#include "uci/Listener.h"
 
 namespace david {
 //Signals Signal; //Scrapped for now
@@ -25,17 +25,17 @@ Search::Search(definitions::engineContext_ptr ctx)
 
 };
 
-Search::Search(definitions::engineContext_ptr ctx, ::david::uci::Listener &uci)
+Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener &uci)
     : engineContextPtr(ctx) {
-  using ::david::uci::event::GO;
-  using ::david::uci::event::STOP;
-  using ::david::uci::event::QUIT;
-  using ::david::uci::event::PONDERHIT;
-  using ::david::uci::event::UCINEWGAME;
-  using ::david::uci::arguments_t;
+  using ::uci::event::GO;
+  using ::uci::event::STOP;
+  using ::uci::event::QUIT;
+  using ::uci::event::PONDERHIT;
+  using ::uci::event::UCINEWGAME;
+  using ::uci::arguments_t;
 
   //
-  // uci protocol functions, used for uci protocol events
+  // forwards protocol functions, used for forwards protocol events
   //
   auto uci_go = [&](arguments_t args) {
     // All of the "go" parameters
@@ -277,7 +277,7 @@ int Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iD
  * Mainly used for debugging and progress atm
  */
 void Search::resetSearchValues() {
-  this->movetime = 10000; //Hardcoded variables as of now, need to switch to uci later
+  this->movetime = 10000; //Hardcoded variables as of now, need to switch to forwards later
   this->searchScore = 0;
   this->nodesSearched = 0;
   this->expanded.clear();

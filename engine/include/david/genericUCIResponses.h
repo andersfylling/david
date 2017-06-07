@@ -1,8 +1,9 @@
 #pragma once
 
-#include "david/uci/definitions.h"
-#include "david/uci/Response.h"
 #include "david/david.h"
+
+#include "uci/definitions.h"
+#include "uci/Response.h"
 
 namespace david {
 namespace uciResponses {
@@ -29,7 +30,7 @@ auto uciok = [&]() {
  * Not required.
  */
 auto option = [&]() {
-  //::uci::send("option name Hash type spin default 1 min 1 max 128");
+  //::forwards::send("option name Hash type spin default 1 min 1 max 128");
 };
 
 /**

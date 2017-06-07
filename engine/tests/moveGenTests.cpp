@@ -3,7 +3,6 @@
 #include "david/bitboard.h"
 #include "david/environment.h"
 #include <david/GameTree.h>
-#include "stockfish/stockfishMock.h"
 
 
 std::shared_ptr<david::bitboard::gameState> testStruct = std::make_shared<david::bitboard::gameState>(); // White Queen in the middle. Rest is normal

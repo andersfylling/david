@@ -4,7 +4,6 @@
 // local dependencies
 #include "david/definitions.h"
 #include "david/bitboard.h"
-#include "../../spike/variables.h"
 #include "david/GameTree.h"
 
 // system dependencies
@@ -13,7 +12,7 @@
 
 // forward declarations
 #include "david/forwards/EngineContext.h"
-#include "david/forwards/uci/Listener.h"
+#include "uci/forwards/Listener.h"
 
 
 namespace david {
@@ -27,7 +26,7 @@ namespace david {
 class Search {
  public:
   Search(definitions::engineContext_ptr ctx); // This can be used for unit testing and benchmarking.
-  Search(definitions::engineContext_ptr ctx, uci::Listener& uci);
+  Search(definitions::engineContext_ptr ctx, ::uci::Listener& uci);
   definitions::gameState_ptr searchInit(definitions::gameState_ptr node);
   int iterativeDeepening(definitions::gameState_ptr node);
   int negamax(definitions::gameState_ptr board, int alpha, int beta, int depth);
@@ -42,7 +41,7 @@ class Search {
   void setDebug(bool debug);
   void performanceTest(definitions::gameState_ptr node, int iterations);
 
-  // uci protocol methods, this can be used in unit testing
+  // forwards protocol methods, this can be used in unit testing
   void stopSearch();
   void quitSearch();
   void setDepth(int depth);

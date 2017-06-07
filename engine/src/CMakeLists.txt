@@ -6,4 +6,4 @@ file(GLOB chess_ann_srcfiles "*.cpp" "**/*.cpp")
 add_executable(chess_ann_src ${chess_ann_srcfiles})
 
 # Make this folder linkable for parent folder.
-target_link_libraries(chess_ann_src fann stockfish -lpthread)
+target_link_libraries(chess_ann_src fann uci -lpthread)

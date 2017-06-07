@@ -2,10 +2,8 @@
 
 // local dependencies
 #include "david/EngineContext.h"
-#include "david/uci/events.h"
 #include "david/ANN/ANN.h"
 #include "david/genericUCIResponses.h"
-#include "david/uci/Listener.h"
 #include "david/Search.h"
 #include "david/david.h"
 #include "david/utils.h"
@@ -13,6 +11,8 @@
 
 // git submodule dependencies
 #include "fann/floatfann.h"
+#include "uci/Listener.h"
+#include "uci/events.h"
 
 // system dependencies
 
@@ -153,9 +153,9 @@ david::bitboard::COLOR david::ChessEngine::getColor() {
  * Adds typical UCI responses to the engine
  */
 void david::ChessEngine::configureUCIProtocol() {
-  using uci::event::UCI;
-  using uci::event::ISREADY;
-  using uci::event::QUIT;
+  using ::uci::event::UCI;
+  using ::uci::event::ISREADY;
+  using ::uci::event::QUIT;
 
 
   // ###
@@ -165,11 +165,11 @@ void david::ChessEngine::configureUCIProtocol() {
   // ###
   // Here the UCI protocol is dealt with.
   // add basic responses
-  this->uciProtocol.addListener(UCI, uciResponses::responseToUCI); // uci
+  this->uciProtocol.addListener(UCI, uciResponses::responseToUCI); // forwards
   this->uciProtocol.addListener(ISREADY, uciResponses::responseToISREADY); // isready
 
-  // Got a quit uci command so stop listener [and exit program]
-  this->uciProtocol.addListener(QUIT, [&](uci::arguments_t args){
+  // Got a quit forwards command so stop listener [and exit program]
+  this->uciProtocol.addListener(QUIT, [&](::uci::arguments_t args){
     this->uciProtocol.stopListening();
   });
 }
