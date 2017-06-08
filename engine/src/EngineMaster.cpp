@@ -99,9 +99,6 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     // update current game state
     currentGame = currentPlayer->getGameState();
 
-    std::cout << "current game" << std::endl;
-    utils::printGameState(currentGame);
-
     // update active player / engine
     currentPlayer = whitesTurn ? eng2 : eng1;
     color = whitesTurn ? "b" : "w";
