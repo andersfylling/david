@@ -215,7 +215,7 @@ void david::ChessEngine::createANNInstance(std::string ANNFile) {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int david::ChessEngine::ANNEvaluate(definitions::gameState_ptr board) {
+int david::ChessEngine::ANNEvaluate(type::gameState_ptr board) {
   return this->neuralNetworkPtr->ANNEvaluate(board, this->player.color);
 }
 
@@ -246,7 +246,7 @@ void david::ChessEngine::setPlayerColor(bitboard::COLOR color) {
  *
  * @return shared_ptr of gameState
  */
-david::definitions::gameState_ptr david::ChessEngine::getGameState() {
+david::type::gameState_ptr david::ChessEngine::getGameState() {
   return this->currentGameState;
 }
 
@@ -258,8 +258,8 @@ david::definitions::gameState_ptr david::ChessEngine::getGameState() {
  * @param state shared_ptr of a gameState
  * @return true if the state was updated
  */
-bool david::ChessEngine::setGameState(definitions::gameState_ptr state) {
-  this->currentGameState = state;
+bool david::ChessEngine::setGameState(type::gameState_ptr state) {
+  this->currentGameState.swap(state); // switch pointer with state, state then dies by scope afterwards.
 }
 
 

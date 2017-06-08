@@ -20,12 +20,12 @@ namespace david {
 /**
  * Constructor used in debug/test
  */
-Search::Search(definitions::engineContext_ptr ctx)
+Search::Search(type::engineContext_ptr ctx)
     : engineContextPtr(ctx) {
 
 };
 
-Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener &uci)
+Search::Search(type::engineContext_ptr ctx, ::uci::Listener &uci)
     : engineContextPtr(ctx) {
   using ::uci::event::GO;
   using ::uci::event::STOP;
@@ -104,7 +104,7 @@ Search::Search(definitions::engineContext_ptr ctx, ::uci::Listener &uci)
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
  */
-definitions::gameState_ptr Search::searchInit(definitions::gameState_ptr node) {
+type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
@@ -130,7 +130,7 @@ definitions::gameState_ptr Search::searchInit(definitions::gameState_ptr node) {
  * @param board
  * @return
  */
-int Search::iterativeDeepening(definitions::gameState_ptr board) {
+int Search::iterativeDeepening(type::gameState_ptr board) {
   int alpha = (int) (-INFINITY);
   int beta = (int) (INFINITY);
   int iterationScore[1000];
@@ -228,7 +228,7 @@ int Search::iterativeDeepening(definitions::gameState_ptr board) {
  * @param depth
  * @return
  */
-int Search::negamax(definitions::gameState_ptr node, int alpha, int beta, int iDepth) {
+int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
   auto score = std::make_shared<bitboard::gameState>();
   auto bestScore = std::make_shared<bitboard::gameState>();
   bestScore->score = (int) (-INFINITY);

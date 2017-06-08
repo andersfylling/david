@@ -1,0 +1,1 @@
+Contains the training data files for the neural network

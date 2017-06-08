@@ -1,7 +1,7 @@
 #pragma once
 
 // local dependencies
-#include "david/definitions.h"
+#include "david/types.h"
 #include "david/bitboard.h"
 #include "uci/Listener.h"
 
@@ -24,14 +24,14 @@ class ChessEngine {
   bool UCIProtocolActivated;
 
   // this is sent to other classes so they can communicate with each other
-  definitions::engineContext_ptr engineContextPtr;
+  type::engineContext_ptr engineContextPtr;
 
-  definitions::search_ptr        searchPtr;
-  definitions::neuralNetwork_ptr neuralNetworkPtr;
-  definitions::gameTree_ptr      gameTreePtr;
+  type::search_ptr        searchPtr;
+  type::neuralNetwork_ptr neuralNetworkPtr;
+  type::gameTree_ptr      gameTreePtr;
 
 
-  definitions::gameState_ptr currentGameState;
+  type::gameState_ptr currentGameState;
 
   Player player;
 
@@ -103,7 +103,7 @@ class ChessEngine {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(definitions::gameState_ptr board);
+  int ANNEvaluate(type::gameState_ptr board);
 
 
   /**
@@ -133,7 +133,7 @@ class ChessEngine {
    *
    * @return shared_ptr of gameState
    */
-  definitions::gameState_ptr getGameState();
+  type::gameState_ptr getGameState();
 
   /**
    * Sets the game state based on a node.
@@ -142,7 +142,7 @@ class ChessEngine {
    * @param state shared_ptr of a gameState
    * @return true if the state was updated
    */
-  bool setGameState(definitions::gameState_ptr state);
+  bool setGameState(type::gameState_ptr state);
 
   /**
    * Check if the engine has lost.

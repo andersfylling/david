@@ -84,7 +84,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   bool whitesTurn = true;
 
   // lets start the game!
-  definitions::gameState_ptr currentGame = currentPlayer->getGameState();
+  type::gameState_ptr currentGame = currentPlayer->getGameState();
   do {
     whitesTurn = color == "w";
 

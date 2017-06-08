@@ -185,7 +185,7 @@ void binaryNetwork::generateTrainingFile(
     // write this to a file
     if (output.is_open()) {
 
-      ::david::definitions::gameState_ptr node = env.generateBoardFromFen(line);
+      ::david::type::gameState_ptr node = env.generateBoardFromFen(line);
       std::stringstream strm(line);
       std::string blackTurn = "";
       strm >> blackTurn;

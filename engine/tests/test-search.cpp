@@ -4,11 +4,11 @@
 
 #include <david/utils.h>
 #include "david/Search.h"
-#include "david/definitions.h"
+#include "david/types.h"
 #include "catch.hpp"
 
 
-david::definitions::engineContext_ptr context = std::make_shared<david::EngineContext>();
+david::type::engineContext_ptr context = std::make_shared<david::EngineContext>();
 david::Search test_search(context);
 std::shared_ptr<david::bitboard::gameState> node = std::make_shared<david::bitboard::gameState>();
 

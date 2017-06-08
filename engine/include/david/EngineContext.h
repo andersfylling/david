@@ -1,6 +1,6 @@
 #pragma once
 
-#include "david/definitions.h"
+#include "david/types.h"
 #include "david/bitboard.h"
 
 namespace david {
@@ -17,10 +17,10 @@ class EngineContext {
 
 
   // Different classes that are allowed to communicate with each other.
-  definitions::search_ptr         searchPtr         = nullptr;
-  definitions::neuralNetwork_ptr  neuralNetworkPtr  = nullptr;
-  definitions::gameTree_ptr       gameTreePtr       = nullptr;
-  bitboard::COLOR                 playerColor       = bitboard::COLOR::WHITE;
+  type::search_ptr         searchPtr         = nullptr;
+  type::neuralNetwork_ptr  neuralNetworkPtr  = nullptr;
+  type::gameTree_ptr       gameTreePtr       = nullptr;
+  bitboard::COLOR          playerColor       = bitboard::COLOR::WHITE;
 
   // used for testing
   bool testing = false;

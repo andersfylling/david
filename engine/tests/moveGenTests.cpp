@@ -426,7 +426,7 @@ TEST_CASE("Creating moves") {
 TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
   david::environment::Environment env(david::bitboard::COLOR::BLACK);
 
-  david::definitions::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  david::type::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
   env.setGameState(node);
 
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);
