@@ -20,7 +20,7 @@ struct Player {
 
 
 class ChessEngine {
-  uci::Listener uciProtocol;
+  ::uci::Listener uciProtocol;
   bool UCIProtocolActivated;
 
   // this is sent to other classes so they can communicate with each other
