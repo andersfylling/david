@@ -81,10 +81,12 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   sstr >> color; // now it gets the color
 
   auto currentPlayer = color == "w" ? eng1 : eng2;
+  bool whitesTurn = true;
 
   // lets start the game!
-  definitions::gameState_ptr currentGame = currentPlayer->getGameState();
+  type::gameState_ptr currentGame = currentPlayer->getGameState();
   do {
+    whitesTurn = color == "w";
 
     utils::printGameState(currentGame);
 
@@ -98,7 +100,8 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     currentGame = currentPlayer->getGameState();
 
     // update active player / engine
-    currentPlayer = color == "w" ? eng2 : eng1;
+    currentPlayer = whitesTurn ? eng2 : eng1;
+    color = whitesTurn ? "b" : "w";
   } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0);
 
   std::cout << currentGame->fullMoves << std::endl;

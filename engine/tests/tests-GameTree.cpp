@@ -7,7 +7,7 @@
 TEST_CASE( "Generate nodes", "[GameTree.generateNodes]" ) {
 
   auto context = std::make_shared<david::EngineContext>();
-  david::definitions::gameState_ptr root = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_ptr root = std::make_shared<david::bitboard::gameState>();
   david::utils::setDefaultChessLayout(root);
 
   david::gameTree::GameTree gt(context, root);

@@ -185,7 +185,7 @@ void binaryNetwork::generateTrainingFile(
     // write this to a file
     if (output.is_open()) {
 
-      ::david::definitions::gameState_ptr node = env.generateBoardFromFen(line);
+      ::david::type::gameState_ptr node = env.generateBoardFromFen(line);
       std::stringstream strm(line);
       std::string blackTurn = "";
       strm >> blackTurn;
@@ -196,52 +196,52 @@ void binaryNetwork::generateTrainingFile(
       bool isB = blackTurn == "b";
       std::array<double, 37> inputs = {
           blackTurn == "b" ? -1.0 : 1.0,
-          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackBishop) > 0.1 ? 1 : -1),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) > 0.1 ? 1 : -1),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKnight) > 0.1 ? 1 : -1),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackPawn) > 0.1 ? 1 : -1),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackQueen) > 0.1 ? 1 : -1),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackRook) > 0.1 ? 1 : -1),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackBishop) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackBishop)) / 10.0),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKing) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackKing)) / 10.0),
-          (isB ? -1 : 1 )  * (env.numberOfPieces(node->BlackKnight) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackKnight)) / 10.0),
-          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackPawn) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackPawn)) / 10.0),
-          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackQueen) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 10.0),
-          (isB ? -1 : 1 ) * (env.numberOfPieces(node->BlackRook) < 1.0 ? -1 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 10.0),
+          env.numberOfPieces(node->BlackBishop) > 0.1 ? -1 : 1,
+          env.numberOfPieces(node->BlackKing) > 0.1 ? -1 : 1,
+          env.numberOfPieces(node->BlackKnight) > 0.1 ? -1 : 1,
+          env.numberOfPieces(node->BlackPawn) > 0.1 ? -1 : 1,
+          env.numberOfPieces(node->BlackQueen) > 0.1 ? -1 : 1,
+          env.numberOfPieces(node->BlackRook) > 0.1 ? -1 : 1,
+          env.numberOfPieces(node->BlackBishop) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackBishop)) / 100.0,
+          env.numberOfPieces(node->BlackKing) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackKing)) / 100.0,
+          env.numberOfPieces(node->BlackKnight) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackKnight)) / 100.0,
+          env.numberOfPieces(node->BlackPawn) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackPawn)) / 100.0,
+          env.numberOfPieces(node->BlackQueen) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 100.0,
+          env.numberOfPieces(node->BlackRook) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 100.0,
 
           // should be a const that shows who this board is being evaluated for
           // then seperate it into, friendly & enemies.
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) > 0.1 ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) > 0.1 ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) > 0.1 ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhitePawn) > 0.1 ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteRook) > 0.1 ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) > 0.1 ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteBishop) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 10.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteQueen) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 10.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKnight) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 10.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhitePawn) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 10.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteRook) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 10.0),
-          (isB ? 1 : -1 ) * (env.numberOfPieces(node->WhiteKing) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 10.0),
+          env.numberOfPieces(node->WhiteBishop) > 0.1 ? 1.0 : -1.0,
+          env.numberOfPieces(node->WhiteQueen) > 0.1 ? 1.0 : -1.0,
+          env.numberOfPieces(node->WhiteKnight) > 0.1 ? 1.0 : -1.0,
+          env.numberOfPieces(node->WhitePawn) > 0.1 ? 1.0 : -1.0,
+          env.numberOfPieces(node->WhiteRook) > 0.1 ? 1.0 : -1.0,
+          env.numberOfPieces(node->WhiteKing) > 0.1 ? 1.0 : -1.0,
+          env.numberOfPieces(node->WhiteBishop) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 100.0,
+          env.numberOfPieces(node->WhiteQueen) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 100.0,
+          env.numberOfPieces(node->WhiteKnight) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 100.0,
+          env.numberOfPieces(node->WhitePawn) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 100.0,
+          env.numberOfPieces(node->WhiteRook) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 100.0,
+          env.numberOfPieces(node->WhiteKing) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 100.0,
 
 
-          (isB ? 1 : -1 ) * (static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0), // is never 0
-          (isB ? -1 : 1 ) * (static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0), // is never 0
+          static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0, // is never 0
+          static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0, // is never 0
           static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 100.0,
 
-          (isB ? -1 : 1 ) * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 1.0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 100.0)),
-          (isB ? 1 : -1 ) * (static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? -1.0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0),
+          static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 100.0),
+          static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0,
 
-          (isB ? 1 : -1 ) * (node->blackQueenCastling ? 1.0 : -1.0),
-          (isB ? 1 : -1 ) * (node->blackKingCastling  ? 1.0 : -1.0),
-          (isB ? -1 : 1 ) * (node->whiteQueenCastling ? 1.0 : -1.0),
-          (isB ? -1 : 1 ) * (node->whiteKingCastling  ? 1.0 : -1.0),
+          node->blackQueenCastling ? 1.0 : -1.0,
+          node->blackKingCastling  ? 1.0 : -1.0,
+          node->whiteQueenCastling ? 1.0 : -1.0,
+          node->whiteKingCastling  ? 1.0 : -1.0,
 
           static_cast<double>(node->halfMoves) / 100.0,
           static_cast<double>(node->fullMoves) / 100.0,
 
           // if the color playing is not yours, and the number here is high, it should not be a good thing.
-          (isB ? -1 : 1 ) * static_cast<double>(node->children.size()) / 100.0 // will always be 0 unless children are generated before comparing score.
+          static_cast<double>(node->children.size() / 100.0) // will always be 0 unless children are generated before comparing score.
 
       };
 
@@ -389,11 +389,11 @@ void binaryNetwork::run()
 {
   const float learning_rate = 0.7f;
   const float desired_error = 0.00001f;
-  const unsigned int max_iterations = 120000;
+  const unsigned int max_iterations = 12000;
   const unsigned int max_trainingSets = 150000;
   const unsigned int iterations_between_reports = 1;
-  const unsigned int nrOfLayers = 5;
-  const unsigned int layers[nrOfLayers] = {71, 200, 40, 12, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int nrOfLayers = 3;
+  const unsigned int layers[nrOfLayers] = {71, 200, 1}; // input, hidden1, ..., hiddenN, output
   const auto folder = ::david::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.

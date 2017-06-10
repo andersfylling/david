@@ -1,7 +1,7 @@
 #pragma once
 
 // local dependencies
-#include "david/definitions.h"
+#include "david/types.h"
 #include <david/bitboard.h>
 
 // git submodule libraries
@@ -16,7 +16,7 @@ namespace david {
 class ANN {
  public:
   ANN(std::string filename);
-  ANN(definitions::engineContext_ptr context, std::string filename);
+  ANN(type::engineContext_ptr context, std::string filename);
   ~ANN();
 
 
@@ -55,7 +55,7 @@ class ANN {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(definitions::gameState_ptr board, bitboard::COLOR color);
+  int ANNEvaluate(type::gameState_ptr board, bitboard::COLOR color);
 
 
   /**
@@ -69,7 +69,7 @@ class ANN {
 
 
  private:
-  definitions::engineContext_ptr engineContextPtr;
+  type::engineContext_ptr engineContextPtr;
   std::string ANNFile;
   fann* ANNInstance;
 };

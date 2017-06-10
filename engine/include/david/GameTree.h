@@ -22,34 +22,34 @@ namespace gameTree {
 class GameTree {
  private:
   // previous can be used for en passant
-  definitions::gameState_ptr previous;// in case a player regrets their move?
-  definitions::gameState_ptr current; // this represent the active game board
+  type::gameState_ptr previous;// in case a player regrets their move?
+  type::gameState_ptr current; // this represent the active game board
   int maxNumberOfNodes; // nodes in memory
 
-  void getNumberOfNodes(definitions::gameState_ptr node, int &counter);
-  void getDepth(definitions::gameState_ptr node, int &depth);
+  void getNumberOfNodes(type::gameState_ptr node, int &counter);
+  void getDepth(type::gameState_ptr node, int &depth);
 
-  definitions::engineContext_ptr engineContextPtr;
+  type::engineContext_ptr engineContextPtr;
 
  public:
-  GameTree(definitions::engineContext_ptr ctx);
-  GameTree(definitions::engineContext_ptr ctx, definitions::gameState_ptr node);
+  GameTree(type::engineContext_ptr ctx);
+  GameTree(type::engineContext_ptr ctx, type::gameState_ptr node);
   ~GameTree();
   void reset();
-  void reset(definitions::gameState_ptr node);
-  void resetChildren(definitions::gameState_ptr node);
-  void newRootNode(definitions::gameState_ptr node);
-  definitions::gameState_ptr regretNewRootNode();
+  void reset(type::gameState_ptr node);
+  void resetChildren(type::gameState_ptr node);
+  void newRootNode(type::gameState_ptr node);
+  type::gameState_ptr regretNewRootNode();
   void setMaxNumberOfNodes(int n);
   int getMaxNumberOfNodes();
   void generateNodes();
-  definitions::gameState_ptr generateNode(definitions::gameState_ptr parent, bitboard::gameState child);
-  definitions::gameState_ptr getCurrentNode();
+  type::gameState_ptr generateNode(type::gameState_ptr parent, bitboard::gameState child);
+  type::gameState_ptr getCurrentNode();
   int getNumberOfNodes();
-  void generateChildren(definitions::gameState_ptr node);
-  void sortChildren(definitions::gameState_ptr node);
+  void generateChildren(type::gameState_ptr node);
+  void sortChildren(type::gameState_ptr node);
   int getDepth();
-  void printAllScores(definitions::gameState_ptr root);
+  void printAllScores(type::gameState_ptr root);
 
 };
 

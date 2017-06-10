@@ -26,7 +26,7 @@ using bitboard::COLOR;
 using bitboard::pieceAttack;
 using bitboard::move_t;
 
-void Environment::setGameState(definitions::gameState_ptr st) {
+void Environment::setGameState(type::gameState_ptr st) {
   state = (*st); // dereferrence
 }
 
@@ -597,8 +597,8 @@ void Environment::setFen(std::string fen) {
  * @param fen std::string, must be correctly formatted (!)
  * @return new shared_ptr of gameState
  */
-definitions::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
-  definitions::gameState_ptr node = std::make_shared<bitboard::gameState>();
+type::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
+  type::gameState_ptr node = std::make_shared<bitboard::gameState>();
 
   std::map<const char, bitboard::bitboard_t &> links = {
       {'b', node->BlackBishop},

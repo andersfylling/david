@@ -24,7 +24,7 @@ ANN::ANN(std::string filename)
  * @param filename The ANN weight file.
  * @see /engine/includes/david/definitions.h
  */
-ANN::ANN(definitions::engineContext_ptr ctx, std::string filename)
+ANN::ANN(type::engineContext_ptr ctx, std::string filename)
     : engineContextPtr(ctx),
       ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr) {}
@@ -126,7 +126,7 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(definitions::gameState_ptr board, bitboard::COLOR color) {
+int ANN::ANNEvaluate(type::gameState_ptr board, bitboard::COLOR color) {
   fann_type *inputs = utils::convertGameStateToInputs(board, color); // float array
   fann_type *outputs = fann_run(this->ANNInstance, inputs); // float array
 
@@ -155,7 +155,7 @@ int ANN::ANNEvaluate(std::string fen) {
   COLOR c = color == "w" ? WHITE : BLACK;
 
   environment::Environment env(c);
-  definitions::gameState_ptr board = env.generateBoardFromFen(fen);
+  type::gameState_ptr board = env.generateBoardFromFen(fen);
 
   return this->ANNEvaluate(board, c);
 }

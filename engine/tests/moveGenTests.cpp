@@ -3,7 +3,6 @@
 #include "david/bitboard.h"
 #include "david/environment.h"
 #include <david/GameTree.h>
-#include "stockfish/stockfishMock.h"
 
 
 std::shared_ptr<david::bitboard::gameState> testStruct = std::make_shared<david::bitboard::gameState>(); // White Queen in the middle. Rest is normal
@@ -427,7 +426,7 @@ TEST_CASE("Creating moves") {
 TEST_CASE("Validate that fen strings are parsed correctly", "[Environment.generateBoardFromFen]") {
   david::environment::Environment env(david::bitboard::COLOR::BLACK);
 
-  david::definitions::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
+  david::type::gameState_ptr node = env.generateBoardFromFen("r1bqkbnr/pppppppp/n7/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2");
   env.setGameState(node);
 
   REQUIRE((env.whitePieces() | env.blackPieces()) == 18444210833279025149ULL);

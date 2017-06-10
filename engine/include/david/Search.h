@@ -2,9 +2,8 @@
 
 
 // local dependencies
-#include "david/definitions.h"
+#include "david/types.h"
 #include "david/bitboard.h"
-#include "../../spike/variables.h"
 #include "david/GameTree.h"
 
 // system dependencies
@@ -13,7 +12,7 @@
 
 // forward declarations
 #include "david/forwards/EngineContext.h"
-#include "david/forwards/uci/Listener.h"
+#include "uci/forwards/Listener.h"
 
 
 namespace david {
@@ -26,11 +25,11 @@ namespace david {
  */
 class Search {
  public:
-  Search(definitions::engineContext_ptr ctx); // This can be used for unit testing and benchmarking.
-  Search(definitions::engineContext_ptr ctx, uci::Listener& uci);
-  definitions::gameState_ptr searchInit(definitions::gameState_ptr node);
-  int iterativeDeepening(definitions::gameState_ptr node);
-  int negamax(definitions::gameState_ptr board, int alpha, int beta, int depth);
+  Search(type::engineContext_ptr ctx); // This can be used for unit testing and benchmarking.
+  Search(type::engineContext_ptr ctx, ::uci::Listener& uci);
+  type::gameState_ptr searchInit(type::gameState_ptr node);
+  int iterativeDeepening(type::gameState_ptr node);
+  int negamax(type::gameState_ptr board, int alpha, int beta, int depth);
   void setAbort(bool isAborted);
   void setComplete(bool isComplete);
 
@@ -40,9 +39,9 @@ class Search {
   int returnScore();
   bool returnComplete();
   void setDebug(bool debug);
-  void performanceTest(definitions::gameState_ptr node, int iterations);
+  void performanceTest(type::gameState_ptr node, int iterations);
 
-  // uci protocol methods, this can be used in unit testing
+  // forwards protocol methods, this can be used in unit testing
   void stopSearch();
   void quitSearch();
   void setDepth(int depth);
@@ -57,6 +56,7 @@ class Search {
   void setMate(int mate);
   void setInfinite(int mate); // bool ?
   void setPonder(int ponder); // bool ?
+  void setDifficulty(int difficulty);
 
   clock_t startTime;
 
@@ -69,7 +69,7 @@ class Search {
   int ponder;
   std::string searchMoves;
   int searchScore;
-  definitions::gameState_ptr bestMove;
+  type::gameState_ptr bestMove;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
@@ -77,24 +77,35 @@ class Search {
   bool isComplete;
   bool debug;
   int nodesSearched;
-  definitions::engineContext_ptr engineContextPtr;
+  type::engineContext_ptr engineContextPtr;
+  std::vector<int> expanded;
 };
 
-  //
-  // Debug functions
-  //
+  /**
+   * Returns depth to be searched, only used in debug
+   * @return
+   */
   inline int Search::returnDepth()  {
     return this->depth;
   }
-
+  /**
+   * Returns how much time allocated to the search
+   * @return
+   */
   inline int Search::returnTimeToSearch(){
     return this->movetime;
   }
-
+  /**
+   * Returns bestScore sat by searching
+   * @return
+   */
   inline int Search::returnScore() {
     return this->searchScore;
   }
-
+  /**
+   * Returns if the search is complete, search not aborted and completed without issues
+   * @return
+   */
   inline bool Search::returnComplete() {
     return this->isComplete;
   }
@@ -121,7 +132,7 @@ class Search {
    * @param debug
    */
   inline void Search::setDebug(bool debug) {
-    this->debug == debug;
+    this->debug = debug;
   }
 
 

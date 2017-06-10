@@ -4,12 +4,12 @@
 [submodule "external/fann"]
 	path = external/fann
 	url = git://github.com/sciencefyll/fann
-[submodule "external/Stockfish"]
-	path = external/Stockfish
-	url = https://github.com/sciencefyll/Stockfish
 [submodule "external/benchmark"]
 	path = external/benchmark
 	url = https://github.com/google/benchmark
 [submodule "external/pgnToFen"]
 	path = external/pgnToFen
 	url = https://github.com/klyngen/pgnToFen
+[submodule "external/uci"]
+	path = external/uci
+	url = https://github.com/sciencefyll/uci/

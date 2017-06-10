@@ -1,7 +1,7 @@
 #pragma once
 
 #include "david/bitboard.h"
-#include "david/definitions.h"
+#include "david/types.h"
 #include <array>
 #include <vector>
 
@@ -44,7 +44,7 @@ class Environment {
  public:
   Environment(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
-  void setGameState(definitions::gameState_ptr st);  // Setting the gamestate for testing
+  void setGameState(type::gameState_ptr st);  // Setting the gamestate for testing
   gameState getGameState();
   void printBitboards();            // Prints number values of all 12 boards
 
@@ -124,7 +124,7 @@ class Environment {
   bitboard_t intToUint64(int i);
 
   void setFen(std::string fen);
-  definitions::gameState_ptr generateBoardFromFen(const std::string fen);
+  type::gameState_ptr generateBoardFromFen(const std::string fen);
 
 };
 }

@@ -24,7 +24,7 @@ class GameTree;
 
 // all dem typedefs
 namespace david {
-namespace definitions {
+namespace type {
 
 // Used by classes to communicate with other instances not directly related except on a parent level
 typedef std::shared_ptr<::david::EngineContext>       engineContext_ptr;

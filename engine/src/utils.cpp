@@ -32,7 +32,7 @@ int utils::stoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
 
-bool utils::isHalfMove(definitions::gameState_ptr parent, definitions::gameState_ptr child) {
+bool utils::isHalfMove(type::gameState_ptr parent, type::gameState_ptr child) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
   using bitboard::bitboard_t;
@@ -92,7 +92,7 @@ bool utils::isHalfMove(definitions::gameState_ptr parent, definitions::gameState
  * @param whiteMovesNext
  * @return
  */
-std::string utils::generateFen(definitions::gameState_ptr node) {
+std::string utils::generateFen(type::gameState_ptr node) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
   using bitboard::bitboard_t;
@@ -213,7 +213,7 @@ bool utils::fileExists(const std::string &file) {
  * @param player
  * @return
  */
-fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, bitboard::COLOR color) {
+fann_type *utils::convertGameStateToInputs(type::gameState_ptr node, bitboard::COLOR color) {
   environment::Environment env(node->playerColor);
   env.setGameState(node);
   env.generateAttacks();
@@ -426,7 +426,7 @@ fann_type *utils::convertGameStateToInputs(definitions::gameState_ptr node, bitb
 
  */
 
-void utils::setDefaultChessLayout(definitions::gameState_ptr node) {
+void utils::setDefaultChessLayout(type::gameState_ptr node) {
   node->BlackBishop = 2594073385365405696ULL;
   node->BlackKing = 576460752303423488ULL;
   node->BlackKnight = 4755801206503243776ULL;
@@ -443,7 +443,7 @@ void utils::setDefaultChessLayout(definitions::gameState_ptr node) {
 
 }
 
-void utils::printGameState(definitions::gameState_ptr gs) {
+void utils::printGameState(type::gameState_ptr gs) {
 
   std::map<const char, bitboard::bitboard_t &> links = {
       {'b', gs->BlackBishop},

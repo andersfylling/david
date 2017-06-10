@@ -9,5 +9,5 @@ list(REMOVE_ITEM chess_ann_anntrainingfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/
 add_executable(chess_ann_anntraining  ${chess_ann_anntrainingfiles})
 
 
-target_link_libraries(chess_ann_anntraining stockfish fann -lpthread)
+target_link_libraries(chess_ann_anntraining fann uci -lpthread)
 
