@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
+#include "david/bitboard.h"
 
 #ifdef __linux__
 //linux code goes here
@@ -513,4 +514,78 @@ std::string utils::getAbsoluteProjectPath() {
 #endif
 }
 
+/**
+ * Prints a bitboard as a chessboard with 0's and 1's
+ * @param board - at bitboard_t
+ */
+void utils::printBoard(bitboard::bitboard_t board) {
+    std::string bits = std::bitset<64>(board).to_string();
+    std::cout << "\n  ";
+    for (int i = 'A'; i < 'A' + 8; i++)
+      std::cout << "  " << (char) i << " ";
+    std::cout << std::endl;
+    std::cout << "  +---+---+---+---+---+---+---+---+\n";
+    for (int i = 0; i < 8; i++) {
+      std::cout << i + 1 << " | ";
+      for (int j = 0; j < 8; j++) {
+        std::cout << bits.at((i * 8) + j) << " | ";
+      }
+      std::cout << '\n';
+      std::cout << "  +---+---+---+---+---+---+---+---+\n";
+    }
+    std::cout << '\n';
 }
+
+/**
+ * Retuns number of active bits in a bitboard
+ * @param board - bitboard
+ * @return number of active bits
+ */
+bitboard::bitboard_t utils::numberOfPieces(bitboard::bitboard_t board) {
+    // Fastest way of getting nuber of active bits.
+    // Uses special CPU fuctionality
+    // No windows-compiler support. Ever heard of minGw?
+  #ifdef __GNUG__
+    return __builtin_popcountll(board);
+  #endif
+}
+
+
+// Needs compiler support for Microsoft c++ compiler
+// Works with gcc based compilers
+bitboard::bitboard_t utils::LSB(bitboard::bitboard_t board) {
+  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
+}
+
+// Needs compiler support for Microsoft c++ compiler
+// Works with gcc based compilers
+bitboard::bitboard_t utils::NSB(bitboard::bitboard_t &board) {
+  board &= ~(1LL << LSB(board));
+  return LSB(board);
+}
+
+bitboard::bitboard_t utils::MSB(bitboard::bitboard_t board) {
+  return 63 - __builtin_clzll(board);
+}
+
+bitboard::bitboard_t utils::NSB_r(bitboard::bitboard_t &board) {
+  board &= ~(1LL << MSB(board));
+  return MSB(board);
+}
+
+// Turns on bit
+void utils::flipBitOn(bitboard::bitboard_t &board, bitboard::bitboard_t index) {
+  board |= (1LL << index);
+}
+
+// YEAH tell that bit to flipp off!!!
+// Nobody wants you bit... NOBODY WANTS YOU
+void utils::flipBitOff(bitboard::bitboard_t &board, bitboard::bitboard_t index) {
+  board &= ~(1ULL << index);
+}
+
+bool utils::bitIsSet(bitboard::bitboard_t board, bitboard::bitboard_t index) {
+  return (board & (1ULL << index)) ? true : false;
+}
+} // End of david
+

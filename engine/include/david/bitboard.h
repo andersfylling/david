@@ -93,6 +93,9 @@ struct gameState {
   bitboard_t BlackQueen;
   bitboard_t BlackKing;
 
+  move_t lastWhiteMove;
+  move_t lastBlackMove;
+
   bitboard::COLOR playerColor = bitboard::COLOR::WHITE;
   std::vector<std::shared_ptr<bitboard::gameState>> children;
 
