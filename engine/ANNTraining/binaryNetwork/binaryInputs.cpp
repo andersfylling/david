@@ -42,8 +42,8 @@ int binaryNetwork::print_callback(FANN::neural_net &net, FANN::training_data &tr
   cout << "Epochs     " << setw(8) << epochs << ". "
        << "Current Error: " << left << net.get_MSE() << " <> " << desired_error << right << endl; // << " <> " << engine << " == " << expected
 
-  trainingAccuracy << epochs << ", " << engine << ", " << expected << std::endl;
-  trainingMSE << epochs << ", " << net.get_MSE() << std::endl;
+  trainingAccuracy << epochs << ", " << fann_abs((expected - engine) * 10000) << std::endl;
+  trainingMSE << epochs << ", " << (int) (net.get_MSE() * 1000000) << std::endl;
 
   return 0;
 }
@@ -193,8 +193,9 @@ void binaryNetwork::generateTrainingFile(
       strm >> blackTurn;
       env.setGameState(node);
       env.generateAttacks();
+      auto attacks = env.getAttackState();
       bool isB = blackTurn == "b";
-      std::array<double, 37> inputs = {
+      std::array<double, 49> inputs = {
           blackTurn == "b" ? -1.0 : 1.0,
           env.numberOfPieces(node->BlackBishop) > 0.1 ? -1 : 1,
           env.numberOfPieces(node->BlackKing) > 0.1 ? -1 : 1,
@@ -208,6 +209,12 @@ void binaryNetwork::generateTrainingFile(
           env.numberOfPieces(node->BlackPawn) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackPawn)) / 100.0,
           env.numberOfPieces(node->BlackQueen) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 100.0,
           env.numberOfPieces(node->BlackRook) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.BlackBishop) & env.whitePieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.BlackKing) & env.whitePieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.BlackKnight) & env.whitePieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.BlackPawn) & env.whitePieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.BlackQueen) & env.whitePieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.BlackRook) & env.whitePieces())) / 100.0,
 
           // should be a const that shows who this board is being evaluated for
           // then seperate it into, friendly & enemies.
@@ -217,12 +224,18 @@ void binaryNetwork::generateTrainingFile(
           env.numberOfPieces(node->WhitePawn) > 0.1 ? 1.0 : -1.0,
           env.numberOfPieces(node->WhiteRook) > 0.1 ? 1.0 : -1.0,
           env.numberOfPieces(node->WhiteKing) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhiteBishop) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 100.0,
-          env.numberOfPieces(node->WhiteQueen) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 100.0,
-          env.numberOfPieces(node->WhiteKnight) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 100.0,
-          env.numberOfPieces(node->WhitePawn) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 100.0,
-          env.numberOfPieces(node->WhiteRook) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 100.0,
-          env.numberOfPieces(node->WhiteKing) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 100.0,
+          env.numberOfPieces(node->WhiteBishop) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 100.0,
+          env.numberOfPieces(node->WhiteQueen) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 100.0,
+          env.numberOfPieces(node->WhiteKnight) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 100.0,
+          env.numberOfPieces(node->WhitePawn) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 100.0,
+          env.numberOfPieces(node->WhiteRook) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 100.0,
+          env.numberOfPieces(node->WhiteKing) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.WhiteBishop) & env.blackPieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.WhiteKing) & env.blackPieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.WhiteKnight) & env.blackPieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.WhitePawn) & env.blackPieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.WhiteQueen) & env.blackPieces())) / 100.0,
+          static_cast<double>(env.numberOfPieces((*attacks.WhiteRook) & env.blackPieces())) / 100.0,
 
 
           static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0, // is never 0
@@ -248,7 +261,7 @@ void binaryNetwork::generateTrainingFile(
       // generate inputs
       int nInputs = 0;
       for (auto b : inputs) {
-        fileStringInput << std::setprecision(2) << b << ' '; // limit to one decimal... I think
+        fileStringInput << std::setprecision(4) << b << ' '; // limit to one decimal... I think
         nInputs += 1;
       }
       std::array<::david::bitboard::bitboard_t, 2> boards1 = {
@@ -387,13 +400,13 @@ void binaryNetwork::generateTrainingFile(
  */
 void binaryNetwork::run()
 {
-  const float learning_rate = 0.7f;
+  const float learning_rate = 0.5f;
   const float desired_error = 0.00001f;
   const unsigned int max_iterations = 12000;
-  const unsigned int max_trainingSets = 150000;
+  const unsigned int max_trainingSets = 15000;
   const unsigned int iterations_between_reports = 1;
-  const unsigned int nrOfLayers = 3;
-  const unsigned int layers[nrOfLayers] = {71, 200, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int nrOfLayers = 5;
+  const unsigned int layers[nrOfLayers] = {83, 500, 100, 63, 1}; // input, hidden1, ..., hiddenN, output
   const auto folder = ::david::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.

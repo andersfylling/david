@@ -748,6 +748,10 @@ void Environment::generateAttacks() {
   attacks.BlackKnight = knightMove(COLOR::BLACK);
 }
 
+pieceAttack Environment::getAttackState() {
+  return attacks;
+}
+
 bitboard_t Environment::combinedBlackAttacks() {
   bitboard_t comb = 0;
   for (bitboard_t i = 0; i < numberOfPieces(state.BlackBishop); i++) {
