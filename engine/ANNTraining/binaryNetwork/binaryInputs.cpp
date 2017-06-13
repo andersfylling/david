@@ -31,6 +31,7 @@ using std::noshowpos;
 namespace binaryNetwork {
 std::ofstream trainingAccuracy;
 std::ofstream trainingMSE;
+
 }
 
 // Callback function that simply prints the information to cout
@@ -39,10 +40,29 @@ int binaryNetwork::print_callback(FANN::neural_net &net, FANN::training_data &tr
                                   float desired_error, unsigned int epochs, void *user_data) {
   float engine = net.run(train.get_input()[epochs])[0];
   float expected = train.get_output()[epochs][0];
-  cout << "Epochs     " << setw(8) << epochs << ". "
-       << "Current Error: " << left << net.get_MSE() << " <> " << desired_error << right << endl; // << " <> " << engine << " == " << expected
+  cout << "Epochs     "       << setw(8)                                    << epochs << ".   "
+       << "MSE: "             << left                                       << net.get_MSE()
+       << "\tAccuracy miss: " << (int) (((expected - engine) / expected) * 100) << '%'
+       << right << endl;
 
-  trainingAccuracy << epochs << ", " << fann_abs((expected - engine) * 10000) << std::endl;
+  // Try downscaling the learning rate a little
+  if (net.get_MSE() < 0.001 && net.get_learning_rate() > 0.005f) {
+    if (net.get_learning_rate() > 0.1f) {
+      net.set_learning_rate(0.1f);
+    }
+    else if (net.get_MSE() < 0.0006 && net.get_learning_rate() > 0.05f) {
+      net.set_learning_rate(0.05f);
+    }
+    else if (net.get_MSE() < 0.0004 && net.get_learning_rate() > 0.01) {
+      net.set_learning_rate(0.005f);
+    }
+
+  }
+  //auto diff = engine - expected;
+  //auto negP = (diff / engine) * 100;
+  //auto wrongP = 100.0 - negP;
+
+  trainingAccuracy << epochs << ", " << (int) (expected * 10000) << ", " << (int) (engine * 10000) << std::endl;
   trainingMSE << epochs << ", " << (int) (net.get_MSE() * 1000000) << std::endl;
 
   return 0;
@@ -98,7 +118,7 @@ void binaryNetwork::train_network(
   {
     // Initialize and train the network with the data
     //net.init_weights(data);
-    net.randomize_weights(-0.301, 0.301);
+    net.randomize_weights(-0.301f, 0.301f);
 
     cout << "Max Epochs " << setw(8) << max_iterations << ". "
          << "Desired Error: " << left << desired_error << right << endl;
@@ -174,11 +194,17 @@ void binaryNetwork::generateTrainingFile(
   int lineNr = 1;
   int skippedtrainingSets = 0;
   std::stringstream fileStringInput;
+  int lastP = 0;
   while (std::getline(infile, line) && max_trainingSets > (trainingPairs - skippedtrainingSets) && !infile.eof()) {
     lines += 1;
 
     if (lines % 1000 == 0) {
-      std::cout << 100 * (trainingPairs - skippedtrainingSets) / (max_trainingSets) << '%' << std::endl;
+      int p = 100 * (trainingPairs - skippedtrainingSets) / (max_trainingSets);
+
+      if (p != lastP) {
+        std::cout << p << '%' << std::endl;
+        lastP = p;
+      }
     }
 
 
@@ -186,188 +212,39 @@ void binaryNetwork::generateTrainingFile(
     if (output.is_open()) {
 
       ::david::type::gameState_ptr node = env.generateBoardFromFen(line);
-      std::stringstream strm(line);
-      std::string blackTurn = "";
-      strm >> blackTurn;
-      blackTurn = "";
-      strm >> blackTurn;
-      env.setGameState(node);
-      env.generateAttacks();
-      auto attacks = env.getAttackState();
-      bool isB = blackTurn == "b";
-      std::array<double, 49> inputs = {
-          blackTurn == "b" ? -1.0 : 1.0,
-          env.numberOfPieces(node->BlackBishop) > 0.1 ? -1 : 1,
-          env.numberOfPieces(node->BlackKing) > 0.1 ? -1 : 1,
-          env.numberOfPieces(node->BlackKnight) > 0.1 ? -1 : 1,
-          env.numberOfPieces(node->BlackPawn) > 0.1 ? -1 : 1,
-          env.numberOfPieces(node->BlackQueen) > 0.1 ? -1 : 1,
-          env.numberOfPieces(node->BlackRook) > 0.1 ? -1 : 1,
-          env.numberOfPieces(node->BlackBishop) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackBishop)) / 100.0,
-          env.numberOfPieces(node->BlackKing) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackKing)) / 100.0,
-          env.numberOfPieces(node->BlackKnight) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackKnight)) / 100.0,
-          env.numberOfPieces(node->BlackPawn) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackPawn)) / 100.0,
-          env.numberOfPieces(node->BlackQueen) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackQueen)) / 100.0,
-          env.numberOfPieces(node->BlackRook) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(node->BlackRook)) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.BlackBishop) & env.whitePieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.BlackKing) & env.whitePieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.BlackKnight) & env.whitePieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.BlackPawn) & env.whitePieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.BlackQueen) & env.whitePieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.BlackRook) & env.whitePieces())) / 100.0,
+      auto inputs = ::david::utils::convertGameStateToInputs(node);
 
-          // should be a const that shows who this board is being evaluated for
-          // then seperate it into, friendly & enemies.
-          env.numberOfPieces(node->WhiteBishop) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhiteQueen) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhiteKnight) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhitePawn) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhiteRook) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhiteKing) > 0.1 ? 1.0 : -1.0,
-          env.numberOfPieces(node->WhiteBishop) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteBishop)) / 100.0,
-          env.numberOfPieces(node->WhiteQueen) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteQueen)) / 100.0,
-          env.numberOfPieces(node->WhiteKnight) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteKnight)) / 100.0,
-          env.numberOfPieces(node->WhitePawn) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhitePawn)) / 100.0,
-          env.numberOfPieces(node->WhiteRook) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteRook)) / 100.0,
-          env.numberOfPieces(node->WhiteKing) == 0 ? 0.0 : static_cast<double>(env.numberOfPieces(node->WhiteKing)) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.WhiteBishop) & env.blackPieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.WhiteKing) & env.blackPieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.WhiteKnight) & env.blackPieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.WhitePawn) & env.blackPieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.WhiteQueen) & env.blackPieces())) / 100.0,
-          static_cast<double>(env.numberOfPieces((*attacks.WhiteRook) & env.blackPieces())) / 100.0,
-
-
-          static_cast<double>(env.numberOfPieces(env.whitePieces())) / 100.0, // is never 0
-          static_cast<double>(env.numberOfPieces(env.blackPieces())) / 100.0, // is never 0
-          static_cast<double>(env.numberOfPieces(env.whitePieces() | env.blackPieces())) / 100.0,
-
-          static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) < 1.0 ? 0 : -1.0 * (static_cast<double>(env.numberOfPieces(env.combinedBlackAttacks() & env.whitePieces())) / 100.0),
-          static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) < 1.0 ? 0 : static_cast<double>(env.numberOfPieces(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0,
-
-          node->blackQueenCastling ? 1.0 : -1.0,
-          node->blackKingCastling  ? 1.0 : -1.0,
-          node->whiteQueenCastling ? 1.0 : -1.0,
-          node->whiteKingCastling  ? 1.0 : -1.0,
-
-          static_cast<double>(node->halfMoves) / 100.0,
-          static_cast<double>(node->fullMoves) / 100.0,
-
-          // if the color playing is not yours, and the number here is high, it should not be a good thing.
-          static_cast<double>(node->children.size() / 100.0) // will always be 0 unless children are generated before comparing score.
-
-      };
-
-      // generate inputs
-      int nInputs = 0;
-      for (auto b : inputs) {
-        fileStringInput << std::setprecision(4) << b << ' '; // limit to one decimal... I think
-        nInputs += 1;
-      }
-      std::array<::david::bitboard::bitboard_t, 2> boards1 = {
-          node->BlackKing,
-          node->WhiteKing
-      };
-      std::array<::david::bitboard::bitboard_t, 8> boards2 = {
-          node->BlackBishop,
-          node->BlackKnight,
-          node->BlackQueen,
-          node->BlackRook,
-          node->WhiteBishop,
-          node->WhiteQueen,
-          node->WhiteKnight,
-          node->WhiteRook
-      };
-      std::array<::david::bitboard::bitboard_t, 2> boards8 = {
-          node->BlackPawn,
-          node->WhitePawn
-      };
-
-      // generate inputs
-      for (auto b : boards1) {
-        auto ba = std::bitset<64>(b);
-        double arr[1] = {-1.0};
-        auto prog = 0;
-        for (uint8_t i = 0; i < ba.size(); i++) {
-          if (::david::utils::bitAt(b, i)) {
-            arr[prog++] = i == 0 ? 0 : i / 10.0;
-          }
-        }
-
-        for (; prog < 1; prog++) {
-          arr[prog] = -1.0;
-        }
-
-        for (auto e : arr) {
-          fileStringInput << std::setprecision(2) << e << ' ';
-          nInputs += 1;
-        }
-      }
-
-      // Issue, what if the first on is gone? same on boards8
-      for (auto b : boards2) {
-        auto ba = std::bitset<64>(b);
-        double arr[2] = {-1.0, -1.0};
-        auto prog = 0;
-        for (uint8_t i = 0; i < ba.size(); i++) {
-          if (::david::utils::bitAt(b, i)) {
-            arr[prog++] = i == 0 ? 0 : i / 10.0;
-          }
-        }
-        for (; prog < 2; prog++) {
-          arr[prog] = -1.0;
-        }
-
-        for (auto e : arr) {
-          fileStringInput << std::setprecision(2) << e << ' ';
-          nInputs += 1;
-        }
-      }
-      for (auto b : boards8) {
-        auto ba = std::bitset<64>(b);
-        double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
-        auto prog = 0;
-        for (uint8_t i = 0; i < ba.size(); i++) {
-          if (::david::utils::bitAt(b, i)) {
-            arr[prog++] = i == 0 ? 0 : i / 10.0;
-          }
-        }
-        for (; prog < 8; prog++) {
-          arr[prog] = -1.0;
-        }
-
-        for (auto e : arr) {
-          fileStringInput << std::setprecision(2) << e << ' ';
-          nInputs += 1;
-        }
+      // create an input string
+      for (auto i : inputs) {
+        fileStringInput << std::setprecision(3) << i << ' ';
       }
       fileStringInput << std::endl;
 
-
-      // expected output
+      // add Stockfish score
       std::string score;
       std::getline(infile, score);
-      double fScore = std::stoi(score) * 0.0001;
+      double fScore = std::stoi(score) * 0.0001; // The score goes above 1k so in order to get every detail.. 10k
       fileStringInput << fScore << std::endl;
+
 
       // inc record
       trainingPairs += 1;
       lineNr += 1;
 
 
+      // verify input size and store to file
       // make sure u have the right amount of inputs
-      if (nInputs != layers[0]) {
+      if (inputs.size() != layers[0]) {
         //std::cerr << "nInputs: " << nInputs << ", expected: " << layers[0] << ". Line#" << lineNr << std::endl;
         skippedtrainingSets += 1;
-        fileStringInput.str("");
-        fileStringInput.clear();
-        continue;
       }
       else {
         output << fileStringInput.str();
-        fileStringInput.str("");
-        fileStringInput.clear();
       }
+
+      // clear out of scope variables
+      fileStringInput.str("");
+      fileStringInput.clear();
       //assert(nInputs == layers[0]);
 
     }
@@ -403,10 +280,10 @@ void binaryNetwork::run()
   const float learning_rate = 0.5f;
   const float desired_error = 0.00001f;
   const unsigned int max_iterations = 12000;
-  const unsigned int max_trainingSets = 15000;
+  const unsigned int max_trainingSets = 110000;
   const unsigned int iterations_between_reports = 1;
-  const unsigned int nrOfLayers = 5;
-  const unsigned int layers[nrOfLayers] = {83, 500, 100, 63, 1}; // input, hidden1, ..., hiddenN, output
+  const unsigned int nrOfLayers = 6;
+  const unsigned int layers[nrOfLayers] = {95, 500, 128, 64, 12, 1}; // input, hidden1, ..., hiddenN, output
   const auto folder = ::david::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.

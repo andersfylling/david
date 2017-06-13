@@ -617,9 +617,22 @@ type::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
   };
 
   bitboard_t index = 0;
+  bool gotColor = false;
   for (const auto c : fen) {
     if (index == 64) {
-      break;
+
+      if (index == 65) {
+        node->playerColor = c == 'w' ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK;
+        gotColor = true;
+      }
+
+      if (gotColor) {
+        break;
+      }
+      else {
+        index++;
+        continue;
+      }
     }
     if (c == '/') {
       continue;
@@ -636,6 +649,8 @@ type::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
       index += utils::stoi(c);
     }
   }
+
+
 
   return node;
 }

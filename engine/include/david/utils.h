@@ -21,7 +21,9 @@ bool bitAt(uint64_t b, uint8_t i);
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
 
-fann_type *convertGameStateToInputs(type::gameState_ptr node, bitboard::COLOR color);
+std::vector<float> convertGameStateToInputs(type::gameState_ptr node);
+fann_type* convertInputsToFannType (std::vector<float> inputs, unsigned long size);
+fann_type* boardToFannInputs (type::gameState_ptr node);
 
 std::string generateFen(type::gameState_ptr node);
 bool isHalfMove(type::gameState_ptr parent, type::gameState_ptr child);
