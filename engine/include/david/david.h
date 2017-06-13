@@ -8,6 +8,9 @@ static const std::string neuralNetworksFolder = "/engine/src/ANN/networks/";
 // a standard chess board layout given as a FEN string.
 static const std::string FENStartPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+// ANN file
+static const std::string ANNFile = "float_ANNFile_6_83_1_1497360313.net";
+
 // information about the engine.
 namespace engineInformation {
 static const std::string PROJECT_NAME = "david"; // MUST BE THE SAME AS FOLDER NAME, WILL BE REMOVED BEFORE FIRST RELEASE!!

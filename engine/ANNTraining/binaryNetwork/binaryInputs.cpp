@@ -235,7 +235,7 @@ void binaryNetwork::generateTrainingFile(
       // verify input size and store to file
       // make sure u have the right amount of inputs
       if (inputs.size() != layers[0]) {
-        //std::cerr << "nInputs: " << nInputs << ", expected: " << layers[0] << ". Line#" << lineNr << std::endl;
+        std::cerr << "nInputs: " << inputs.size() << ", expected: " << layers[0] << ". Line#" << lineNr << std::endl;
         skippedtrainingSets += 1;
       }
       else {
@@ -245,7 +245,9 @@ void binaryNetwork::generateTrainingFile(
       // clear out of scope variables
       fileStringInput.str("");
       fileStringInput.clear();
-      //assert(nInputs == layers[0]);
+
+      // look for issues
+      assert(inputs.size() == layers[0]);
 
     }
   }
