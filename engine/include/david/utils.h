@@ -14,9 +14,9 @@
 namespace david {
 namespace utils {
 int stoi(std::string v);
-constexpr int stoi(const char c);
+int stoi(const char c);
 
-constexpr bool bitAt(uint64_t b, uint8_t i);
+bool bitAt(uint64_t b, uint8_t i);
 
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
