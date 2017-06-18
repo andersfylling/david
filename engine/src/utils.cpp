@@ -24,10 +24,10 @@ namespace david {
  * @param v The std::string value, eg. "123", or "" or " "
  * @return the int value: 123 or 0
  */
-int utils::stoi(std::string v) {
+constexpr int utils::stoi(std::string v) {
   return v == "" || v == " " ? 0 : std::stoi(v);
 }
-int utils::stoi(const char c) {
+constexpr int utils::stoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
 
@@ -195,7 +195,7 @@ std::string utils::generateFen(type::gameState_ptr node) {
  * @param i the index as uint8_t
  * @return true if bit is 1 at index i
  */
-bool utils::bitAt(uint64_t b, uint8_t i) {
+constexpr bool utils::bitAt(uint64_t b, uint8_t i) {
   return (b & (1ULL << i)) != 0;
 }
 
