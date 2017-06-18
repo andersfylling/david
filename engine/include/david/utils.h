@@ -13,7 +13,7 @@
 
 namespace david {
 namespace utils {
-constexpr int stoi(std::string v);
+int stoi(std::string v);
 constexpr int stoi(const char c);
 
 constexpr bool bitAt(uint64_t b, uint8_t i);
