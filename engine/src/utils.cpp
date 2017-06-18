@@ -24,7 +24,7 @@ namespace david {
  * @param v The std::string value, eg. "123", or "" or " "
  * @return the int value: 123 or 0
  */
-constexpr int utils::stoi(std::string v) {
+int utils::stoi(std::string v) {
   return v == "" || v == " " ? 0 : std::stoi(v);
 }
 constexpr int utils::stoi(const char c) {
