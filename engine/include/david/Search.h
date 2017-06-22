@@ -25,8 +25,8 @@ namespace david {
  */
 class Search {
  public:
-  Search(type::engineContext_ptr ctx); // This can be used for unit testing and benchmarking.
-  Search(type::engineContext_ptr ctx, ::uci::Listener& uci);
+  Search(); // This can be used for unit testing and benchmarking.
+  Search(type::engineContext_ptr ctx);
   type::gameState_ptr searchInit(type::gameState_ptr node);
   int iterativeDeepening(type::gameState_ptr node);
   int negamax(type::gameState_ptr board, int alpha, int beta, int depth);

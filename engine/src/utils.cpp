@@ -446,6 +446,10 @@ void utils::setDefaultChessLayout(type::gameState_ptr node) {
 
 }
 
+/**
+ * Print out the chess board based on a gameState node
+ * @param gs
+ */
 void utils::printGameState(type::gameState_ptr gs) {
 
   std::map<const char, bitboard::bitboard_t &> links = {
@@ -493,6 +497,132 @@ void utils::printGameState(type::gameState_ptr gs) {
   std::cout << '\n';
 }
 
+
+/**
+ * Get a shared pointer of a fresh gameState based on a fen string.
+ * This assumes the fen string is correct before parsing.
+ *
+ * Warning: this ignores, castling, passant, halfmove and fullmove.
+ *
+ * @param fen std::string, must be correctly formatted (!)
+ * @return new shared_ptr of gameState
+ */
+type::gameState_ptr utils::generateBoardFromFen(const std::string fen) {
+  type::gameState_ptr node = std::make_shared<bitboard::gameState>();
+
+  std::map<const char, bitboard::bitboard_t &> links = {
+      {'b', node->BlackBishop},
+      {'k', node->BlackKing},
+      {'n', node->BlackKnight},
+      {'p', node->BlackPawn},
+      {'q', node->BlackQueen},
+      {'r', node->BlackRook},
+
+      {'B', node->WhiteBishop},
+      {'K', node->WhiteKing},
+      {'N', node->WhiteKnight},
+      {'P', node->WhitePawn},
+      {'Q', node->WhiteQueen},
+      {'R', node->WhiteRook}
+  };
+
+  type::bitboard_t index = 0;
+  bool gotColor = false;
+  for (const auto c : fen) {
+    if (index == 64) {
+
+      if (index == 65) {
+        node->playerColor = c == 'w' ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK;
+        gotColor = true;
+      }
+
+      if (gotColor) {
+        break;
+      }
+      else {
+        index++;
+        continue;
+      }
+    }
+    if (c == '/') {
+      continue;
+    }
+
+    // check if the char is a piece type
+    if (links.count(c) > 0) {
+      // it's a piece type
+      flipBit(links.at(c), index); // set bit at correct index on correct board
+      index += 1;
+    } else {
+      // assumption: it's a number
+      // update index with this number
+      index += utils::stoi(c);
+    }
+  }
+
+
+
+  return node;
+}
+
+// Needs compiler support for Microsoft c++ compiler
+// Works with gcc based compilers
+type::bitboard_t utils::LSB(type::bitboard_t board) {
+#ifdef __linux__
+  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
+#elif _WIN32
+  // windows code goes here
+  return 0LL;
+#elif _WIN64
+  // windows code goes here
+  return 0LL;
+#else
+  // idk
+  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
+  return 0LL;
+#endif
+}
+
+// Needs compiler support for Microsoft c++ compiler
+// Works with gcc based compilers
+type::bitboard_t utils::NSB(type::bitboard_t &board) {
+  board &= ~(1LL << LSB(board));
+  return LSB(board);
+}
+
+type::bitboard_t utils::MSB(type::bitboard_t board) {
+#ifdef __linux__
+  return 63 - __builtin_clzll(board);
+#elif _WIN32
+  // windows code goes here
+  return 0LL;
+#elif _WIN64
+  // windows code goes here
+  return 0LL;
+#else
+  // idk
+  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
+  return 0LL;
+#endif
+}
+
+type::bitboard_t utils::NSB_r(type::bitboard_t &board) {
+  board &= ~(1LL << MSB(board));
+  return MSB(board);
+}
+
+// Turns on bit
+void utils::flipBit(type::bitboard_t &board, type::bitboard_t index) {
+  board |= (1LL << index);
+}
+
+// YEAH tell that bit to flipp off!!!
+// Nobody wants you bit... NOBODY WANTS YOU
+void utils::flipBitOff(type::bitboard_t &board, type::bitboard_t index) {
+  board &= ~(1ULL << index);
+}
+
+
 std::string utils::getAbsoluteProjectPath() {
 #ifdef __linux__
   //linux code goes here
@@ -508,6 +638,9 @@ std::string utils::getAbsoluteProjectPath() {
 
   return projectPath + engineInformation::PROJECT_NAME;
 #elif _WIN32
+  // windows code goes here
+  return "";
+#elif _WIN64
   // windows code goes here
   return "";
 #else

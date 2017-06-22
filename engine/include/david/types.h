@@ -6,6 +6,9 @@
 
 // Forward declaration.
 // This file should not need to contain any header files to declare the type.
+
+#include <uci/forwards/Listener.h>
+
 namespace david {
 class EngineContext;
 class ChessEngine;
@@ -41,7 +44,13 @@ typedef std::shared_ptr<::david::ANN>                 neuralNetwork_ptr;
 // a gameTree is the node tree which the Search class search through
 typedef std::shared_ptr<::david::gameTree::GameTree>  gameTree_ptr;
 
+// holds the uci protocol for listening to incoming commands
+typedef std::shared_ptr<::uci::Listener>              uciProtocol_ptr;
+
 // gameState is a node in the gameTree. Each one contains a board score and some other details.
 typedef std::shared_ptr<::david::bitboard::gameState> gameState_ptr;
+
+typedef uint64_t bitboard_t;  // Represents a bitboard_t
+typedef uint16_t move_t;      // Representing moves
 }
 }
