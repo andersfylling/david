@@ -67,9 +67,15 @@ class Search {
   int mate;
   int infinite;
   int ponder;
+  int wtime;
+  int btime;
+  int winc;
+  int binc;
+  int nodes;
   std::string searchMoves;
   int searchScore;
   type::gameState_ptr bestMove;
+  type::gameTree_ptr gtPtr;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
@@ -81,59 +87,7 @@ class Search {
   std::vector<int> expanded;
 };
 
-  /**
-   * Returns depth to be searched, only used in debug
-   * @return
-   */
-  inline int Search::returnDepth()  {
-    return this->depth;
-  }
-  /**
-   * Returns how much time allocated to the search
-   * @return
-   */
-  inline int Search::returnTimeToSearch(){
-    return this->movetime;
-  }
-  /**
-   * Returns bestScore sat by searching
-   * @return
-   */
-  inline int Search::returnScore() {
-    return this->searchScore;
-  }
-  /**
-   * Returns if the search is complete, search not aborted and completed without issues
-   * @return
-   */
-  inline bool Search::returnComplete() {
-    return this->isComplete;
-  }
 
-
-  /**
-   * Set aborted search
-   * @param isAborted
-   */
-  inline void Search::setAbort(bool isAborted) {
-    this->isAborted = isAborted;
-  }
-
-  /**
-   * Set complete search
-   * @param isComplete
-   */
-  inline void Search::setComplete(bool isComplete) {
-    this->isComplete = isComplete;
-  }
-
-  /**
-   * Disable/enable some window output
-   * @param debug
-   */
-  inline void Search::setDebug(bool debug) {
-    this->debug = debug;
-  }
 
 
 

@@ -80,8 +80,9 @@ void gameTree::GameTree::newRootNode(type::gameState_ptr node) {
     return;
   }
 
-  this->previous = this->current;
-  this->previous = nullptr; // make it dissapear, is this safe? TODO: validate.
+  //this->previous.reset();
+  //this->previous = this->current;
+  //this->previous = nullptr; // make it dissapear, is this safe? TODO: validate.
   this->current = node;
 }
 

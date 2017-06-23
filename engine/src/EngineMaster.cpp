@@ -85,6 +85,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
 
   // lets start the game!
   type::gameState_ptr currentGame = currentPlayer->getGameState();
+  bool error = false;
   do {
     whitesTurn = color == "w";
 
@@ -98,11 +99,17 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
 
     // update current game state
     currentGame = currentPlayer->getGameState();
+    error = currentGame ? false : true;
 
-    // update active player / engine
-    currentPlayer = whitesTurn ? eng2 : eng1;
-    color = whitesTurn ? "b" : "w";
-  } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0);
+    if (error) {
+      std::cerr << "currentGame is empty!" << std::endl;
+    }
+    else {
+      // update active player / engine
+      currentPlayer = whitesTurn ? eng2 : eng1;
+      color = whitesTurn ? "b" : "w";
+    }
+  } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0 && !error);
 
   std::cout << currentGame->fullMoves << std::endl;
 

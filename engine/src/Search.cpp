@@ -39,6 +39,10 @@ type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
 
   this->searchScore = iterativeDeepening(node);
 
+  if (!this->bestMove) {
+    std::cerr << "bestMove is empty!" << std::endl;
+  }
+
   if (this->debug) {
     std::vector<int>::iterator it;
     std::cout << "Search objects score after complete search: " << this->searchScore << std::endl;  //Debug
@@ -64,7 +68,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   int iterationScore[1000];
   int lastDepth = 0;
   int aspirationDepth = 4;
-  int bestScore = (int) (-INFINITY);
+  int bScore = (int) (-INFINITY);
 
   startTime = clock();              //Starting clock
 
@@ -75,9 +79,11 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   // board->generateAllMoves();
   //
     if(!engineContextPtr->testing) {
-        gameTree::GameTree rMoves(this->engineContextPtr, board);
-        rMoves.setMaxNumberOfNodes(100000);
-        rMoves.generateChildren(board);
+      gtPtr = std::make_shared<gameTree::GameTree>(this->engineContextPtr, board);
+
+      if (board->children.size() == 0) {
+        gtPtr->generateChildren(board);
+      }
     }
 
 
@@ -89,14 +95,14 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 10000) + movetime;
   for (int currentDepth = 1; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
-    int currentBestScore;
+    int cScore = bScore;
     int aspirationDelta = 0;
 
     //
     // If UCI aborts the search, no move should be returned and -infinity will be returned
     //
     if (isAborted) {
-      bestScore = (int) (-INFINITY);
+      bScore = (int) (-INFINITY);
       break;
     }
 
@@ -112,36 +118,43 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
     }
 
 
-    // Start with a small aspiration window and, in the case of a fail
-    // high/low, re-search with a bigger window until we're not failing
-    // high/low anymore.
-    bool iDone = false;
-    while (!iDone) {
-      currentBestScore = negamax(board, alpha, beta, currentDepth);
-      iterationScore[currentDepth] = currentBestScore;
+    // find which possibility is the best option
+    for (auto child : board->children) {
+      // Start with a small aspiration window and, in the case of a fail
+      // high/low, re-search with a bigger window until we're not failing
+      // high/low anymore.
+      bool iDone = false;
+      while (!iDone) {
+        cScore = negamax(board, alpha, beta, currentDepth);
+        iterationScore[currentDepth] = cScore;
 
-      //
-      //Update best score in case of a abort
-      //
-      if (currentBestScore > bestScore) {
-        bestScore = currentBestScore;
-      }
+        //
+        // Update best score in case of a abort
+        //
+        if (cScore > bScore) {
+          bScore = cScore;
+          this->bestMove = std::make_shared<bitboard::gameState>(*child); // copy
+        }
 
-      const bool fail = bestScore <= alpha || bestScore >= beta;
-      const bool fullWidth = alpha == (int) (-INFINITY) && beta == (int) (INFINITY);
-      iDone = !fail || fullWidth || currentDepth < aspirationDepth;
+        const bool fail = bScore <= alpha || bScore >= beta;
+        const bool fullWidth = alpha == (int) (-INFINITY) && beta == (int) (INFINITY);
+        iDone = !fail || fullWidth || currentDepth < aspirationDepth;
 
-      if (!iDone) {
-        alpha = std::max(alpha - aspirationDelta, (int) (-INFINITY));
-        beta = std::min(beta + aspirationDelta, (int) (INFINITY));
-        aspirationDelta = std::max(aspirationDelta * 130 / 100, 15);
+        if (!iDone) {
+          alpha = std::max(alpha - aspirationDelta, (int) (-INFINITY));
+          beta = std::min(beta + aspirationDelta, (int) (INFINITY));
+          aspirationDelta = std::max(aspirationDelta * 130 / 100, 15);
+        }
       }
     }
+
+    lastDepth = currentDepth; // not accurate enough
+
+    std::cout << "info depth " << currentDepth << ", max: " << this->depth << std::endl;
   }
 
   setComplete(true);
-  this->bestMove = board;
-  return bestScore;
+  return bScore;
 }
 
 /**
@@ -159,9 +172,8 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
  * @return
  */
 int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
-  auto score = std::make_shared<bitboard::gameState>();
-  auto bestScore = std::make_shared<bitboard::gameState>();
-  bestScore->score = (int) (-INFINITY);
+  int score;
+  int bestScore = (int) (-INFINITY);
 
 
   //
@@ -173,10 +185,6 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
   }
 
   //
-  // Need to regenerate the incomming nodes children
-  //
-
-  //
   // Should do a quiescence search after to ensure we are not encountering
   // a danger move in the next depth in this branch
   //
@@ -184,12 +192,16 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
     return node->score;
   }
 
+  // generate children for this board
+  if (node->children.size() == 0) {
+    gtPtr->generateChildren(node);
+  }
+
   for (auto child : node->children) {
-    score->score =
-        -negamax(child, -beta, -alpha, iDepth + 1);
+    score = -negamax(child, -beta, -alpha, iDepth + 1);
     this->nodesSearched++;
-    bestScore->score = std::max(score->score, bestScore->score);
-    alpha = std::max(score->score, alpha);
+    bestScore = std::max(score, bestScore);
+    alpha = std::max(score, alpha);
     if (this->debug) {
       std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
       this->expanded.push_back(child->score);
@@ -197,9 +209,12 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
     if (alpha >= beta) {
       break;
     }
+
+    // after a node is checked, remove it
+    child.reset();
   }
-  this->bestMove = bestScore;
-  return bestScore->score;
+
+  return bestScore;
 }
 
 /**
@@ -207,7 +222,7 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
  * Mainly used for debugging and progress atm
  */
 void Search::resetSearchValues() {
-  this->movetime = 10000; //Hardcoded variables as of now, need to switch to forwards later
+  this->movetime = 1000; //Hardcoded variables as of now, need to switch to forwards later
   this->searchScore = 0;
   this->nodesSearched = 0;
   this->expanded.clear();
@@ -300,22 +315,22 @@ void Search::setSearchMoves(std::string moves) {
 }
 
 void Search::setWTime(int wtime) {
-  //this->wtime = wtime;
+  this->wtime = wtime;
 }
 void Search::setBTime(int btime) {
-  //this->btime = btime;
+  this->btime = btime;
 }
 void Search::setWinc(int winc) {
-  //this->winc = winc;
+  this->winc = winc;
 }
 void Search::setBinc(int binc) {
-  //this->binc = binc;
+  this->binc = binc;
 }
 void Search::setMovesToGo(int movestogo) {
   this->movestogo = movestogo;
 }
 void Search::setNodes(int nodes) {
-  //this->nodes = nodes;
+  this->nodes = nodes;
 }
 
 /**
@@ -346,5 +361,59 @@ void Search::setDifficulty(int difficulty) {
     case 3: this->setDepth(7); this->setMoveTime(200000); break;
     default: this->setDepth(5); this->setMoveTime(150000); break;
   }
+}
+
+/**
+ * Returns depth to be searched, only used in debug
+ * @return
+ */
+int Search::returnDepth()  {
+  return this->depth;
+}
+/**
+ * Returns how much time allocated to the search
+ * @return
+ */
+int Search::returnTimeToSearch(){
+  return this->movetime;
+}
+/**
+ * Returns bestScore sat by searching
+ * @return
+ */
+int Search::returnScore() {
+  return this->searchScore;
+}
+/**
+ * Returns if the search is complete, search not aborted and completed without issues
+ * @return
+ */
+bool Search::returnComplete() {
+  return this->isComplete;
+}
+
+
+/**
+ * Set aborted search
+ * @param isAborted
+ */
+void Search::setAbort(bool isAborted) {
+  this->isAborted = isAborted;
+}
+
+/**
+ * Set complete search
+ * @param isComplete
+ */
+void Search::setComplete(bool isComplete) {
+  this->isComplete = isComplete;
+}
+
+/**
+ * Disable/enable some window output
+ * @param debug
+ */
+void Search::setDebug(bool debug) {
+  this->debug = debug;
 }
 }

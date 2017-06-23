@@ -357,7 +357,6 @@ bool david::ChessEngine::lost() {
  * Find the best move, and update the current game state.
  */
 void david::ChessEngine::findBestMove() {
-  // TODO: Markus
   // update currentGameState
   this->currentGameState = this->searchPtr->searchInit(this->currentGameState);
 }
@@ -371,7 +370,7 @@ void david::ChessEngine::findBestMove() {
 void david::ChessEngine::setNewGameBoard(const std::string fen) {
 
   // first clear any children
-  this->gameTreePtr->resetChildren(this->currentGameState);
+  //this->gameTreePtr->resetChildren(this->currentGameState);
 
   // check if its a default setup
   if (fen == david::FENStartPosition) {
