@@ -17,10 +17,11 @@ class EngineContext {
 
 
   // Different classes that are allowed to communicate with each other.
-  type::search_ptr         searchPtr         = nullptr;
-  type::neuralNetwork_ptr  neuralNetworkPtr  = nullptr;
-  type::gameTree_ptr       gameTreePtr       = nullptr;
-  bitboard::COLOR          playerColor       = bitboard::COLOR::WHITE;
+  type::search_ptr          searchPtr         = nullptr;
+  type::neuralNetwork_ptr   neuralNetworkPtr  = nullptr;
+  type::gameTree_ptr        gameTreePtr       = nullptr;
+  type::uciProtocol_ptr     uciProtocolPtr    = nullptr;
+  bitboard::COLOR           playerColor       = bitboard::COLOR::WHITE;
 
   // used for testing
   bool testing = false;

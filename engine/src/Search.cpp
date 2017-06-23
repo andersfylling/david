@@ -20,84 +20,12 @@ namespace david {
 /**
  * Constructor used in debug/test
  */
+Search::Search()
+{}
+
 Search::Search(type::engineContext_ptr ctx)
-    : engineContextPtr(ctx) {
-
-};
-
-Search::Search(type::engineContext_ptr ctx, ::uci::Listener &uci)
-    : engineContextPtr(ctx) {
-  using ::uci::event::GO;
-  using ::uci::event::STOP;
-  using ::uci::event::QUIT;
-  using ::uci::event::PONDERHIT;
-  using ::uci::event::UCINEWGAME;
-  using ::uci::arguments_t;
-
-  //
-  // forwards protocol functions, used for forwards protocol events
-  //
-  auto uci_go = [&](arguments_t args) {
-    // All of the "go" parameters
-    if (args.count("depth") > 0) {
-      this->setDepth(utils::stoi(args["depth"]));
-    } else if (args.count("searchmoves") > 0) {
-      this->setSearchMoves(args["searchmoves"]);
-    } else if (args.count("wtime") > 0) {
-      this->setWTime(utils::stoi(args["wtime"]));
-    } else if (args.count("btime") > 0) {
-      this->setBTime(utils::stoi(args["btime"]));
-    } else if (args.count("winc") > 0) {
-      this->setWinc(utils::stoi(args["winc"]));
-    } else if (args.count("binc") > 0) {
-      this->setBinc(utils::stoi(args["binc"]));
-    } else if (args.count("movestogo") > 0) {
-      this->setMovesToGo(utils::stoi(args["movestogo"]));
-    } else if (args.count("nodes") > 0) {
-      this->setNodes(utils::stoi(args["nodes"]));
-    } else if (args.count("movetime") > 0) {
-      this->setMoveTime(utils::stoi(args["movetime"]));
-    } else if (args.count("mate") > 0) {
-      this->setMate(utils::stoi(args["mate"]));
-    } else if (args.count("infinite") > 0) {
-      this->setInfinite(utils::stoi(args["infinite"]));
-    } else if (args.count("ponder") > 0) {
-      this->setPonder(utils::stoi(args["ponder"]));
-    } else if (args.count("difficulty") > 0) {
-      this->setDifficulty(utils::stoi(args["difficulty"]));
-    }
-  };
-  auto uci_stop = [&](arguments_t args) {
-    this->stopSearch();
-  };
-  auto uci_quit = [&](arguments_t args) {
-    this->quitSearch();
-  };
-  auto uci_ponderhit = [&](arguments_t args) {
-//     * ponderhit
-//	the user has played the expected move. This will be sent if the engine was told to ponder on the same move
-//	the user has played. The engine should continue searching but switch from pondering to normal search.
-  };
-  auto uci_ucinewgame = [&](arguments_t args) {
-//    * ucinewgame
-//    this is sent to the engine when the next search (started with "position" and "go") will be from
-//    a different game. This can be a new game the engine should play or a new game it should analyse but
-//    also the next position from a testsuite with positions only.
-//      If the GUI hasn't sent a "ucinewgame" before the first "position" command, the engine shouldn't
-//    expect any further ucinewgame commands as the GUI is probably not supporting the ucinewgame command.
-//      So the engine should not rely on this command even though all new GUIs should support it.
-//      As the engine's reaction to "ucinewgame" can take some time the GUI should always send "isready"
-//    after "ucinewgame" to wait for the engine to finish its operation.
-  };
-
-
-  // bind the listeners
-  uci.addListener(GO, uci_go);
-  uci.addListener(STOP, uci_stop);
-  uci.addListener(QUIT, uci_quit);
-  uci.addListener(PONDERHIT, uci_ponderhit);
-  uci.addListener(UCINEWGAME, uci_ucinewgame);
-}
+    : engineContextPtr(ctx)
+{}
 
 /**
  * Set Search variables. searchScore is a class member and
@@ -195,7 +123,9 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
       //
       //Update best score in case of a abort
       //
-      bestScore = (bestScore > currentBestScore) ? bestScore : currentBestScore;
+      if (currentBestScore > bestScore) {
+        bestScore = currentBestScore;
+      }
 
       const bool fail = bestScore <= alpha || bestScore >= beta;
       const bool fullWidth = alpha == (int) (-INFINITY) && beta == (int) (INFINITY);

@@ -127,8 +127,8 @@ void ANN::createANNInstance() {
  * @return int board evaluation
  */
 int ANN::ANNEvaluate(type::gameState_ptr board, bitboard::COLOR color) {
-  fann_type *inputs = utils::convertGameStateToInputs(board, color); // float array
-  fann_type *outputs = fann_run(this->ANNInstance, inputs); // float array
+  fann_type* inputs = utils::boardToFannInputs(board); // float array
+  fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
 
   int output = static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
   delete inputs;

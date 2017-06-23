@@ -4,7 +4,7 @@
 
 int main (int argc, char * argv[])
 {
-  david::EngineMaster em("float_binaryNetworkTrainingFile_5_71_1_1494410133.net");
+  ::david::EngineMaster em(::david::ANNFile);
 
   int mainEngineID      = em.spawnEngine();
   int opponentEngineID  = em.spawnEngine();

@@ -20,15 +20,16 @@ struct Player {
 
 
 class ChessEngine {
-  ::uci::Listener uciProtocol;
   bool UCIProtocolActivated;
 
   // this is sent to other classes so they can communicate with each other
   type::engineContext_ptr engineContextPtr;
 
+  // contents of the engineContextPtr
   type::search_ptr        searchPtr;
   type::neuralNetwork_ptr neuralNetworkPtr;
   type::gameTree_ptr      gameTreePtr;
+  type::uciProtocol_ptr   uciProtocolPtr;
 
 
   type::gameState_ptr currentGameState;
@@ -42,6 +43,8 @@ class ChessEngine {
   ChessEngine(std::string ANNFile);
   ChessEngine(Player self, std::string ANNFile);
   ~ChessEngine();
+
+  void linkUCICommands();
 
   /**
    * Adds typical UCI responses to the engine
