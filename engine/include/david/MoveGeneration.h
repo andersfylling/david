@@ -49,10 +49,13 @@ class MoveGenerator {
   // Constructors
   MoveGenerator();   // ONLY FOR TESTING
 
+
   // Utility
   bitboard::bitboard_t white();
   bitboard::bitboard_t black();
   bitboard::bitboard_t moveToMap();
+  void clearLists();
+  bool nothernly(DIRECTION dir);
 
   // Level 1 move generation
   bitboard::bitboard_t * createVectors(bitboard::bitboard_t board, DIRECTION dir, int steps);
@@ -82,6 +85,7 @@ class Move {
   move_t mv;
  public:
 
+  void printMove();
   Move(); // Setter mv til 0
   Move(bitboard::move_t m);
   void set(bitboard::bitboard_t to, bitboard::bitboard_t from, MOVETYPE type);

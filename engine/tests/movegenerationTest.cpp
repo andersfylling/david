@@ -7,13 +7,26 @@
 #include <utility>
 #include <david/utils.h>
 
+using david::bitboard::bitboard_t;
+using david::movegen::DIRECTION;
 david::movegen::MoveGenerator generator;
 
 TEST_CASE("Test generation of vectors") {
-  david::bitboard::bitboard_t Wpawns, Bpawns, Wcastle, Bcastle;
+  david::bitboard::bitboard_t Wpawns, Bpawns, Wcastle, Bcastle, QueenTest;
   Wpawns = 65280ULL;
   Bpawns = 71776119061217280ULL;
   david::bitboard::bitboard_t * b;
+  QueenTest = 34359738368ULL;
+
+  b = generator.createVectors(QueenTest, david::movegen::DIRECTION::NORTH, 0);
+  REQUIRE(b[0] == 578721348210130944ULL);
+
+  b = generator.createVectors(QueenTest, david::movegen::DIRECTION::SOUTH, 0);
+  REQUIRE(b[0] == 134744072ULL);
+
+  b = generator.createVectors(QueenTest, david::movegen::DIRECTION::SOUTH_EAST, 0);
+  REQUIRE(b[0] == 67240192ULL);
+
 
   b = generator.createVectors(Wpawns, david::movegen::DIRECTION::NORTH, 0);
   //david::utils::printBoard(*b);
@@ -105,9 +118,37 @@ TEST_CASE("ENCODING OF MOVES") {
   REQUIRE(m2.getType() == david::movegen::MOVETYPE::CASTLE_Q);
 }
 
+
+TEST_CASE("BLOCK AND REDUCE VECTOR") {
+  bitboard_t res, queen;
+
+  queen =  34359738ULL;
+
+  david::utils::printBoard(*generator.createVectors(queen, DIRECTION::NORTH, 1));
+
+  res = generator.generateBlock(queen, DIRECTION::NORTH, true);
+  //david::utils::printBoard(res);
+}
+
+
+
 TEST_CASE ("PAWN MOVEMENT TESTS") {
   generator.pawnMoves(david::bitboard::COLOR::WHITE);
-  david::bitboard::bitboard_t attack = generator.moveToMap();
-  david::utils::printBoard(attack);
-  david::utils::printBoard(generator.white());
+  david::bitboard::bitboard_t attack, attack2;
+
+  attack = generator.moveToMap();
+
+  generator.clearLists();
+
+  generator.pawnMoves(david::bitboard::COLOR::BLACK);
+
+  attack2 = generator.moveToMap();
+  //david::utils::printBoard(attack2);
+  //david::utils::printBoard(attack);
+  //david::utils::printBoard(generator.black());
+  //david::utils::printBoard(generator.white());
+
+  REQUIRE(attack == 4294901760ULL);
+  REQUIRE(attack2 == 281470681743360ULL);
+
 }

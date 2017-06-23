@@ -61,6 +61,16 @@ bitboard::bitboard_t movegen::MoveGenerator::add_vector_to_board(bitboard::bitbo
 }
 
 /**
+ * Clears the lists with moves
+ */
+void movegen::MoveGenerator::clearLists() {
+
+  for (int i = (int) moveList.size(); i > 0; --i) {
+    moveList.pop_back();
+  }
+}
+
+/**
  *
  * @param dir - the direction of the movement
  * @param steps - the number of steps to be taken. 0 = infinity
@@ -71,7 +81,6 @@ bitboard::bitboard_t *david::movegen::MoveGenerator::createVectors(bitboard::bit
   bitboard::bitboard_t numberofpieces = utils::numberOfPieces(board);
   bitboard::bitboard_t tempBoard, distance, currentBit, adjecent;
   int directionNumber = dir;
-  bool nothernly = false; // Is the direction against the north or the south
 
   std::pair<bitboard::bitboard_t, bitboard::bitboard_t> pai;
 
@@ -176,11 +185,21 @@ std::pair<bitboard::bitboard_t, bitboard::bitboard_t> movegen::MoveGenerator::di
  * @return returns a vector
  */
 bitboard::bitboard_t movegen::MoveGenerator::generateBlock(bitboard::bitboard_t board, DIRECTION dir, bool own) {
-  if (own) {
-    return *createVectors(board, dir, 0);
+  bitboard::bitboard_t res;
+  if(nothernly(dir)) {
+    if (own) {
+      res = *createVectors(board, dir, 0);
+    } else {
+      res = *createVectors((board << (bitboard::bitboard_t) dir), dir, 0);
+    }
   } else {
-    return *createVectors(board + dir, dir, 0);
+    if (own) {
+      res = *createVectors(board, dir, 0);
+    } else {
+      res = *createVectors((board >> dir), dir, 0);
+    }
   }
+  return res;
 }
 
 /**
@@ -202,6 +221,19 @@ bitboard::bitboard_t movegen::MoveGenerator::black() {
 }
 
 /**
+ * returns if the movement increaces the bitboard value
+ * @param dir - the direction of the movement
+ * @return returns true if piece is moving in a direction that is positive on the bitboard
+ */
+bool movegen::MoveGenerator::nothernly(DIRECTION dir) {
+  if(dir == DIRECTION::NORTH || dir == DIRECTION::NORTH_WEST || dir == DIRECTION::NORTH_EAST
+      || dir == DIRECTION::WEST)
+    return true;
+  return false;
+}
+
+
+/**
  * Simplifies the vector by taking in account the blocks created by other pieces
  * @param vector - bitboard vector
  * @param color - color of the pieces you want to calculate
@@ -211,11 +243,25 @@ bitboard::bitboard_t movegen::MoveGenerator::black() {
  */
 bitboard::bitboard_t movegen::MoveGenerator::reduceVector(bitboard::bitboard_t vector, bitboard::COLOR color,
                                                           DIRECTION dir, bool pawn) {
-  bitboard::bitboard_t ownPieces, oponentPieces;
-  bitboard::bitboard_t ownBlock, oponentBlock;
+  bitboard::bitboard_t ownBlock, oponentBlock, oponent, own;
 
-  ownBlock = generateBlock(vector, dir, !pawn);
-  oponentBlock = generateBlock(vector, dir);
+  if (color == bitboard::COLOR::WHITE) {
+    own = white();
+    oponent = black();
+  } else {
+    own = black();
+    oponent = white();
+  }
+
+  if(nothernly(dir)) {
+    ownBlock = generateBlock(utils::LSB(own & vector), dir, !pawn);
+    oponentBlock = generateBlock(utils::LSB(oponent & vector), dir);
+  } else {
+    ownBlock = generateBlock(utils::MSB(own & vector), dir, !pawn);
+    oponentBlock = generateBlock(utils::MSB(oponent & vector), dir);
+  }
+  //utils::printBoard(ownBlock);
+  //utils::printBoard(oponentBlock);
 
   // result = (vector & ~(own | owB | opB));
   return (vector & ~(ownBlock | oponentBlock));
@@ -262,24 +308,24 @@ void movegen::MoveGenerator::pawnMoves(bitboard::COLOR color) {
     origin = utils::LSB(pawns);
     //std::cout << origin << std::endl;
     if (color == bitboard::COLOR::WHITE) {
-      vecP = reduceVector(vectorY[0], color, DIRECTION::NORTH, true);
-      vec2 = reduceVector(vectorY[0], color, DIRECTION::NORTH_WEST);
-      vec3 = reduceVector(vectorY[0], color, DIRECTION::NORTH_EAST);
+      vecP = reduceVector(vectorY[i], color, DIRECTION::NORTH, true);
+      vec2 = reduceVector(vectorMd[i], color, DIRECTION::NORTH_WEST);
+      vec3 = reduceVector(vectorAd[i], color, DIRECTION::NORTH_EAST);
 
       if (vecP && (vecP < 16777216ULL)) { // Is double pawn push possible
         dpp = (vecP << 8ULL);
-        temp.set(utils::LSB(vecP), origin, MOVETYPE::DOUBLE_PAWN_PUSH);
+        temp.set(utils::LSB(vecP << 8ULL), origin, MOVETYPE::DOUBLE_PAWN_PUSH);
         if (!(dpp & opp))
           moveList.push_back(temp.getMove());
       }
     } else {
-      vecP = reduceVector(vectorY[0], color, DIRECTION::SOUTH, true);
-      vec2 = reduceVector(vectorY[0], color, DIRECTION::SOUTH_WEST);
-      vec3 = reduceVector(vectorY[0], color, DIRECTION::SOUTH_EAST);
+      vecP = reduceVector(vectorY[i], color, DIRECTION::SOUTH, true);
+      vec2 = reduceVector(vectorAd[i], color, DIRECTION::SOUTH_WEST);
+      vec3 = reduceVector(vectorMd[i], color, DIRECTION::SOUTH_EAST);
 
       if (vecP && (vecP > 549755813888ULL)) { // Is double pawn push possible
         dpp = (vecP >> 8ULL);
-        temp.set(utils::LSB(vecP), origin, MOVETYPE::DOUBLE_PAWN_PUSH);
+        temp.set(utils::LSB(vecP >> 8ULL), origin, MOVETYPE::DOUBLE_PAWN_PUSH);
         if (!(dpp & opp))
           moveList.push_back(temp.getMove());
       }
@@ -300,21 +346,25 @@ void movegen::MoveGenerator::pawnMoves(bitboard::COLOR color) {
 
     if (vec2 && (vec2 & opp)) {  // can only move if capture
       temp.set(utils::LSB(vec2), origin, MOVETYPE::CAPTURES);
+      moveList.push_back(temp.getMove());
     }
 
     if (vec3 && (vec3 & opp)) {  // Can only move if capture
       temp.set(utils::LSB(vec3), origin, MOVETYPE::CAPTURES);
+      moveList.push_back(temp.getMove());
     }
 
     // En passant bitches
-    passArea = origin | (origin + 1) | (origin - 1);
+    passArea = (origin + 1) | (origin - 1);
     if (color == bitboard::COLOR::WHITE && inter.getType() == movegen::MOVETYPE::DOUBLE_PAWN_PUSH) {
       if (inter.getTo() & passArea) {
         temp.set(utils::LSB(inter.getTo() << 8), origin, MOVETYPE::ENPASSANT);
+        moveList.push_back(temp.getMove());
       }
     } else if (color == bitboard::COLOR::BLACK && inter.getType() == movegen::MOVETYPE::DOUBLE_PAWN_PUSH) {
       if (inter.getTo() & passArea) {
         temp.set(utils::LSB(inter.getTo() >> 8), origin, MOVETYPE::ENPASSANT);
+        moveList.push_back(temp.getMove());
       }
     }
 
@@ -337,7 +387,8 @@ bitboard::bitboard_t movegen::MoveGenerator::moveToMap() {
   movegen::Move m;
   bitboard::bitboard_t res = 0;
   for(it = moveList.begin(); it != moveList.end(); it++) {
-    std::cout << m.getTo() << std::endl;
+    //std::cout << m.getTo() << std::endl;
+    //m.printMove();
     m.set(*it);
     utils::flipBitOn(res, m.getTo());
   }
@@ -405,5 +456,14 @@ bitboard::bitboard_t movegen::Move::getTo() {
 bitboard::bitboard_t movegen::Move::getFrom() {
   return (bitboard::bitboard_t) ((mv >> 4U) & 63);
 }
+
+    /**
+     * Prints out information from the move in human readable form
+     */
+    void movegen::Move::printMove() {
+      std::cout << "From:\t" << getFrom() << std::endl;
+      std::cout << "To:  \t" << getTo() << std::endl;
+      std::cout << "Type:\t" << (int) getType() << std::endl << std::endl;
+    }
 
 } // End of david
