@@ -303,6 +303,8 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   using bitboard::bitboard_t;
   auto node = std::make_shared<gameState>();
 
+  node->playerColor = child.playerColor;
+
   node->BlackRook = child.BlackRook;
   node->BlackQueen = child.BlackQueen;
   node->BlackPawn = child.BlackPawn;

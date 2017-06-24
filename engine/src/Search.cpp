@@ -21,10 +21,12 @@ namespace david {
  * Constructor used in debug/test
  */
 Search::Search()
+    : depth(4)
 {}
 
 Search::Search(type::engineContext_ptr ctx)
-    : engineContextPtr(ctx)
+    : engineContextPtr(ctx),
+      depth(4)
 {}
 
 /**
@@ -102,7 +104,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
     // If UCI aborts the search, no move should be returned and -infinity will be returned
     //
     if (isAborted) {
-      bScore = (int) (-INFINITY);
+      //bScore = (int) (-INFINITY);
       break;
     }
 
@@ -133,6 +135,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
         //
         if (cScore > bScore) {
           bScore = cScore;
+          std::cout << cScore << std::endl;
           this->bestMove = std::make_shared<bitboard::gameState>(*child); // copy
         }
 
@@ -154,6 +157,9 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   }
 
   setComplete(true);
+
+  this->gtPtr.reset();
+
   return bScore;
 }
 
