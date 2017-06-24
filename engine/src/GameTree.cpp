@@ -93,6 +93,8 @@ void gameTree::GameTree::newRootNode(type::gameState_ptr node) {
  */
 void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   using bitboard::gameState;
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
   if (node == nullptr) {
     return;
   }
@@ -106,13 +108,14 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   node->children.resize(0);
 
   // created a environ instance based on parent node
-  environment::Environment env(node->playerColor);
+  // switch the color, since env creates the colours options not the opponent
+  environment::Environment env(node->playerColor == WHITE ? BLACK : WHITE);
   env.setGameState(node);
 
-  // create a holdere for possible game outputs
+  // create a holder for possible game outputs
   std::vector<gameState> states;
 
-  // generate possible game oputputs
+  // generate possible game outputs
   env.computeGameStates(states);
 
   // create node pointers, and set some internal data
@@ -346,7 +349,7 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   }
 
   // set sub possibilities
-  environment::Environment env(node->playerColor);
+  environment::Environment env(node->playerColor == WHITE ? BLACK : WHITE);
   env.setGameState(node);
   std::vector<gameState> states;
   env.computeGameStates(states);

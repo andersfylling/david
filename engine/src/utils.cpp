@@ -486,7 +486,7 @@ void utils::printGameState(type::gameState_ptr gs) {
     std::cout << "  " << (char) i << " ";
   std::cout << std::endl;
   std::cout << "  +---+---+---+---+---+---+---+---+\n";
-  for (int i = 0; i < 8; i++) {
+  for (int i = 7; i >= 0; i--) {
     std::cout << i + 1 << " | ";
     for (int j = 0; j < 8; j++) {
       std::cout << board.at((i * 8) + j) << " | ";
