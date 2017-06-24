@@ -26,6 +26,13 @@ using bitboard::COLOR;
 using bitboard::pieceAttack;
 using bitboard::move_t;
 
+Environment::Environment(){}
+
+
+void Environment::setGameStateColor(COLOR color) {
+  state.playerColor = color;
+}
+
 void Environment::setGameState(type::gameState_ptr st) {
   state = (*st); // dereferrence
 }
@@ -704,7 +711,7 @@ void Environment::canBlackCastleK() { // King startpos is 60
   bitboard_t all = whitePieces() | blackPieces();
   bitboard_t whiteAttacks = combinedWhiteAttacks();
 
-  printBoard(whiteAttacks);
+  //printBoard(whiteAttacks);
 
   // No pieces between king and chosen rook
   if (!utils::bitAt(all, 61) &&

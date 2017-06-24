@@ -109,8 +109,13 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
 
   // created a environ instance based on parent node
   // switch the color, since env creates the colours options not the opponent
-  environment::Environment env(node->playerColor == WHITE ? BLACK : WHITE);
+  environment::Environment env(node->playerColor);
   env.setGameState(node);
+
+  //env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
+//  if (!(node->fullMoves == 1 && node->playerColor == WHITE)) {
+ //   env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
+  //}
 
   // create a holder for possible game outputs
   std::vector<gameState> states;
@@ -306,7 +311,11 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   using bitboard::bitboard_t;
   auto node = std::make_shared<gameState>();
 
-  node->playerColor = child.playerColor;
+  node->playerColor = parent->playerColor == BLACK ? WHITE : BLACK;
+
+  if (parent->playerColor == child.playerColor && parent->fullMoves > 1 || (parent->fullMoves == 1 && parent->playerColor == BLACK)) {
+    //std::cerr << "child has same color as parent" << std::endl;
+  }
 
   node->BlackRook = child.BlackRook;
   node->BlackQueen = child.BlackQueen;
@@ -349,7 +358,7 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   }
 
   // set sub possibilities
-  environment::Environment env(node->playerColor == WHITE ? BLACK : WHITE);
+  environment::Environment env(node->playerColor);
   env.setGameState(node);
   std::vector<gameState> states;
   env.computeGameStates(states);

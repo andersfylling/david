@@ -89,9 +89,6 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
 
     utils::printGameState(currentGame);
 
-    // update game state of new current player
-    currentPlayer->setGameState(currentGame);
-
     // ask for player / engine move decision
     currentPlayer->findBestMove();
 
@@ -104,14 +101,10 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     }
     else {
       // update active player / engine
-      if (currentPlayer->getColor() == eng1->getColor()) {
-        currentPlayer.reset();
-        currentPlayer = eng2;
-      }
-      else {
-        currentPlayer.reset();
-        currentPlayer = eng1;
-      }
+      currentPlayer.swap(currentGame->playerColor == eng1->getColor() ? eng1 : eng2);
+
+      // update game state of new current player
+      currentPlayer->setGameState(currentGame);
     }
   } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0 && !error);
 
