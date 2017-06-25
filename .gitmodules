@@ -13,3 +13,6 @@
 [submodule "external/uci"]
 	path = external/uci
 	url = https://github.com/sciencefyll/uci/
+[submodule "external/styleguide"]
+	path = external/styleguide
+	url = https://github.com/google/styleguide
