@@ -72,6 +72,8 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   int aspirationDepth = 4;
   int bScore = (int) (-INFINITY);
 
+  std::vector<int> scoreCache;
+
   startTime = clock();              //Starting clock
 
 
@@ -96,7 +98,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   //
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 10000) + movetime;
-  for (int currentDepth = 1; currentDepth <= depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+  for (int currentDepth = 1; currentDepth <= 1/*depth*/ && timeout > (std::time(nullptr) * 1000); currentDepth++) {
     int cScore = bScore;
     int aspirationDelta = 0;
 
@@ -121,6 +123,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
 
 
     // find which possibility is the best option
+    int childIndex = 0;
     for (auto child : board->children) {
       // Start with a small aspiration window and, in the case of a fail
       // high/low, re-search with a bigger window until we're not failing
@@ -129,6 +132,15 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
       while (!iDone) {
         cScore = negamax(board, alpha, beta, currentDepth);
         iterationScore[currentDepth] = cScore;
+
+        // Store the scores in the cache
+        // so far this only stores the cache for the first depth
+        if (scoreCache.size() == childIndex) {
+          scoreCache.push_back(cScore);
+        }
+        else {
+          // cached score already exists.
+        }
 
         //
         // Update best score in case of a abort

@@ -124,9 +124,15 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   env.computeGameStates(states);
 
   // create node pointers, and set some internal data
+  std::cout << "OPTIONS ========== " << std::endl;
   for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
     this->generateNode(node, states.at(i));
+
+    if (node->playerColor == BLACK && i < 10) {
+      utils::printGameState(node->children.at(i));
+    }
   }
+  std::cout << "OPTIONS END ====== " << std::endl;
 
   // once all the nodes are set, we need to sort the children.
   this->sortChildren(node);
@@ -311,12 +317,6 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   using bitboard::bitboard_t;
   auto node = std::make_shared<gameState>();
 
-  node->playerColor = parent->playerColor == BLACK ? WHITE : BLACK;
-
-  if (parent->playerColor == child.playerColor && parent->fullMoves > 1 || (parent->fullMoves == 1 && parent->playerColor == BLACK)) {
-    //std::cerr << "child has same color as parent" << std::endl;
-  }
-
   node->BlackRook = child.BlackRook;
   node->BlackQueen = child.BlackQueen;
   node->BlackPawn = child.BlackPawn;
@@ -356,6 +356,8 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
     int score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(node, this->engineContextPtr->playerColor);
     node->score = score;
   }
+
+  node->playerColor = parent->playerColor == BLACK ? WHITE : BLACK;
 
   // set sub possibilities
   environment::Environment env(node->playerColor);
