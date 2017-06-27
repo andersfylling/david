@@ -57,7 +57,7 @@ TEST_CASE("Search completed?"){
 
 TEST_CASE("Search returning optimal node?"){
   context->testing = true;
-  test_search.setDebug(true);
+  test_search.setDebug(false);
 
   //
   //Simulere iterative deepening

@@ -35,7 +35,7 @@ type::gameState_ptr generateBoardFromFen(const std::string fen);
 bool isHalfMove(type::gameState_ptr parent, type::gameState_ptr child);
 void setDefaultChessLayout(type::gameState_ptr node);
 
-void printGameState(definitions::gameState_ptr gs);
+void printGameState(type::gameState_ptr gs);
 
 
 bitboard::bitboard_t numberOfPieces(bitboard::bitboard_t board);     // For generating right sized arrays
