@@ -5,6 +5,7 @@
 #ifndef CHESS_ANN_MOVEGENERATION_H
 #define CHESS_ANN_MOVEGENERATION_H
 #include "bitboard.h"
+#include "types.h"
 #include <utility>
 #include <vector>
 namespace david {
@@ -41,9 +42,12 @@ const bitboard::bitboard_t yAxis[7] = {1ULL, 257ULL, 65793ULL, 16843009ULL, 4311
 class MoveGenerator {
  private:
   std::vector<bitboard::move_t> moveList;
-  std::vector<bitboard::move_t> moveListOpponent;
   bitboard::gameState state;
-  bitboard::COLOR activeColor;
+  bitboard::bitboard_t attacks;
+
+
+
+
 
  public:
   // Constructors
@@ -56,16 +60,47 @@ class MoveGenerator {
   bitboard::bitboard_t moveToMap();
   void clearLists();
   bool nothernly(DIRECTION dir);
+  void printMoves();
+  int numberOfMoves();
 
-  // Level 1 move generation
+  // Level 1 move basic generation of vectors
   bitboard::bitboard_t * createVectors(bitboard::bitboard_t board, DIRECTION dir, int steps);
   bitboard::bitboard_t add_vector_to_board(bitboard::bitboard_t destination, DIRECTION dir, bitboard::bitboard_t dist);
   std::pair<bitboard::bitboard_t, bitboard::bitboard_t> distanceToEdge(bitboard::bitboard_t board, DIRECTION dir);
   bitboard::bitboard_t generateBlock(bitboard::bitboard_t board, DIRECTION dir, bool own = false);
 
-  // Level 2 move generation
+  // Level 2 higher level function
   bitboard::bitboard_t reduceVector(bitboard::bitboard_t vector, bitboard::COLOR color, DIRECTION dir, bool pawn = false);
-  void pawnMoves(bitboard::COLOR color);
+  bitboard::bitboard_t * getReducedDiagonals(bitboard::bitboard_t pieces, bitboard::COLOR color, int step = 0);
+  bitboard::bitboard_t * getReducedXY(bitboard::bitboard_t pieces, bitboard::COLOR color, int step = 0);
+  bitboard::bitboard_t * rookMovement(bitboard::bitboard_t board);
+
+  // Level 3 generation of move_t
+  void addAttack(bitboard::bitboard_t * vectors, int number);
+  void pawnMoves(bitboard::COLOR color, bool vector = false);
+  void bishopMoves(bitboard::COLOR color, bool vector = false);
+  void knightMoves(bitboard::COLOR color, bool vector = false);
+  void rookMoves(bitboard::COLOR color, bool vector = false);
+  void queenMoves(bitboard::COLOR color, bool vector = false);
+  void kingMoves(bitboard::COLOR color, bool vector = false);
+  void castling(bitboard::COLOR color);
+
+
+  // Level 4 handling
+  void capturePiece(bitboard::COLOR color, bitboard::bitboard_t index, bitboard::gameState &st);
+  void setGameState(type::gameState_ptr st);
+  void applyMove(bitboard::move_t m, bitboard::gameState & s);
+  bool moveIsLegal(bitboard::move_t m, bitboard::COLOR c);
+  void generateMoves(bitboard::COLOR color, bool legacy = false);
+  void generateAttacks(bitboard::COLOR color);
+
+
+  /*
+   * Legacy functions
+   * the following functions is made to generate moves
+   * for older versions of the treeGen
+   */
+  void generateGameStates(std::vector<bitboard::gameState> &states);
 
 };
 
