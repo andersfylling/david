@@ -184,10 +184,10 @@ void gameTree::GameTree::generateNodes() {
 
   while (nrOfNodes < this->maxNumberOfNodes) {
 
-    environment::Environment env(node->playerColor);
-    env.setGameState(node);
+    movegen::MoveGenerator gen;
+    gen.setGameState(node);
     std::vector<gameState> states;
-    env.computeGameStates(states);
+    gen.generateGameStates(states);
 
     int children = 0;
     for (int i = 0; i < states.size() && nrOfNodes < this->maxNumberOfNodes; nrOfNodes++, i++) {
@@ -344,10 +344,10 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   }
 
   // set sub possibilities
-  environment::Environment env(node->playerColor);
-  env.setGameState(node);
+  movegen::MoveGenerator gen;
+  gen.setGameState(node);
   std::vector<gameState> states;
-  env.computeGameStates(states);
+  gen.generateGameStates(states);
   node->possibleSubMoves = states.size(); //won't go above 35 or something.
 
 
