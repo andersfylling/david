@@ -7,10 +7,14 @@
 #include <utility>
 #include <david/utils.h>
 
-using david::bitboard::bitboard_t;
+using david::type::bitboard_t;
 using david::bitboard::COLOR;
 using david::movegen::DIRECTION;
+using david::movegen::MOVETYPE;
+using david::type::move_t;
+using david::movegen::Move;
 david::movegen::MoveGenerator generator;
+
 
 TEST_CASE("Test generation of vectors") {
   david::bitboard::bitboard_t Wpawns, Bpawns, Wcastle, Bcastle, QueenTest;
@@ -19,56 +23,56 @@ TEST_CASE("Test generation of vectors") {
   david::bitboard::bitboard_t * b;
   QueenTest = 34359738368ULL;
 
-  b = generator.createVectors(QueenTest, david::movegen::DIRECTION::NORTH, 0);
+  b = generator.createVectors(QueenTest, DIRECTION::NORTH, 0);
   REQUIRE(b[0] == 578721348210130944ULL);
   //david::utils::printBoard(*b);
 
-  b = generator.createVectors(QueenTest, david::movegen::DIRECTION::SOUTH, 0);
+  b = generator.createVectors(QueenTest, DIRECTION::SOUTH, 0);
   REQUIRE(b[0] == 134744072ULL);
 
-  b = generator.createVectors(QueenTest, david::movegen::DIRECTION::SOUTH_EAST, 0);
+  b = generator.createVectors(QueenTest, DIRECTION::SOUTH_EAST, 0);
   REQUIRE(b[0] == 67240192ULL);
 
 
-  b = generator.createVectors(Wpawns, david::movegen::DIRECTION::NORTH, 0);
+  b = generator.createVectors(Wpawns, DIRECTION::NORTH, 0);
   //david::utils::printBoard(*b);
   REQUIRE(b[0] == 72340172838076416ULL);
   REQUIRE(b[1] == 144680345676152832ULL);
   REQUIRE(b[7] == 9259542123273781248ULL);
 
- b = generator.createVectors(Wpawns, david::movegen::DIRECTION::NORTH, 1);
+ b = generator.createVectors(Wpawns, DIRECTION::NORTH, 1);
   REQUIRE(b[0] == 65536ULL);
   REQUIRE(b[1] == 131072ULL);
   REQUIRE(b[7] == 8388608ULL);
 
-  b = generator.createVectors(Wpawns, david::movegen::DIRECTION::NORTH_EAST, 1);
+  b = generator.createVectors(Wpawns, DIRECTION::NORTH_EAST, 1);
   //david::utils::printBoard(b[6]);
 
   REQUIRE(b[0] == 0ULL);
   REQUIRE(b[1] == 65536ULL);
   REQUIRE(b[7] == 4194304ULL);
 
-  b = generator.createVectors(Wpawns, david::movegen::DIRECTION::NORTH_EAST, 0);
+  b = generator.createVectors(Wpawns, DIRECTION::NORTH_EAST, 0);
 
   REQUIRE(b[0] == 0ULL);
   REQUIRE(b[1] == 65536ULL);
   REQUIRE(b[7] == 145249953336262656ULL);
 
-  b = generator.createVectors(Bpawns, david::movegen::DIRECTION::SOUTH_EAST, 0);
+  b = generator.createVectors(Bpawns, DIRECTION::SOUTH_EAST, 0);
   //david::utils::printBoard(b[6]);
 
   REQUIRE(b[0] == 0ULL);
   REQUIRE(b[1] == 1099511627776ULL);
   REQUIRE(b[7] == 70506452091906ULL);
 
-  b = generator.createVectors(Bpawns, david::movegen::DIRECTION::SOUTH_WEST, 0);
+  b = generator.createVectors(Bpawns, DIRECTION::SOUTH_WEST, 0);
   //david::utils::printBoard(b[6]);
 
   REQUIRE(b[0] == 2216338399296ULL);
   REQUIRE(b[1] == 4432676798592ULL);
   REQUIRE(b[7] == 0ULL);
 
-  b = generator.createVectors(Bpawns, david::movegen::DIRECTION::WEST, 0);
+  b = generator.createVectors(Bpawns, DIRECTION::WEST, 0);
   //david::utils::printBoard(b[0]);
 
   REQUIRE(b[0] == 71494644084506624ULL);
@@ -81,21 +85,21 @@ TEST_CASE("DISTANCE TO EDGES") {
   std::pair <david::bitboard::bitboard_t, david::bitboard::bitboard_t> rp;
 
   // TESTS NORTH EAST MOVEMENT
-  rp = generator.distanceToEdge(david::utils::LSB(17179869184ULL), david::movegen::DIRECTION::NORTH_EAST);
+  rp = generator.distanceToEdge(david::utils::LSB(17179869184ULL), DIRECTION::NORTH_EAST);
   REQUIRE(rp.first == 3);
   REQUIRE(rp.second == 2);
 
   // TESTS NORTH MOVEMENT
-  rp = generator.distanceToEdge(david::utils::LSB(137438953472ULL), david::movegen::DIRECTION::NORTH);
+  rp = generator.distanceToEdge(david::utils::LSB(137438953472ULL), DIRECTION::NORTH);
   REQUIRE(rp.first == 3);
   REQUIRE(rp.second == 7);
 
   // NORTH WEST MOVEMENT
-  rp = generator.distanceToEdge(david::utils::LSB(2097152ULL), david::movegen::DIRECTION::NORTH_WEST);
+  rp = generator.distanceToEdge(david::utils::LSB(2097152ULL), DIRECTION::NORTH_WEST);
   REQUIRE(rp.first == 5);
   REQUIRE(rp.second == 2);
 
-  rp = generator.distanceToEdge(david::utils::LSB(262144ULL), david::movegen::DIRECTION::SOUTH);
+  rp = generator.distanceToEdge(david::utils::LSB(262144ULL), DIRECTION::SOUTH);
   REQUIRE(rp.first == 2);
   REQUIRE(rp.second == 7);
 }
@@ -106,18 +110,18 @@ TEST_CASE("ENCODING OF MOVES") {
   case2 = 21443U;  // Piece moves from 20 to 60 with queen castle
   case3 = 50127U;   // Piece from 25 to 30 with max parameters
 
-  david::movegen::Move m1(11572);
-  david::movegen::Move m2;
-  m2.set(11, 19, david::movegen::MOVETYPE::CAPTURES);
+  Move m1(11572);
+  Move m2;
+  m2.set(11, 19, MOVETYPE::CAPTURES);
   REQUIRE(m1.getMove() == m2.getMove());
 
-  david::movegen::Move m3(21443);
-  m2.set(20, 60, david::movegen::MOVETYPE::CASTLE_Q);
+  Move m3(21443);
+  m2.set(20, 60, MOVETYPE::CASTLE_Q);
 
   REQUIRE(m2.getMove() == m3.getMove());
   REQUIRE(m2.getTo() == 20);
   REQUIRE(m2.getFrom() == 60);
-  REQUIRE(m2.getType() == david::movegen::MOVETYPE::CASTLE_Q);
+  REQUIRE(m2.getType() == MOVETYPE::CASTLE_Q);
 }
 
 
@@ -146,8 +150,8 @@ TEST_CASE("BLOCK AND REDUCE VECTOR") {
 
 TEST_CASE ("PAWN MOVEMENT TESTS") {
   david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
-  david::movegen::Move m;
-  m.set(35ULL, 51ULL, david::movegen::MOVETYPE::DOUBLE_PAWN_PUSH);
+  Move m;
+  m.set(35ULL, 51ULL, MOVETYPE::DOUBLE_PAWN_PUSH);
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
@@ -168,14 +172,14 @@ TEST_CASE ("PAWN MOVEMENT TESTS") {
 
   *st = stt;
 
-  generator.pawnMoves(david::bitboard::COLOR::WHITE);
+  generator.pawnMoves(COLOR::WHITE);
   david::bitboard::bitboard_t attack, attack2;
 
   attack = generator.moveToMap();
 
   generator.clearLists();
 
-  generator.pawnMoves(david::bitboard::COLOR::BLACK);
+  generator.pawnMoves(COLOR::BLACK);
   attack2 = generator.moveToMap();
 
   REQUIRE(attack == 4294901760ULL);

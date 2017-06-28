@@ -52,5 +52,8 @@ typedef std::shared_ptr<::david::bitboard::gameState> gameState_ptr;
 
 typedef uint64_t bitboard_t;  // Represents a bitboard_t
 typedef uint16_t move_t;      // Representing moves
+
+
+
 }
 }

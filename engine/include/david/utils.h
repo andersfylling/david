@@ -38,17 +38,17 @@ void setDefaultChessLayout(type::gameState_ptr node);
 void printGameState(type::gameState_ptr gs);
 
 
-bitboard::bitboard_t numberOfPieces(bitboard::bitboard_t board);     // For generating right sized arrays
-void printBoard(bitboard::bitboard_t board);  // A damn sexy board representation
+type::bitboard_t numberOfPieces(type::bitboard_t board);     // For generating right sized arrays
+void printBoard(type::bitboard_t board);  // A damn sexy board representation
 
-bitboard::bitboard_t  LSB(bitboard::bitboard_t board);
-bitboard::bitboard_t  NSB(bitboard::bitboard_t &board);
-bitboard::bitboard_t MSB(bitboard::bitboard_t board);
-bitboard::bitboard_t NSB_r(bitboard::bitboard_t &board);
+type::bitboard_t  LSB(type::bitboard_t board);
+type::bitboard_t  NSB(type::bitboard_t &board);
+type::bitboard_t MSB(type::bitboard_t board);
+type::bitboard_t NSB_r(type::bitboard_t &board);
 
-bool bitIsSet(bitboard::bitboard_t board, bitboard::bitboard_t index);
-void flipBitOff(bitboard::bitboard_t &board, bitboard::bitboard_t index);
-void flipBitOn(bitboard::bitboard_t &board, bitboard::bitboard_t index);
+bool bitIsSet(type::bitboard_t board, type::bitboard_t index);
+void flipBitOff(type::bitboard_t &board, type::bitboard_t index);
+void flipBitOn(type::bitboard_t &board, type::bitboard_t index);
 
 };
 

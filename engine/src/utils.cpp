@@ -35,7 +35,7 @@ int utils::stoi(const char c) {
 bool utils::isHalfMove(type::gameState_ptr parent, type::gameState_ptr child) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  using bitboard::bitboard_t;
+  using type::bitboard_t;
 
   environment::Environment env1(parent->playerColor);
   environment::Environment env2(child->playerColor);
@@ -95,7 +95,7 @@ bool utils::isHalfMove(type::gameState_ptr parent, type::gameState_ptr child) {
 std::string utils::generateFen(type::gameState_ptr node) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  using bitboard::bitboard_t;
+  using type::bitboard_t;
 
   std::array<bitboard_t, 12> boards = {
       node->BlackBishop,
@@ -329,11 +329,11 @@ std::vector<float> utils::convertGameStateToInputs(type::gameState_ptr node) {
     inputs.push_back(static_cast<float>(b));
   }
 
-  std::array<bitboard::bitboard_t, 2> boards1 = {
+  std::array<type::bitboard_t, 2> boards1 = {
       node->BlackKing,
       node->WhiteKing
   };
-  std::array<bitboard::bitboard_t, 8> boards2 = {
+  std::array<type::bitboard_t, 8> boards2 = {
       node->BlackBishop,
       node->BlackKnight,
       node->BlackQueen,
@@ -343,7 +343,7 @@ std::vector<float> utils::convertGameStateToInputs(type::gameState_ptr node) {
       node->WhiteKnight,
       node->WhiteRook
   };
-  std::array<bitboard::bitboard_t, 2> boards8 = {
+  std::array<type::bitboard_t, 2> boards8 = {
       node->BlackPawn,
       node->WhitePawn
   };
@@ -453,7 +453,7 @@ void utils::setDefaultChessLayout(type::gameState_ptr node) {
  */
 void utils::printGameState(type::gameState_ptr gs) {
 
-  std::map<const char, bitboard::bitboard_t &> links = {
+  std::map<const char, type::bitboard_t &> links = {
       {'b', gs->BlackBishop},
       {'k', gs->BlackKing},
       {'n', gs->BlackKnight},
@@ -511,7 +511,7 @@ void utils::printGameState(type::gameState_ptr gs) {
 type::gameState_ptr utils::generateBoardFromFen(const std::string fen) {
   type::gameState_ptr node = std::make_shared<bitboard::gameState>();
 
-  std::map<const char, bitboard::bitboard_t &> links = {
+  std::map<const char, type::bitboard_t &> links = {
       {'b', node->BlackBishop},
       {'k', node->BlackKing},
       {'n', node->BlackKnight},
@@ -655,7 +655,7 @@ std::string utils::getAbsoluteProjectPath() {
  * Prints a bitboard as a chessboard with 0's and 1's
  * @param board - at bitboard_t
  */
-void utils::printBoard(bitboard::bitboard_t board) {
+void utils::printBoard(type::bitboard_t board) {
     std::string bits = std::bitset<64>(board).to_string();
     std::cout << "\n  ";
     for (int i = 'A'; i < 'A' + 8; i++)
@@ -678,7 +678,7 @@ void utils::printBoard(bitboard::bitboard_t board) {
  * @param board - bitboard
  * @return number of active bits
  */
-bitboard::bitboard_t utils::numberOfPieces(bitboard::bitboard_t board) {
+type::bitboard_t utils::numberOfPieces(type::bitboard_t board) {
     // Fastest way of getting nuber of active bits.
     // Uses special CPU fuctionality
     // No windows-compiler support. Ever heard of minGw?
@@ -688,40 +688,13 @@ bitboard::bitboard_t utils::numberOfPieces(bitboard::bitboard_t board) {
 }
 
 
-// Needs compiler support for Microsoft c++ compiler
-// Works with gcc based compilers
-bitboard::bitboard_t utils::LSB(bitboard::bitboard_t board) {
-  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
-}
-
-// Needs compiler support for Microsoft c++ compiler
-// Works with gcc based compilers
-bitboard::bitboard_t utils::NSB(bitboard::bitboard_t &board) {
-  board &= ~(1LL << LSB(board));
-  return LSB(board);
-}
-
-bitboard::bitboard_t utils::MSB(bitboard::bitboard_t board) {
-  return 63 - __builtin_clzll(board);
-}
-
-bitboard::bitboard_t utils::NSB_r(bitboard::bitboard_t &board) {
-  board &= ~(1LL << MSB(board));
-  return MSB(board);
-}
-
 // Turns on bit
-void utils::flipBitOn(bitboard::bitboard_t &board, bitboard::bitboard_t index) {
+void utils::flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
   board |= (1LL << index);
 }
 
-// YEAH tell that bit to flipp off!!!
-// Nobody wants you bit... NOBODY WANTS YOU
-void utils::flipBitOff(bitboard::bitboard_t &board, bitboard::bitboard_t index) {
-  board &= ~(1ULL << index);
-}
 
-bool utils::bitIsSet(bitboard::bitboard_t board, bitboard::bitboard_t index) {
+bool utils::bitIsSet(type::bitboard_t board, type::bitboard_t index) {
   return (board & (1ULL << index)) ? true : false;
 }
 } // End of david

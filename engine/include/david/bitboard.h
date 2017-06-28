@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <memory>
+#include "david/types.h"
 
 namespace david {
 namespace bitboard {
@@ -72,31 +73,28 @@ bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
   return boardValue;
 }
 
-// Piece types. Sliding includes queen, king, rook and tower
-// Needed for move generation
-enum pieceType { PAWN, KNIGHT, NORMAL };
 
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
-  bitboard_t WhitePawn;
-  bitboard_t WhiteRook;
-  bitboard_t WhiteKnight;
-  bitboard_t WhiteBishop;
-  bitboard_t WhiteQueen;
-  bitboard_t WhiteKing;
+  type::bitboard_t WhitePawn;
+  type::bitboard_t WhiteRook;
+  type::bitboard_t WhiteKnight;
+  type::bitboard_t WhiteBishop;
+  type::bitboard_t WhiteQueen;
+  type::bitboard_t WhiteKing;
 
-  bitboard_t BlackPawn;
-  bitboard_t BlackRook;
-  bitboard_t BlackKnight;
-  bitboard_t BlackBishop;
-  bitboard_t BlackQueen;
-  bitboard_t BlackKing;
+  type::bitboard_t BlackPawn;
+  type::bitboard_t BlackRook;
+  type::bitboard_t BlackKnight;
+  type::bitboard_t BlackBishop;
+  type::bitboard_t BlackQueen;
+  type::bitboard_t BlackKing;
 
   move_t lastWhiteMove;
   move_t lastBlackMove;
 
-  bitboard::COLOR playerColor = bitboard::COLOR::WHITE;
+  COLOR playerColor = bitboard::COLOR::WHITE;
   std::vector<std::shared_ptr<bitboard::gameState>> children;
 
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
@@ -132,5 +130,5 @@ struct pieceAttack {
   bitboard_t *BlackKing;
 };
 
-}
-}
+} // END Of bitboard
+} // End of david

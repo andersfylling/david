@@ -704,7 +704,7 @@ void Environment::canBlackCastleK() { // King startpos is 60
   bitboard_t all = whitePieces() | blackPieces();
   bitboard_t whiteAttacks = combinedWhiteAttacks();
 
-  printBoard(whiteAttacks);
+  //printBoard(whiteAttacks);
 
   // No pieces between king and chosen rook
   if (!utils::bitAt(all, 61) &&
