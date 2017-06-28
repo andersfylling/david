@@ -622,6 +622,43 @@ void utils::flipBitOff(type::bitboard_t &board, type::bitboard_t index) {
   board &= ~(1ULL << index);
 }
 
+constexpr type::bitboard_t utils::defaultBlackBishop () {
+  return 2594073385365405696ULL;
+}
+constexpr type::bitboard_t utils::defaultBlackKing () {
+  return 576460752303423488ULL;
+}
+constexpr type::bitboard_t utils::defaultBlackKnight () {
+  return 4755801206503243776ULL;
+}
+constexpr type::bitboard_t utils::defaultBlackPawn () {
+  return 71776119061217280ULL;
+}
+constexpr type::bitboard_t utils::defaultBlackQueen () {
+  return 1152921504606846976ULL;
+}
+constexpr type::bitboard_t utils::defaultBlackRook () {
+  return 9295429630892703744ULL;
+}
+constexpr type::bitboard_t utils::defaultWhiteBishop () {
+  return 36ULL;
+}
+constexpr type::bitboard_t utils::defaultWhiteKnight () {
+  return 66ULL;
+}
+constexpr type::bitboard_t utils::defaultWhitePawn () {
+  return 65280ULL;
+}
+constexpr type::bitboard_t utils::defaultWhiteQueen () {
+  return 16ULL;
+}
+constexpr type::bitboard_t utils::defaultWhiteKing () {
+  return 8ULL;
+}
+constexpr type::bitboard_t utils::defaultWhiteRook () {
+  return 129ULL;
+}
+
 
 std::string utils::getAbsoluteProjectPath() {
 #ifdef __linux__

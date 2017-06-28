@@ -23,6 +23,20 @@ void              flipBit(type::bitboard_t &board, type::bitboard_t index);
 void              flipBitOff(type::bitboard_t &board, type::bitboard_t index);
 bool              bitAt(uint64_t b, uint8_t i);
 
+// default bitboard layouts
+constexpr type::bitboard_t defaultBlackBishop();
+constexpr type::bitboard_t defaultBlackKing();
+constexpr type::bitboard_t defaultBlackKnight();
+constexpr type::bitboard_t defaultBlackPawn();
+constexpr type::bitboard_t defaultBlackQueen();
+constexpr type::bitboard_t defaultBlackRook();
+constexpr type::bitboard_t defaultWhiteBishop();
+constexpr type::bitboard_t defaultWhiteKnight();
+constexpr type::bitboard_t defaultWhitePawn();
+constexpr type::bitboard_t defaultWhiteQueen();
+constexpr type::bitboard_t defaultWhiteKing();
+constexpr type::bitboard_t defaultWhiteRook();
+
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
 
