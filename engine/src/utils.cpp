@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
+#include "david/bitboard.h"
 
 #ifdef __linux__
 //linux code goes here
@@ -34,7 +35,7 @@ int utils::stoi(const char c) {
 bool utils::isHalfMove(type::gameState_ptr parent, type::gameState_ptr child) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  using bitboard::bitboard_t;
+  using type::bitboard_t;
 
   environment::Environment env1(parent->playerColor);
   environment::Environment env2(child->playerColor);
@@ -94,7 +95,7 @@ bool utils::isHalfMove(type::gameState_ptr parent, type::gameState_ptr child) {
 std::string utils::generateFen(type::gameState_ptr node) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  using bitboard::bitboard_t;
+  using type::bitboard_t;
 
   std::array<bitboard_t, 12> boards = {
       node->BlackBishop,
@@ -328,11 +329,11 @@ std::vector<float> utils::convertGameStateToInputs(type::gameState_ptr node) {
     inputs.push_back(static_cast<float>(b));
   }
 
-  std::array<bitboard::bitboard_t, 2> boards1 = {
+  std::array<type::bitboard_t, 2> boards1 = {
       node->BlackKing,
       node->WhiteKing
   };
-  std::array<bitboard::bitboard_t, 8> boards2 = {
+  std::array<type::bitboard_t, 8> boards2 = {
       node->BlackBishop,
       node->BlackKnight,
       node->BlackQueen,
@@ -342,7 +343,7 @@ std::vector<float> utils::convertGameStateToInputs(type::gameState_ptr node) {
       node->WhiteKnight,
       node->WhiteRook
   };
-  std::array<bitboard::bitboard_t, 2> boards8 = {
+  std::array<type::bitboard_t, 2> boards8 = {
       node->BlackPawn,
       node->WhitePawn
   };
@@ -452,7 +453,7 @@ void utils::setDefaultChessLayout(type::gameState_ptr node) {
  */
 void utils::printGameState(type::gameState_ptr gs) {
 
-  std::map<const char, bitboard::bitboard_t &> links = {
+  std::map<const char, type::bitboard_t &> links = {
       {'b', gs->BlackBishop},
       {'k', gs->BlackKing},
       {'n', gs->BlackKnight},
@@ -510,7 +511,7 @@ void utils::printGameState(type::gameState_ptr gs) {
 type::gameState_ptr utils::generateBoardFromFen(const std::string fen) {
   type::gameState_ptr node = std::make_shared<bitboard::gameState>();
 
-  std::map<const char, bitboard::bitboard_t &> links = {
+  std::map<const char, type::bitboard_t &> links = {
       {'b', node->BlackBishop},
       {'k', node->BlackKing},
       {'n', node->BlackKnight},
@@ -687,4 +688,51 @@ std::string utils::getAbsoluteProjectPath() {
 #endif
 }
 
+/**
+ * Prints a bitboard as a chessboard with 0's and 1's
+ * @param board - at bitboard_t
+ */
+void utils::printBoard(type::bitboard_t board) {
+    std::string bits = std::bitset<64>(board).to_string();
+    std::cout << "\n  ";
+    for (int i = 'A'; i < 'A' + 8; i++)
+      std::cout << "  " << (char) i << " ";
+    std::cout << std::endl;
+    std::cout << "  +---+---+---+---+---+---+---+---+\n";
+    for (int i = 0; i < 8; i++) {
+      std::cout << i + 1 << " | ";
+      for (int j = 0; j < 8; j++) {
+        std::cout << bits.at((i * 8) + j) << " | ";
+      }
+      std::cout << '\n';
+      std::cout << "  +---+---+---+---+---+---+---+---+\n";
+    }
+    std::cout << '\n';
 }
+
+/**
+ * Retuns number of active bits in a bitboard
+ * @param board - bitboard
+ * @return number of active bits
+ */
+type::bitboard_t utils::numberOfPieces(type::bitboard_t board) {
+    // Fastest way of getting nuber of active bits.
+    // Uses special CPU fuctionality
+    // No windows-compiler support. Ever heard of minGw?
+  #ifdef __GNUG__
+    return __builtin_popcountll(board);
+  #endif
+}
+
+
+// Turns on bit
+void utils::flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
+  board |= (1LL << index);
+}
+
+
+bool utils::bitIsSet(type::bitboard_t board, type::bitboard_t index) {
+  return (board & (1ULL << index)) ? true : false;
+}
+} // End of david
+

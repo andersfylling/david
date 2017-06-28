@@ -6,6 +6,7 @@
 #include <david/environment.h>
 #include <david/utils.h>
 #include "david/ANN/ANN.h"
+#include "david/MoveGeneration.h"
 
 namespace david {
 /**
@@ -105,14 +106,14 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   node->children.resize(0);
 
   // created a environ instance based on parent node
-  environment::Environment env(node->playerColor);
-  env.setGameState(node);
+  movegen::MoveGenerator gen;
+  gen.setGameState(node);
 
   // create a holdere for possible game outputs
   std::vector<gameState> states;
 
   // generate possible game oputputs
-  env.computeGameStates(states);
+  gen.generateGameStates(states);
 
   // create node pointers, and set some internal data
   for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
@@ -183,10 +184,10 @@ void gameTree::GameTree::generateNodes() {
 
   while (nrOfNodes < this->maxNumberOfNodes) {
 
-    environment::Environment env(node->playerColor);
-    env.setGameState(node);
+    movegen::MoveGenerator gen;
+    gen.setGameState(node);
     std::vector<gameState> states;
-    env.computeGameStates(states);
+    gen.generateGameStates(states);
 
     int children = 0;
     for (int i = 0; i < states.size() && nrOfNodes < this->maxNumberOfNodes; nrOfNodes++, i++) {
@@ -343,10 +344,10 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   }
 
   // set sub possibilities
-  environment::Environment env(node->playerColor);
-  env.setGameState(node);
+  movegen::MoveGenerator gen;
+  gen.setGameState(node);
   std::vector<gameState> states;
-  env.computeGameStates(states);
+  gen.generateGameStates(states);
   node->possibleSubMoves = states.size(); //won't go above 35 or something.
 
 

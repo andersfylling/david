@@ -50,6 +50,20 @@ bool isHalfMove(type::gameState_ptr parent, type::gameState_ptr child);
 void setDefaultChessLayout(type::gameState_ptr node);
 
 void printGameState(type::gameState_ptr gs);
+
+
+type::bitboard_t numberOfPieces(type::bitboard_t board);     // For generating right sized arrays
+void printBoard(type::bitboard_t board);  // A damn sexy board representation
+
+type::bitboard_t  LSB(type::bitboard_t board);
+type::bitboard_t  NSB(type::bitboard_t &board);
+type::bitboard_t MSB(type::bitboard_t board);
+type::bitboard_t NSB_r(type::bitboard_t &board);
+
+bool bitIsSet(type::bitboard_t board, type::bitboard_t index);
+void flipBitOff(type::bitboard_t &board, type::bitboard_t index);
+void flipBitOn(type::bitboard_t &board, type::bitboard_t index);
+
 };
 
 }

@@ -8,5 +8,6 @@ list(REMOVE_ITEM chess_ann_testsfiles "${CMAKE_CURRENT_SOURCE_DIR}/../src/main.c
 
 add_executable(chess_ann_tests ${chess_ann_testsfiles})
 
+
 target_link_libraries(chess_ann_tests fann uci -lpthread)
 
