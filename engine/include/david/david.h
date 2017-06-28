@@ -19,4 +19,22 @@ static const std::string ENGINE_AUTHOR = "Anders Øen Fylling, Martin Klingenber
 static const std::string ENGINE_VERSION = "0.2.3"; // THIS IS JUST SOME BS NUMBER.
 static const std::string ENGINE_COPYRIGHT = ENGINE_NAME + ". Copyright (C) 2017-2017 " + ENGINE_AUTHOR + ". ";
 }
+
+
+static const type::bitboard_t DEFAULT_BLACKBISHOP = 2594073385365405696ULL;
+static const type::bitboard_t DEFAULT_BLACKKING   = 576460752303423488ULL;
+static const type::bitboard_t DEFAULT_BLACKKNIGHT = 4755801206503243776ULL;
+static const type::bitboard_t DEFAULT_BLACKPAWN   = 71776119061217280ULL;
+static const type::bitboard_t DEFAULT_BLACKQUEEN  = 1152921504606846976ULL;
+static const type::bitboard_t DEFAULT_BROOKROOK   = 9295429630892703744ULL;
+
+static const type::bitboard_t DEFAULT_WHITEBISHOP = 36ULL;
+static const type::bitboard_t DEFAULT_WHITEKNIGHT = 66ULL;
+static const type::bitboard_t DEFAULT_WHITEPAWN   = 65280ULL;
+static const type::bitboard_t DEFAULT_WHITEQUEEN  = 16ULL;
+static const type::bitboard_t DEFAULT_WHITEKING   = 8ULL;
+static const type::bitboard_t DEFAULT_WHITEROOK   = 129ULL;
+
+static const type::bitboard_t EMPTYBOARD          = 0ULL;
+
 }

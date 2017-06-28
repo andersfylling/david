@@ -623,43 +623,6 @@ void utils::flipBitOff(type::bitboard_t &board, type::bitboard_t index) {
   board &= ~(1ULL << index);
 }
 
-constexpr type::bitboard_t utils::defaultBlackBishop () {
-  return 2594073385365405696ULL;
-}
-constexpr type::bitboard_t utils::defaultBlackKing () {
-  return 576460752303423488ULL;
-}
-constexpr type::bitboard_t utils::defaultBlackKnight () {
-  return 4755801206503243776ULL;
-}
-constexpr type::bitboard_t utils::defaultBlackPawn () {
-  return 71776119061217280ULL;
-}
-constexpr type::bitboard_t utils::defaultBlackQueen () {
-  return 1152921504606846976ULL;
-}
-constexpr type::bitboard_t utils::defaultBlackRook () {
-  return 9295429630892703744ULL;
-}
-constexpr type::bitboard_t utils::defaultWhiteBishop () {
-  return 36ULL;
-}
-constexpr type::bitboard_t utils::defaultWhiteKnight () {
-  return 66ULL;
-}
-constexpr type::bitboard_t utils::defaultWhitePawn () {
-  return 65280ULL;
-}
-constexpr type::bitboard_t utils::defaultWhiteQueen () {
-  return 16ULL;
-}
-constexpr type::bitboard_t utils::defaultWhiteKing () {
-  return 8ULL;
-}
-constexpr type::bitboard_t utils::defaultWhiteRook () {
-  return 129ULL;
-}
-
 
 std::string utils::getAbsoluteProjectPath() {
 #ifdef __linux__
@@ -711,7 +674,8 @@ void utils::printBoard(type::bitboard_t board) {
 }
 
 /**
- * Retuns number of active bits in a bitboard
+ * Retuns number of active bits in a bitboard.
+ * TODO: This should be a uint8_t, and then use auto on return in loops(?)
  * @param board - bitboard
  * @return number of active bits
  */
@@ -730,9 +694,5 @@ void utils::flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
   board |= (1LL << index);
 }
 
-
-bool utils::bitIsSet(type::bitboard_t board, type::bitboard_t index) {
-  return (board & (1ULL << index)) ? true : false;
-}
 } // End of david
 
