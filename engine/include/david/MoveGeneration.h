@@ -100,6 +100,7 @@ class MoveGenerator {
    * for older versions of the treeGen
    */
   void generateGameStates(std::vector<bitboard::gameState> &states);
+  void generateGameStates(std::vector<bitboard::gameState> * states);
 
 };
 

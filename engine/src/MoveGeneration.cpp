@@ -967,6 +967,27 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
 }
 
 /**
+ * This is a legacy function. This generates gameStates
+ * in the future wi will only generate one gamestate per
+ * subtree. This function uses pointer instead of reference
+ * @param states - the vector the states will be put into
+ */
+void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState> * states) {
+  bitboard::gameState temp;
+  temp = state;
+  temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
+
+  generateMoves(state.playerColor);
+
+  for (int i = (int) moveList.size(); i >= 0; i--) {
+    if (moveIsLegal(moveList[i], state.playerColor)) {
+      applyMove(moveList[i], temp);
+      states->push_back(temp);
+    }
+  }
+}
+
+/**
  * Applies the move and tests if it is legal
  * @param m - the move to be applied
  * @param c - the color of the move
