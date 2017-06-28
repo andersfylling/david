@@ -224,7 +224,9 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
       std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
       this->expanded.push_back(child->score);
     }
+
     if (alpha >= beta) {
+      child.reset();
       break;
     }
 

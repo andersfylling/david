@@ -81,9 +81,11 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   sstr >> color; // now it gets the color
 
   auto currentPlayer = color == "w" ? eng1 : eng2;
+  auto otherPlayer = color == "w" ? eng2 : eng1;
 
   // lets start the game!
-  type::gameState_ptr currentGame = currentPlayer->getGameState();
+  auto currentGame = currentPlayer->getGameState();
+  auto previousGame = currentPlayer->getGameState();
   bool error = false;
   do {
 
@@ -93,6 +95,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     currentPlayer->findBestMove();
 
     // update current game state
+    previousGame.swap(currentGame);
     currentGame = currentPlayer->getGameState();
     error = currentGame ? false : true;
 
@@ -101,7 +104,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     }
     else {
       // update active player / engine
-      currentPlayer.swap(currentGame->playerColor == eng1->getColor() ? eng1 : eng2);
+      currentPlayer.swap(otherPlayer);
 
       // update game state of new current player
       currentPlayer->setGameState(currentGame);

@@ -124,15 +124,15 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   env.computeGameStates(states);
 
   // create node pointers, and set some internal data
-  std::cout << "OPTIONS ========== " << std::endl;
+  //std::cout << "OPTIONS ========== " << std::endl;
   for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
     this->generateNode(node, states.at(i));
 
-    if (node->playerColor == BLACK && i < 10) {
-      utils::printGameState(node->children.at(i));
-    }
+    //if (node->playerColor == BLACK && i < 10) {
+    //  utils::printGameState(node->children.at(i));
+    //}
   }
-  std::cout << "OPTIONS END ====== " << std::endl;
+  //std::cout << "OPTIONS END ====== " << std::endl;
 
   // once all the nodes are set, we need to sort the children.
   this->sortChildren(node);
@@ -364,7 +364,7 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   env.setGameState(node);
   std::vector<gameState> states;
   env.computeGameStates(states);
-  node->possibleSubMoves = states.size(); //won't go above 35 or something.
+  node->possibleSubMoves = static_cast<int>(states.size()); //won't go above 35 or something.
 
 
   // add child to parent
