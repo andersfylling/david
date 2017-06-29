@@ -34,25 +34,32 @@ namespace type {
 //
 
 // Used by classes to communicate with other instances not directly related except on a parent level
-typedef std::shared_ptr<::david::EngineContext>       engineContext_ptr;
+typedef ::david::EngineContext            engineContext_t;
+typedef std::shared_ptr<engineContext_t>  engineContext_ptr;
 
 // a pointer to an chess engine instance
-typedef std::shared_ptr<::david::ChessEngine>         engine_ptr;
+typedef ::david::ChessEngine              engine_t;
+typedef std::shared_ptr<engine_t>         engine_ptr;
 
 // a pointer to the search class
-typedef std::shared_ptr<::david::Search>              search_ptr;
+typedef ::david::Search                   search_t;
+typedef std::shared_ptr<search_t>         search_ptr;
 
 // a pointer to a ANN instance
-typedef std::shared_ptr<::david::ANN>                 neuralNetwork_ptr;
+typedef ::david::ANN                      neuralNetwork_t;
+typedef std::shared_ptr<neuralNetwork_t>  neuralNetwork_ptr;
 
 // a gameTree is the node tree which the Search class search through
-typedef std::shared_ptr<::david::gameTree::GameTree>  gameTree_ptr;
+typedef ::david::gameTree::GameTree       gameTree_t;
+typedef std::shared_ptr<gameTree_t>       gameTree_ptr;
 
 // holds the uci protocol for listening to incoming commands
-typedef std::shared_ptr<::uci::Listener>              uciProtocol_ptr;
+typedef ::uci::Listener                   uciProtocol_t;
+typedef std::shared_ptr<uciProtocol_t>    uciProtocol_ptr;
 
 // gameState is a node in the gameTree. Each one contains a board score and some other details.
-typedef std::shared_ptr<::david::bitboard::gameState> gameState_ptr;
+typedef ::david::bitboard::gameState      gameState_t;
+typedef std::shared_ptr<gameState_t>      gameState_ptr;
 
 typedef uint64_t bitboard_t;  // Represents a bitboard_t
 typedef uint16_t move_t;      // Representing moves
