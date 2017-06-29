@@ -958,7 +958,7 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
 
   generateMoves(state.playerColor);
 
-  for (int i = (int) moveList.size(); i >= 0; i--) {
+  for (int i = (int) moveList.size() -1; i >= 0; i--) {
     if (moveIsLegal(moveList[i], state.playerColor)) {
       applyMove(moveList[i], temp);
       states.push_back(temp);
@@ -979,7 +979,7 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
 
   generateMoves(state.playerColor);
 
-  for (int i = (int) moveList.size(); i >= 0; i--) {
+  for (int i = (int) moveList.size() -1; i >= 0; i--) {
     if (moveIsLegal(moveList[i], state.playerColor)) {
       applyMove(moveList[i], temp);
       states->push_back(temp);
