@@ -21,12 +21,12 @@ namespace david {
  * Constructor used in debug/test
  */
 Search::Search()
-    : depth(4)
+    : depth(5)
 {}
 
 Search::Search(type::engineContext_ptr ctx)
     : engineContextPtr(ctx),
-      depth(4)
+      depth(5)
 {}
 
 /**
@@ -45,7 +45,7 @@ type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
     std::cerr << "bestMove is empty!" << std::endl;
   }
 
-#ifdef DAVID_DEBUGGING
+#ifdef DAVID_DEBUG
     std::vector<int>::iterator it;
     std::cout << "Search objects score after complete search: " << this->searchScore << std::endl;  //Debug
     for(it=this->expanded.begin(); it<this->expanded.end(); it++)
@@ -98,7 +98,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   //
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 10000) + movetime;
-  for (int currentDepth = 1; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+  for (int currentDepth = 0; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
     int cScore = bScore;
     int aspirationDelta = 0;
 
@@ -137,7 +137,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
         // Store the scores in the cache
         // so far this only stores the cache for the first depth
         if (scoreCache.size() == childIndex) {
-          scoreCache.push_back(cScore);
+        //  scoreCache.push_back(cScore);
         }
         else {
           // cached score already exists.
@@ -150,6 +150,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
           bScore = cScore;
           //leafScore = this->bestLeafScore;
           //std::cout << cScore << std::endl;
+          this->bestMove.reset();
           this->bestMove = std::make_shared<type::gameState_t>(*child); // copy
         }
 
@@ -223,7 +224,7 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);
 
-#ifdef DAVID_DEBUGGING
+#ifdef DAVID_DEBUG
     std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
     this->expanded.push_back(child->score);
 #endif
@@ -270,7 +271,7 @@ void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iter
   // Output / statistics
   //
   std::string s = "μs";
-#ifdef DAVID_DEBUGGING
+#ifdef DAVID_DEBUG
     std::cout << "--+---------------------+-----------------+\n" <<
               "   | Time used in iter   |  Nodes searched |\n" <<
               "--+---------------------+-----------------+\n";
@@ -295,7 +296,7 @@ void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iter
     iterationsArray[i][0] = std::chrono::duration<double, std::milli>(diff).count();
     iterationsArray[i][1] = this->nodesSearched;
 
-#ifdef DAVID_DEBUGGING
+#ifdef DAVID_DEBUG
       std::cout << i + 1 << " | ";
       std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
                 " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
