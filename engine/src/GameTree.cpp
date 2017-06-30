@@ -6,6 +6,7 @@
 #include <david/environment.h>
 #include <david/utils.h>
 #include "david/ANN/ANN.h"
+#include "david/MoveGeneration.h"
 
 namespace david {
 /**
@@ -108,9 +109,8 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   node->children.resize(0);
 
   // created a environ instance based on parent node
-  // switch the color, since env creates the colours options not the opponent
-  environment::Environment env(node->playerColor);
-  env.setGameState(node);
+  movegen::MoveGenerator gen;
+  gen.setGameState(node);
 
   //env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
 //  if (!(node->fullMoves == 1 && node->playerColor == WHITE)) {
@@ -121,7 +121,7 @@ void gameTree::GameTree::generateChildren(type::gameState_ptr node) {
   std::vector<gameState> states;
 
   // generate possible game outputs
-  env.computeGameStates(states);
+  gen.generateGameStates(states);
 
   // create node pointers, and set some internal data
   //std::cout << "OPTIONS ========== " << std::endl;
@@ -198,10 +198,10 @@ void gameTree::GameTree::generateNodes() {
 
   while (nrOfNodes < this->maxNumberOfNodes) {
 
-    environment::Environment env(node->playerColor);
-    env.setGameState(node);
+    movegen::MoveGenerator gen;
+    gen.setGameState(node);
     std::vector<gameState> states;
-    env.computeGameStates(states);
+    gen.generateGameStates(states);
 
     int children = 0;
     for (int i = 0; i < states.size() && nrOfNodes < this->maxNumberOfNodes; nrOfNodes++, i++) {
@@ -360,12 +360,11 @@ type::gameState_ptr GameTree::generateNode(type::gameState_ptr parent, bitboard:
   node->playerColor = parent->playerColor == BLACK ? WHITE : BLACK;
 
   // set sub possibilities
-  environment::Environment env(node->playerColor);
-  env.setGameState(node);
+  movegen::MoveGenerator gen;
+  gen.setGameState(node);
   std::vector<gameState> states;
-  env.computeGameStates(states);
+  gen.generateGameStates(states);
   node->possibleSubMoves = static_cast<int>(states.size()); //won't go above 35 or something.
-
 
   // add child to parent
   parent->children.push_back(node);
