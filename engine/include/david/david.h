@@ -46,8 +46,8 @@ static const type::bitboard_t EMPTY   = 0ULL;
 } // ::david::constants::defaultPiecePosition
 
 namespace boardScore {
-static const int HIGHEST  = +(std::numeric_limits<int>::max());
-static const int LOWEST   = -(std::numeric_limits<int>::max());
+static const int HIGHEST  = +(std::numeric_limits<int16_t>::max());
+static const int LOWEST   = -(std::numeric_limits<int16_t>::max());
 }
 
 } // ::david::constants

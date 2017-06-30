@@ -22,12 +22,12 @@ namespace gameTree {
 class GameTree {
  private:
   // previous can be used for en passant
-  type::gameState_ptr previous;// in case a player regrets their move?
-  type::gameState_ptr current; // this represent the active game board
+  type::scoreNode_ptr root; // start of the game
+  type::scoreNode_ptr current; // current game state
   int maxNumberOfNodes; // nodes in memory
 
-  void getNumberOfNodes(type::gameState_ptr node, int &counter);
-  void getDepth(type::gameState_ptr node, int &depth);
+  void getNumberOfNodes(type::scoreNode_ptr node, int &counter);
+  void getDepth(type::scoreNode_ptr node, int &depth);
 
   type::engineContext_ptr engineContextPtr;
 
@@ -36,20 +36,24 @@ class GameTree {
   GameTree(type::engineContext_ptr ctx, type::gameState_ptr node);
   ~GameTree();
   void reset();
-  void reset(type::gameState_ptr node);
-  void resetChildren(type::gameState_ptr node);
-  void newRootNode(type::gameState_ptr node);
-  type::gameState_ptr regretNewRootNode();
+  //void reset(type::gameState_ptr node);
+  //void resetChildren(type::gameState_ptr node);
+  //void newRootNode(type::gameState_ptr node);
+  //type::gameState_ptr regretNewRootNode();
   void setMaxNumberOfNodes(int n);
   int getMaxNumberOfNodes();
-  void generateNodes();
-  type::gameState_ptr generateNode(type::gameState_ptr parent, bitboard::gameState child);
-  type::gameState_ptr getCurrentNode();
+  //void generateNodes();
+  //type::gameState_ptr generateNode(type::gameState_ptr parent, bitboard::gameState child);
+  void generateNode(type::scoreNode_ptr parent, type::gameState_t child, int index);
+  //type::gameState_ptr getCurrentNode();
   int getNumberOfNodes();
-  void generateChildren(type::gameState_ptr node);
-  void sortChildren(type::gameState_ptr node);
+  //void generateChildren(type::gameState_ptr node);
+  void generateChildren(type::scoreNode_ptr node);
+  //void sortChildren(type::gameState_ptr node);
+  void sortChildren(type::scoreNode_ptr node);
+  type::scoreNode_ptr getCurrent();
   int getDepth();
-  void printAllScores(type::gameState_ptr root);
+  //void printAllScores(type::gameState_ptr root);
 
 };
 

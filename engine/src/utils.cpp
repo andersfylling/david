@@ -317,7 +317,7 @@ std::vector<float> utils::convertGameStateToInputs(type::gameState_ptr node) {
       static_cast<double>(50 - node->fullMoves) / 100.0,
 
       // if the color playing is not yours, and the number here is high, it should not be a good thing.
-      static_cast<double>(node->children.size()) / 100.0 // will always be 0 unless children are generated before comparing score.
+      static_cast<double>(10/*node->children.size()*/) / 100.0 // will always be 0 unless children are generated before comparing score.
 
   };
 
@@ -509,7 +509,7 @@ void utils::printGameState(type::gameState_ptr gs) {
  * @return new shared_ptr of gameState
  */
 type::gameState_ptr utils::generateBoardFromFen(const std::string fen) {
-  type::gameState_ptr node = std::make_shared<bitboard::gameState>();
+  type::gameState_ptr node = new type::gameState_t();
 
   std::map<const char, type::bitboard_t &> links = {
       {'b', node->BlackBishop},

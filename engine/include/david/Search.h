@@ -29,7 +29,7 @@ class Search {
   Search(type::engineContext_ptr ctx);
   type::gameState_ptr searchInit(type::gameState_ptr node);
   int iterativeDeepening(type::gameState_ptr node);
-  int negamax(type::gameState_ptr board, int alpha, int beta, int depth, int iterativeDepthLimit);
+  int negamax(type::scoreNode_ptr node, int alpha, int beta, int depth, int iterativeDepthLimit);
   void setAbort(bool isAborted);
   void setComplete(bool isComplete);
 
@@ -74,7 +74,7 @@ class Search {
   std::string searchMoves;
   int searchScore;
   type::gameState_ptr bestMove;
-  type::gameTree_ptr gtPtr;
+  type::gameTree_t* gtPtr;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();

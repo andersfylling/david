@@ -11,6 +11,7 @@
 #include "uci/events.h"
 #include "uci/definitions.h"
 #include "uci/Listener.h"
+#include "david/scoreNode.h"
 
 namespace david {
 //Signals Signal; //Scrapped for now
@@ -21,12 +22,12 @@ namespace david {
  * Constructor used in debug/test
  */
 Search::Search()
-    : depth(5)
+    : depth(2)
 {}
 
 Search::Search(type::engineContext_ptr ctx)
     : engineContextPtr(ctx),
-      depth(5)
+      depth(2)
 {}
 
 /**
@@ -82,13 +83,15 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   //
   // board->generateAllMoves();
   //
-    if(!engineContextPtr->testing) {
-      gtPtr = std::make_shared<type::gameTree_t>(this->engineContextPtr, board);
+  type::scoreNode_ptr node = nullptr;
+  if(!engineContextPtr->testing) { // ........
+    gtPtr = new type::gameTree_t(this->engineContextPtr, board);
+    node = gtPtr->getCurrent();
 
-      if (board->children.size() == 0) {
-        gtPtr->generateChildren(board);
-      }
+    if (node->children.size() == 0) {
+      gtPtr->generateChildren(node);
     }
+  }
 
 
 
@@ -125,7 +128,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
     // find which possibility is the best option
     int leafScore = constant::boardScore::LOWEST;
     int childIndex = 0;
-    for (auto child : board->children) {
+    for (auto child : node->children) {
       // Start with a small aspiration window and, in the case of a fail
       // high/low, re-search with a bigger window until we're not failing
       // high/low anymore.
@@ -135,10 +138,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
         iterationScore[currentDepth] = cScore;
 
         // destroy and remove children
-        for (auto cc : child->children) {
-          cc.reset();
-        }
-        child->children.resize(0);
+        scoreNodeDestructor(child);
 
         // Store the scores in the cache
         // so far this only stores the cache for the first depth
@@ -156,8 +156,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
           bScore = cScore;
           //leafScore = this->bestLeafScore;
           //std::cout << cScore << std::endl;
-          this->bestMove.reset();
-          this->bestMove = std::make_shared<type::gameState_t>(*child); // copy
+          this->bestMove = new type::gameState_t(*(child->gs)); // copy
         }
 
         const bool fail       = bScore <= alpha || bScore >= beta;
@@ -179,7 +178,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
 
   setComplete(true);
 
-  this->gtPtr.reset();
+  delete this->gtPtr;
 
   return bScore;
 }
@@ -198,7 +197,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
  * @param depth
  * @return
  */
-int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth, int iterativeDepthLimit) {
+int Search::negamax(type::scoreNode_ptr node, int alpha, int beta, int iDepth, int iterativeDepthLimit) {
   int score;
   int bestScore = constant::boardScore::LOWEST;
 
@@ -224,7 +223,11 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth, i
     gtPtr->generateChildren(node);
   }
 
-  for (auto child : node->children) {
+  for (auto i = 0; i < node->children.size(); i++) {
+    auto child = node->children[i];
+    if (child == nullptr) {
+      break;
+    }
     score = -negamax(child, -beta, -alpha, iDepth + 1, iterativeDepthLimit);
     this->nodesSearched++;
     bestScore = std::max(score, bestScore);
@@ -236,13 +239,19 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth, i
 #endif
 
     if (alpha >= beta) {
-      child.reset();
+      for (; i < node->children.size(); i++) {
+        child = node->children[i];
+        if (child == nullptr) {
+          break;
+        }
+        scoreNodeDestructor(child);
+      }
       // TODO[CRITICAL]: need to reset remaining children... Use for loop with indexing
       break;
     }
 
     // after a node is checked, remove it
-    child.reset();
+    scoreNodeDestructor(child);
   }
 
   return bestScore;
@@ -265,62 +274,62 @@ void Search::resetSearchValues() {
  * @param node
  * @param iterations
  */
-void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iterations) {
-  //
-  // For each iteration, save time and nodes searched
-  //
-  double iterationsArray[iterations][2];
-  std::mutex performancetest;
-
-
-  //
-  // Output / statistics
-  //
-  std::string s = "μs";
-#ifdef DAVID_DEBUG
-    std::cout << "--+---------------------+-----------------+\n" <<
-              "   | Time used in iter   |  Nodes searched |\n" <<
-              "--+---------------------+-----------------+\n";
-#endif
-
-  //
-  // Iterations loop, run the test as many times as needed
-  // Mutex to avoid any one else taking cpu time away for
-  // a more accurate result
-  //
-  for (int i = 0; i <= iterations && !this->isAborted; i++) {
-    resetSearchValues();
-    //
-    // Clock time it takes to execute iterative deepening and negamax
-    //
-    performancetest.lock();
-    auto start = std::chrono::steady_clock::now();
-    searchInit(node);
-    auto end = std::chrono::steady_clock::now();
-    performancetest.unlock();
-    auto diff = end - start;
-    iterationsArray[i][0] = std::chrono::duration<double, std::milli>(diff).count();
-    iterationsArray[i][1] = this->nodesSearched;
-
-#ifdef DAVID_DEBUG
-      std::cout << i + 1 << " | ";
-      std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
-                " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
-      std::cout << '\n';
-      std::cout << "  +---------------------+-----------------+\n";
-#endif
-  }
-
-  //
-  // Write statistic to csv file
-  //
-  std::ofstream searchStats;
-  searchStats.open("search_statistics.csv");
-  for (int i = 0; i < iterations; i++) {
-    searchStats << iterationsArray[i][0] << ',' << iterationsArray[i][1] << ',' << i << std::endl;
-  }
-  searchStats.close();
-}
+//void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iterations) {
+//  //
+//  // For each iteration, save time and nodes searched
+//  //
+//  double iterationsArray[iterations][2];
+//  std::mutex performancetest;
+//
+//
+//  //
+//  // Output / statistics
+//  //
+//  std::string s = "μs";
+//#ifdef DAVID_DEBUG
+//    std::cout << "--+---------------------+-----------------+\n" <<
+//              "   | Time used in iter   |  Nodes searched |\n" <<
+//              "--+---------------------+-----------------+\n";
+//#endif
+//
+//  //
+//  // Iterations loop, run the test as many times as needed
+//  // Mutex to avoid any one else taking cpu time away for
+//  // a more accurate result
+//  //
+//  for (int i = 0; i <= iterations && !this->isAborted; i++) {
+//    resetSearchValues();
+//    //
+//    // Clock time it takes to execute iterative deepening and negamax
+//    //
+//    performancetest.lock();
+//    auto start = std::chrono::steady_clock::now();
+//    searchInit(node);
+//    auto end = std::chrono::steady_clock::now();
+//    performancetest.unlock();
+//    auto diff = end - start;
+//    iterationsArray[i][0] = std::chrono::duration<double, std::milli>(diff).count();
+//    iterationsArray[i][1] = this->nodesSearched;
+//
+//#ifdef DAVID_DEBUG
+//      std::cout << i + 1 << " | ";
+//      std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
+//                " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
+//      std::cout << '\n';
+//      std::cout << "  +---------------------+-----------------+\n";
+//#endif
+//  }
+//
+//  //
+//  // Write statistic to csv file
+//  //
+//  std::ofstream searchStats;
+//  searchStats.open("search_statistics.csv");
+//  for (int i = 0; i < iterations; i++) {
+//    searchStats << iterationsArray[i][0] << ',' << iterationsArray[i][1] << ',' << i << std::endl;
+//  }
+//  searchStats.close();
+//}
 
 /**
  * If the UCI at any time tells search to abort

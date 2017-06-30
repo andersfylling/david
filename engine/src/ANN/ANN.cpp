@@ -126,7 +126,7 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(type::gameState_ptr board, bitboard::COLOR color) {
+int ANN::ANNEvaluate(type::gameState_ptr board) {
   fann_type* inputs = utils::boardToFannInputs(board); // float array
   fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
 
@@ -157,7 +157,7 @@ int ANN::ANNEvaluate(std::string fen) {
   environment::Environment env(c);
   type::gameState_ptr board = env.generateBoardFromFen(fen);
 
-  return this->ANNEvaluate(board, c);
+  return this->ANNEvaluate(board);
 }
 
 }

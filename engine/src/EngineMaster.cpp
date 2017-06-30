@@ -95,9 +95,9 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     currentPlayer->findBestMove();
 
     // update current game state
-    previousGame.swap(currentGame);
+    previousGame = currentGame;
     currentGame = currentPlayer->getGameState();
-    error = currentGame ? false : true;
+    error = currentGame == nullptr;
 
     if (error) {
       std::cerr << "currentGame is empty!" << std::endl;

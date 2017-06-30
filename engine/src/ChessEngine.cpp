@@ -27,7 +27,7 @@ david::ChessEngine::ChessEngine()
       neuralNetworkPtr(std::make_shared<ANN>("")),
       player(),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<bitboard::gameState>())
+      currentGameState(new type::gameState_t())
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -49,7 +49,7 @@ david::ChessEngine::ChessEngine(Player self)
       neuralNetworkPtr(std::make_shared<ANN>("")),
       player(self),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<bitboard::gameState>())
+      currentGameState(new type::gameState_t())
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -71,7 +71,7 @@ david::ChessEngine::ChessEngine(std::string ANNFile)
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<bitboard::gameState>())
+      currentGameState(new type::gameState_t())
 
 {
   this->createANNInstance(ANNFile);
@@ -95,7 +95,7 @@ david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(self),
       UCIProtocolActivated(false),
-      currentGameState(std::make_shared<bitboard::gameState>())
+      currentGameState(new type::gameState_t())
 
 {
   this->createANNInstance(ANNFile);
@@ -296,7 +296,7 @@ void david::ChessEngine::createANNInstance(std::string ANNFile) {
  * @return int board evaluation
  */
 int david::ChessEngine::ANNEvaluate(type::gameState_ptr board) {
-  return this->neuralNetworkPtr->ANNEvaluate(board, this->player.color);
+  return this->neuralNetworkPtr->ANNEvaluate(board);
 }
 
 
@@ -339,7 +339,8 @@ david::type::gameState_ptr david::ChessEngine::getGameState() {
  * @return true if the state was updated
  */
 bool david::ChessEngine::setGameState(type::gameState_ptr state) {
-  this->currentGameState.swap(state); // switch pointer with state, state then dies by scope afterwards.
+  // TODO: dangling pointer if this node / state doesnt exist somewhere else..
+  this->currentGameState = state; // switch pointer with state, state then dies by scope afterwards.
 }
 
 

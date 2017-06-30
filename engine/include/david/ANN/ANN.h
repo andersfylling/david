@@ -55,7 +55,7 @@ class ANN {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(type::gameState_ptr board, bitboard::COLOR color);
+  int ANNEvaluate(type::gameState_ptr board);
 
 
   /**

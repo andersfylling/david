@@ -7,6 +7,7 @@
 #include <math.h>
 #include <memory>
 #include "david/types.h"
+#include "david/david.h"
 
 namespace david {
 namespace bitboard {
@@ -95,12 +96,12 @@ struct gameState {
   move_t lastBlackMove;
 
   COLOR playerColor = bitboard::COLOR::WHITE;
-  std::vector<std::shared_ptr<bitboard::gameState>> children;
+  //std::vector<std::shared_ptr<bitboard::gameState>> children;
 
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
   int fullMoves = 1; // starts at 1, increments after every time black moves.
 
-  int score = 0; // board score
+  //int score = ::david::constant::boardScore::LOWEST; // board score
 
   int gameTreeLevel = 0;
 
@@ -111,7 +112,7 @@ struct gameState {
   bool whiteQueenCastling = true;
   bool whiteKingCastling = true;
 
-  std::weak_ptr<bitboard::gameState> weakParent; //...
+  //std::weak_ptr<bitboard::gameState> weakParent; //...
 };
 
 struct pieceAttack {
