@@ -98,7 +98,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   //
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 10000) + movetime;
-  for (int currentDepth = 0; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+  for (int currentDepth = 1; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
     int cScore = bScore;
     int aspirationDelta = 0;
 
