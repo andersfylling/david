@@ -38,7 +38,6 @@ class Search {
   int returnTimeToSearch();
   int returnScore();
   bool returnComplete();
-  void setDebug(bool debug);
   void performanceTest(type::gameState_ptr node, int iterations);
 
   // forwards protocol methods, this can be used in unit testing

@@ -1,12 +1,7 @@
-//
-// Created by markus on 5/5/17.
-//
-
 #include <david/utils.h>
 #include "david/Search.h"
 #include "david/types.h"
 #include "catch.hpp"
-
 
 david::type::engineContext_ptr context = std::make_shared<david::EngineContext>();
 david::Search test_search(context);
@@ -30,7 +25,6 @@ TEST_CASE("Search creation") {
 
 TEST_CASE("Search"){
   //::utils::setDefaultChessLayout(node);
-  test_search.setDebug(false);
   test_search.performanceTest(node, 10);
   REQUIRE_NOTHROW(test_search.searchInit(node));
 }
@@ -52,19 +46,18 @@ TEST_CASE("Search"){
 TEST_CASE("Search completed?"){
   david::utils::setDefaultChessLayout(node);
   test_search.searchInit(node);
-  REQUIRE(test_search.returnComplete() == true);
+  REQUIRE(test_search.returnComplete());
 }
 
 TEST_CASE("Search returning optimal node?"){
   context->testing = true;
-  test_search.setDebug(false);
 
   //
   //Simulere iterative deepening
   //Nivå = 2
   //
 
-  auto node1 = std::make_shared<david::bitboard::gameState>(); node1->score = -(int)INFINITY;
+  auto node1 = std::make_shared<david::bitboard::gameState>(); node1->score = ::david::constant::boardScore::LOWEST;
   auto node2 = std::make_shared<david::bitboard::gameState>(); node2->score = 34;
   auto node3 = std::make_shared<david::bitboard::gameState>(); node3->score = 32;
   auto node4 = std::make_shared<david::bitboard::gameState>(); node4->score = 12;
@@ -134,7 +127,8 @@ TEST_CASE("Search returning optimal node?"){
 
   test_search.setDepth(4);
   test_search.searchInit(node1);
-  REQUIRE(test_search.returnScore() == 6);
+  auto a = test_search.returnScore();
+  REQUIRE(a == 6);
 
   //
   //Nivå 5

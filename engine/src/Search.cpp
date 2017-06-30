@@ -45,13 +45,13 @@ type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
     std::cerr << "bestMove is empty!" << std::endl;
   }
 
-  if (this->debug) {
+#ifdef DAVID_DEBUGGING
     std::vector<int>::iterator it;
     std::cout << "Search objects score after complete search: " << this->searchScore << std::endl;  //Debug
     for(it=this->expanded.begin(); it<this->expanded.end(); it++)
       std::cout << ' ' << *it;
     std::cout << std::endl;
-  }
+#endif
   //
   // Send some values/fenstring or whatever to UCI
   //
@@ -65,14 +65,14 @@ type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
  * @return
  */
 int Search::iterativeDeepening(type::gameState_ptr board) {
-  int alpha = (int) (-INFINITY);
-  int beta = (int) (INFINITY);
+  int alpha = constant::boardScore::LOWEST;
+  int beta = constant::boardScore::HIGHEST;
   int iterationScore[1000];
   int lastDepth = 0;
   int aspirationDepth = 4;
-  int bScore = (int) (-INFINITY);
+  int bScore = constant::boardScore::LOWEST;
 
-  std::vector<int> scoreCache;
+  std::vector<int> scoreCache; // store unsorted scores (!), sort every node after unchached results. Rewrite negamax.
 
   startTime = clock();              //Starting clock
 
@@ -83,7 +83,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   // board->generateAllMoves();
   //
     if(!engineContextPtr->testing) {
-      gtPtr = std::make_shared<gameTree::GameTree>(this->engineContextPtr, board);
+      gtPtr = std::make_shared<type::gameTree_t>(this->engineContextPtr, board);
 
       if (board->children.size() == 0) {
         gtPtr->generateChildren(board);
@@ -98,7 +98,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   //
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 10000) + movetime;
-  for (int currentDepth = 1; currentDepth <= 1/*depth*/ && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+  for (int currentDepth = 1; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
     int cScore = bScore;
     int aspirationDelta = 0;
 
@@ -117,12 +117,13 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
     if (currentDepth >= 5) {
       const int delta = iterationScore[currentDepth - 1] - iterationScore[currentDepth - 2];
       aspirationDelta = std::max(delta, 10) + 5;
-      alpha = std::max(iterationScore[currentDepth - 1] - aspirationDelta, (int) (-INFINITY));
-      beta = std::min(iterationScore[currentDepth - 1] + aspirationDelta, (int) (+INFINITY));
+      alpha = std::max(iterationScore[currentDepth - 1] - aspirationDelta, constant::boardScore::LOWEST);
+      beta = std::min(iterationScore[currentDepth - 1] + aspirationDelta, constant::boardScore::HIGHEST);
     }
 
 
     // find which possibility is the best option
+    int leafScore = constant::boardScore::LOWEST;
     int childIndex = 0;
     for (auto child : board->children) {
       // Start with a small aspiration window and, in the case of a fail
@@ -147,17 +148,18 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
         //
         if (cScore > bScore) {
           bScore = cScore;
-          std::cout << cScore << std::endl;
-          this->bestMove = std::make_shared<bitboard::gameState>(*child); // copy
+          //leafScore = this->bestLeafScore;
+          //std::cout << cScore << std::endl;
+          this->bestMove = std::make_shared<type::gameState_t>(*child); // copy
         }
 
-        const bool fail = bScore <= alpha || bScore >= beta;
-        const bool fullWidth = alpha == (int) (-INFINITY) && beta == (int) (INFINITY);
+        const bool fail       = bScore <= alpha || bScore >= beta;
+        const bool fullWidth  = alpha == constant::boardScore::LOWEST && beta == constant::boardScore::HIGHEST;
         iDone = !fail || fullWidth || currentDepth < aspirationDepth;
 
         if (!iDone) {
-          alpha = std::max(alpha - aspirationDelta, (int) (-INFINITY));
-          beta = std::min(beta + aspirationDelta, (int) (INFINITY));
+          alpha = std::max(alpha - aspirationDelta, constant::boardScore::LOWEST);
+          beta = std::min(beta + aspirationDelta, constant::boardScore::HIGHEST);
           aspirationDelta = std::max(aspirationDelta * 130 / 100, 15);
         }
       }
@@ -191,7 +193,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
  */
 int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
   int score;
-  int bestScore = (int) (-INFINITY);
+  int bestScore = constant::boardScore::LOWEST;
 
 
   //
@@ -199,7 +201,7 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
   // return -infinity
   //
   if (isAborted) {
-    return (int) (-INFINITY);
+    return constant::boardScore::LOWEST;
   }
 
   //
@@ -220,13 +222,15 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
     this->nodesSearched++;
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);
-    if (this->debug) {
-      std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
-      this->expanded.push_back(child->score);
-    }
+
+#ifdef DAVID_DEBUGGING
+    std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
+    this->expanded.push_back(child->score);
+#endif
 
     if (alpha >= beta) {
       child.reset();
+      // TODO[CRITICAL]: need to reset remaining children... Use for loop with indexing
       break;
     }
 
@@ -266,11 +270,11 @@ void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iter
   // Output / statistics
   //
   std::string s = "μs";
-  if (this->debug) {
+#ifdef DAVID_DEBUGGING
     std::cout << "--+---------------------+-----------------+\n" <<
               "   | Time used in iter   |  Nodes searched |\n" <<
               "--+---------------------+-----------------+\n";
-  }
+#endif
 
   //
   // Iterations loop, run the test as many times as needed
@@ -291,13 +295,13 @@ void Search::performanceTest(std::shared_ptr<bitboard::gameState> node, int iter
     iterationsArray[i][0] = std::chrono::duration<double, std::milli>(diff).count();
     iterationsArray[i][1] = this->nodesSearched;
 
-    if (this->debug) {
+#ifdef DAVID_DEBUGGING
       std::cout << i + 1 << " | ";
       std::cout << std::setw(10) << iterationsArray[i][0] << s << std::setw(10) <<
                 " | " << std::setw(8) << iterationsArray[i][1] << std::setw(10) << " | ";
       std::cout << '\n';
       std::cout << "  +---------------------+-----------------+\n";
-    }
+#endif
   }
 
   //
@@ -427,13 +431,5 @@ void Search::setAbort(bool isAborted) {
  */
 void Search::setComplete(bool isComplete) {
   this->isComplete = isComplete;
-}
-
-/**
- * Disable/enable some window output
- * @param debug
- */
-void Search::setDebug(bool debug) {
-  this->debug = debug;
 }
 }
