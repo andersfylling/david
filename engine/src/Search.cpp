@@ -131,8 +131,14 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
       // high/low anymore.
       bool iDone = false;
       while (!iDone) {
-        cScore = negamax(board, alpha, beta, currentDepth);
+        cScore = negamax(child, alpha, beta, 0, currentDepth);
         iterationScore[currentDepth] = cScore;
+
+        // destroy and remove children
+        for (auto cc : child->children) {
+          cc.reset();
+        }
+        child->children.resize(0);
 
         // Store the scores in the cache
         // so far this only stores the cache for the first depth
@@ -192,7 +198,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
  * @param depth
  * @return
  */
-int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
+int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth, int iterativeDepthLimit) {
   int score;
   int bestScore = constant::boardScore::LOWEST;
 
@@ -209,7 +215,7 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
   // Should do a quiescence search after to ensure we are not encountering
   // a danger move in the next depth in this branch
   //
-  if (iDepth == depth) {
+  if (iDepth == iterativeDepthLimit) {
     return node->score;
   }
 
@@ -219,7 +225,7 @@ int Search::negamax(type::gameState_ptr node, int alpha, int beta, int iDepth) {
   }
 
   for (auto child : node->children) {
-    score = -negamax(child, -beta, -alpha, iDepth + 1);
+    score = -negamax(child, -beta, -alpha, iDepth + 1, iterativeDepthLimit);
     this->nodesSearched++;
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);

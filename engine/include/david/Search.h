@@ -29,7 +29,7 @@ class Search {
   Search(type::engineContext_ptr ctx);
   type::gameState_ptr searchInit(type::gameState_ptr node);
   int iterativeDeepening(type::gameState_ptr node);
-  int negamax(type::gameState_ptr board, int alpha, int beta, int depth);
+  int negamax(type::gameState_ptr board, int alpha, int beta, int depth, int iterativeDepthLimit);
   void setAbort(bool isAborted);
   void setComplete(bool isComplete);
 
