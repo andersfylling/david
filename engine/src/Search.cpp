@@ -1,7 +1,3 @@
-//
-// Created by anders on 5/3/17.
-//
-
 #include "david/Search.h"
 #include "david/utils.h"
 #include <ctime>
@@ -11,7 +7,6 @@
 #include "uci/events.h"
 #include "uci/definitions.h"
 #include "uci/Listener.h"
-#include "david/scoreNode.h"
 
 namespace david {
 //Signals Signal; //Scrapped for now
@@ -22,12 +17,15 @@ namespace david {
  * Constructor used in debug/test
  */
 Search::Search()
-    : depth(2)
+    : engineContextPtr(nullptr),
+      depth(3),
+      gt(this->engineContextPtr)
 {}
 
 Search::Search(type::engineContext_ptr ctx)
     : engineContextPtr(ctx),
-      depth(2)
+      depth(3),
+      gt(this->engineContextPtr)
 {}
 
 /**
@@ -35,16 +33,16 @@ Search::Search(type::engineContext_ptr ctx)
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
  */
-type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
+type::gameState_t& Search::searchInit(type::gameState_t node) {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
 
   this->searchScore = iterativeDeepening(node);
 
-  if (!this->bestMove) {
-    std::cerr << "bestMove is empty!" << std::endl;
-  }
+  //if (!this->bestMove) {
+  //  std::cerr << "bestMove is empty!" << std::endl;
+  //}
 
 #ifdef DAVID_DEBUG
     std::vector<int>::iterator it;
@@ -65,7 +63,7 @@ type::gameState_ptr Search::searchInit(type::gameState_ptr node) {
  * @param board
  * @return
  */
-int Search::iterativeDeepening(type::gameState_ptr board) {
+int Search::iterativeDeepening(type::gameState_t board) {
   int alpha = constant::boardScore::LOWEST;
   int beta = constant::boardScore::HIGHEST;
   int iterationScore[1000];
@@ -83,15 +81,13 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
   //
   // board->generateAllMoves();
   //
-  type::scoreNode_ptr node = nullptr;
-  if(!engineContextPtr->testing) { // ........
-    gtPtr = new type::gameTree_t(this->engineContextPtr, board);
-    node = gtPtr->getCurrent();
-
-    if (node->children.size() == 0) {
-      gtPtr->generateChildren(node);
-    }
-  }
+  gt.setMaxDepth(this->depth);
+  auto& node = gt.getGameState(0);
+  node = board; // updated root node
+  gt.generateChildren(0);
+  //gt.gene
+  //if(!engineContextPtr->testing) { // ........
+  //}
 
 
 
@@ -128,26 +124,14 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
     // find which possibility is the best option
     int leafScore = constant::boardScore::LOWEST;
     int childIndex = 0;
-    for (auto child : node->children) {
+    for (unsigned int index = 1; index <= constant::MAXMOVES; index += 1) {
       // Start with a small aspiration window and, in the case of a fail
       // high/low, re-search with a bigger window until we're not failing
       // high/low anymore.
       bool iDone = false;
       while (!iDone) {
-        cScore = negamax(child, alpha, beta, 0, currentDepth);
+        cScore = negamax(index, alpha, beta, 1, currentDepth);
         iterationScore[currentDepth] = cScore;
-
-        // destroy and remove children
-        scoreNodeDestructor(child);
-
-        // Store the scores in the cache
-        // so far this only stores the cache for the first depth
-        if (scoreCache.size() == childIndex) {
-        //  scoreCache.push_back(cScore);
-        }
-        else {
-          // cached score already exists.
-        }
 
         //
         // Update best score in case of a abort
@@ -156,7 +140,7 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
           bScore = cScore;
           //leafScore = this->bestLeafScore;
           //std::cout << cScore << std::endl;
-          this->bestMove = new type::gameState_t(*(child->gs)); // copy
+          this->bestMove = gt.getGameState(index); // copy
         }
 
         const bool fail       = bScore <= alpha || bScore >= beta;
@@ -178,8 +162,6 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
 
   setComplete(true);
 
-  delete this->gtPtr;
-
   return bScore;
 }
 
@@ -197,8 +179,8 @@ int Search::iterativeDeepening(type::gameState_ptr board) {
  * @param depth
  * @return
  */
-int Search::negamax(type::scoreNode_ptr node, int alpha, int beta, int iDepth, int iterativeDepthLimit) {
-  int score;
+int Search::negamax(unsigned int index, int alpha, int beta, int iDepth, int iterativeDepthLimit) {
+  int score = constant::boardScore::LOWEST;
   int bestScore = constant::boardScore::LOWEST;
 
 
@@ -215,43 +197,28 @@ int Search::negamax(type::scoreNode_ptr node, int alpha, int beta, int iDepth, i
   // a danger move in the next depth in this branch
   //
   if (iDepth == iterativeDepthLimit) {
-    return node->score;
+    return gt.getGameStateScore(index);
   }
 
   // generate children for this board
-  if (node->children.size() == 0) {
-    gtPtr->generateChildren(node);
-  }
+  gt.generateChildren(index);
 
-  for (auto i = 0; i < node->children.size(); i++) {
-    auto child = node->children[i];
-    if (child == nullptr) {
-      break;
-    }
-    score = -negamax(child, -beta, -alpha, iDepth + 1, iterativeDepthLimit);
+  auto& n = gt.getGameState(index);
+
+  for (uint8_t i = 0; i < n.possibleSubMoves; i++) {
+    score = -negamax(gt.treeIndex(iDepth, i), -beta, -alpha, iDepth + 1, iterativeDepthLimit);
     this->nodesSearched++;
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);
 
 #ifdef DAVID_DEBUG
-    std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
-    this->expanded.push_back(child->score);
+    //std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
+    //this->expanded.push_back(child->score);
 #endif
 
     if (alpha >= beta) {
-      for (; i < node->children.size(); i++) {
-        child = node->children[i];
-        if (child == nullptr) {
-          break;
-        }
-        scoreNodeDestructor(child);
-      }
-      // TODO[CRITICAL]: need to reset remaining children... Use for loop with indexing
       break;
     }
-
-    // after a node is checked, remove it
-    scoreNodeDestructor(child);
   }
 
   return bestScore;

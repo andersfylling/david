@@ -26,8 +26,7 @@ david::ChessEngine::ChessEngine()
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>("")),
       player(),
-      UCIProtocolActivated(false),
-      currentGameState(new type::gameState_t())
+      UCIProtocolActivated(false)
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -48,8 +47,7 @@ david::ChessEngine::ChessEngine(Player self)
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>("")),
       player(self),
-      UCIProtocolActivated(false),
-      currentGameState(new type::gameState_t())
+      UCIProtocolActivated(false)
 
 {
   this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
@@ -70,8 +68,7 @@ david::ChessEngine::ChessEngine(std::string ANNFile)
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(),
-      UCIProtocolActivated(false),
-      currentGameState(new type::gameState_t())
+      UCIProtocolActivated(false)
 
 {
   this->createANNInstance(ANNFile);
@@ -94,8 +91,7 @@ david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
       gameTreePtr(std::make_shared<gameTree::GameTree>(engineContextPtr)),
       neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
       player(self),
-      UCIProtocolActivated(false),
-      currentGameState(new type::gameState_t())
+      UCIProtocolActivated(false)
 
 {
   this->createANNInstance(ANNFile);
@@ -295,7 +291,7 @@ void david::ChessEngine::createANNInstance(std::string ANNFile) {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int david::ChessEngine::ANNEvaluate(type::gameState_ptr board) {
+int david::ChessEngine::ANNEvaluate(const type::gameState_t& board) {
   return this->neuralNetworkPtr->ANNEvaluate(board);
 }
 
@@ -326,7 +322,7 @@ void david::ChessEngine::setPlayerColor(bitboard::COLOR color) {
  *
  * @return shared_ptr of gameState
  */
-david::type::gameState_ptr david::ChessEngine::getGameState() {
+david::type::gameState_t david::ChessEngine::getGameState() {
   return this->currentGameState;
 }
 
@@ -338,9 +334,8 @@ david::type::gameState_ptr david::ChessEngine::getGameState() {
  * @param state shared_ptr of a gameState
  * @return true if the state was updated
  */
-bool david::ChessEngine::setGameState(type::gameState_ptr state) {
-  // TODO: dangling pointer if this node / state doesnt exist somewhere else..
-  this->currentGameState = state; // switch pointer with state, state then dies by scope afterwards.
+bool david::ChessEngine::setGameState(type::gameState_t state) {
+  this->currentGameState = state;
 }
 
 
@@ -350,7 +345,7 @@ bool david::ChessEngine::setGameState(type::gameState_ptr state) {
  * @return true on losing
  */
 bool david::ChessEngine::lost() {
-  return this->currentGameState->possibleSubMoves == 0;
+  return this->currentGameState.possibleSubMoves == 0;
 }
 
 
@@ -379,11 +374,5 @@ void david::ChessEngine::setNewGameBoard(const std::string fen) {
     return;
   }
 
-  // otherwise we need to correctly parse it
-  std::stringstream sstr(fen);
-  std::string color = "w";
-  sstr >> color >> color; // now it gets the color
-
-  environment::Environment env(color == "w" ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK);
-  this->currentGameState = env.generateBoardFromFen(fen);
+  utils::generateBoardFromFen(this->currentGameState, fen);
 }

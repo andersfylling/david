@@ -126,7 +126,7 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(type::gameState_ptr board) {
+int ANN::ANNEvaluate(const type::gameState_t& board) {
   fann_type* inputs = utils::boardToFannInputs(board); // float array
   fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
 
@@ -143,21 +143,12 @@ int ANN::ANNEvaluate(type::gameState_ptr board) {
  * @param fen std::string FEN(Forsyth–Edwards Notation)
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(std::string fen) {
-  using bitboard::COLOR::WHITE;
-  using bitboard::COLOR::BLACK;
-  using bitboard::COLOR;
+int ANN::ANNEvaluate(const std::string& fen) {
 
-  // get color from fen string
-  std::stringstream sstr(fen);
-  std::string color = "w";
-  sstr >> color >> color; // skip the board layouts and get the color
-  COLOR c = color == "w" ? WHITE : BLACK;
+  type::gameState_t gs;
+  utils::generateBoardFromFen(gs, fen);
 
-  environment::Environment env(c);
-  type::gameState_ptr board = env.generateBoardFromFen(fen);
-
-  return this->ANNEvaluate(board);
+  return this->ANNEvaluate(gs);
 }
 
 }

@@ -23,8 +23,7 @@ namespace gameTree {
 class GameTree;
 }
 
-struct scoreNode;
-}
+} // ::david
 
 
 // all dem typedefs
@@ -62,9 +61,6 @@ typedef std::shared_ptr<uciProtocol_t>    uciProtocol_ptr;
 // gameState is a node in the gameTree. Each one contains a board score and some other details.
 typedef ::david::bitboard::gameState      gameState_t;
 typedef gameState_t*                      gameState_ptr;
-
-typedef ::david::scoreNode                scoreNode_t;
-typedef scoreNode_t*                      scoreNode_ptr;
 
 typedef uint64_t bitboard_t;  // Represents a bitboard_t
 typedef uint16_t move_t;      // Representing moves

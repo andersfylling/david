@@ -78,57 +78,58 @@ bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
-  type::bitboard_t WhitePawn;
-  type::bitboard_t WhiteRook;
-  type::bitboard_t WhiteKnight;
-  type::bitboard_t WhiteBishop;
-  type::bitboard_t WhiteQueen;
-  type::bitboard_t WhiteKing;
+  type::bitboard_t WhitePawn    = ::david::constant::EMPTYBOARD;
+  type::bitboard_t WhiteRook    = ::david::constant::EMPTYBOARD;
+  type::bitboard_t WhiteKnight  = ::david::constant::EMPTYBOARD;
+  type::bitboard_t WhiteBishop  = ::david::constant::EMPTYBOARD;
+  type::bitboard_t WhiteQueen   = ::david::constant::EMPTYBOARD;
+  type::bitboard_t WhiteKing    = ::david::constant::EMPTYBOARD;
 
-  type::bitboard_t BlackPawn;
-  type::bitboard_t BlackRook;
-  type::bitboard_t BlackKnight;
-  type::bitboard_t BlackBishop;
-  type::bitboard_t BlackQueen;
-  type::bitboard_t BlackKing;
+  type::bitboard_t BlackPawn    = ::david::constant::EMPTYBOARD;
+  type::bitboard_t BlackRook    = ::david::constant::EMPTYBOARD;
+  type::bitboard_t BlackKnight  = ::david::constant::EMPTYBOARD;
+  type::bitboard_t BlackBishop  = ::david::constant::EMPTYBOARD;
+  type::bitboard_t BlackQueen   = ::david::constant::EMPTYBOARD;
+  type::bitboard_t BlackKing    = ::david::constant::EMPTYBOARD;
 
   move_t lastWhiteMove;
   move_t lastBlackMove;
 
-  COLOR playerColor = bitboard::COLOR::WHITE;
-  //std::vector<std::shared_ptr<bitboard::gameState>> children;
+  //type::gameState_ptr* children;
+  //std::array<type::gameState_ptr, 256> children{{nullptr}};
+  //type::gameState_ptr parent = nullptr;
 
   int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
   int fullMoves = 1; // starts at 1, increments after every time black moves.
 
-  //int score = ::david::constant::boardScore::LOWEST; // board score
+  int score = ::david::constant::boardScore::LOWEST; // board score
 
   int gameTreeLevel = 0;
 
-  int possibleSubMoves = 0;
+  int possibleSubMoves = 0; // is used by an iterator since everything is preinitialized, can by uint8
 
+  // should be convertet to an uint8 or smth
   bool blackQueenCastling = true;
   bool blackKingCastling = true;
   bool whiteQueenCastling = true;
   bool whiteKingCastling = true;
-
-  //std::weak_ptr<bitboard::gameState> weakParent; //...
+  COLOR playerColor = bitboard::COLOR::WHITE;
 };
 
 struct pieceAttack {
-  bitboard_t *WhitePawn;
-  bitboard_t *WhiteRook;
-  bitboard_t *WhiteKnight;
-  bitboard_t *WhiteBishop;
-  bitboard_t *WhiteQueen;
-  bitboard_t *WhiteKing;
+  bitboard_t *WhitePawn = nullptr;
+  bitboard_t *WhiteRook = nullptr;
+  bitboard_t *WhiteKnight = nullptr;
+  bitboard_t *WhiteBishop = nullptr;
+  bitboard_t *WhiteQueen = nullptr;
+  bitboard_t *WhiteKing = nullptr;
 
-  bitboard_t *BlackPawn;
-  bitboard_t *BlackRook;
-  bitboard_t *BlackKnight;
-  bitboard_t *BlackBishop;
-  bitboard_t *BlackQueen;
-  bitboard_t *BlackKing;
+  bitboard_t *BlackPawn = nullptr;
+  bitboard_t *BlackRook = nullptr;
+  bitboard_t *BlackKnight = nullptr;
+  bitboard_t *BlackBishop = nullptr;
+  bitboard_t *BlackQueen = nullptr;
+  bitboard_t *BlackKing = nullptr;
 };
 
 } // END Of bitboard

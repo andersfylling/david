@@ -87,7 +87,9 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   auto currentGame = currentPlayer->getGameState();
   auto previousGame = currentPlayer->getGameState();
   bool error = false;
+  int counter = 0;
   do {
+    counter+=1;
 
     utils::printGameState(currentGame);
 
@@ -97,7 +99,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     // update current game state
     previousGame = currentGame;
     currentGame = currentPlayer->getGameState();
-    error = currentGame == nullptr;
+    error = false;
 
     if (error) {
       std::cerr << "currentGame is empty!" << std::endl;
@@ -109,9 +111,9 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
       // update game state of new current player
       currentPlayer->setGameState(currentGame);
     }
-  } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0 && !error);
+  } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != 0 && !error && counter < 10);
 
-  std::cout << currentGame->fullMoves << std::endl;
+  std::cout << currentGame.fullMoves << std::endl;
 
   auto winnerID = -1;
   if (eng1->lost()) {

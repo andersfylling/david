@@ -27,14 +27,28 @@ using bitboard::pieceAttack;
 using bitboard::move_t;
 
 Environment::Environment(){}
+Environment::~Environment(){
+  if (this->attacks.BlackBishop == nullptr) delete[] this->attacks.BlackBishop;
+  if (this->attacks.BlackKing == nullptr) delete[] this->attacks.BlackKing;
+  if (this->attacks.BlackKnight == nullptr) delete[] this->attacks.BlackKnight;
+  if (this->attacks.BlackPawn == nullptr) delete[] this->attacks.BlackPawn;
+  if (this->attacks.BlackQueen == nullptr) delete[] this->attacks.BlackQueen;
+  if (this->attacks.BlackPawn == nullptr) delete[] this->attacks.BlackPawn;
+  if (this->attacks.WhiteBishop == nullptr) delete[] this->attacks.WhiteBishop;
+  if (this->attacks.WhiteKing == nullptr) delete[] this->attacks.WhiteKing;
+  if (this->attacks.WhiteKnight == nullptr) delete[] this->attacks.WhiteKnight;
+  if (this->attacks.WhitePawn == nullptr) delete[] this->attacks.WhitePawn;
+  if (this->attacks.WhiteQueen == nullptr) delete[] this->attacks.WhiteQueen;
+  if (this->attacks.WhitePawn == nullptr) delete[] this->attacks.WhitePawn;
+}
 
 
 void Environment::setGameStateColor(COLOR color) {
   state.playerColor = color;
 }
 
-void Environment::setGameState(type::gameState_ptr st) {
-  state = (*st); // dereferrence
+void Environment::setGameState(const type::gameState_t& st) {
+  state = st; // copy..
 }
 
 void Environment::printBitboards() {

@@ -7,53 +7,57 @@
 #include <david/utils.h>
 #include "david/ANN/ANN.h"
 #include "david/MoveGeneration.h"
-#include "david/scoreNode.h"
 
 namespace david {
+
 /**
  * Constructor
  */
 gameTree::GameTree::GameTree(type::engineContext_ptr ctx)
     : engineContextPtr(ctx),
-      root(),
-      current(root),
-      maxNumberOfNodes(100)
-{}
+      maxNumberOfNodes(100),
+      maxDepth(5)
+{
+  this->preallocateSearchTree();
+}
 
 /**
- * Constructor
- * @param node std::share_ptr<::bitboard::gameState>, pass by copy(!!)
+ * Allocate needed memory space for the game tree only once
  */
-gameTree::GameTree::GameTree(type::engineContext_ptr ctx, type::gameState_ptr node)
-    : engineContextPtr(ctx),
-      root(),
-      current(root),
-      maxNumberOfNodes(100)
+void gameTree::GameTree::preallocateSearchTree ()
 {
-  root->gs = node;
+  //this->tree;
+}
+
+
+type::gameState_t& gameTree::GameTree::getGameState(unsigned int index) {
+  return this->tree[index];
+}
+
+int gameTree::GameTree::getGameStateScore(unsigned int index) {
+  return this->tree[index].score;
+}
+
+unsigned int gameTree::GameTree::treeIndex(uint8_t depth, uint8_t index) {
+  return constant::MAXMOVES * depth + index + 1; // will never be below 0
+}
+
+void gameTree::GameTree::setRootNodeFromFEN(const std::string &FEN) {
+  utils::generateBoardFromFen(this->tree.front(), FEN);
 }
 
 /**
  * Destructor
  */
 gameTree::GameTree::~GameTree() {
-  if (this->root != nullptr) {
-    scoreNodeDestructor(this->root);
-  }
-
-  // this->current will point to a node inside this->root
 }
 
 /**
  * Remove every node in this class instance memory.
  */
 void gameTree::GameTree::reset() {
-  if (this->root != nullptr) {
-    scoreNodeDestructor(this->root);
-  }
+  // since the game tree is depends on be overwritten. theres no need to delete it.
 
-  this->root = nullptr;
-  this->current = nullptr;
   this->maxNumberOfNodes = 100;
 }
 
@@ -104,30 +108,33 @@ void gameTree::GameTree::reset() {
 //  this->current = node;
 //}
 
+unsigned int gameTree::GameTree::getChildIndex(unsigned int parent, unsigned int child) {
+  unsigned int index = parent > constant::MAXMOVES ? parent / constant::MAXMOVES : 1;
+}
+
 /**
  * Generates children for a given node, and sorts the children.
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void gameTree::GameTree::generateChildren(type::scoreNode_ptr node) {
+void gameTree::GameTree::generateChildren(unsigned int index) {
   using bitboard::gameState;
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  if (node == nullptr) {
-    return;
-  }
+
+  auto& node = this->tree[index];
 
   // find some way to get all the different boards
   // then call generate node
   // you prolly need to change it's parameters
-  int livingNodes = this->getNumberOfNodes();
+  //int livingNodes = this->getNumberOfNodes();
 
   // mock test
   //node->gs->children.resize(0);
 
   // created a environ instance based on parent node
   movegen::MoveGenerator gen;
-  gen.setGameState(node->gs);
+  gen.setGameState(node);
 
   //env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
 //  if (!(node->fullMoves == 1 && node->playerColor == WHITE)) {
@@ -142,32 +149,19 @@ void gameTree::GameTree::generateChildren(type::scoreNode_ptr node) {
 
   // create node pointers, and set some internal data
   //std::cout << "OPTIONS ========== " << std::endl;
-  for (int i = 0; i < states.size() && i < livingNodes; livingNodes++, i++) {
-    this->generateNode(node, states.at(i), i);
-
-    //if (node->playerColor == BLACK && i < 10) {
-    //  utils::printGameState(node->children.at(i));
-    //}
+  const auto len = node.possibleSubMoves = static_cast<int>(states.size());
+  // uint8 has a max num of 255. Max nr of children is 256. perfect af.
+  unsigned int firstChildPos = index == 0 ? constant::MAXMOVES - 1 : (index - 1) % constant::MAXMOVES;
+  firstChildPos = index + (constant::MAXMOVES - firstChildPos);
+  for (uint8_t i = 0; i < len; i++) {
+    this->generateNode(node, this->tree[firstChildPos + i], states.at(i));
   }
   //std::cout << "OPTIONS END ====== " << std::endl;
 
   // once all the nodes are set, we need to sort the children.
-  this->sortChildren(node);
-}
-
-/**
- * Sorts children of a given node based on score.
- *
- * @param node std::share_ptr<::bitboard::gameState>
- */
-void gameTree::GameTree::sortChildren(type::scoreNode_ptr node) {
-  if (node == nullptr) {
-    return;
-  }
-
-  std::sort(node->children.begin(), node->children.end(),
-            [](const type::scoreNode_ptr a, const type::scoreNode_ptr b) -> bool {
-              return a->score > b->score;
+  std::sort(this->tree.begin() + firstChildPos, this->tree.begin() + firstChildPos + len,
+            [](const type::gameState_t& a, const type::gameState_t& b) -> bool {
+              return a.score > b.score;
             });
 }
 
@@ -263,7 +257,7 @@ int gameTree::GameTree::getNumberOfNodes() {
  * @param node
  * @return int from 0 to N, N <= maxNumberOfNodes
  */
-void gameTree::GameTree::getNumberOfNodes(type::scoreNode_ptr node, int &count) {
+void gameTree::GameTree::getNumberOfNodes(type::gameState_ptr node, int &count) {
 //
 //  using bitboard::gameState;
 //
@@ -291,7 +285,7 @@ int gameTree::GameTree::getDepth() {
 //  return depth;
   return 0;
 }
-void gameTree::GameTree::getDepth(type::scoreNode_ptr node, int &depth) {
+void gameTree::GameTree::getDepth(type::gameState_ptr node, int &depth) {
 //  using bitboard::gameState;
 //
 //  if (node == nullptr) {
@@ -312,7 +306,7 @@ void gameTree::GameTree::getDepth(type::scoreNode_ptr node, int &depth) {
  * Print score and depth of all nodes
  * @param root
  */
-//void gameTree::GameTree::printAllScores(type::scoreNode_ptr root) {
+//void gameTree::GameTree::printAllScores(type::gameState_ptr root) {
 //  std::cout << "Node scores: (Game tree level)";
 //  for (auto child : root->children) {
 //    if (child->children.empty()) {
@@ -331,43 +325,56 @@ namespace gameTree { // why..
  * @param parent nodePtr
  * @return nodePtr of the new child, however parent will link to this anyways.
  */
-void GameTree::generateNode(type::scoreNode_ptr parent, type::gameState_t child, int index) {
+void GameTree::generateNode(type::gameState_t& parent, type::gameState_t& n, type::gameState_t child) {
   using bitboard::gameState;
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
   using bitboard::bitboard_t;
 
-  parent->children[index] = new type::scoreNode_t();
-  parent->children[index]->gs = new type::gameState_t(child);
+  // There should be some record that stores the difference between the node left to this one to improve
+  // updating the node. cause shit this is way slower than it needs to be.
+  n.WhitePawn    = child.WhitePawn;
+  n.WhiteRook    = child.WhiteRook;
+  n.WhiteKnight  = child.WhiteKnight;
+  n.WhiteBishop  = child.WhiteBishop;
+  n.WhiteQueen   = child.WhiteQueen;
+  n.WhiteKing    = child.WhiteKing;
 
-  parent->children[index]->gs->gameTreeLevel = parent->gs->gameTreeLevel + 1;
-  parent->children[index]->gs->fullMoves = (parent->gs->gameTreeLevel + 1) / 2;
-  parent->children[index]->gs->halfMoves = parent->gs->halfMoves + 1;
+  n.BlackPawn    = child.BlackPawn;
+  n.BlackRook    = child.BlackRook;
+  n.BlackKnight  = child.BlackKnight;
+  n.BlackBishop  = child.BlackBishop;
+  n.BlackQueen   = child.BlackQueen;
+  n.BlackKing    = child.BlackKing;
 
+  n.lastBlackMove = child.lastBlackMove;
+  n.lastWhiteMove = child.lastWhiteMove;
+
+  n.playerColor = parent.playerColor == BLACK ? WHITE : BLACK;
+
+  n.halfMoves = parent.halfMoves + 1;
+  n.fullMoves = (parent.gameTreeLevel + 1) / 2;
 
   // Validate half moves
-  if (!utils::isHalfMove(parent->gs, parent->children[index]->gs)) {
-    parent->children[index]->gs->halfMoves = 0;
+  if (!utils::isHalfMove(parent, n)) {
+    n.halfMoves = 0;
   }
   // check if there are any possible moves after this state
 
   // use ann to get score
   if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
-    int score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(parent->children[index]->gs);
-    parent->children[index]->score = static_cast<int16_t>(score);
+    n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
   }
 
-  parent->children[index]->gs->playerColor = parent->gs->playerColor == BLACK ? WHITE : BLACK;
-
-  // set sub possibilities
-  movegen::MoveGenerator gen;
-  gen.setGameState(parent->children[index]->gs);
-  std::vector<gameState> states;
-  gen.generateGameStates(states);
-  parent->children[index]->gs->possibleSubMoves = static_cast<int>(states.size()); //won't go above 40 or something.
+//  // set sub possibilities
+//  movegen::MoveGenerator gen;
+//  gen.setGameState(parent->children[index]->gs);
+//  std::vector<gameState> states;
+//  gen.generateGameStates(states);
+//  parent->children[index]->gs->possibleSubMoves = static_cast<int>(states.size()); //won't go above 40 or something.
 }
 
-type::scoreNode_ptr GameTree::getCurrent() {
+type::gameState_ptr GameTree::getCurrent() {
   return this->current;
 }
 
@@ -396,6 +403,17 @@ type::scoreNode_ptr GameTree::getCurrent() {
 //
 //  return this->current;
 //}
+
+void GameTree::setMaxDepth(int d)
+{
+  bool timeToGrow = d > this->maxDepth;
+  this->maxDepth = d;
+
+  // if this is a larger number than we started with we need to add depths!
+  if (timeToGrow) {
+    std::cerr << "NOT IMPLEMENTED YET!!!!!" << std::endl;
+  }
+}
 
 }
 }

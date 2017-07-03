@@ -26,19 +26,24 @@ bool              bitAt(uint64_t b, uint8_t i);
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
 
-std::vector<float> convertGameStateToInputs(type::gameState_ptr node);
-fann_type* convertInputsToFannType (std::vector<float> inputs, unsigned long size);
-fann_type* boardToFannInputs (type::gameState_ptr node);
+std::vector<float> convertGameStateToInputs(const type::gameState_t& node);
+fann_type* convertInputsToFannType (const std::vector<float>& inputs, unsigned long size);
+fann_type* boardToFannInputs (const type::gameState_t& node);
 
 std::string generateFen(type::gameState_ptr node);
 type::gameState_ptr generateBoardFromFen(const std::string fen);
-bool isHalfMove(type::gameState_ptr parent, type::gameState_ptr child);
+void generateBoardFromFen(type::gameState_t& gs, const std::string& fen);
+bool isHalfMove(type::gameState_t& parent, type::gameState_t& child);
 void setDefaultChessLayout(type::gameState_ptr node);
+void setDefaultChessLayout(type::gameState_t& node);
+type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
+uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
 
 void printGameState(type::gameState_ptr gs);
+void printGameState(type::gameState_t& gs);
 
 
-type::bitboard_t numberOfPieces(type::bitboard_t board);     // For generating right sized arrays
+int nrOfActiveBits(type::bitboard_t b);
 void printBoard(type::bitboard_t board);  // A damn sexy board representation
 
 type::bitboard_t  LSB(type::bitboard_t board);
@@ -48,6 +53,8 @@ type::bitboard_t NSB_r(type::bitboard_t &board);
 
 void flipBitOff(type::bitboard_t &board, type::bitboard_t index);
 void flipBitOn(type::bitboard_t &board, type::bitboard_t index);
+
+void yellDeprecated(const std::string info);
 
 };
 
