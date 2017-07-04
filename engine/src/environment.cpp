@@ -667,7 +667,7 @@ type::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
     } else {
       // assumption: it's a number
       // update index with this number
-      index += utils::stoi(c);
+      index += utils::ctoi(c);
     }
   }
 

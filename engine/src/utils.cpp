@@ -29,7 +29,7 @@ namespace david {
 int utils::stoi(std::string v) {
   return v == "" || v == " " ? 0 : std::stoi(v);
 }
-int utils::stoi(const char c) {
+int utils::ctoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
 
@@ -200,7 +200,7 @@ bool utils::bitAt(uint64_t b, uint8_t i) {
   return (b & (1ULL << i)) != 0;
 }
 
-bool utils::fileExists(const std::string &file) {
+bool utils::fileExists(const std::string& file) {
   struct stat buffer;
   return (stat(file.c_str(), &buffer) == 0);
 }
@@ -362,7 +362,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 1; i++) {
       if (utils::bitAt(b, i)) {
-        inputs.push_back(i == 0 ? 0.0f : i / 10.0f);
+        inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
         prog += 1;
       }
     }
@@ -379,7 +379,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 2; i++) {
       if (utils::bitAt(b, i)) {
-        inputs.push_back(i == 0 ? 0.0f : i / 10.0f);
+        inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
         prog += 1;
       }
     }
@@ -395,7 +395,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
     auto prog = 0;
     for (uint8_t i = 0; i < 64 && prog < 8; i++) {
       if (utils::bitAt(b, i)) {
-        inputs.push_back(i == 0 ? 0.0f : i / 10.0f);
+        inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
         prog += 1;
       }
     }
@@ -411,6 +411,11 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
   //assert(n == nrOfInputs);
 
   return inputs;
+}
+
+template<std::size_t SIZE>
+void utils::addPieceBoardIndexToVector(std::vector<float>& store, std::array<type::bitboard_t, SIZE>& pieces, uint8_t nr) {
+  // ISSUE, this doesnt scale when more pieces than nr exist. what if there are 3 queens? or just 2?
 }
 
 /**
@@ -440,29 +445,11 @@ void utils::yellDeprecated(const std::string info) {
   std::cerr << "@Deprecated function used " << (info.length() == 0 ? "!" : info) << std::endl;
 }
 
+
 /**
- * @deprecated
- * @param node
+ * Set default board values
+ * @param node gameState_t&
  */
-void utils::setDefaultChessLayout(type::gameState_ptr node) {
-  node->BlackBishop = 2594073385365405696ULL;
-  node->BlackKing = 576460752303423488ULL;
-  node->BlackKnight = 4755801206503243776ULL;
-  node->BlackPawn = 71776119061217280ULL;
-  node->BlackQueen = 1152921504606846976ULL;
-  node->BlackRook = 9295429630892703744ULL;
-
-  node->WhiteBishop = 36;
-  node->WhiteKnight = 66;
-  node->WhitePawn = 65280;
-  node->WhiteQueen = 8;
-  node->WhiteKing = 16;
-  node->WhiteRook = 129;
-
-  yellDeprecated("utils::setDefaultChessLayout(type::gameState_ptr node)");
-
-}
-
 void utils::setDefaultChessLayout(type::gameState_t& node) {
   node.BlackRook    = constant::defaultPiecePosition::black::ROOK;
   node.BlackQueen   = constant::defaultPiecePosition::black::QUEEN;
@@ -486,62 +473,7 @@ void utils::setDefaultChessLayout(type::gameState_t& node) {
 
 /**
  * Print out the chess board based on a gameState node
- * @param gs
- * @deprecated
- */
-void utils::printGameState(type::gameState_ptr gs) {
-
-  std::map<const char, type::bitboard_t &> links = {
-      {'b', gs->BlackBishop},
-      {'k', gs->BlackKing},
-      {'n', gs->BlackKnight},
-      {'p', gs->BlackPawn},
-      {'q', gs->BlackQueen},
-      {'r', gs->BlackRook},
-
-      {'B', gs->WhiteBishop},
-      {'K', gs->WhiteKing},
-      {'N', gs->WhiteKnight},
-      {'P', gs->WhitePawn},
-      {'Q', gs->WhiteQueen},
-      {'R', gs->WhiteRook}
-  };
-
-  std::string board(64, '-');
-
-  for (auto entry : links) {
-    const char piece = entry.first;
-    const auto bitboard = entry.second;
-
-    for (uint8_t i = 0; i < 64; i++) {
-      if (bitAt(bitboard, i)) {
-        board.at(i) = piece;
-      }
-    }
-  }
-
-  std::cout << "\n  ";
-  for (int i = 'A'; i < 'A' + 8; i++)
-    std::cout << "  " << (char) i << " ";
-  std::cout << std::endl;
-  std::cout << "  +---+---+---+---+---+---+---+---+\n";
-  for (int i = 7; i >= 0; i--) {
-    std::cout << i + 1 << " | ";
-    for (int j = 0; j < 8; j++) {
-      std::cout << board.at((i * 8) + j) << " | ";
-    }
-    std::cout << '\n';
-    std::cout << "  +---+---+---+---+---+---+---+---+\n";
-  }
-  std::cout << '\n';
-
-  yellDeprecated("utils::printGameState(type::gameState_ptr gs)");
-}
-
-
-/**
- * Print out the chess board based on a gameState node
- * @param gs
+ * @param gs type::gameState_t&
  */
 void utils::printGameState(type::gameState_t& gs) {
 
@@ -575,19 +507,18 @@ void utils::printGameState(type::gameState_t& gs) {
   }
 
   std::cout << "\n  ";
-  for (int i = 'A'; i < 'A' + 8; i++)
+  for (int i = 'A'; i < 'A' + 8; i++) {
     std::cout << "  " << (char) i << " ";
-  std::cout << std::endl;
-  std::cout << "  +---+---+---+---+---+---+---+---+\n";
-  for (int i = 7; i >= 0; i--) {
+  }
+  std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
+  for (uint8_t i = 7; i >= 0 && i < 8; i--) {
     std::cout << i + 1 << " | ";
-    for (int j = 0; j < 8; j++) {
+    for (uint8_t j = 0; j < 8; j++) {
       std::cout << board.at((i * 8) + j) << " | ";
     }
-    std::cout << '\n';
-    std::cout << "  +---+---+---+---+---+---+---+---+\n";
+    std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
   }
-  std::cout << '\n';
+  std::cout << std::endl;
 }
 
 /**
@@ -596,69 +527,9 @@ void utils::printGameState(type::gameState_t& gs) {
  *
  * Warning: this ignores, castling, passant, halfmove and fullmove.
  *
- * @param fen std::string, must be correctly formatted (!)
- * @return new shared_ptr of gameState
- * @deprecated
+ * @param gs gameState_t&
+ * @param fen const std::string&, must be correctly formatted (!)
  */
-type::gameState_ptr utils::generateBoardFromFen(const std::string fen) {
-  type::gameState_ptr node = new type::gameState_t();
-
-  std::map<const char, type::bitboard_t &> links = {
-      {'b', node->BlackBishop},
-      {'k', node->BlackKing},
-      {'n', node->BlackKnight},
-      {'p', node->BlackPawn},
-      {'q', node->BlackQueen},
-      {'r', node->BlackRook},
-
-      {'B', node->WhiteBishop},
-      {'K', node->WhiteKing},
-      {'N', node->WhiteKnight},
-      {'P', node->WhitePawn},
-      {'Q', node->WhiteQueen},
-      {'R', node->WhiteRook}
-  };
-
-  type::bitboard_t index = 0;
-  bool gotColor = false;
-  for (const auto c : fen) {
-    if (index == 64) {
-
-      if (index == 65) {
-        node->playerColor = c == 'w' ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK;
-        gotColor = true;
-      }
-
-      if (gotColor) {
-        break;
-      }
-      else {
-        index++;
-        continue;
-      }
-    }
-    if (c == '/') {
-      continue;
-    }
-
-    // check if the char is a piece type
-    if (links.count(c) > 0) {
-      // it's a piece type
-      flipBit(links.at(c), index); // set bit at correct index on correct board
-      index += 1;
-    } else {
-      // assumption: it's a number
-      // update index with this number
-      index += utils::stoi(c);
-    }
-  }
-
-  yellDeprecated("utils::generateBoardFromFen(const std::string fen)");
-
-  return node;
-}
-
-
 void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) {
   std::map<const char, type::bitboard_t&> links = {
       {'b', gs.BlackBishop},
@@ -695,7 +566,7 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
       } else {
         // assumption: it's a number
         // update index with this number
-        index += utils::stoi(c); // should be uint8, but isn't needed..
+        index += utils::ctoi(c); // should be uint8, but isn't needed..
       }
     }
 
@@ -948,6 +819,31 @@ int utils::nrOfActiveBits(type::bitboard_t b) {
   }
   return counter;
 #endif
+}
+
+uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
+  if (depth == 0) {
+    return 1;
+  }
+
+  movegen::MoveGenerator gen;
+  gen.setGameState(gs);
+
+  // create a holder for possible game outputs
+  std::vector<type::gameState_t> states;
+
+  // generate possible game outputs
+  gen.generateGameStates(states);
+
+  int len = static_cast<int>(states.size());
+  uint64_t nodes = 0;
+
+  // calculate move for every move
+  for (int i = 0; i < len; i++) {
+    nodes += perft(depth - 1, states.at(i));
+  }
+
+  return nodes;
 }
 
 } // End of david
