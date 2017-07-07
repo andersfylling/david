@@ -196,7 +196,7 @@ std::string utils::generateFen(type::gameState_ptr node) {
  * @param i the index as uint8_t
  * @return true if bit is 1 at index i
  */
-bool utils::bitAt(uint64_t b, uint8_t i) {
+constexpr bool utils::bitAt(uint64_t b, uint8_t i) {
   return (b & (1ULL << i)) != 0;
 }
 
@@ -795,7 +795,7 @@ void utils::flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
   board |= (1LL << index);
 }
 
-int utils::nrOfActiveBits(type::bitboard_t b) {
+constexpr int utils::nrOfActiveBits(type::bitboard_t b) {
 #ifdef __linux__
   return __builtin_popcountll(b);
 #elif _WIN32
@@ -838,10 +838,10 @@ uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
   int len = static_cast<int>(states.size());
   uint64_t nodes = 0;
 
-  //for (int i = 0; i < len; i++) {
-  //  std::cout << depth << ": " << i << std::endl;
-  //  printGameState(states.at(i));
-  //}
+//  for (int i = 0; i < len; i++) {
+//    std::cout << depth << ": " << i << std::endl;
+//    printGameState(states.at(i));
+//  }
 
   // calculate move for every move
   for (int i = 0; i < len; i++) {
@@ -849,6 +849,122 @@ uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
   }
 
   return nodes;
+}
+
+const std::string utils::getEGN(const type::gameState_t& first, const type::gameState_t& second) {
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
+  std::string EGN = "";
+  type::bitboard_t difference = 0ULL;
+  type::bitboard_t from       = 0ULL;
+  type::bitboard_t to         = 0ULL;
+
+
+  if (first.playerColor == WHITE) {
+    if (first.WhitePawn != second.WhitePawn) {
+      // create from index
+      difference = first.WhitePawn ^ second.WhitePawn;
+      from = first.WhitePawn & difference;
+      to = second.WhitePawn & difference;
+    }
+    else if (first.WhiteBishop != second.WhiteBishop) {
+      // create from index
+      difference = first.WhiteBishop ^ second.WhiteBishop;
+      from = first.WhiteBishop & difference;
+      to = second.WhiteBishop & difference;
+    }
+    else if (first.WhiteKing != second.WhiteKing) {
+      // create from index
+      difference = first.WhiteKing ^ second.WhiteKing;
+      from = first.WhiteKing & difference;
+      to = second.WhiteKing & difference;
+    }
+    else if (first.WhiteQueen != second.WhiteQueen) {
+      // create from index
+      difference = first.WhiteQueen ^ second.WhiteQueen;
+      from = first.WhiteQueen & difference;
+      to = second.WhiteQueen & difference;
+    }
+    else if (first.WhiteKnight != second.WhiteKnight) {
+      // create from index
+      difference = first.WhiteKnight ^ second.WhiteKnight;
+      from = first.WhiteKnight & difference;
+      to = second.WhiteKnight & difference;
+    }
+    else if (first.WhiteRook != second.WhiteRook) {
+      // create from index
+      difference = first.WhiteRook ^ second.WhiteRook;
+      from = first.WhiteRook & difference;
+      to = second.WhiteRook & difference;
+    }
+  }
+  else if (first.playerColor == BLACK) {
+    if (first.BlackPawn != second.BlackPawn) {
+      // create from index
+      difference = first.BlackPawn ^ second.BlackPawn;
+      from = first.BlackPawn & difference;
+      to = second.BlackPawn & difference;
+    }
+    else if (first.BlackBishop != second.BlackBishop) {
+      // create from index
+      difference = first.BlackBishop ^ second.BlackBishop;
+      from = first.BlackBishop & difference;
+      to = second.BlackBishop & difference;
+    }
+    else if (first.BlackKing != second.BlackKing) {
+      // create from index
+      difference = first.BlackKing ^ second.BlackKing;
+      from = first.BlackKing & difference;
+      to = second.BlackKing & difference;
+    }
+    else if (first.BlackQueen != second.BlackQueen) {
+      // create from index
+      difference = first.BlackQueen ^ second.BlackQueen;
+      from = first.BlackQueen & difference;
+      to = second.BlackQueen & difference;
+    }
+    else if (first.BlackKnight != second.BlackKnight) {
+      // create from index
+      difference = first.BlackKnight ^ second.BlackKnight;
+      from = first.BlackKnight & difference;
+      to = second.BlackKnight & difference;
+    }
+    else if (first.BlackRook != second.BlackRook) {
+      // create from index
+      difference = first.BlackRook ^ second.BlackRook;
+      from = first.BlackRook & difference;
+      to = second.BlackRook & difference;
+    }
+  }
+
+#ifdef DAVID_DEVELOPMENT
+  assert(difference != 0ULL);
+  assert(utils::nrOfActiveBits(from) == 1);
+  assert(utils::nrOfActiveBits(to) == 1);
+#endif
+
+  std::array<char, 8> indexes = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+
+  // from
+  from = bitboardToIndex(from);
+  EGN += indexes[from % 8];
+  EGN += std::to_string((from + 8) / 8);
+
+  // to
+  to = bitboardToIndex(to);
+  EGN += indexes[to % 8];
+  EGN += std::to_string((to + 8) / 8);
+
+  return EGN;
+}
+
+// slow
+constexpr uint8_t utils::bitboardToIndex(const type::bitboard_t b) {
+  for (uint8_t i = 0; i < 64; i += 1) {
+    if (bitAt(b, i)) {
+      return i;
+    }
+  }
 }
 
 } // End of david

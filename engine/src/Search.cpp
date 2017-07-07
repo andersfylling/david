@@ -33,7 +33,7 @@ Search::Search(type::engineContext_ptr ctx)
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
  */
-type::gameState_t& Search::searchInit(type::gameState_t node) {
+type::gameState_t Search::searchInit(type::gameState_t node) {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
@@ -85,6 +85,7 @@ int Search::iterativeDeepening(type::gameState_t board) {
   auto& node = gt.getGameState(0);
   node = board; // updated root node
   gt.generateChildren(0);
+  auto nrOfPossibleMoves = gt.getGameState(0).possibleSubMoves;
   //gt.gene
   //if(!engineContextPtr->testing) { // ........
   //}
@@ -98,7 +99,6 @@ int Search::iterativeDeepening(type::gameState_t board) {
   time_t initTimer = std::time(nullptr);
   auto timeout = (initTimer * 10000) + movetime;
   for (int currentDepth = 1; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
-    int cScore = bScore;
     int aspirationDelta = 0;
 
     //
@@ -124,13 +124,13 @@ int Search::iterativeDeepening(type::gameState_t board) {
     // find which possibility is the best option
     int leafScore = constant::boardScore::LOWEST;
     int childIndex = 0;
-    for (unsigned int index = 1; index <= constant::MAXMOVES; index += 1) {
+    for (unsigned int index = 1; index <= nrOfPossibleMoves; index += 1) {
       // Start with a small aspiration window and, in the case of a fail
       // high/low, re-search with a bigger window until we're not failing
       // high/low anymore.
       bool iDone = false;
       while (!iDone) {
-        cScore = negamax(index, alpha, beta, 1, currentDepth);
+        int cScore = negamax(index, alpha, beta, 1, currentDepth);
         iterationScore[currentDepth] = cScore;
 
         //
@@ -157,7 +157,7 @@ int Search::iterativeDeepening(type::gameState_t board) {
 
     lastDepth = currentDepth; // not accurate enough
 
-    std::cout << "info depth " << currentDepth << ", max: " << this->depth << std::endl;
+    std::cout << "info depth " << currentDepth << " best_move " << utils::getEGN(gt.getGameState(0), this->bestMove) << std::endl;
   }
 
   setComplete(true);

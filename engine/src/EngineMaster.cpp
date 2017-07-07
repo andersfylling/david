@@ -104,7 +104,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     currentPlayer->setGameState(currentGame);
   } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != 0);
 
-  std::cout << currentGame.fullMoves << std::endl;
+  std::cout << currentGame.possibleSubMoves << std::endl;
 
   auto winnerID = -1;
   if (eng1->lost()) {

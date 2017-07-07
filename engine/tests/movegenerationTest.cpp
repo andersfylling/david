@@ -446,8 +446,6 @@ TEST_CASE("PERFT") {
       REQUIRE(moveGenPerft == expectedPerft);
     }
 
-    //if (i == 1) break;
-
     if (moveGenPerft != expectedPerft) {
       break;
     }

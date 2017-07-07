@@ -25,8 +25,8 @@ type::bitboard_t  MSB(type::bitboard_t board);
 type::bitboard_t  NSB_r(type::bitboard_t &board);
 void              flipBit(type::bitboard_t &board, type::bitboard_t index);
 void              flipBitOff(type::bitboard_t &board, type::bitboard_t index);
-bool              bitAt(uint64_t b, uint8_t i);
-int               nrOfActiveBits(type::bitboard_t b);
+constexpr bool    bitAt(uint64_t b, uint8_t i);
+constexpr int     nrOfActiveBits(type::bitboard_t b);
 
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
@@ -46,6 +46,7 @@ bool isHalfMove(type::gameState_t& parent, type::gameState_t& child);
 void setDefaultChessLayout(type::gameState_t& node);
 type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
+constexpr uint8_t bitboardToIndex(const type::bitboard_t b);
 
 // Everything printing related
 // utils::print
@@ -64,6 +65,7 @@ void flipBitOn(type::bitboard_t &board, type::bitboard_t index);
 void yellDeprecated(const std::string info);
 
 uint64_t perft(const int depth, const type::gameState_t& gs);
+const std::string getEGN(const type::gameState_t& first, const type::gameState_t& second);
 
 };
 
