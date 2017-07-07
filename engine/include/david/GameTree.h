@@ -37,7 +37,7 @@ class GameTree {
   //std::array<NodeCache, constant::MAXMOVES>
 
 
-  std::array<type::gameState_t, (constant::MAXMOVES * /*depth*/20 + 1/*root*/)> tree;
+  std::array<type::gameState_t, (constant::MAXMOVES * constant::MAXDEPTH + /*root*/1)> tree;
   std::vector<type::gameState_ptr> treeDepths; // index i, will go to depth i at the first node. to simplify deleting.
   void preallocateSearchTree();
 
@@ -53,24 +53,14 @@ class GameTree {
   int getGameStateScore(unsigned int index);
   type::gameState_t& getGameState(unsigned int index);
   unsigned int treeIndex(uint8_t depth, uint8_t index);
-  //void reset(type::gameState_ptr node);
-  //void resetChildren(type::gameState_ptr node);
-  //void newRootNode(type::gameState_ptr node);
-  //type::gameState_ptr regretNewRootNode();
   void setMaxNumberOfNodes(int n);
   int getMaxNumberOfNodes();
-  //void generateNodes();
-  //type::gameState_ptr generateNode(type::gameState_ptr parent, bitboard::gameState child);
   void generateNode(type::gameState_t& parent, type::gameState_t& n, type::gameState_t child);
-  //type::gameState_ptr getCurrentNode();
   int getNumberOfNodes();
-  //void generateChildren(type::gameState_ptr node);
   void generateChildren(unsigned int index);
-  //void sortChildren(type::gameState_ptr node);
   void sortChildren(type::gameState_t& node);
   type::gameState_ptr getCurrent();
   int getDepth();
-  //void printAllScores(type::gameState_ptr root);
 
 };
 

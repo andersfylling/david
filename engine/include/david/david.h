@@ -53,6 +53,7 @@ static const int LOWEST   = -(std::numeric_limits<int>::max());
 }
 
 static const int MAXMOVES = 256;
+static const int MAXDEPTH = 30;
 
 } // ::david::constants
 

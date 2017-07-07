@@ -438,12 +438,15 @@ TEST_CASE("PERFT") {
 
   for (int i = 0; i < perft.size(); i++) {
 
+    //std::cout << "==== FOR PERFT(" << i << "):" << std::endl;
     auto moveGenPerft = ::david::utils::perft(i, gs);
     auto expectedPerft = perft[i];
 
     SECTION("Depth " + std::to_string(i)) {
       REQUIRE(moveGenPerft == expectedPerft);
     }
+
+    //if (i == 1) break;
 
     if (moveGenPerft != expectedPerft) {
       break;

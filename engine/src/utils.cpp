@@ -838,6 +838,11 @@ uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
   int len = static_cast<int>(states.size());
   uint64_t nodes = 0;
 
+  //for (int i = 0; i < len; i++) {
+  //  std::cout << depth << ": " << i << std::endl;
+  //  printGameState(states.at(i));
+  //}
+
   // calculate move for every move
   for (int i = 0; i < len; i++) {
     nodes += perft(depth - 1, states.at(i));

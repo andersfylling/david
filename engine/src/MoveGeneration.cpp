@@ -933,40 +933,16 @@ void movegen::MoveGenerator::generateMoves(bitboard::COLOR color, bool legacy) {
  * @param states - the vector the states will be put into
  */
 void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState> &states) {
-  bitboard::gameState temp = state;
-  //temp = state;
-  //temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
-
   generateMoves(state.playerColor);
 
   for (int i = (int) moveList.size() -1; i >= 0; i--) {
     if (moveIsLegal(moveList[i], state.playerColor)) {
-      applyMove(moveList[i], temp);
-      states.push_back(temp);
+      auto tmp = state;
+      applyMove(moveList[i], tmp);
+      states.push_back(tmp);
     }
   }
 }
-
-/**
- * This is a legacy function. This generates gameStates
- * in the future wi will only generate one gamestate per
- * subtree. This function uses pointer instead of reference
- * @param states - the vector the states will be put into
- */
-//void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState> * states) {
-//  bitboard::gameState temp;
-//  temp = state;
-//  temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
-//
-//  generateMoves(state.playerColor);
-//
-//  for (int i = (int) moveList.size() -1; i >= 0; i--) {
-//    if (moveIsLegal(moveList[i], state.playerColor)) {
-//      applyMove(moveList[i], temp);
-//      states->push_back(temp);
-//    }
-//  }
-//}
 
 /**
  * Applies the move and tests if it is legal
@@ -975,9 +951,10 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
  * @return - returns true if legal
  */
 bool movegen::MoveGenerator::moveIsLegal(bitboard::move_t m, bitboard::COLOR c) {
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
   bitboard::gameState s = state;
   type::bitboard_t res = 0ULL;
-
   applyMove(m, state);
 
   if (c == bitboard::COLOR::WHITE) {
