@@ -347,6 +347,11 @@ void GameTree::generateNode(type::gameState_t& parent, type::gameState_t& n, typ
   n.BlackQueen   = child.BlackQueen;
   n.BlackKing    = child.BlackKing;
 
+  n.blackPieces = n.BlackPawn | n.BlackQueen | n.BlackKnight | n.BlackKing | n.BlackBishop | n.BlackRook;
+  n.whitePieces = n.WhitePawn | n.WhiteQueen | n.WhiteKnight | n.WhiteKing | n.WhiteBishop | n.WhiteRook;
+
+  n.pieces = n.blackPieces | n.whitePieces;
+
   n.lastBlackMove = child.lastBlackMove;
   n.lastWhiteMove = child.lastWhiteMove;
 

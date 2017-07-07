@@ -244,8 +244,8 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 
   auto combinedWhiteAttacks = env.combinedWhiteAttacks();
   auto combinedBlackAttacks = env.combinedBlackAttacks();
-  auto whitePieces = env.whitePieces();
-  auto blackPieces = env.blackPieces();
+  auto whitePieces = node.whitePieces;
+  auto blackPieces = node.blackPieces;
 
   std::array<double, 61> boardInfo = {
       node.playerColor == bitboard::COLOR::WHITE ? 1.0 : -1.0,
@@ -310,7 +310,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 
       static_cast<double>(utils::nrOfActiveBits(whitePieces)) / 100.0, // is never 0
       static_cast<double>(utils::nrOfActiveBits(blackPieces)) / 100.0, // is never 0
-      static_cast<double>(utils::nrOfActiveBits(whitePieces | blackPieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits(node.pieces)) / 100.0,
 
       utils::nrOfActiveBits(combinedBlackAttacks & whitePieces) == 0 ?  1.0 : -1.0 * (static_cast<double>(utils::nrOfActiveBits(env.combinedBlackAttacks() & env.whitePieces())) / 100.0),
       utils::nrOfActiveBits(combinedWhiteAttacks & blackPieces) == 0 ? -1.0 : static_cast<double>(utils::nrOfActiveBits(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0,
@@ -450,25 +450,30 @@ void utils::yellDeprecated(const std::string info) {
  * Set default board values
  * @param node gameState_t&
  */
-void utils::setDefaultChessLayout(type::gameState_t& node) {
-  node.BlackRook    = constant::defaultPiecePosition::black::ROOK;
-  node.BlackQueen   = constant::defaultPiecePosition::black::QUEEN;
-  node.BlackPawn    = constant::defaultPiecePosition::black::PAWN;
-  node.BlackKnight  = constant::defaultPiecePosition::black::KNIGHT;
-  node.BlackKing    = constant::defaultPiecePosition::black::KING;
-  node.BlackBishop  = constant::defaultPiecePosition::black::BISHOP;
+void utils::setDefaultChessLayout(type::gameState_t& n) {
+  n.BlackRook    = constant::defaultPiecePosition::black::ROOK;
+  n.BlackQueen   = constant::defaultPiecePosition::black::QUEEN;
+  n.BlackPawn    = constant::defaultPiecePosition::black::PAWN;
+  n.BlackKnight  = constant::defaultPiecePosition::black::KNIGHT;
+  n.BlackKing    = constant::defaultPiecePosition::black::KING;
+  n.BlackBishop  = constant::defaultPiecePosition::black::BISHOP;
   
-  node.WhiteRook    = constant::defaultPiecePosition::white::ROOK;
-  node.WhiteQueen   = constant::defaultPiecePosition::white::QUEEN;
-  node.WhitePawn    = constant::defaultPiecePosition::white::PAWN;
-  node.WhiteKnight  = constant::defaultPiecePosition::white::KNIGHT;
-  node.WhiteKing    = constant::defaultPiecePosition::white::KING;
-  node.WhiteBishop  = constant::defaultPiecePosition::white::BISHOP;
+  n.WhiteRook    = constant::defaultPiecePosition::white::ROOK;
+  n.WhiteQueen   = constant::defaultPiecePosition::white::QUEEN;
+  n.WhitePawn    = constant::defaultPiecePosition::white::PAWN;
+  n.WhiteKnight  = constant::defaultPiecePosition::white::KNIGHT;
+  n.WhiteKing    = constant::defaultPiecePosition::white::KING;
+  n.WhiteBishop  = constant::defaultPiecePosition::white::BISHOP;
 
-  node.blackKingCastling  = true;
-  node.blackQueenCastling = true;
-  node.whiteKingCastling  = true;
-  node.whiteQueenCastling = true;
+  n.blackPieces = n.BlackPawn | n.BlackQueen | n.BlackKnight | n.BlackKing | n.BlackBishop | n.BlackRook;
+  n.whitePieces = n.WhitePawn | n.WhiteQueen | n.WhiteKnight | n.WhiteKing | n.WhiteBishop | n.WhiteRook;
+
+  n.pieces = n.blackPieces | n.whitePieces;
+
+  n.blackKingCastling  = true;
+  n.blackQueenCastling = true;
+  n.whiteKingCastling  = true;
+  n.whiteQueenCastling = true;
 }
 
 /**
@@ -630,6 +635,12 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
     }
   }
 
+
+  gs.blackPieces = gs.BlackPawn | gs.BlackQueen | gs.BlackKnight | gs.BlackKing | gs.BlackBishop | gs.BlackRook;
+  gs.whitePieces = gs.WhitePawn | gs.WhiteQueen | gs.WhiteKnight | gs.WhiteKing | gs.WhiteBishop | gs.WhiteRook;
+
+  gs.pieces = gs.blackPieces | gs.whitePieces;
+
 }
 
 /**
@@ -687,7 +698,7 @@ type::bitboard_t utils::chessIndexToBitboard(const std::string& chessIndex) {
 // Works with gcc based compilers
 type::bitboard_t utils::LSB(type::bitboard_t board) {
 #ifdef __linux__
-  return (board != 0LL) ? __builtin_ffsll(board) - 1 : 0LL;
+  return (board != 0) ? __builtin_ffsll(board) - 1 : 0ULL;
 #elif _WIN32
   // windows code goes here
   return 0LL;
@@ -854,104 +865,36 @@ uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
 const std::string utils::getEGN(const type::gameState_t& first, const type::gameState_t& second) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  std::string EGN = "";
-  type::bitboard_t difference = 0ULL;
-  type::bitboard_t from       = 0ULL;
-  type::bitboard_t to         = 0ULL;
+  type::bitboard_t a, b;
 
 
   if (first.playerColor == WHITE) {
-    if (first.WhitePawn != second.WhitePawn) {
-      // create from index
-      difference = first.WhitePawn ^ second.WhitePawn;
-      from = first.WhitePawn & difference;
-      to = second.WhitePawn & difference;
-    }
-    else if (first.WhiteBishop != second.WhiteBishop) {
-      // create from index
-      difference = first.WhiteBishop ^ second.WhiteBishop;
-      from = first.WhiteBishop & difference;
-      to = second.WhiteBishop & difference;
-    }
-    else if (first.WhiteKing != second.WhiteKing) {
-      // create from index
-      difference = first.WhiteKing ^ second.WhiteKing;
-      from = first.WhiteKing & difference;
-      to = second.WhiteKing & difference;
-    }
-    else if (first.WhiteQueen != second.WhiteQueen) {
-      // create from index
-      difference = first.WhiteQueen ^ second.WhiteQueen;
-      from = first.WhiteQueen & difference;
-      to = second.WhiteQueen & difference;
-    }
-    else if (first.WhiteKnight != second.WhiteKnight) {
-      // create from index
-      difference = first.WhiteKnight ^ second.WhiteKnight;
-      from = first.WhiteKnight & difference;
-      to = second.WhiteKnight & difference;
-    }
-    else if (first.WhiteRook != second.WhiteRook) {
-      // create from index
-      difference = first.WhiteRook ^ second.WhiteRook;
-      from = first.WhiteRook & difference;
-      to = second.WhiteRook & difference;
-    }
+    a = first.whitePieces;
+    b = second.whitePieces;
   }
-  else if (first.playerColor == BLACK) {
-    if (first.BlackPawn != second.BlackPawn) {
-      // create from index
-      difference = first.BlackPawn ^ second.BlackPawn;
-      from = first.BlackPawn & difference;
-      to = second.BlackPawn & difference;
-    }
-    else if (first.BlackBishop != second.BlackBishop) {
-      // create from index
-      difference = first.BlackBishop ^ second.BlackBishop;
-      from = first.BlackBishop & difference;
-      to = second.BlackBishop & difference;
-    }
-    else if (first.BlackKing != second.BlackKing) {
-      // create from index
-      difference = first.BlackKing ^ second.BlackKing;
-      from = first.BlackKing & difference;
-      to = second.BlackKing & difference;
-    }
-    else if (first.BlackQueen != second.BlackQueen) {
-      // create from index
-      difference = first.BlackQueen ^ second.BlackQueen;
-      from = first.BlackQueen & difference;
-      to = second.BlackQueen & difference;
-    }
-    else if (first.BlackKnight != second.BlackKnight) {
-      // create from index
-      difference = first.BlackKnight ^ second.BlackKnight;
-      from = first.BlackKnight & difference;
-      to = second.BlackKnight & difference;
-    }
-    else if (first.BlackRook != second.BlackRook) {
-      // create from index
-      difference = first.BlackRook ^ second.BlackRook;
-      from = first.BlackRook & difference;
-      to = second.BlackRook & difference;
-    }
+  else {
+    a = first.blackPieces;
+    b = second.blackPieces;
   }
+
+  type::bitboard_t difference = a ^ b;
+  type::bitboard_t from       = LSB(a & difference);
+  type::bitboard_t to         = LSB(b & difference);
 
 #ifdef DAVID_DEVELOPMENT
   assert(difference != 0ULL);
-  assert(utils::nrOfActiveBits(from) == 1);
-  assert(utils::nrOfActiveBits(to) == 1);
+  assert(from < 64);
+  assert(to < 64);
 #endif
 
   std::array<char, 8> indexes = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+  std::string EGN = "";
 
   // from
-  from = bitboardToIndex(from);
   EGN += indexes[from % 8];
   EGN += std::to_string((from + 8) / 8);
 
   // to
-  to = bitboardToIndex(to);
   EGN += indexes[to % 8];
   EGN += std::to_string((to + 8) / 8);
 

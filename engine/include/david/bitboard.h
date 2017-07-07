@@ -92,6 +92,11 @@ struct gameState {
   type::bitboard_t BlackQueen   = ::david::constant::EMPTYBOARD;
   type::bitboard_t BlackKing    = ::david::constant::EMPTYBOARD;
 
+  type::bitboard_t blackPieces  = ::david::constant::EMPTYBOARD;
+  type::bitboard_t whitePieces  = ::david::constant::EMPTYBOARD;
+
+  type::bitboard_t pieces       = ::david::constant::EMPTYBOARD;
+
   move_t lastWhiteMove;
   move_t lastBlackMove;
 
