@@ -46,7 +46,6 @@ bool isHalfMove(type::gameState_t& parent, type::gameState_t& child);
 void setDefaultChessLayout(type::gameState_t& node);
 type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
-constexpr uint8_t bitboardToIndex(const type::bitboard_t b);
 
 // Everything printing related
 // utils::print

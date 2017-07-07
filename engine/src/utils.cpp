@@ -360,12 +360,14 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
     //auto ba = std::bitset<64>(b);
     //double arr[1] = {-1.0};
     auto prog = 0;
-    for (uint8_t i = 0; i < 64 && prog < 1; i++) {
-      if (utils::bitAt(b, i)) {
-        inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
-        prog += 1;
-      }
-    }
+    do {
+      auto i = LSB(b);
+      flipBitOff(b, i);
+
+      inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
+      prog += 1;
+    } while(b != 0ULL && prog < 1);
+
     // fill in missing pieces
     for (; prog < 1; prog++) {
       inputs.push_back(-1.0f);
@@ -377,12 +379,13 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
     //auto ba = std::bitset<64>(b);
     //double arr[2] = {-1.0, -1.0};
     auto prog = 0;
-    for (uint8_t i = 0; i < 64 && prog < 2; i++) {
-      if (utils::bitAt(b, i)) {
-        inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
-        prog += 1;
-      }
-    }
+    do {
+      auto i = LSB(b);
+      flipBitOff(b, i);
+
+      inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
+      prog += 1;
+    } while(b != 0ULL && prog < 2);
 
     // fill in missing pieces
     for (; prog < 2; prog++) {
@@ -393,12 +396,13 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
     //auto ba = std::bitset<64>(b);
     //double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
     auto prog = 0;
-    for (uint8_t i = 0; i < 64 && prog < 8; i++) {
-      if (utils::bitAt(b, i)) {
-        inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
-        prog += 1;
-      }
-    }
+    do {
+      auto i = LSB(b);
+      flipBitOff(b, i);
+
+      inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
+      prog += 1;
+    } while(b != 0ULL && prog < 8);
 
     // fill in missing pieces
     for (; prog < 8; prog++) {
@@ -482,7 +486,7 @@ void utils::setDefaultChessLayout(type::gameState_t& n) {
  */
 void utils::printGameState(type::gameState_t& gs) {
 
-  std::map<const char, type::bitboard_t &> links = {
+  std::map<const char, type::bitboard_t> links = {
       {'b', gs.BlackBishop},
       {'k', gs.BlackKing},
       {'n', gs.BlackKnight},
@@ -502,13 +506,13 @@ void utils::printGameState(type::gameState_t& gs) {
 
   for (auto entry : links) {
     const char piece = entry.first;
-    const auto bitboard = entry.second;
+    auto bitboard = entry.second;
 
-    for (uint8_t i = 0; i < 64; i++) {
-      if (bitAt(bitboard, i)) {
-        board.at(i) = piece;
-      }
-    }
+    do {
+      auto i = LSB(bitboard);
+      flipBitOff(bitboard, i);
+      board.at(i) = piece;
+    } while(bitboard != 0ULL);
   }
 
   std::cout << "\n  ";
@@ -899,15 +903,6 @@ const std::string utils::getEGN(const type::gameState_t& first, const type::game
   EGN += std::to_string((to + 8) / 8);
 
   return EGN;
-}
-
-// slow
-constexpr uint8_t utils::bitboardToIndex(const type::bitboard_t b) {
-  for (uint8_t i = 0; i < 64; i += 1) {
-    if (bitAt(b, i)) {
-      return i;
-    }
-  }
 }
 
 } // End of david
