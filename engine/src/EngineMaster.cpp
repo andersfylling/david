@@ -81,30 +81,30 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   sstr >> color; // now it gets the color
 
   auto currentPlayer = color == "w" ? eng1 : eng2;
-  bool whitesTurn = true;
+  auto otherPlayer = color == "w" ? eng2 : eng1;
 
   // lets start the game!
-  type::gameState_ptr currentGame = currentPlayer->getGameState();
+  auto currentGame = currentPlayer->getGameState();
+  auto previousGame = currentPlayer->getGameState();
+  bool error = false;
   do {
-    whitesTurn = color == "w";
-
     utils::printGameState(currentGame);
-
-    // update game state of new current player
-    currentPlayer->setGameState(currentGame);
 
     // ask for player / engine move decision
     currentPlayer->findBestMove();
 
     // update current game state
+    previousGame = currentGame;
     currentGame = currentPlayer->getGameState();
 
     // update active player / engine
-    currentPlayer = whitesTurn ? eng2 : eng1;
-    color = whitesTurn ? "b" : "w";
-  } while (currentGame->halfMoves < 50 && currentGame->possibleSubMoves != 0);
+    currentPlayer.swap(otherPlayer);
 
-  std::cout << currentGame->fullMoves << std::endl;
+    // update game state of new current player
+    currentPlayer->setGameState(currentGame);
+  } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != 0);
+
+  std::cout << currentGame.fullMoves << std::endl;
 
   auto winnerID = -1;
   if (eng1->lost()) {
@@ -118,7 +118,6 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   this->engineBattleWinnerLog.insert( std::pair<int, int>(this->lastEngineBattleID, winnerID) );
 
   return this->lastEngineBattleID;
-
 }
 bool david::EngineMaster::battleWinner(int battleID, int mainEngineID) {
   if (this->engineBattleWinnerLog.count(battleID) == 0) {

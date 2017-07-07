@@ -32,7 +32,7 @@ class ChessEngine {
   type::uciProtocol_ptr   uciProtocolPtr;
 
 
-  type::gameState_ptr currentGameState;
+  type::gameState_t currentGameState;
 
   Player player;
 
@@ -106,7 +106,7 @@ class ChessEngine {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(type::gameState_ptr board);
+  int ANNEvaluate(const type::gameState_t& board);
 
 
   /**
@@ -136,7 +136,7 @@ class ChessEngine {
    *
    * @return shared_ptr of gameState
    */
-  type::gameState_ptr getGameState();
+  type::gameState_t getGameState();
 
   /**
    * Sets the game state based on a node.
@@ -145,7 +145,7 @@ class ChessEngine {
    * @param state shared_ptr of a gameState
    * @return true if the state was updated
    */
-  bool setGameState(type::gameState_ptr state);
+  bool setGameState(type::gameState_t state);
 
   /**
    * Check if the engine has lost.

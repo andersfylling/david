@@ -55,7 +55,7 @@ class ANN {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(type::gameState_ptr board, bitboard::COLOR color);
+  int ANNEvaluate(const type::gameState_t& board);
 
 
   /**
@@ -64,7 +64,7 @@ class ANN {
    * @param fen std::string FEN(Forsyth–Edwards Notation)
    * @return int board evaluation
    */
-  int ANNEvaluate(std::string fen);
+  int ANNEvaluate(const std::string& fen);
 
 
 

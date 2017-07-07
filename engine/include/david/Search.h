@@ -27,9 +27,9 @@ class Search {
  public:
   Search(); // This can be used for unit testing and benchmarking.
   Search(type::engineContext_ptr ctx);
-  type::gameState_ptr searchInit(type::gameState_ptr node);
-  int iterativeDeepening(type::gameState_ptr node);
-  int negamax(type::gameState_ptr board, int alpha, int beta, int depth);
+  type::gameState_t& searchInit(type::gameState_t node);
+  int iterativeDeepening(type::gameState_t node);
+  int negamax(unsigned int index, int alpha, int beta, int depth, int iterativeDepthLimit);
   void setAbort(bool isAborted);
   void setComplete(bool isComplete);
 
@@ -38,8 +38,7 @@ class Search {
   int returnTimeToSearch();
   int returnScore();
   bool returnComplete();
-  void setDebug(bool debug);
-  void performanceTest(type::gameState_ptr node, int iterations);
+  void performanceTest(type::gameState_t& node, int iterations);
 
   // forwards protocol methods, this can be used in unit testing
   void stopSearch();
@@ -67,9 +66,16 @@ class Search {
   int mate;
   int infinite;
   int ponder;
+  int wtime;
+  int btime;
+  int winc;
+  int binc;
+  int nodes;
   std::string searchMoves;
   int searchScore;
-  type::gameState_ptr bestMove;
+  type::engineContext_ptr engineContextPtr;
+  type::gameState_t bestMove;
+  type::gameTree_t gt;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
@@ -77,63 +83,10 @@ class Search {
   bool isComplete;
   bool debug;
   int nodesSearched;
-  type::engineContext_ptr engineContextPtr;
   std::vector<int> expanded;
 };
 
-  /**
-   * Returns depth to be searched, only used in debug
-   * @return
-   */
-  inline int Search::returnDepth()  {
-    return this->depth;
-  }
-  /**
-   * Returns how much time allocated to the search
-   * @return
-   */
-  inline int Search::returnTimeToSearch(){
-    return this->movetime;
-  }
-  /**
-   * Returns bestScore sat by searching
-   * @return
-   */
-  inline int Search::returnScore() {
-    return this->searchScore;
-  }
-  /**
-   * Returns if the search is complete, search not aborted and completed without issues
-   * @return
-   */
-  inline bool Search::returnComplete() {
-    return this->isComplete;
-  }
 
-
-  /**
-   * Set aborted search
-   * @param isAborted
-   */
-  inline void Search::setAbort(bool isAborted) {
-    this->isAborted = isAborted;
-  }
-
-  /**
-   * Set complete search
-   * @param isComplete
-   */
-  inline void Search::setComplete(bool isComplete) {
-    this->isComplete = isComplete;
-  }
-
-  /**
-   * Disable/enable some window output
-   * @param debug
-   */
-  inline void Search::setDebug(bool debug) {
-    this->debug = debug;
-  }
 
 
 

@@ -149,10 +149,10 @@ TEST_CASE("BLOCK AND REDUCE VECTOR") {
 
 
 TEST_CASE ("PAWN MOVEMENT TESTS") {
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   Move m;
   m.set(35ULL, 51ULL, MOVETYPE::DOUBLE_PAWN_PUSH);
-  david::bitboard::gameState stt;
+  david::type::gameState_t stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
   stt.BlackKing = 576460752303423488ULL;
@@ -170,7 +170,7 @@ TEST_CASE ("PAWN MOVEMENT TESTS") {
 
   stt.lastBlackMove = m.getMove();
 
-  *st = stt;
+  st = stt;
 
   generator.pawnMoves(COLOR::WHITE);
   david::bitboard::bitboard_t attack, attack2;
@@ -208,7 +208,7 @@ TEST_CASE("getReducedXY") {
 }
 
 TEST_CASE("Bishop and Knight moves") {
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
@@ -224,7 +224,7 @@ TEST_CASE("Bishop and Knight moves") {
   stt.WhiteQueen = 8;
   stt.WhiteKing = 16;
   stt.WhiteRook = 129;
-  *st = stt;
+  st = stt;
 
   generator.setGameState(st);
 
@@ -244,7 +244,7 @@ TEST_CASE("Bishop and Knight moves") {
 }
 
 TEST_CASE ("Rook Movement") {
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
@@ -260,7 +260,7 @@ TEST_CASE ("Rook Movement") {
   stt.WhiteQueen = 8;
   stt.WhiteKing = 16;
   stt.WhiteRook = 4294967424ULL;
-  *st = stt;
+  st = stt;
 
   generator.setGameState(st);
   generator.clearLists();
@@ -272,7 +272,7 @@ TEST_CASE ("Rook Movement") {
 }
 
 TEST_CASE("Queen Movement") {
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
@@ -288,7 +288,7 @@ TEST_CASE("Queen Movement") {
   stt.WhiteQueen = 8589934592;
   stt.WhiteKing = 16;
   stt.WhiteRook = 4294967424ULL;
-  *st = stt;
+  st = stt;
   generator.setGameState(st);
   generator.clearLists();
   generator.queenMoves(COLOR::WHITE);
@@ -297,7 +297,7 @@ TEST_CASE("Queen Movement") {
 }
 
 TEST_CASE("King movement") {
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
@@ -313,7 +313,7 @@ TEST_CASE("King movement") {
   stt.WhiteQueen = 8589934592;
   stt.WhiteKing = 16;
   stt.WhiteRook = 4294967424ULL;
-  *st = stt;
+  st = stt;
   generator.setGameState(st);
   generator.clearLists();
   generator.kingMoves(COLOR::WHITE);
@@ -322,7 +322,7 @@ TEST_CASE("King movement") {
 
 TEST_CASE("Basic generation of moves") {
   // Test if correct number of moves is created
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 2594073385365405696ULL;
@@ -338,7 +338,7 @@ TEST_CASE("Basic generation of moves") {
   stt.WhiteQueen = 8;
   stt.WhiteKing = 16;
   stt.WhiteRook = 129ULL;
-  *st = stt;
+  st = stt;
   generator.setGameState(st);
 
   generator.clearLists();
@@ -359,7 +359,7 @@ TEST_CASE("Basic generation of moves") {
 
 
 TEST_CASE("CASTLING") {
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 0ULL;
@@ -375,7 +375,7 @@ TEST_CASE("CASTLING") {
   stt.WhiteQueen = 8;
   stt.WhiteKing = 16;
   stt.WhiteRook = 129ULL;
-  *st = stt;
+  st = stt;
   generator.setGameState(st);
 
   generator.clearLists();
@@ -389,7 +389,7 @@ TEST_CASE("LEGAL MOVES") {
   // Black queen at 25 putting king into chess
   // should be 3 moves
 
-  david::type::gameState_ptr st = std::make_shared<david::bitboard::gameState>();
+  david::type::gameState_t st;
   david::bitboard::gameState stt;
 
   stt.BlackBishop = 0ULL;
@@ -405,11 +405,48 @@ TEST_CASE("LEGAL MOVES") {
   stt.WhiteQueen = 8;
   stt.WhiteKing = 16;
   stt.WhiteRook = 129ULL;
-  *st = stt;
+  st = stt;
   generator.setGameState(st);
 
   generator.generateMoves(COLOR::WHITE);
   //david::utils::printBoard(generator.moveToMap());
   //david::utils::printBoard(generator.white());
   REQUIRE(generator.numberOfMoves() == 6);
+}
+
+TEST_CASE("PERFT") {
+  ::david::type::gameState_t gs;
+  ::david::utils::setDefaultChessLayout(gs);
+
+  // expected outputs
+  std::array<uint64_t, 14> perft = {
+      /*  0 */1,
+      /*  1 */20,
+      /*  2 */400,
+      /*  3 */8902, // 8,902
+      /*  4 */197281, // 197,281
+      /*  5 */4865609,  // 4,865,609
+      /*  6 */119060324,  // 119,060,324
+      /*  7 */3195901860, // 3,195,901,860
+      /*  8 */84998978956, // 84,998,978,956
+      /*  9 */2439530234167, // 2,439,530,234,167
+      /* 10 */69352859712417, // 69,352,859,712,417
+      /* 11 */2097651003696806, // 2,097,651,003,696,806
+      /* 12 */62854969236701747, // 62,854,969,236,701,747
+      /* 13 */1981066775000396239 // 1,981,066,775,000,396,239
+  };
+
+  for (int i = 0; i < perft.size(); i++) {
+
+    auto moveGenPerft = ::david::utils::perft(i, gs);
+    auto expectedPerft = perft[i];
+
+    SECTION("Depth " + std::to_string(i)) {
+      REQUIRE(moveGenPerft == expectedPerft);
+    }
+
+    if (moveGenPerft != expectedPerft) {
+      break;
+    }
+  }
 }

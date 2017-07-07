@@ -1,9 +1,5 @@
-//
-// Created by martin on 6/5/17.
-//
+#pragma once
 
-#ifndef CHESS_ANN_MOVEGENERATION_H
-#define CHESS_ANN_MOVEGENERATION_H
 #include "bitboard.h"
 #include "types.h"
 #include <utility>
@@ -45,7 +41,7 @@ const type::bitboard_t yAxis[7] = {1ULL, 257ULL, 65793ULL, 16843009ULL, 43118103
 class MoveGenerator {
  private:
   std::vector<bitboard::move_t> moveList;
-  bitboard::gameState state;
+  type::gameState_t state;
   type::bitboard_t attacks;
 
  public:
@@ -87,7 +83,7 @@ class MoveGenerator {
 
   // Level 4 handling
   void capturePiece(bitboard::COLOR color, type::bitboard_t index, bitboard::gameState &st);
-  void setGameState(type::gameState_ptr st);
+  void setGameState(const type::gameState_t& st);
   void applyMove(bitboard::move_t m, bitboard::gameState & s);
   bool moveIsLegal(bitboard::move_t m, bitboard::COLOR c);
   void generateMoves(bitboard::COLOR color, bool legacy = false);
@@ -99,8 +95,8 @@ class MoveGenerator {
    * the following functions is made to generate moves
    * for older versions of the treeGen
    */
-  void generateGameStates(std::vector<bitboard::gameState> &states);
-  void generateGameStates(std::vector<bitboard::gameState> * states);
+  void generateGameStates(std::vector<type::gameState_t>& states);
+  //void generateGameStates(std::vector<bitboard::gameState> * states);
 
 };
 
@@ -133,5 +129,3 @@ class Move {
 
 };  // End of movegeneration
 }; // End of david
-
-#endif //CHESS_ANN_MOVEGENERATION_H

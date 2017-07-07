@@ -16,26 +16,8 @@ namespace david {
 // ############# MOVE GENERATOR ######################
 
 movegen::MoveGenerator::MoveGenerator() {
-  state.BlackBishop = 2594073385365405696ULL;
-  state.BlackKing = 576460752303423488ULL;
-  state.BlackKnight = 4755801206503243776ULL;
-  state.BlackPawn = 71776119061217280ULL;
-  state.BlackQueen = 1152921504606846976ULL;
-  state.BlackRook = 9295429630892703744ULL;
-
-  state.WhiteBishop = 36;
-  state.WhiteKnight = 66;
-  state.WhitePawn = 65280;
-  state.WhiteQueen = 16;
-  state.WhiteKing = 8;
-  state.WhiteRook = 129;
-
-  state.blackKingCastling = true;
-  state.blackQueenCastling = true;
-  state.whiteKingCastling = true;
-  state.whiteQueenCastling = true;
-
-  attacks = 0;
+  utils::setDefaultChessLayout(this->state);
+  attacks = 0ULL;
 }
 
 /**
@@ -87,8 +69,8 @@ int movegen::MoveGenerator::numberOfMoves() {
  * @param steps - the number of steps to be taken. 0 = infinity
  * @return pointer to an array of bitboards
  */
-  type::bitboard_t *david::movegen::MoveGenerator::createVectors(type::bitboard_t  board, DIRECTION dir, int steps) {
-  type::bitboard_t numberofpieces = utils::numberOfPieces(board);
+type::bitboard_t *david::movegen::MoveGenerator::createVectors(type::bitboard_t  board, DIRECTION dir, int steps) {
+  int numberofpieces = utils::nrOfActiveBits(board);
   type::bitboard_t tempBoard, distance, currentBit, adjecent;
   int directionNumber = (int) dir;
 
@@ -226,10 +208,8 @@ type::bitboard_t res;
  * @return returns true if piece is moving in a direction that is positive on the bitboard
  */
 bool movegen::MoveGenerator::nothernly(DIRECTION dir) {
-  if(dir == DIRECTION::NORTH || dir == DIRECTION::NORTH_WEST || dir == DIRECTION::NORTH_EAST
-      || dir == DIRECTION::WEST)
-    return true;
-  return false;
+  return dir == DIRECTION::NORTH || dir == DIRECTION::NORTH_WEST || dir == DIRECTION::NORTH_EAST
+      || dir == DIRECTION::WEST;
 }
 
 
@@ -278,7 +258,7 @@ type::bitboard_t ownBlock, oponentBlock, oponent, own, ownInter, oppInter;
  type::bitboard_t * movegen::MoveGenerator::rookMovement(type::bitboard_t  board) {
   int boardValue = 0;
   bitboard_t *boards;
-  boards = new bitboard_t[utils::numberOfPieces(board) + 1];
+  boards = new bitboard_t[utils::nrOfActiveBits(board) + 1];
   for (bitboard_t index = utils::LSB(board); index; index = utils::NSB(board), ++boardValue) {
     bitboard_t temp = 0;
     bitboard_t row = index / 8;
@@ -332,10 +312,13 @@ type::bitboard_t ownBlock, oponentBlock, oponent, own, ownInter, oppInter;
  * sets the current gameState
  * @param st - the gamestate to be set
  */
-void movegen::MoveGenerator::setGameState(type::gameState_ptr st) {
-  state = (*st); // dereferrence
-}
+//void movegen::MoveGenerator::setGameState(type::gameState_ptr st) {
+//  state = (*st); // dereferrence
+//}
 
+void movegen::MoveGenerator::setGameState(const type::gameState_t& gs) {
+  state = gs; // copy
+}
 
 void movegen::MoveGenerator::addAttack(type::bitboard_t  *vectors, int number) {
   for (int i = 0; i < number; i++) {
@@ -351,10 +334,7 @@ void movegen::MoveGenerator::addAttack(type::bitboard_t  *vectors, int number) {
 void movegen::MoveGenerator::pawnMoves(bitboard::COLOR color, bool vector) {
   movegen::Move inter, temp;
   type::bitboard_t * vectorY, * vectorMd,  * vectorAd;
-  type::bitboard_t opp, numpiece, origin, pawns, interTo;
-
-
-
+  type::bitboard_t opp, origin, pawns, interTo;
   type::bitboard_t vecP, vec2, vec3, dpp, passArea;
 
   // Gets correct vectors for pawns
@@ -377,12 +357,12 @@ void movegen::MoveGenerator::pawnMoves(bitboard::COLOR color, bool vector) {
   interTo = 0;
   utils::flipBitOn(interTo, inter.getTo());
 
-  numpiece = utils::numberOfPieces(pawns);
+  int numpiece = utils::nrOfActiveBits(pawns);
 
   if (vector) {
-    addAttack(vectorY, (int) numpiece);
-    addAttack(vectorAd, (int) numpiece);
-    addAttack(vectorMd, (int) numpiece);
+    addAttack(vectorY,  numpiece);
+    addAttack(vectorAd, numpiece);
+    addAttack(vectorMd, numpiece);
   } else {
 
     for (type::bitboard_t  i = 0; i < numpiece; i++) {  // Loops the pieces / vectors
@@ -523,22 +503,22 @@ void movegen::MoveGenerator::bishopMoves(bitboard::COLOR color, bool vector) {
   // Loop reduced vectors
   type::bitboard_t pieces = (color == bitboard::COLOR::WHITE) ? state.WhiteBishop : state.BlackBishop;
   type::bitboard_t * vects = getReducedDiagonals(pieces, color);
-  type::bitboard_t pcs, origin, to, opp, numVec, numpiece, p;
+  type::bitboard_t pcs, origin, to, opp, p;
   opp = (color == bitboard::COLOR::WHITE) ? black() : white();
-  numpiece = utils::numberOfPieces(pieces);
+  int numpiece = utils::nrOfActiveBits(pieces), numVec;
 
   Move inter;
 
   if (vector) {
-    addAttack(vects, (int) numpiece);
+    addAttack(vects, numpiece);
   } else {
 
-    for (type::bitboard_t  i = 0; i < (int) numpiece; i++) {  // Loops the pieces
+    for (type::bitboard_t  i = 0; i < numpiece; i++) {  // Loops the pieces
       pcs = vects[i];
       origin = utils::LSB(pieces);
-      numVec = utils::numberOfPieces(pcs);
+      numVec = utils::nrOfActiveBits(pcs);
 
-      for (type::bitboard_t  j = 0; j < (int) numVec; ++j) {
+      for (type::bitboard_t  j = 0; j < numVec; ++j) {
         p = 0;
         to = utils::LSB(pcs);
         utils::flipBitOn(p, to);
@@ -563,7 +543,7 @@ void movegen::MoveGenerator::bishopMoves(bitboard::COLOR color, bool vector) {
  * @param color - self explanitory
  */
 void movegen::MoveGenerator::knightMoves(bitboard::COLOR color, bool vector) {
-  type::bitboard_t * vectors, numVec, origin, numpiece, opp, pieces, vecpiece, own, p;
+  type::bitboard_t * vectors, origin, opp, pieces, vecpiece, own, p;
   Move inter;
 
   if (color == bitboard::COLOR::WHITE) {
@@ -576,16 +556,16 @@ void movegen::MoveGenerator::knightMoves(bitboard::COLOR color, bool vector) {
     own = black();
   }
 
-  numpiece = utils::numberOfPieces(pieces);
+  int numpiece = utils::nrOfActiveBits(pieces), numVec;
 
   vectors = rookMovement(pieces);
 
   if (vector) {
-    addAttack(vectors, (int) numpiece);
+    addAttack(vectors, numpiece);
   } else {
-    for (type::bitboard_t  i = 0; i < (int) numpiece; ++i) {
+    for (type::bitboard_t  i = 0; i < numpiece; ++i) {
       origin = utils::LSB(pieces);
-      numVec = utils::numberOfPieces(vectors[i]);
+      numVec = utils::nrOfActiveBits(vectors[i]);
 
       for (type::bitboard_t  j = 0; j < (int) numVec; j++) {
         p = 0;
@@ -615,8 +595,9 @@ void movegen::MoveGenerator::knightMoves(bitboard::COLOR color, bool vector) {
  * @param color - color of pieces to be generated
  */
 void movegen::MoveGenerator::rookMoves(bitboard::COLOR color, bool vector) {
-  type::bitboard_t pieces, * vectors, opponent, numpiece, numvec, p, origin, piece;
+  type::bitboard_t pieces, * vectors, opponent, p, origin, piece;
   Move inter;
+  int numpiece, numvec;
 
   if(color == bitboard::COLOR::WHITE) {
     opponent = black();
@@ -627,16 +608,16 @@ void movegen::MoveGenerator::rookMoves(bitboard::COLOR color, bool vector) {
   }
 
   vectors = getReducedXY(pieces, color, 0);
-  numpiece = utils::numberOfPieces(pieces);
+  numpiece = utils::nrOfActiveBits(pieces);
 
   if (vector) {
-    addAttack(vectors, (int) numpiece);
+    addAttack(vectors, numpiece);
   } else {
 
-    for (int i = 0; i < (int) numpiece; ++i) {
-      numvec = utils::numberOfPieces(vectors[i]);
+    for (int i = 0; i < numpiece; ++i) {
+      numvec = utils::nrOfActiveBits(vectors[i]);
       origin = utils::LSB(pieces);
-      for (int j = 0; j < (int) numvec; ++j) {
+      for (int j = 0; j < numvec; ++j) {
         p = 0ULL;
         piece = utils::LSB(vectors[i]);
         utils::flipBitOn(p, piece);
@@ -673,7 +654,7 @@ void movegen::MoveGenerator::queenMoves(bitboard::COLOR color, bool vector) {
 
   vectorsXY = getReducedXY(pieces, color, 0);
   vectorsDiag = getReducedDiagonals(pieces, color, 0);
-  numpiece = utils::numberOfPieces(pieces);
+  numpiece = utils::nrOfActiveBits(pieces);
 
   if (vector) {
     addAttack(vectorsXY, (int) numpiece);
@@ -681,7 +662,7 @@ void movegen::MoveGenerator::queenMoves(bitboard::COLOR color, bool vector) {
   } else {
 
     for (int i = 0; i < (int) numpiece; ++i) {
-      numvec = utils::numberOfPieces(vectorsDiag[i]);
+      numvec = utils::nrOfActiveBits(vectorsDiag[i]);
       origin = utils::LSB(pieces);
 
       for (int j = 0; j < (int) numvec; ++j) {
@@ -698,7 +679,7 @@ void movegen::MoveGenerator::queenMoves(bitboard::COLOR color, bool vector) {
         utils::NSB(vectorsDiag[i]);
       }
 
-      numvec = utils::numberOfPieces(vectorsXY[i]);
+      numvec = utils::nrOfActiveBits(vectorsXY[i]);
 
       for (int j = 0; j < (int) numvec; ++j) {
         piece = utils::LSB(vectorsXY[i]);
@@ -738,7 +719,7 @@ void movegen::MoveGenerator::kingMoves(bitboard::COLOR color, bool vector) {
 
   vectorsXY = getReducedXY(pieces, color, 1);
   vectorsDiag = getReducedDiagonals(pieces, color, 1);
-  numpiece = utils::numberOfPieces(pieces);
+  numpiece = utils::nrOfActiveBits(pieces);
 
   if (vector) {
     addAttack(vectorsDiag, (int) numpiece);
@@ -746,7 +727,7 @@ void movegen::MoveGenerator::kingMoves(bitboard::COLOR color, bool vector) {
   } else {
 
     for (int i = 0; i < (int) numpiece; ++i) {
-      numvec = utils::numberOfPieces(vectorsDiag[i]);
+      numvec = utils::nrOfActiveBits(vectorsDiag[i]);
       origin = utils::LSB(pieces);
 
       for (int j = 0; j < (int) numvec; ++j) {
@@ -763,7 +744,7 @@ void movegen::MoveGenerator::kingMoves(bitboard::COLOR color, bool vector) {
         utils::NSB(vectorsDiag[i]);
       }
 
-      numvec = utils::numberOfPieces(vectorsXY[i]);
+      numvec = utils::nrOfActiveBits(vectorsXY[i]);
 
       for (int j = 0; j < (int) numvec; ++j) {
         piece = utils::LSB(vectorsXY[i]);
@@ -797,7 +778,7 @@ type::bitboard_t * vectorNW, * vectorNE, * vectorSW, * vectorSE, * ret;
   vectorNE = createVectors(pieces, DIRECTION::NORTH_EAST, step);
   vectorSE = createVectors(pieces, DIRECTION::SOUTH_EAST, step);
   vectorSW = createVectors(pieces, DIRECTION::SOUTH_WEST, step);
-  numPiece = utils::numberOfPieces(pieces);
+  numPiece = utils::nrOfActiveBits(pieces);
 
   ret = new type::bitboard_t [numPiece];
 
@@ -831,7 +812,7 @@ type::bitboard_t * vectorNW, * vectorNE, * vectorSW, * vectorSE, * ret;
   vectorS = createVectors(pieces, DIRECTION::SOUTH, step);
   vectorW = createVectors(pieces, DIRECTION::WEST, step);
   vectorE = createVectors(pieces, DIRECTION::EAST, step);
-  numPiece = utils::numberOfPieces(pieces);
+  numPiece = utils::nrOfActiveBits(pieces);
 
   ret = new type::bitboard_t [numPiece];
 
@@ -882,7 +863,7 @@ void movegen::MoveGenerator::castling(bitboard::COLOR color){
 
   if(queenC) {
     vector = *createVectors(pieces, DIRECTION::WEST, 0);
-    if ((utils::numberOfPieces(vector & intersects)) == 1ULL) {
+    if ((utils::nrOfActiveBits(vector & intersects)) == 1ULL) {
       inter.set(utils::LSB(pieces << 2ULL), origin, MOVETYPE::CASTLE_Q);
       moveList.push_back(inter.getMove());
     }
@@ -890,7 +871,7 @@ void movegen::MoveGenerator::castling(bitboard::COLOR color){
 
   if(kingC) {
     vector = *createVectors(pieces, DIRECTION::EAST, 0);
-    if ((utils::numberOfPieces(vector & intersects)) == 1ULL) {
+    if ((utils::nrOfActiveBits(vector & intersects)) == 1ULL) {
       inter.set(utils::LSB(pieces >> 2ULL), origin, MOVETYPE::CASTLE_K);
       moveList.push_back(inter.getMove());
     }
@@ -952,9 +933,9 @@ void movegen::MoveGenerator::generateMoves(bitboard::COLOR color, bool legacy) {
  * @param states - the vector the states will be put into
  */
 void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState> &states) {
-  bitboard::gameState temp;
-  temp = state;
-  temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
+  bitboard::gameState temp = state;
+  //temp = state;
+  //temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
 
   generateMoves(state.playerColor);
 
@@ -972,20 +953,20 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
  * subtree. This function uses pointer instead of reference
  * @param states - the vector the states will be put into
  */
-void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState> * states) {
-  bitboard::gameState temp;
-  temp = state;
-  temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
-
-  generateMoves(state.playerColor);
-
-  for (int i = (int) moveList.size() -1; i >= 0; i--) {
-    if (moveIsLegal(moveList[i], state.playerColor)) {
-      applyMove(moveList[i], temp);
-      states->push_back(temp);
-    }
-  }
-}
+//void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState> * states) {
+//  bitboard::gameState temp;
+//  temp = state;
+//  temp.playerColor = (state.playerColor == bitboard::COLOR::WHITE) ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
+//
+//  generateMoves(state.playerColor);
+//
+//  for (int i = (int) moveList.size() -1; i >= 0; i--) {
+//    if (moveIsLegal(moveList[i], state.playerColor)) {
+//      applyMove(moveList[i], temp);
+//      states->push_back(temp);
+//    }
+//  }
+//}
 
 /**
  * Applies the move and tests if it is legal
@@ -1236,13 +1217,13 @@ movegen::MOVETYPE movegen::Move::getType() {
   return type::bitboard_t  ((mv >> 4U) & 63);
 }
 
-    /**
-     * Prints out information from the move in human readable form
-     */
-    void movegen::Move::printMove() {
-      std::cout << "From:\t" << getFrom() << std::endl;
-      std::cout << "To:  \t" << getTo() << std::endl;
-      std::cout << "Type:\t" << (int) getType() << std::endl << std::endl;
-    }
+/**
+ * Prints out information from the move in human readable form
+ */
+void movegen::Move::printMove() {
+  std::cout << "From:\t" << getFrom() << std::endl;
+  std::cout << "To:  \t" << getTo() << std::endl;
+  std::cout << "Type:\t" << (int) getType() << std::endl << std::endl;
+}
 
 } // End of david

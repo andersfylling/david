@@ -26,8 +26,29 @@ using bitboard::COLOR;
 using bitboard::pieceAttack;
 using bitboard::move_t;
 
-void Environment::setGameState(type::gameState_ptr st) {
-  state = (*st); // dereferrence
+Environment::Environment(){}
+Environment::~Environment(){
+  if (this->attacks.BlackBishop == nullptr) delete[] this->attacks.BlackBishop;
+  if (this->attacks.BlackKing == nullptr) delete[] this->attacks.BlackKing;
+  if (this->attacks.BlackKnight == nullptr) delete[] this->attacks.BlackKnight;
+  if (this->attacks.BlackPawn == nullptr) delete[] this->attacks.BlackPawn;
+  if (this->attacks.BlackQueen == nullptr) delete[] this->attacks.BlackQueen;
+  if (this->attacks.BlackPawn == nullptr) delete[] this->attacks.BlackPawn;
+  if (this->attacks.WhiteBishop == nullptr) delete[] this->attacks.WhiteBishop;
+  if (this->attacks.WhiteKing == nullptr) delete[] this->attacks.WhiteKing;
+  if (this->attacks.WhiteKnight == nullptr) delete[] this->attacks.WhiteKnight;
+  if (this->attacks.WhitePawn == nullptr) delete[] this->attacks.WhitePawn;
+  if (this->attacks.WhiteQueen == nullptr) delete[] this->attacks.WhiteQueen;
+  if (this->attacks.WhitePawn == nullptr) delete[] this->attacks.WhitePawn;
+}
+
+
+void Environment::setGameStateColor(COLOR color) {
+  state.playerColor = color;
+}
+
+void Environment::setGameState(const type::gameState_t& st) {
+  state = st; // copy..
 }
 
 void Environment::printBitboards() {
@@ -598,7 +619,7 @@ void Environment::setFen(std::string fen) {
  * @return new shared_ptr of gameState
  */
 type::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
-  type::gameState_ptr node = std::make_shared<bitboard::gameState>();
+  type::gameState_ptr node = new type::gameState_t();
 
   std::map<const char, bitboard::bitboard_t &> links = {
       {'b', node->BlackBishop},
@@ -646,7 +667,7 @@ type::gameState_ptr Environment::generateBoardFromFen(const std::string fen) {
     } else {
       // assumption: it's a number
       // update index with this number
-      index += utils::stoi(c);
+      index += utils::ctoi(c);
     }
   }
 

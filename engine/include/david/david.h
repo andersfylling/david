@@ -45,10 +45,35 @@ static const type::bitboard_t ROOK    = 129ULL;
 static const type::bitboard_t EMPTY   = 0ULL;
 } // ::david::constants::defaultPiecePosition
 
+static const type::bitboard_t EMPTYBOARD = 0ULL;
+
 namespace boardScore {
 static const int HIGHEST  = +(std::numeric_limits<int>::max());
 static const int LOWEST   = -(std::numeric_limits<int>::max());
 }
 
+static const int MAXMOVES = 256;
+
 } // ::david::constants
+
+
+struct NodeCache {
+  type::gameState_ptr node; // should not be a leaf but a leaf parent.
+  // in the future create a setup where the best node doesnt get overwritten
+  // this will let u search trough the already generated, sorted and pruned children.
+  // should speed up search time.
+
+  // When this system is complete
+  // Record performance and switch to PVS.
+
+  // also check out MTD-f
+
+  int alpha;
+  int beta;
+  int score; // search score, negamax result
+
+  // to exclude the leafs search score, you must subtract or add it to the final negamax score.
+};
+
+
 } // ::david

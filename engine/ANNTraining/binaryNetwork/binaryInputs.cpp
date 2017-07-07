@@ -210,8 +210,8 @@ void binaryNetwork::generateTrainingFile(
 
     // write this to a file
     if (output.is_open()) {
-
-      ::david::type::gameState_ptr node = env.generateBoardFromFen(line);
+      ::david::type::gameState_t node;
+      ::david::utils::generateBoardFromFen(node, line);
       auto inputs = ::david::utils::convertGameStateToInputs(node);
 
       // create an input string

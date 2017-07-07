@@ -42,9 +42,12 @@ class Environment {
   COLOR currentMoveColor;
 
  public:
+  Environment();
+  ~Environment();
   Environment(COLOR color);
+  void setGameStateColor(COLOR color);
   void printBoard(bitboard_t board);  // A damn sexy board representation
-  void setGameState(type::gameState_ptr st);  // Setting the gamestate for testing
+  void setGameState(const type::gameState_t& st);  // Setting the gamestate for testing
   gameState getGameState();
   pieceAttack getAttackState();
   void printBitboards();            // Prints number values of all 12 boards

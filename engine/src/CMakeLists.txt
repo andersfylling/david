@@ -3,7 +3,9 @@ project (chess_ann_src)
 
 # Files to be compiled.
 file(GLOB chess_ann_srcfiles "*.cpp" "**/*.cpp")
-add_executable(chess_ann_src ${chess_ann_srcfiles} MoveGeneration.cpp ../include/david/MoveGeneration.h)
+add_executable(chess_ann_src ${chess_ann_srcfiles})
+
+target_compile_definitions(chess_ann_src PUBLIC DAVID_PRODUCTION)
 
 # Make this folder linkable for parent folder.
 target_link_libraries(chess_ann_src fann uci -lpthread)
