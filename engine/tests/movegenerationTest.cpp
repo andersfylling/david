@@ -415,39 +415,7 @@ TEST_CASE("LEGAL MOVES") {
 }
 
 TEST_CASE("PERFT") {
-  ::david::type::gameState_t gs;
-  ::david::utils::setDefaultChessLayout(gs);
+  const int depth = 6;
 
-  // expected outputs
-  std::array<uint64_t, 14> perft = {
-      /*  0 */1,
-      /*  1 */20,
-      /*  2 */400,
-      /*  3 */8902, // 8,902
-      /*  4 */197281, // 197,281
-      /*  5 */4865609,  // 4,865,609
-      /*  6 */119060324,  // 119,060,324
-      /*  7 */3195901860, // 3,195,901,860
-      /*  8 */84998978956, // 84,998,978,956
-      /*  9 */2439530234167, // 2,439,530,234,167
-      /* 10 */69352859712417, // 69,352,859,712,417
-      /* 11 */2097651003696806, // 2,097,651,003,696,806
-      /* 12 */62854969236701747, // 62,854,969,236,701,747
-      /* 13 */1981066775000396239 // 1,981,066,775,000,396,239
-  };
-
-  for (int i = 0; i < perft.size(); i++) {
-
-    //std::cout << "==== FOR PERFT(" << i << "):" << std::endl;
-    auto moveGenPerft = ::david::utils::perft(i, gs);
-    auto expectedPerft = perft[i];
-
-    SECTION("Depth " + std::to_string(i)) {
-      REQUIRE(moveGenPerft == expectedPerft);
-    }
-
-    if (moveGenPerft != expectedPerft) {
-      break;
-    }
-  }
+  REQUIRE(::david::utils::perft(depth));
 }

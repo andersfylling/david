@@ -75,36 +75,38 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   eng2->setPlayerColor(bitboard::COLOR::BLACK);
 
   // Find out who is the current player
+  // TODO: use color from gs node inside eng1 in stead
   std::stringstream sstr(fen);
   std::string color = "w";
   sstr >> color; // now it contains the board layout
   sstr >> color; // now it gets the color
 
-  auto currentPlayer = color == "w" ? eng1 : eng2;
-  auto otherPlayer = color == "w" ? eng2 : eng1;
-
   // lets start the game!
-  auto currentGame = currentPlayer->getGameState();
-  auto previousGame = currentPlayer->getGameState();
+  auto currentGame = (color == "w" ? eng1 : eng2)->getGameState();
+  auto previousGame = currentGame;
   bool error = false;
+  int rounds = 0;
+  int maxRounds = 10;
   do {
     utils::printGameState(currentGame);
 
     // ask for player / engine move decision
-    currentPlayer->findBestMove();
+    (color == "w" ? eng1 : eng2)->findBestMove();
 
     // update current game state
     previousGame = currentGame;
-    currentGame = currentPlayer->getGameState();
+    currentGame = (color == "w" ? eng1 : eng2)->getGameState();
 
     // update active player / engine
-    currentPlayer.swap(otherPlayer);
+    color = color == "w" ? "b" : "w";
 
     // update game state of new current player
-    currentPlayer->setGameState(currentGame);
-  } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != 0);
+    (color == "w" ? eng1 : eng2)->setGameState(currentGame);
 
-  std::cout << currentGame.possibleSubMoves << std::endl;
+    rounds += 1;
+  } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != -1 && rounds < maxRounds);
+
+  //std::cout << currentGame.possibleSubMoves << std::endl;
 
   auto winnerID = -1;
   if (eng1->lost()) {

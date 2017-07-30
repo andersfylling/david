@@ -18,7 +18,7 @@ class EngineMaster {
   int lastEngineInstanceID;
   int lastEngineBattleID;
 
-  const std::string ANNFilename;
+  std::string ANNFilename;
 
  public:
   EngineMaster(const std::string filename);

@@ -14,6 +14,7 @@ class EngineContext {
 
  public:
   EngineContext();
+  ~EngineContext();
 
 
   // Different classes that are allowed to communicate with each other.

@@ -11,7 +11,7 @@
 #include <array>
 #include <algorithm>
 #include <david/utils.h>
-#include <david/GameTree.h>
+#include <david/TreeGen.h>
 #include <map>
 
 namespace david {

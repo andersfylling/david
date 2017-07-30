@@ -21,6 +21,9 @@ struct Player {
 
 class ChessEngine {
   bool UCIProtocolActivated;
+  int wtime;
+  int btime;
+  int timeLeft;
 
   // this is sent to other classes so they can communicate with each other
   type::engineContext_ptr engineContextPtr;
@@ -36,6 +39,9 @@ class ChessEngine {
 
   Player player;
 
+  volatile bool uciMode;
+  std::thread searchThread;
+
  public:
 
   ChessEngine();
@@ -45,6 +51,11 @@ class ChessEngine {
   ~ChessEngine();
 
   void linkUCICommands();
+
+  /**
+   * Enable uci mode
+   */
+  void enableUCIMode();
 
   /**
    * Adds typical UCI responses to the engine
@@ -145,7 +156,7 @@ class ChessEngine {
    * @param state shared_ptr of a gameState
    * @return true if the state was updated
    */
-  bool setGameState(type::gameState_t state);
+  bool setGameState(const type::gameState_t& gs);
 
   /**
    * Check if the engine has lost.

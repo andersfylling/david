@@ -132,7 +132,7 @@ int ANN::ANNEvaluate(const type::gameState_t& board) {
 
   int output = static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
   delete inputs;
-  delete outputs;
+  // delete outputs; // this might not need delete...
 
   return output;
 }

@@ -3,6 +3,7 @@
 #include <ctime>
 #include <david/EngineMaster.h>
 #include <fstream>
+#include <future>
 #include "david/EngineContext.h"
 #include "uci/events.h"
 #include "uci/definitions.h"
@@ -19,30 +20,53 @@ namespace david {
 Search::Search()
     : engineContextPtr(nullptr),
       depth(3),
-      gt(this->engineContextPtr)
+      uciMode(false),
+      isAborted(false),
+      isComplete(false),
+      movetime(1000)
 {}
 
 Search::Search(type::engineContext_ptr ctx)
     : engineContextPtr(ctx),
       depth(3),
-      gt(this->engineContextPtr)
+      uciMode(false),
+      isAborted(false),
+      isComplete(false),
+      movetime(1000)
 {}
+
+void Search::uciSearchWaiter() {
+  this->searchThread = std::thread([&](){
+//    while (true) {
+//
+//      if () {}
+//    }
+  });
+}
+
+void Search::uciSearchWaiterJoin() {
+  if (this->searchThread.joinable()) {
+    this->searchThread.join();
+  }
+}
+
+void Search::enableUCIMode() {
+  this->uciMode = true;
+}
 
 /**
  * Set Search variables. searchScore is a class member and
  * should be returned to UCI. Must rewrite to send best move and not "score"
  * @param node
+ * @return
  */
-type::gameState_t Search::searchInit(type::gameState_t node) {
+ // TODO: return GameTree index in stead of a node copy..
+int Search::searchInit() {
   resetSearchValues();
   //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
   //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
 
-  this->searchScore = iterativeDeepening(node);
-
-  //if (!this->bestMove) {
-  //  std::cerr << "bestMove is empty!" << std::endl;
-  //}
+   int index = this->iterativeDeepening();
 
 #ifdef DAVID_DEBUG
     std::vector<int>::iterator it;
@@ -54,7 +78,12 @@ type::gameState_t Search::searchInit(type::gameState_t node) {
   //
   // Send some values/fenstring or whatever to UCI
   //
-  return this->bestMove;
+   return index;
+}
+
+
+int Search::getSearchResult() {
+  return this->bestMoveIndex;
 }
 
 /**
@@ -63,13 +92,15 @@ type::gameState_t Search::searchInit(type::gameState_t node) {
  * @param board
  * @return
  */
-int Search::iterativeDeepening(type::gameState_t board) {
+int Search::iterativeDeepening() {
   int alpha = constant::boardScore::LOWEST;
   int beta = constant::boardScore::HIGHEST;
   int iterationScore[1000];
-  int lastDepth = 0;
+  //int lastDepth = 0;
   int aspirationDepth = 4;
   int bScore = constant::boardScore::LOWEST;
+
+  this->resetSearchValues();
 
   std::vector<int> scoreCache; // store unsorted scores (!), sort every node after unchached results. Rewrite negamax.
 
@@ -79,33 +110,30 @@ int Search::iterativeDeepening(type::gameState_t board) {
   //
   // Create move tree
   //
-  // board->generateAllMoves();
-  //
-  gt.setMaxDepth(this->depth);
-  auto& node = gt.getGameState(0);
-  node = board; // updated root node
-  gt.generateChildren(0);
-  auto nrOfPossibleMoves = gt.getGameState(0).possibleSubMoves;
-  //gt.gene
-  //if(!engineContextPtr->testing) { // ........
-  //}
-
-
-
+  this->engineContextPtr->gameTreePtr->generateChildren(0);
+  auto nrOfPossibleMoves = this->engineContextPtr->gameTreePtr->getGameState(0).possibleSubMoves;
 
   //
   // Iterate down in the search tree for each search tree
   //
   time_t initTimer = std::time(nullptr);
-  auto timeout = (initTimer * 10000) + movetime;
-  for (int currentDepth = 1; currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000); currentDepth++) {
+  auto timeout = (initTimer * 1000) + movetime;
+  for (
+      int currentDepth = 1;
+
+      // Continue until max depth or timeout has been reached
+      (currentDepth <= this->depth && timeout > (std::time(nullptr) * 1000)) ||
+          // Continue forever, or until max depth has been reached.
+      (this->infinite && currentDepth < ::david::constant::MAXDEPTH);
+
+      currentDepth++) {
+
     int aspirationDelta = 0;
 
     //
-    // If UCI aborts the search, no move should be returned and -infinity will be returned
+    // If the UCI command "stop" is sent, the best move should be returned.
     //
-    if (isAborted) {
-      //bScore = (int) (-INFINITY);
+    if (this->isAborted.load()) {
       break;
     }
 
@@ -122,25 +150,40 @@ int Search::iterativeDeepening(type::gameState_t board) {
 
 
     // find which possibility is the best option
-    int leafScore = constant::boardScore::LOWEST;
-    int childIndex = 0;
-    for (unsigned int index = 1; index <= nrOfPossibleMoves; index += 1) {
+    //int leafScore = constant::boardScore::LOWEST;
+    //int childIndex = 0;
+    for (int index = 1; index <= nrOfPossibleMoves; index += 1) {
+      // Since every child is gone through, we need to verify that uci stop command
+      // has not been issued (!)
+      if (this->isAborted.load()) {
+        break;
+      }
+
       // Start with a small aspiration window and, in the case of a fail
       // high/low, re-search with a bigger window until we're not failing
       // high/low anymore.
       bool iDone = false;
       while (!iDone) {
+
+        if (this->isAborted.load()) {
+          break;
+        }
+
         int cScore = negamax(index, alpha, beta, 1, currentDepth);
         iterationScore[currentDepth] = cScore;
 
         //
-        // Update best score in case of a abort
+        // Update best score / move in case of a abort
         //
         if (cScore > bScore) {
           bScore = cScore;
           //leafScore = this->bestLeafScore;
           //std::cout << cScore << std::endl;
-          this->bestMove = gt.getGameState(index); // copy
+          this->bestMoveIndex = index;
+        }
+
+        if (this->isAborted.load()) {
+          break;
         }
 
         const bool fail       = bScore <= alpha || bScore >= beta;
@@ -155,14 +198,36 @@ int Search::iterativeDeepening(type::gameState_t board) {
       }
     }
 
-    lastDepth = currentDepth; // not accurate enough
+    // store time used
+    this->timeUsed = static_cast<int>((std::time(nullptr) * 1000) - initTimer);
 
-    std::cout << "info depth " << currentDepth << " best_move " << utils::getEGN(gt.getGameState(0), this->bestMove) << std::endl;
+    //lastDepth = currentDepth; // not accurate enough
+
+    // uci info updates
+    std::cout
+        << "info "
+        << "depth " << currentDepth << " "
+        << "nodes " << this->nodesSearched << " "
+        << std::endl;
   }
+
+  // uci response
+//  std::string EGN = "";
+//  utils::getEGN(this->engineContextPtr->gameTreePtr->getGameState(0),
+//                this->engineContextPtr->gameTreePtr->getGameState(this->bestMoveIndex),
+//                EGN);
+//  std::cout
+//      << "bestmove " << EGN;
+
+  this->searchScore = bScore;
 
   setComplete(true);
 
-  return bScore;
+  return this->bestMoveIndex;
+}
+
+bool Search::aborted() {
+  return this->isAborted.load();
 }
 
 /**
@@ -188,7 +253,7 @@ int Search::negamax(unsigned int index, int alpha, int beta, int iDepth, int ite
   // If UCI aborts the search in the middle of a recursive negamax
   // return -infinity
   //
-  if (isAborted) {
+  if (this->isAborted.load()) {
     return constant::boardScore::LOWEST;
   }
 
@@ -197,17 +262,35 @@ int Search::negamax(unsigned int index, int alpha, int beta, int iDepth, int ite
   // a danger move in the next depth in this branch
   //
   if (iDepth == iterativeDepthLimit) {
-    return gt.getGameStateScore(index);
+    return this->engineContextPtr->gameTreePtr->getGameStateScore(index);
   }
 
   // generate children for this board
-  gt.generateChildren(index);
+  this->engineContextPtr->gameTreePtr->generateChildren(index);
+  const uint16_t len = static_cast<uint16_t>(this->engineContextPtr->gameTreePtr->getGameState(index).possibleSubMoves);
 
-  auto& n = gt.getGameState(index);
+  for (uint16_t i = 0; i < len; i++) { // uint8_t can cause issues if len == 256
+    if (this->isAborted.load()) {
+      break;
+    }
 
-  for (uint8_t i = 0; i < n.possibleSubMoves; i++) {
-    score = -negamax(gt.treeIndex(iDepth, i), -beta, -alpha, iDepth + 1, iterativeDepthLimit);
-    this->nodesSearched++;
+    score = -negamax(this->engineContextPtr->gameTreePtr->getChildIndex(/*parent*/index, /*child0..256*/i),
+                     -beta,
+                     -alpha,
+                     iDepth + 1,
+                     iterativeDepthLimit);
+//    if (this->isAborted.load()) { // since score will be the same, just make sure that the bestScore is set and then break.
+//      score = constant::boardScore::LOWEST;
+//    }
+//    else {
+//      score = -negamax(this->engineContextPtr->gameTreePtr->treeIndex(iDepth, i),
+//                       -beta,
+//                       -alpha,
+//                       iDepth + 1,
+//                       iterativeDepthLimit);
+//    }
+
+    this->nodesSearched += 1;
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);
 
@@ -229,10 +312,11 @@ int Search::negamax(unsigned int index, int alpha, int beta, int iDepth, int ite
  * Mainly used for debugging and progress atm
  */
 void Search::resetSearchValues() {
-  this->movetime = 1000; //Hardcoded variables as of now, need to switch to forwards later
+  //this->movetime = 1000; //Hardcoded variables as of now, need to switch to forwards later
   this->searchScore = 0;
   this->nodesSearched = 0;
   this->expanded.clear();
+  this->bestMoveIndex = -1;
 }
 
 /**
@@ -321,18 +405,6 @@ void Search::setSearchMoves(std::string moves) {
   this->searchMoves = moves;
 }
 
-void Search::setWTime(int wtime) {
-  this->wtime = wtime;
-}
-void Search::setBTime(int btime) {
-  this->btime = btime;
-}
-void Search::setWinc(int winc) {
-  this->winc = winc;
-}
-void Search::setBinc(int binc) {
-  this->binc = binc;
-}
 void Search::setMovesToGo(int movestogo) {
   this->movestogo = movestogo;
 }
@@ -350,10 +422,10 @@ void Search::setMoveTime(int movetime) {
 void Search::setMate(int mate) {
   this->mate = mate;
 }
-void Search::setInfinite(int infinite) {
+void Search::setInfinite(bool infinite) {
   this->infinite = infinite;
 } // bool ?
-void Search::setPonder(int ponder) {
+void Search::setPonder(bool ponder) {
   this->ponder = ponder;
 } // bool ?
 
@@ -397,6 +469,10 @@ int Search::returnScore() {
  */
 bool Search::returnComplete() {
   return this->isComplete;
+}
+
+int Search::getTimeUsed() {
+  return this->timeUsed;
 }
 
 

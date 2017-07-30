@@ -48,11 +48,12 @@ movegen::MoveGenerator::MoveGenerator() {
  */
 void movegen::MoveGenerator::clearLists() {
 
-  for (int i = (int) moveList.size(); i > 0; --i) {
-    moveList.pop_back();
-  }
+  //for (int i = (int) moveList.size(); i > 0; --i) {
+  //  moveList.pop_back();
+  //}
 
-  attacks = 0;
+  moveList.clear();
+  attacks = constant::EMPTYBOARD;
 }
 
 /**
@@ -258,52 +259,53 @@ type::bitboard_t ownBlock, oponentBlock, oponent, own, ownInter, oppInter;
  type::bitboard_t * movegen::MoveGenerator::rookMovement(type::bitboard_t  board) {
   int boardValue = 0;
   bitboard_t *boards;
-  boards = new bitboard_t[utils::nrOfActiveBits(board) + 1];
+  boards = new bitboard_t[utils::nrOfActiveBits(board)]; // + 1];
+  //bitboard_t friends = board == this->state.BlackKnight ? this->black() : this->white();
   for (bitboard_t index = utils::LSB(board); index; index = utils::NSB(board), ++boardValue) {
-    bitboard_t temp = 0;
-    bitboard_t row = index / 8;
+    bitboard_t bb = constant::EMPTYBOARD;
+    uint8_t row = index / 8; // index is never higher than 63
+    uint8_t col = index - (row * 8); // index is never higher than 63
 
     // Two steps up, one left
-
-    if (row - 2 == (index - 15) / 8 && index - 15 < 64) {
-      utils::flipBitOn(temp, index - 15);
+    if (row < 6 && col < 7){ // && !utils::bitAt(friends, index + (+16 + 1))) {
+      utils::flipBitOn(bb, index + (+16 + 1));
     }
 
     // Two steps up, one right
-    if (row - 2 == (index - 17) / 8 && index - 17 < 64) {
-      utils::flipBitOn(temp, index - 17);
+    if (row < 6 && col > 0){ // && !utils::bitAt(friends, index + (+16 - 1))) {
+      utils::flipBitOn(bb, index + (+16 - 1));
     }
 
     // One step up, two left
-    if (row - 1 == (index - 10) / 8 && index - 10 < 64) {
-      utils::flipBitOn(temp, index - 10);
+    if (row < 7 && col < 6){ // && !utils::bitAt(friends, index + (+8 + 2))) {
+      utils::flipBitOn(bb, index + (+8 + 2));
     }
 
     // One step up, two right
-    if (row - 1 == (index - 6) / 8 && index - 6 < 64) {
-      utils::flipBitOn(temp, index - 6);
+    if (row < 7 && col > 1){ // && !utils::bitAt(friends, index + (+8 - 2))) {
+      utils::flipBitOn(bb, index + (+8 - 2));
     }
 
     // Two steps down, one left
-    if (row + 2 == (index + 15) / 8 && index + 15 < 64) {
-      utils::flipBitOn(temp, index + 15);
+    if (row > 1 && col < 7){ //} && !utils::bitAt(friends, index + (-16 + 1))) {
+      utils::flipBitOn(bb, index + (-16 + 1));
     }
 
     // Two steps down, one right
-    if (row + 2 == (index + 17) / 8 && index + 17 < 64) {
-      utils::flipBitOn(temp, index + 17);
+    if (row > 1 && col > 0){ // && !utils::bitAt(friends, index + (-16 - 1))) {
+      utils::flipBitOn(bb, index + (-16 - 1));
     }
 
     // One step down, two left
-    if (row + 1 == (index + 6) / 8 && index + 6 < 64) {
-      utils::flipBitOn(temp, index + 6);
+    if (row > 0 && col < 6){ // && !utils::bitAt(friends, index + (-8 + 2))) {
+      utils::flipBitOn(bb, index + (-8 + 2));
     }
 
     // One step down, two right
-    if (row + 1 == (index + 10) / 8 && index + 10 < 64) {
-      utils::flipBitOn(temp, index + 10);
+    if (row > 0 && col > 1){ // && !utils::bitAt(friends, index + (-8 - 2))) {
+      utils::flipBitOn(bb, index + (-8 - 2));
     }
-    boards[boardValue] = temp;
+    boards[boardValue] = bb;
   }
   return boards;
 }
@@ -942,6 +944,8 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
       states.push_back(tmp);
     }
   }
+
+  assert(states.size() <= constant::MAXMOVES);
 }
 
 /**
@@ -953,10 +957,43 @@ void movegen::MoveGenerator::generateGameStates(std::vector<bitboard::gameState>
 bool movegen::MoveGenerator::moveIsLegal(bitboard::move_t m, bitboard::COLOR c) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
-  bitboard::gameState s = state;
+  const bitboard::gameState s = state;
   type::bitboard_t res = 0ULL;
+
+  const auto oldWhite = this->white();
+  const auto oldBlack = this->black();
+  const auto oldPieces = oldWhite | oldBlack;
+  const auto oldWhiteRook = state.WhiteRook;
+  const auto oldBlackRook = state.BlackRook;
+
   applyMove(m, state);
 
+  const auto newWhite = this->white();
+  const auto newBlack = this->black();
+  const auto newPieces = newWhite | newBlack;
+
+  // check that no friendly pieces are stepped on
+  const auto whiteMissStep = c == WHITE && utils::nrOfActiveBits(newWhite ^ oldWhite) > 2;
+  const auto blackMissStep = c == BLACK && utils::nrOfActiveBits(newBlack ^ oldBlack) > 2;
+  if (whiteMissStep || blackMissStep) {
+    return false;
+  }
+
+  // Make sure no white are standing on top of any blacks
+  // we basicly dont want more pieces on the newly merged board compared to an empty one.
+  if ((newWhite & newBlack) > constant::EMPTYBOARD) {
+    return false;
+  }
+
+  // make sure only one piece has been moved during the game
+  // there should only be at most 2 bits affected by a move
+  // only one when something has been attacked
+  const auto changedBits = utils::nrOfActiveBits(oldPieces ^ newPieces); // looks at the difference
+  if (!(changedBits == 1 || changedBits == 2)) { // 1 = attacked a piece, 2 = moved to a new position
+    return false;
+  }
+
+  // Make sure that this move doesn't put the current player in check
   if (c == bitboard::COLOR::WHITE) {
     generateAttacks(bitboard::COLOR::BLACK);
     res  = (attacks & state.WhiteKing);
@@ -964,11 +1001,95 @@ bool movegen::MoveGenerator::moveIsLegal(bitboard::move_t m, bitboard::COLOR c) 
     generateAttacks(bitboard::COLOR::WHITE);
     res  = (attacks & state.BlackKing);
   }
+  if (res != constant::EMPTYBOARD) {
+    return false; // Current player just placed himself in check
+  }
+//
+//  // verify that a rook move is legal
+//  if (c == WHITE) {
+//    if (state.WhiteRook != oldWhiteRook) {
+//      // change has taken place
+//      //check if its an attack
+//      if ((newBlack & oldWhiteRook) == 0) {
+//        // not an attack, verify it can go to this position
+//        const bitboard_t diff = oldWhiteRook ^ state.WhiteRook;
+//
+//        // make sure there exists an origin and destination
+//        if (utils::nrOfActiveBits(diff) == 2) {
+//          const bitboard_t origin = oldWhiteRook & diff;
+//          const bitboard_t destination = state.WhiteRook & diff;
+//
+//          const auto indexO = utils::LSB(origin);
+//          const auto indexD = utils::LSB(destination);
+//
+//          const auto max = std::max(indexD, indexO);
+//          const auto min = std::min(indexD, indexO);
+//
+//          // same row?
+//          if (max - min < 8) {
+//            for (bitboard_t i = min + 1; i < max; i++) {
+//              if (utils::bitAt(oldWhite, i)) {
+//                return false;
+//              }
+//            }
+//          }
+//          else {
+//            for (bitboard_t i = min + 8; i < max; i += 8) {
+//              if (utils::bitAt(oldWhite, i)) {
+//                return false;
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
+//  }
+//  else {
+//    if (state.BlackRook != oldBlackRook) {
+//      // change has taken place
+//      //check if its an attack
+//      if ((newWhite & oldBlackRook) == 0) {
+//        // not an attack, verify it can go to this position
+//        const bitboard_t diff = oldBlackRook ^ state.BlackRook;
+//
+//        // make sure there exists an origin and destination
+//        if (utils::nrOfActiveBits(diff) == 2) {
+//          const bitboard_t origin = oldBlackRook & diff;
+//          const bitboard_t destination = state.BlackRook & diff;
+//
+//          const auto indexO = utils::LSB(origin);
+//          const auto indexD = utils::LSB(destination);
+//
+//          const auto max = std::max(indexD, indexO);
+//          const auto min = std::min(indexD, indexO);
+//
+//          // same row?
+//          if (max - min < 8) {
+//            for (bitboard_t i = min + 1; i < max; i++) {
+//              if (utils::bitAt(oldBlack, i)) {
+//                return false;
+//              }
+//            }
+//          }
+//          else {
+//            for (bitboard_t i = min + 8; i < max; i += 8) {
+//              if (utils::bitAt(oldBlack, i)) {
+//                return false;
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
+//  }
 
+
+  // undo move
   state = s;
 
-  return (res == 0ULL);
 
+  // all good
+  return true;
 }
 
 
@@ -978,7 +1099,7 @@ bool movegen::MoveGenerator::moveIsLegal(bitboard::move_t m, bitboard::COLOR c) 
  * @param s - referenced state
  */
 
-void movegen::MoveGenerator::applyMove(bitboard::move_t m, bitboard::gameState & s) {
+void movegen::MoveGenerator::applyMove(bitboard::move_t m, bitboard::gameState& s) {
   Move inter(m);
   type::bitboard_t origin = 0, board;
   bool capture = false;
@@ -1099,6 +1220,16 @@ void movegen::MoveGenerator::applyMove(bitboard::move_t m, bitboard::gameState &
     capturePiece(bitboard::COLOR::WHITE, inter.getTo(), s);
   }
 
+  // update state data such as pieces, white and black
+  type::gameState_t cp = state;
+  state = s;
+
+  s.pieces = this->white() | this->black();
+  s.blackPieces = this->black();
+  s.whitePieces = this->white();
+
+  // undo
+  state = cp;
 }
 
 /**

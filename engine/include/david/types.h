@@ -20,7 +20,7 @@ struct gameState;
 }
 
 namespace gameTree {
-class GameTree;
+class TreeGen;
 }
 
 } // ::david
@@ -51,7 +51,7 @@ typedef ::david::ANN                      neuralNetwork_t;
 typedef std::shared_ptr<neuralNetwork_t>  neuralNetwork_ptr;
 
 // a gameTree is the node tree which the Search class search through
-typedef ::david::gameTree::GameTree       gameTree_t;
+typedef ::david::gameTree::TreeGen        gameTree_t;
 typedef std::shared_ptr<gameTree_t>       gameTree_ptr;
 
 // holds the uci protocol for listening to incoming commands

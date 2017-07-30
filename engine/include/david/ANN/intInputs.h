@@ -17,7 +17,7 @@
 #include <string>
 #include <fstream>
 #include <david/environment.h>
-#include <david/GameTree.h>
+#include <david/TreeGen.h>
 #include <bitset>
 using std::cout;
 using std::cerr;

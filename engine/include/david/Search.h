@@ -4,10 +4,13 @@
 // local dependencies
 #include "david/types.h"
 #include "david/bitboard.h"
-#include "david/GameTree.h"
+#include "david/TreeGen.h"
 
 // system dependencies
 #include <string>
+#include <atomic>
+#include <future>
+#include <thread>
 
 
 // forward declarations
@@ -27,17 +30,28 @@ class Search {
  public:
   Search(); // This can be used for unit testing and benchmarking.
   Search(type::engineContext_ptr ctx);
-  type::gameState_t searchInit(type::gameState_t node);
-  int iterativeDeepening(type::gameState_t node);
+  Search(const Search&) = delete;             // delete the copy constructor
+  void operator=(const Search&) = delete;     // delete the copy-assignment operator
+  int searchInit();
+  int iterativeDeepening();
   int negamax(unsigned int index, int alpha, int beta, int depth, int iterativeDepthLimit);
   void setAbort(bool isAborted);
   void setComplete(bool isComplete);
+  //std::future<int> searchInstance;
+  int getSearchResult();
+
+  void uciSearchWaiter();
+  void uciSearchWaiterJoin();
+
+  void enableUCIMode();
+
 
   //Test/debug
   int returnDepth();
   int returnTimeToSearch();
   int returnScore();
   bool returnComplete();
+  bool aborted();
   void performanceTest(type::gameState_t& node, int iterations);
 
   // forwards protocol methods, this can be used in unit testing
@@ -53,33 +67,34 @@ class Search {
   void setNodes(int nodes);
   void setMoveTime(int movetime);
   void setMate(int mate);
-  void setInfinite(int mate); // bool ?
-  void setPonder(int ponder); // bool ?
+  void setInfinite(bool inf);
+  void setPonder(bool ponder);
   void setDifficulty(int difficulty);
+  int getTimeUsed();
 
   clock_t startTime;
 
  private:
+  bool uciMode;
+  std::thread searchThread;
   int depth;
   int movestogo;
   int movetime;
+  int timeUsed;
   int mate;
-  int infinite;
-  int ponder;
-  int wtime;
-  int btime;
-  int winc;
-  int binc;
+  bool infinite;
+  bool ponder;
   int nodes;
   std::string searchMoves;
   int searchScore;
   type::engineContext_ptr engineContextPtr;
   type::gameState_t bestMove;
-  type::gameTree_t gt;
+  int bestMoveIndex;
   int /*time[COLOR], inc[COLOR],*/ npmsec;
   //void uciOutput();
   void resetSearchValues();
-  bool isAborted;
+  std::atomic<bool> isAborted;
+  int currentSearchID;
   bool isComplete;
   bool debug;
   int nodesSearched;

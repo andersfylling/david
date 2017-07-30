@@ -9,16 +9,19 @@
 //linux code goes here
 #include <unistd.h>
 #include <bitset>
-#include <david/GameTree.h>
+#include <david/TreeGen.h>
 #include <david/environment.h>
 #include <david/ChessEngine.h>
 #include <assert.h>
 #include <david/MoveGeneration.h>
+#include <chrono>
+#include <thread>
 #elif _WIN32
 // windows code goes here
 #endif
 
 namespace david {
+namespace utils {
 
 /**
  * Converts a numeric integer string into an int, empty strings included.
@@ -26,14 +29,16 @@ namespace david {
  * @param v The std::string value, eg. "123", or "" or " "
  * @return the int value: 123 or 0
  */
-int utils::stoi(std::string v) {
-  return v == "" || v == " " ? 0 : std::stoi(v);
+inline namespace convert {
+int stoi(const std::string v) {
+  return v == "" || v == " " ? 0 : ::std::stoi(v);
 }
-int utils::ctoi(const char c) {
-  return c == ' ' ? 0 : c - '0';
+//constexpr int ctoi(const char c) {
+//  return c == ' ' ? 0 : c - '0';
+//}
 }
 
-bool utils::isHalfMove(type::gameState_t& parent, type::gameState_t& child) {
+bool isHalfMove(type::gameState_t &parent, type::gameState_t &child) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
   using type::bitboard_t;
@@ -53,22 +58,23 @@ bool utils::isHalfMove(type::gameState_t& parent, type::gameState_t& child) {
   /// since once a castling right is lost, it is lost forever, as considered in detecting repetitions.
 
   // check if parent or child is overlapping, AKA. a piece has been captured.
-  if (genP.white() & genC.black() != 0ULL) {
+  if ((genP.white() & genC.black()) != 0ULL) {
     return false;
   }
 
   // check if the black pawns has moved
-  if (parent.BlackPawn | child.BlackPawn != 0ULL) {
+  if ((parent.BlackPawn | child.BlackPawn) != 0ULL) {
     return false;
   }
 
   // check if white pawns has moved
-  if (parent.WhitePawn | child.WhitePawn != 0ULL) {
-    return false;
-  }
-
+  //if ((parent.WhitePawn | child.WhitePawn) != 0ULL) {
+  //  return false;
+  //}
+  //
   // no rules of half moving were broken
-  return true;
+  //return true;
+  return (parent.WhitePawn | child.WhitePawn) != 0ULL;
 }
 
 /**
@@ -90,7 +96,7 @@ bool utils::isHalfMove(type::gameState_t& parent, type::gameState_t& child) {
  * @param whiteMovesNext
  * @return
  */
-std::string utils::generateFen(type::gameState_ptr node) {
+std::string generateFen(type::gameState_ptr node) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
   using type::bitboard_t;
@@ -189,22 +195,21 @@ std::string utils::generateFen(type::gameState_ptr node) {
   return fen;
 }
 
-/**
- * Check if a bit is set at given index.
- *
- * @param b The bits in form of a uint64_t
- * @param i the index as uint8_t
- * @return true if bit is 1 at index i
- */
-constexpr bool utils::bitAt(uint64_t b, uint8_t i) {
-  return (b & (1ULL << i)) != 0;
-}
-
-bool utils::fileExists(const std::string& file) {
+bool fileExists(const std::string &file) {
   struct stat buffer;
   return (stat(file.c_str(), &buffer) == 0);
 }
 
+
+template<std::size_t SIZE>
+void addPieceBoardIndexToVector(std::vector<float> &store,
+                                       std::array<type::bitboard_t, SIZE> &pieces,
+                                       uint8_t nr) {
+  // ISSUE, this doesnt scale when more pieces than nr exist. what if there are 3 queens? or just 2?
+}
+
+
+inline namespace neuralnet {
 /**
  * Issue, what if there is more pieces of one type than the normal in a chess game?
  * Issue, should be floats and not doubles.
@@ -213,7 +218,7 @@ bool utils::fileExists(const std::string& file) {
  * @param player
  * @return
  */
-std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node) {
+std::vector<float> convertGameStateToVectorInputs(const type::gameState_t &node) {
 //  movegen::MoveGenerator gen;
 //  gen.setGameState(node);
 //  gen.generateAttacks(node.playerColor);
@@ -221,26 +226,26 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 //  // These are used to define whats benefitial and negative inputs
 //  auto attacks = gen.getAttackState();
 
-  environment::Environment env(node.playerColor);
+  environment::Environment env{node.playerColor};
   env.setGameState(node);
   env.generateAttacks();
 
   // These are used to define whats benefitial and negative inputs
   auto attacks = env.getAttackState();
 
-  auto nrOfBlackBishop = static_cast<double>(utils::nrOfActiveBits(node.BlackBishop));
-  auto nrOfBlackKing = static_cast<double>(utils::nrOfActiveBits(node.BlackKing));
-  auto nrOfBlackKnight = static_cast<double>(utils::nrOfActiveBits(node.BlackKnight));
-  auto nrOfBlackPawn = static_cast<double>(utils::nrOfActiveBits(node.BlackPawn));
-  auto nrOfBlackQueen = static_cast<double>(utils::nrOfActiveBits(node.BlackQueen));
-  auto nrOfBlackRook = static_cast<double>(utils::nrOfActiveBits(node.BlackRook));
+  auto nrOfBlackBishop = static_cast<float>(utils::nrOfActiveBits(node.BlackBishop));
+  auto nrOfBlackKing = static_cast<float>(utils::nrOfActiveBits(node.BlackKing));
+  auto nrOfBlackKnight = static_cast<float>(utils::nrOfActiveBits(node.BlackKnight));
+  auto nrOfBlackPawn = static_cast<float>(utils::nrOfActiveBits(node.BlackPawn));
+  auto nrOfBlackQueen = static_cast<float>(utils::nrOfActiveBits(node.BlackQueen));
+  auto nrOfBlackRook = static_cast<float>(utils::nrOfActiveBits(node.BlackRook));
 
-  auto nrOfWhiteBishop = static_cast<double>(utils::nrOfActiveBits(node.WhiteBishop));
-  auto nrOfWhiteKing = static_cast<double>(utils::nrOfActiveBits(node.WhiteKing));
-  auto nrOfWhiteKnight = static_cast<double>(utils::nrOfActiveBits(node.WhiteKnight));
-  auto nrOfWhitePawn = static_cast<double>(utils::nrOfActiveBits(node.WhitePawn));
-  auto nrOfWhiteQueen = static_cast<double>(utils::nrOfActiveBits(node.WhiteQueen));
-  auto nrOfWhiteRook = static_cast<double>(utils::nrOfActiveBits(node.WhiteRook));
+  auto nrOfWhiteBishop = static_cast<float>(utils::nrOfActiveBits(node.WhiteBishop));
+  auto nrOfWhiteKing = static_cast<float>(utils::nrOfActiveBits(node.WhiteKing));
+  auto nrOfWhiteKnight = static_cast<float>(utils::nrOfActiveBits(node.WhiteKnight));
+  auto nrOfWhitePawn = static_cast<float>(utils::nrOfActiveBits(node.WhitePawn));
+  auto nrOfWhiteQueen = static_cast<float>(utils::nrOfActiveBits(node.WhiteQueen));
+  auto nrOfWhiteRook = static_cast<float>(utils::nrOfActiveBits(node.WhiteRook));
 
   auto combinedWhiteAttacks = env.combinedWhiteAttacks();
   auto combinedBlackAttacks = env.combinedBlackAttacks();
@@ -249,82 +254,84 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 
   std::array<double, 61> boardInfo = {
       node.playerColor == bitboard::COLOR::WHITE ? 1.0 : -1.0,
-      
+
       nrOfBlackBishop < 0.1 ? 1.0 : -1.0,
-      nrOfBlackKing   < 0.1 ? 1.0 : -1.0,
+      nrOfBlackKing < 0.1 ? 1.0 : -1.0,
       nrOfBlackKnight < 0.1 ? 1.0 : -1.0,
-      nrOfBlackPawn   < 0.1 ? 1.0 : -1.0,
-      nrOfBlackQueen  < 0.1 ? 1.0 : -1.0,
-      nrOfBlackRook   < 0.1 ? 1.0 : -1.0,
-      
+      nrOfBlackPawn < 0.1 ? 1.0 : -1.0,
+      nrOfBlackQueen < 0.1 ? 1.0 : -1.0,
+      nrOfBlackRook < 0.1 ? 1.0 : -1.0,
+
       nrOfBlackBishop < 0.1 ? 0.0 : nrOfBlackBishop / 100.0,
-      nrOfBlackKing   < 0.1 ? 0.0 : nrOfBlackKing   / 100.0,
+      nrOfBlackKing < 0.1 ? 0.0 : nrOfBlackKing / 100.0,
       nrOfBlackKnight < 0.1 ? 0.0 : nrOfBlackKnight / 100.0,
-      nrOfBlackPawn   < 0.1 ? 0.0 : nrOfBlackPawn   / 100.0,
-      nrOfBlackQueen  < 0.1 ? 0.0 : nrOfBlackQueen  / 100.0,
-      nrOfBlackRook   < 0.1 ? 0.0 : nrOfBlackRook   / 100.0,
-      
+      nrOfBlackPawn < 0.1 ? 0.0 : nrOfBlackPawn / 100.0,
+      nrOfBlackQueen < 0.1 ? 0.0 : nrOfBlackQueen / 100.0,
+      nrOfBlackRook < 0.1 ? 0.0 : nrOfBlackRook / 100.0,
+
       static_cast<double>(utils::nrOfActiveBits((*attacks.BlackBishop) & whitePieces)) / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackKing)   & whitePieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackKing) & whitePieces)) / 100.0,
       static_cast<double>(utils::nrOfActiveBits((*attacks.BlackKnight) & whitePieces)) / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackPawn)   & whitePieces)) / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackQueen)  & whitePieces)) / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackRook)   & whitePieces)) / 100.0,
-      combinedWhiteAttacks & (*attacks.BlackBishop) == 0 ? -1.0 : 1.0,
-      combinedWhiteAttacks & (*attacks.BlackKing)   == 0 ? -1.0 : 1.0,
-      combinedWhiteAttacks & (*attacks.BlackKnight) == 0 ? -1.0 : 1.0,
-      combinedWhiteAttacks & (*attacks.BlackPawn)   == 0 ? -1.0 : 1.0,
-      combinedWhiteAttacks & (*attacks.BlackQueen)  == 0 ? -1.0 : 1.0,
-      combinedWhiteAttacks & (*attacks.BlackRook)   == 0 ? -1.0 : 1.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackPawn) & whitePieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackQueen) & whitePieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.BlackRook) & whitePieces)) / 100.0,
+      (combinedWhiteAttacks & (*attacks.BlackBishop)) == 0 ? -1.0 : 1.0,
+      (combinedWhiteAttacks & (*attacks.BlackKing)) == 0 ? -1.0 : 1.0,
+      (combinedWhiteAttacks & (*attacks.BlackKnight)) == 0 ? -1.0 : 1.0,
+      (combinedWhiteAttacks & (*attacks.BlackPawn)) == 0 ? -1.0 : 1.0,
+      (combinedWhiteAttacks & (*attacks.BlackQueen)) == 0 ? -1.0 : 1.0,
+      (combinedWhiteAttacks & (*attacks.BlackRook)) == 0 ? -1.0 : 1.0,
 
 
       // does the piece exist?
       nrOfWhiteBishop < 0.1 ? -1.0 : 1.0,
-      nrOfWhiteKing   < 0.1 ? -1.0 : 1.0,
+      nrOfWhiteKing < 0.1 ? -1.0 : 1.0,
       nrOfWhiteKnight < 0.1 ? -1.0 : 1.0,
-      nrOfWhitePawn   < 0.1 ? -1.0 : 1.0,
-      nrOfWhiteQueen  < 0.1 ? -1.0 : 1.0,
-      nrOfWhiteRook   < 0.1 ? -1.0 : 1.0,
+      nrOfWhitePawn < 0.1 ? -1.0 : 1.0,
+      nrOfWhiteQueen < 0.1 ? -1.0 : 1.0,
+      nrOfWhiteRook < 0.1 ? -1.0 : 1.0,
       // How many of that piece type exists?
       nrOfWhiteBishop < 0.1 ? 0.0 : nrOfWhiteBishop / 100.0,
-      nrOfWhiteKing   < 0.1 ? 0.0 : nrOfWhiteKing   / 100.0,
+      nrOfWhiteKing < 0.1 ? 0.0 : nrOfWhiteKing / 100.0,
       nrOfWhiteKnight < 0.1 ? 0.0 : nrOfWhiteKnight / 100.0,
-      nrOfWhitePawn   < 0.1 ? 0.0 : nrOfWhitePawn   / 100.0,
-      nrOfWhiteQueen  < 0.1 ? 0.0 : nrOfWhiteQueen  / 100.0,
-      nrOfWhiteRook   < 0.1 ? 0.0 : nrOfWhiteRook   / 100.0,
+      nrOfWhitePawn < 0.1 ? 0.0 : nrOfWhitePawn / 100.0,
+      nrOfWhiteQueen < 0.1 ? 0.0 : nrOfWhiteQueen / 100.0,
+      nrOfWhiteRook < 0.1 ? 0.0 : nrOfWhiteRook / 100.0,
       // How many black pieces can each type attack?
       static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteBishop) & blackPieces)) / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteKing)   & blackPieces))   / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteKing) & blackPieces)) / 100.0,
       static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteKnight) & blackPieces)) / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.WhitePawn)   & blackPieces))   / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteQueen)  & blackPieces))  / 100.0,
-      static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteRook)   & blackPieces))   / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.WhitePawn) & blackPieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteQueen) & blackPieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits((*attacks.WhiteRook) & blackPieces)) / 100.0,
       // Are any of the piece types safe?
-      combinedBlackAttacks & (*attacks.WhiteBishop) == 0 ? 1.0 : -1.0,
-      combinedBlackAttacks & (*attacks.WhiteKing)   == 0 ? 1.0 : -1.0,
-      combinedBlackAttacks & (*attacks.WhiteKnight) == 0 ? 1.0 : -1.0,
-      combinedBlackAttacks & (*attacks.WhitePawn)   == 0 ? 1.0 : -1.0,
-      combinedBlackAttacks & (*attacks.WhiteQueen)  == 0 ? 1.0 : -1.0,
-      combinedBlackAttacks & (*attacks.WhiteRook)   == 0 ? 1.0 : -1.0,
-
+      (combinedBlackAttacks & (*attacks.WhiteBishop)) == 0 ? 1.0 : -1.0,
+      (combinedBlackAttacks & (*attacks.WhiteKing)) == 0 ? 1.0 : -1.0,
+      (combinedBlackAttacks & (*attacks.WhiteKnight)) == 0 ? 1.0 : -1.0,
+      (combinedBlackAttacks & (*attacks.WhitePawn)) == 0 ? 1.0 : -1.0,
+      (combinedBlackAttacks & (*attacks.WhiteQueen)) == 0 ? 1.0 : -1.0,
+      (combinedBlackAttacks & (*attacks.WhiteRook)) == 0 ? 1.0 : -1.0,
 
       static_cast<double>(utils::nrOfActiveBits(whitePieces)) / 100.0, // is never 0
       static_cast<double>(utils::nrOfActiveBits(blackPieces)) / 100.0, // is never 0
-      static_cast<double>(utils::nrOfActiveBits(node.pieces)) / 100.0,
+      static_cast<double>(utils::nrOfActiveBits(whitePieces | blackPieces)) / 100.0,
 
-      utils::nrOfActiveBits(combinedBlackAttacks & whitePieces) == 0 ?  1.0 : -1.0 * (static_cast<double>(utils::nrOfActiveBits(env.combinedBlackAttacks() & env.whitePieces())) / 100.0),
-      utils::nrOfActiveBits(combinedWhiteAttacks & blackPieces) == 0 ? -1.0 : static_cast<double>(utils::nrOfActiveBits(env.combinedWhiteAttacks() & env.blackPieces())) / 100.0,
+      utils::nrOfActiveBits(combinedBlackAttacks & whitePieces) == 0 ? 1.0 : -1.0
+          * (static_cast<double>(utils::nrOfActiveBits(combinedBlackAttacks & whitePieces)) / 100.0),
+      utils::nrOfActiveBits(combinedWhiteAttacks & blackPieces) == 0 ? -1.0 :
+      static_cast<double>(utils::nrOfActiveBits(combinedWhiteAttacks & blackPieces)) / 100.0,
 
-      node.blackQueenCastling ? -1.0 :  1.0,
-      node.blackKingCastling  ? -1.0 :  1.0,
-      node.whiteQueenCastling ?  1.0 : -1.0,
-      node.whiteKingCastling  ?  1.0 : -1.0,
+      node.blackQueenCastling ? -1.0 : 1.0,
+      node.blackKingCastling ? -1.0 : 1.0,
+      node.whiteQueenCastling ? 1.0 : -1.0,
+      node.whiteKingCastling ? 1.0 : -1.0,
 
       static_cast<double>(100 - node.halfMoves) / 100.0,
       static_cast<double>(50 - node.fullMoves) / 100.0,
 
       // if the color playing is not yours, and the number here is high, it should not be a good thing.
-      static_cast<double>(10/*node.children.size()*/) / 100.0 // will always be 0 unless children are generated before comparing score.
+      static_cast<double>(10/*node.children.size()*/)
+          / 100.0 // will always be 0 unless children are generated before comparing score.
 
   };
 
@@ -366,7 +373,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 
       inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
       prog += 1;
-    } while(b != 0ULL && prog < 1);
+    } while (b != 0ULL && prog < 1);
 
     // fill in missing pieces
     for (; prog < 1; prog++) {
@@ -385,7 +392,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 
       inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
       prog += 1;
-    } while(b != 0ULL && prog < 2);
+    } while (b != 0ULL && prog < 2);
 
     // fill in missing pieces
     for (; prog < 2; prog++) {
@@ -402,7 +409,7 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
 
       inputs.push_back(i == 0 ? 0.0f : i / 100.0f);
       prog += 1;
-    } while(b != 0ULL && prog < 8);
+    } while (b != 0ULL && prog < 8);
 
     // fill in missing pieces
     for (; prog < 8; prog++) {
@@ -417,11 +424,6 @@ std::vector<float> utils::convertGameStateToInputs(const type::gameState_t& node
   return inputs;
 }
 
-template<std::size_t SIZE>
-void utils::addPieceBoardIndexToVector(std::vector<float>& store, std::array<type::bitboard_t, SIZE>& pieces, uint8_t nr) {
-  // ISSUE, this doesnt scale when more pieces than nr exist. what if there are 3 queens? or just 2?
-}
-
 /**
  * Used to convert an vector of float inputs to a fann_type input.
  *
@@ -429,62 +431,64 @@ void utils::addPieceBoardIndexToVector(std::vector<float>& store, std::array<typ
  * @param size
  * @return
  */
-fann_type* utils::convertInputsToFannType (const std::vector<float>& inputs, unsigned long size) {
-  fann_type* fi = new fann_type[size];
+fann_type* convertVectorInputsToFannType(const std::vector<float> &inputs, unsigned long size) {
+  fann_type *fi = new fann_type[size];
 
   int prog = 0;
-  for (auto i : inputs) {
+  for (float i : inputs) {
     fi[prog++] = i;
   }
 
   return fi;
 }
 
-fann_type* utils::boardToFannInputs (const type::gameState_t& node) {
-  const auto inputs = convertGameStateToInputs(node);
-  return convertInputsToFannType(inputs, inputs.size());
+fann_type* boardToFannInputs(const type::gameState_t& node) {
+  std::vector<float> inputs = convertGameStateToVectorInputs(node);
+  return convertVectorInputsToFannType(inputs, inputs.size());
+}
 }
 
-void utils::yellDeprecated(const std::string info) {
+void yellDeprecated(const std::string info) {
   std::cerr << "@Deprecated function used " << (info.length() == 0 ? "!" : info) << std::endl;
 }
-
 
 /**
  * Set default board values
  * @param node gameState_t&
  */
-void utils::setDefaultChessLayout(type::gameState_t& n) {
-  n.BlackRook    = constant::defaultPiecePosition::black::ROOK;
-  n.BlackQueen   = constant::defaultPiecePosition::black::QUEEN;
-  n.BlackPawn    = constant::defaultPiecePosition::black::PAWN;
-  n.BlackKnight  = constant::defaultPiecePosition::black::KNIGHT;
-  n.BlackKing    = constant::defaultPiecePosition::black::KING;
-  n.BlackBishop  = constant::defaultPiecePosition::black::BISHOP;
-  
-  n.WhiteRook    = constant::defaultPiecePosition::white::ROOK;
-  n.WhiteQueen   = constant::defaultPiecePosition::white::QUEEN;
-  n.WhitePawn    = constant::defaultPiecePosition::white::PAWN;
-  n.WhiteKnight  = constant::defaultPiecePosition::white::KNIGHT;
-  n.WhiteKing    = constant::defaultPiecePosition::white::KING;
-  n.WhiteBishop  = constant::defaultPiecePosition::white::BISHOP;
+void setDefaultChessLayout(type::gameState_t &n) {
+  n.BlackRook = constant::defaultPiecePosition::black::ROOK;
+  n.BlackQueen = constant::defaultPiecePosition::black::QUEEN;
+  n.BlackPawn = constant::defaultPiecePosition::black::PAWN;
+  n.BlackKnight = constant::defaultPiecePosition::black::KNIGHT;
+  n.BlackKing = constant::defaultPiecePosition::black::KING;
+  n.BlackBishop = constant::defaultPiecePosition::black::BISHOP;
+
+  n.WhiteRook = constant::defaultPiecePosition::white::ROOK;
+  n.WhiteQueen = constant::defaultPiecePosition::white::QUEEN;
+  n.WhitePawn = constant::defaultPiecePosition::white::PAWN;
+  n.WhiteKnight = constant::defaultPiecePosition::white::KNIGHT;
+  n.WhiteKing = constant::defaultPiecePosition::white::KING;
+  n.WhiteBishop = constant::defaultPiecePosition::white::BISHOP;
 
   n.blackPieces = n.BlackPawn | n.BlackQueen | n.BlackKnight | n.BlackKing | n.BlackBishop | n.BlackRook;
   n.whitePieces = n.WhitePawn | n.WhiteQueen | n.WhiteKnight | n.WhiteKing | n.WhiteBishop | n.WhiteRook;
 
   n.pieces = n.blackPieces | n.whitePieces;
 
-  n.blackKingCastling  = true;
+  n.blackKingCastling = true;
   n.blackQueenCastling = true;
-  n.whiteKingCastling  = true;
+  n.whiteKingCastling = true;
   n.whiteQueenCastling = true;
 }
 
+inline namespace print {
+inline namespace cout {
 /**
  * Print out the chess board based on a gameState node
  * @param gs type::gameState_t&
  */
-void utils::printGameState(type::gameState_t& gs) {
+void printGameState(const type::gameState_t &gs) {
 
   std::map<const char, type::bitboard_t> links = {
       {'b', gs.BlackBishop},
@@ -512,7 +516,7 @@ void utils::printGameState(type::gameState_t& gs) {
       auto i = LSB(bitboard);
       flipBitOff(bitboard, i);
       board.at(i) = piece;
-    } while(bitboard != 0ULL);
+    } while (bitboard != 0ULL);
   }
 
   std::cout << "\n  ";
@@ -520,7 +524,7 @@ void utils::printGameState(type::gameState_t& gs) {
     std::cout << "  " << (char) i << " ";
   }
   std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
-  for (uint8_t i = 7; i >= 0 && i < 8; i--) {
+  for (uint8_t i = 7; i < 8; i--) {
     std::cout << i + 1 << " | ";
     for (uint8_t j = 0; j < 8; j++) {
       std::cout << board.at((i * 8) + j) << " | ";
@@ -531,6 +535,30 @@ void utils::printGameState(type::gameState_t& gs) {
 }
 
 /**
+ * Prints a bitboard as a chessboard with 0's and 1's
+ * @param board - at bitboard_t
+ */
+void printBoard(type::bitboard_t board) {
+  std::string bits = std::bitset<64>(board).to_string();
+  std::cout << "\n  ";
+  for (int i = 'A'; i < 'A' + 8; i++)
+    std::cout << "  " << (char) i << " ";
+  std::cout << std::endl;
+  std::cout << "  +---+---+---+---+---+---+---+---+\n";
+  for (int i = 0; i < 8; i++) {
+    std::cout << i + 1 << " | ";
+    for (int j = 0; j < 8; j++) {
+      std::cout << bits.at((i * 8) + j) << " | ";
+    }
+    std::cout << '\n';
+    std::cout << "  +---+---+---+---+---+---+---+---+\n";
+  }
+  std::cout << '\n';
+}
+}// inline namespace cout
+}// inline namespace print
+
+/**
  * Get a shared pointer of a fresh gameState based on a fen string.
  * This assumes the fen string is correct before parsing.
  *
@@ -539,7 +567,7 @@ void utils::printGameState(type::gameState_t& gs) {
  * @param gs gameState_t&
  * @param fen const std::string&, must be correctly formatted (!)
  */
-void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) {
+void generateBoardFromFen(type::gameState_t& gs, const std::string &fen) {
   std::map<const char, type::bitboard_t&> links = {
       {'b', gs.BlackBishop},
       {'k', gs.BlackKing},
@@ -559,7 +587,7 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
   uint8_t index = 0; //64 = space, 66 = space,
   auto len = static_cast<uint8_t>(fen.length());
   for (uint8_t i = 0; i < len; i++) {
-    const auto& c = fen[i];
+    const auto &c = fen[i];
 
     // piece positions
     if (index < 64) {
@@ -575,11 +603,11 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
       } else {
         // assumption: it's a number
         // update index with this number
-        index += utils::ctoi(c); // should be uint8, but isn't needed..
+        index += ctoi(c);
       }
     }
 
-    // color
+      // color
     else if (index == 64) {
       gs.playerColor = fen[i + 1] == 'w' ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK;
 
@@ -587,7 +615,7 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
       index += 1;
     }
 
-    // castling
+      // castling
     else if (index == 65) {
       for (; i < len && fen[i] != ' '; i += 1) {
 
@@ -607,7 +635,7 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
       if (pos.length() == 2) {
         // this ignores '-' and only takes board positions
 
-        auto passantBoard = ::david::utils::chessIndexToBitboard(pos);
+        //auto passantBoard = ::david::utils::chessIndexToBitboard(pos);
       }
 
       i += 1; // skip space
@@ -634,11 +662,10 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
         fm += fen[i];
       }
 
-      gs.fullMoves = ::david::utils::stoi(fm);
+      gs.fullMoves = ::david::utils::stoi(fm);  //TODO potential error here
       break; // finished reading FEN string
     }
   }
-
 
   gs.blackPieces = gs.BlackPawn | gs.BlackQueen | gs.BlackKnight | gs.BlackKing | gs.BlackBishop | gs.BlackRook;
   gs.whitePieces = gs.WhitePawn | gs.WhiteQueen | gs.WhiteKnight | gs.WhiteKing | gs.WhiteBishop | gs.WhiteRook;
@@ -653,7 +680,7 @@ void utils::generateBoardFromFen(type::gameState_t& gs, const std::string& fen) 
  * @param chessIndex String such as "E6"
  * @return integer bitboard_t index, 64 on error.
  */
-uint8_t utils::chessIndexToArrayIndex(const std::string& chessIndex) {
+uint8_t chessIndexToArrayIndex(const std::string &chessIndex) {
   uint8_t index = 64;
 
   // Is always 2 in size "alpha" + "numeric" => "H1"
@@ -665,8 +692,8 @@ uint8_t utils::chessIndexToArrayIndex(const std::string& chessIndex) {
   const char &a = chessIndex.front();
   const char &b = chessIndex.back();
 
-  char cPos[]   = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'}; // matches index value
-  char cPos2[]  = {'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'}; // matches index value
+  char cPos[] = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'}; // matches index value
+  char cPos2[] = {'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'}; // matches index value
   uint8_t first = 0;
   uint8_t second = b - 48 - 1;
   for (int i = 0; i < 8; i++) {
@@ -678,7 +705,7 @@ uint8_t utils::chessIndexToArrayIndex(const std::string& chessIndex) {
 
   index = second * 8 + first;
 
-  if (index > 64 || index < 0) {
+  if (index > 64) {
     return 64;
   }
 
@@ -691,16 +718,108 @@ uint8_t utils::chessIndexToArrayIndex(const std::string& chessIndex) {
  * @param chessIndex String such as "E6"
  * @return bitboard with a active bit in given position
  */
-type::bitboard_t utils::chessIndexToBitboard(const std::string& chessIndex) {
+type::bitboard_t chessIndexToBitboard(const std::string &chessIndex) {
   type::bitboard_t board = 0ULL;
   flipBit(board, static_cast<type::bitboard_t>(chessIndexToArrayIndex(chessIndex)));
 
   return board;
 }
 
-// Needs compiler support for Microsoft c++ compiler
-// Works with gcc based compilers
-type::bitboard_t utils::LSB(type::bitboard_t board) {
+void affectGameStateByEGNMove(type::gameState_t& gs, const std::string& EGN) {
+  // get origin
+  const std::string originEGN = EGN.substr(0, 2);
+  const auto origin = chessIndexToArrayIndex(originEGN);
+
+  // get destination
+  const std::string destinationEGN = EGN.substr(2, 2);
+  const auto destination = chessIndexToArrayIndex(destinationEGN);
+
+  // check for issues
+  if (origin == 64 || destination == 64) {
+    std::cerr << "Unable to get origin || destination for EGN: " << EGN << std::endl;
+    return;
+  }
+
+  // TODO: make the gameState use array for each type.. this is troublesome....
+  if (!bitAt(gs.pieces, origin)) {
+    std::cerr << "ORIGIN " << origin << " AT THE FOLLOWING BITBOARD DOES NOT EXIST!!" << std::endl;
+    printGameState(gs);
+    return;
+  }
+
+  // is it on the black or white?
+  if (bitAt(gs.blackPieces, origin)) {
+
+    if (bitAt(gs.BlackRook, origin)) {
+      movePiece(gs.BlackRook, origin, destination);
+    }
+    else if (bitAt(gs.BlackKnight, origin)) {
+      movePiece(gs.BlackKnight, origin, destination);
+    }
+    else if (bitAt(gs.BlackBishop, origin)) {
+      movePiece(gs.BlackBishop, origin, destination);
+    }
+    else if (bitAt(gs.BlackKing, origin)) {
+      movePiece(gs.BlackKing, origin, destination);
+    }
+    else if (bitAt(gs.BlackQueen, origin)) {
+      movePiece(gs.BlackQueen, origin, destination);
+    }
+    else if (bitAt(gs.BlackPawn, origin)) {
+      movePiece(gs.BlackPawn, origin, destination);
+    }
+  }
+  else if (bitAt(gs.whitePieces, origin)) {
+
+    if (bitAt(gs.WhiteRook, origin)) {
+      movePiece(gs.WhiteRook, origin, destination);
+    }
+    else if (bitAt(gs.WhiteKnight, origin)) {
+      movePiece(gs.WhiteKnight, origin, destination);
+    }
+    else if (bitAt(gs.WhiteBishop, origin)) {
+      movePiece(gs.WhiteBishop, origin, destination);
+    }
+    else if (bitAt(gs.WhiteKing, origin)) {
+      movePiece(gs.WhiteKing, origin, destination);
+    }
+    else if (bitAt(gs.WhiteQueen, origin)) {
+      movePiece(gs.WhiteQueen, origin, destination);
+    }
+    else if (bitAt(gs.WhitePawn, origin)) {
+      movePiece(gs.WhitePawn, origin, destination);
+    }
+  }
+
+  // Swap colours after move
+  gs.playerColor = gs.playerColor == bitboard::COLOR::WHITE ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
+  
+}
+
+void movePiece(type::bitboard_t& board, uint8_t orig, uint8_t dest) {
+  flipBitOff(board, orig);
+  flipBitOn(board, dest);
+}
+
+/**
+ * Check if a bit is set at given index.
+ *
+ * @param b The bits in form of a uint64_t
+ * @param i the index as uint8_t
+ * @return true if bit is 1 at index i
+ */
+//constexpr bool bitAt(uint64_t b, uint8_t i) {
+//  return (b & (1ULL << i)) != 0;
+//}
+
+/**
+ * Finds the index of the first active bit, starting from right to left.
+ * LSB: Least Significant Bit
+ *
+ * @param board type::bitboard_t
+ * @return index[0, 63], if board is 0, 0 is returned.
+ */
+type::bitboard_t LSB(type::bitboard_t board) {
 #ifdef __linux__
   return (board != 0) ? __builtin_ffsll(board) - 1 : 0ULL;
 #elif _WIN32
@@ -716,14 +835,18 @@ type::bitboard_t utils::LSB(type::bitboard_t board) {
 #endif
 }
 
-// Needs compiler support for Microsoft c++ compiler
-// Works with gcc based compilers
-type::bitboard_t utils::NSB(type::bitboard_t &board) {
+/**
+ * Deactivates the smallest active bit, and returns the LSB value.
+ *
+ * @param board type::bitboard_t
+ * @return index[0, 63], if the board is 0, 0 is returned
+ */
+type::bitboard_t NSB(type::bitboard_t &board) {
   board &= ~(1LL << LSB(board));
   return LSB(board);
 }
 
-type::bitboard_t utils::MSB(type::bitboard_t board) {
+type::bitboard_t MSB(type::bitboard_t board) {
 #ifdef __linux__
   return 63 - __builtin_clzll(board);
 #elif _WIN32
@@ -739,24 +862,58 @@ type::bitboard_t utils::MSB(type::bitboard_t board) {
 #endif
 }
 
-type::bitboard_t utils::NSB_r(type::bitboard_t &board) {
+type::bitboard_t NSB_r(type::bitboard_t &board) {
   board &= ~(1LL << MSB(board));
   return MSB(board);
 }
 
 // Turns on bit
-void utils::flipBit(type::bitboard_t &board, type::bitboard_t index) {
+void flipBit(type::bitboard_t &board, type::bitboard_t index) {
   board |= (1LL << index);
 }
 
 // YEAH tell that bit to flipp off!!!
 // Nobody wants you bit... NOBODY WANTS YOU
-void utils::flipBitOff(type::bitboard_t &board, type::bitboard_t index) {
+void flipBitOff(type::bitboard_t &board, type::bitboard_t index) {
   board &= ~(1ULL << index);
 }
 
+// Turns on bit
+void flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
+  board |= (1LL << index);
+}
 
-std::string utils::getAbsoluteProjectPath() {
+int nrOfActiveBits(const type::bitboard_t b) {
+#ifdef __linux__
+  return __builtin_popcountll(b);
+#elif _WIN32
+  int counter = 0;
+  for (int i = 0; i < 64; i++) {
+    if (bitAt(b, i)) counter += 1;
+  }
+  return counter;
+#elif _WIN64
+  int counter = 0;
+  for (int i = 0; i < 64; i++) {
+    if (bitAt(b, i)) counter += 1;
+  }
+  return counter;
+#else
+  // idk
+  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
+  int counter = 0;
+  for (int i = 0; i < 64; i++) {
+    if (bitAt(b, i)) counter += 1;
+  }
+  return counter;
+#endif
+}
+
+bool bitAt(const type::bitboard_t b, const uint8_t i) {
+  return (b & (1ULL << i)) != 0;
+}
+
+std::string getAbsoluteProjectPath() {
 #ifdef __linux__
   //linux code goes here
   char buffer[PATH_MAX];
@@ -783,80 +940,116 @@ std::string utils::getAbsoluteProjectPath() {
 #endif
 }
 
-/**
- * Prints a bitboard as a chessboard with 0's and 1's
- * @param board - at bitboard_t
- */
-void utils::printBoard(type::bitboard_t board) {
-    std::string bits = std::bitset<64>(board).to_string();
-    std::cout << "\n  ";
-    for (int i = 'A'; i < 'A' + 8; i++)
-      std::cout << "  " << (char) i << " ";
-    std::cout << std::endl;
-    std::cout << "  +---+---+---+---+---+---+---+---+\n";
-    for (int i = 0; i < 8; i++) {
-      std::cout << i + 1 << " | ";
-      for (int j = 0; j < 8; j++) {
-        std::cout << bits.at((i * 8) + j) << " | ";
-      }
-      std::cout << '\n';
-      std::cout << "  +---+---+---+---+---+---+---+---+\n";
+bool perft() {
+  return perft(-1);
+}
+
+bool perft(const int limit) {
+  ::david::type::gameState_t gs;
+  ::david::utils::setDefaultChessLayout(gs);
+
+  // expected outputs
+  std::array<uint64_t, 14> perftScores = {
+      /*  0 */1,                  // 1
+      /*  1 */20,                 // 20
+      /*  2 */400,                // 400
+      /*  3 */8902,               // 8,902
+      /*  4 */197281,             // 197,281
+      /*  5 */4865609,            // 4,865,609
+      /*  6 */119060324,          // 119,060,324
+      /*  7 */3195901860,         // 3,195,901,860
+      /*  8 */84998978956,        // 84,998,978,956
+      /*  9 */2439530234167,      // 2,439,530,234,167
+      /* 10 */69352859712417,     // 69,352,859,712,417
+      /* 11 */2097651003696806,   // 2,097,651,003,696,806
+      /* 12 */62854969236701747,  // 62,854,969,236,701,747
+      /* 13 */1981066775000396239 // 1,981,066,775,000,396,239
+  };
+
+  auto len = limit == -1 ? static_cast<int>(perftScores.size()) : limit;
+  bool success = false;
+
+  if (limit != -1) {
+    std::cerr << " * perft is depth limited to " << limit << ", max depth is " << (perftScores.size() - 1) << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+
+
+  std::printf("|%7s|%32s|%32s|%10s|%10s|\n",
+              "-------",
+              "--------------------------------",
+              "--------------------------------",
+              "----------",
+              "----------");
+  std::printf("| %5s | %30s | %30s | %8s | %8s |\n",
+              "Depth",
+              "David MoveGen Result",
+              "Expected MoveGen Result",
+              "Error %",
+              "Seconds");
+  std::printf("|%7s|%32s|%32s|%10s|%10s|\n",
+              "-------",
+              "--------------------------------",
+              "--------------------------------",
+              "----------",
+              "----------");
+  for (int i = 0; i < len; i++) {
+    // start time
+    struct timeval tp, tp2;
+    gettimeofday(&tp, NULL);
+    long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+
+    // run perft
+    auto moveGenPerft = ::david::utils::perft(i, gs);
+
+    // time finished
+    gettimeofday(&tp2, NULL);
+    long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
+
+    // expect node count
+    auto expectedPerft = perftScores[i];
+
+    // generated node error estimation
+    const double difference =
+        static_cast<double>(std::max(moveGenPerft, expectedPerft) - std::min(moveGenPerft, expectedPerft)) / std::max(moveGenPerft, expectedPerft);
+
+    // print results for perft[i]
+    std::printf("| %5i | %30lu | %30lu | %8.1f | %8.2f |\n",
+                i,
+                moveGenPerft,
+                expectedPerft,
+                difference * 100.0, // difference
+                (ms2 - ms) / 1000.0);
+
+    // if the results are bad, don't continue
+    if (moveGenPerft != expectedPerft) {
+      success = false;
+      break;
     }
-    std::cout << '\n';
+  }
+
+  return success;
 }
 
-// Turns on bit
-void utils::flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
-  board |= (1LL << index);
-}
-
-constexpr int utils::nrOfActiveBits(type::bitboard_t b) {
-#ifdef __linux__
-  return __builtin_popcountll(b);
-#elif _WIN32
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#elif _WIN64
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#else
-  // idk
-  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#endif
-}
-
-uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
+uint64_t perft(const int depth, const type::gameState_t &gs) {
   if (depth == 0) {
     return 1;
   }
 
-  movegen::MoveGenerator gen;
-  gen.setGameState(gs);
 
   // create a holder for possible game outputs
   std::vector<type::gameState_t> states;
 
-  // generate possible game outputs
-  gen.generateGameStates(states);
+  {
+    movegen::MoveGenerator gen;
+    gen.setGameState(gs);
+
+    // generate possible game outputs
+    gen.generateGameStates(states);
+  }
 
   int len = static_cast<int>(states.size());
   uint64_t nodes = 0;
-
-//  for (int i = 0; i < len; i++) {
-//    std::cout << depth << ": " << i << std::endl;
-//    printGameState(states.at(i));
-//  }
 
   // calculate move for every move
   for (int i = 0; i < len; i++) {
@@ -866,24 +1059,22 @@ uint64_t utils::perft(const int depth, const type::gameState_t& gs) {
   return nodes;
 }
 
-const std::string utils::getEGN(const type::gameState_t& first, const type::gameState_t& second) {
+const std::string getEGN(const type::gameState_t &first, const type::gameState_t &second) {
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
   type::bitboard_t a, b;
 
-
   if (first.playerColor == WHITE) {
     a = first.whitePieces;
     b = second.whitePieces;
-  }
-  else {
+  } else {
     a = first.blackPieces;
     b = second.blackPieces;
   }
 
   type::bitboard_t difference = a ^ b;
-  type::bitboard_t from       = LSB(a & difference);
-  type::bitboard_t to         = LSB(b & difference);
+  type::bitboard_t from = LSB(a & difference);
+  type::bitboard_t to = LSB(b & difference);
 
 #ifdef DAVID_DEVELOPMENT
   assert(difference != 0ULL);
@@ -891,7 +1082,7 @@ const std::string utils::getEGN(const type::gameState_t& first, const type::game
   assert(to < 64);
 #endif
 
-  std::array<char, 8> indexes = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+  std::array<char, 8> indexes = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
   std::string EGN = "";
 
   // from
@@ -904,6 +1095,10 @@ const std::string utils::getEGN(const type::gameState_t& first, const type::game
 
   return EGN;
 }
+void getEGN(const type::gameState_t &first, const type::gameState_t &second, std::string &EGN) {
+  EGN = getEGN(first, second);
+}
 
+} // End of utils
 } // End of david
 

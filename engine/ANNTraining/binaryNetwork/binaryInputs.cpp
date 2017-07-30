@@ -16,7 +16,7 @@
 #include <string>
 #include <fstream>
 #include <david/environment.h>
-#include <david/GameTree.h>
+#include <david/TreeGen.h>
 #include <fann/parallel_fann.h>
 #include "david/ANN/binaryInputs.h"
 using std::cout;
@@ -212,7 +212,7 @@ void binaryNetwork::generateTrainingFile(
     if (output.is_open()) {
       ::david::type::gameState_t node;
       ::david::utils::generateBoardFromFen(node, line);
-      auto inputs = ::david::utils::convertGameStateToInputs(node);
+      auto inputs = ::david::utils::convertGameStateToVectorInputs(node);
 
       // create an input string
       for (auto i : inputs) {

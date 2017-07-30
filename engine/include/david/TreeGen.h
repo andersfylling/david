@@ -21,12 +21,11 @@ namespace gameTree {
  * to the neighbour node to his right. If there are no neighbour node at this level,
  * it's either skipped if the parent discovered chess mate or the generating is finished.
  */
-class GameTree {
+class TreeGen {
  private:
   // previous can be used for en passant
-  type::gameState_ptr root; // start of the game
-  type::gameState_ptr current; // current game state
   int maxNumberOfNodes; // nodes in memory
+  std::array<int, (constant::MAXDEPTH + 1)> depthIndexes;
 
   void getNumberOfNodes(type::gameState_ptr node, int &counter);
   void getDepth(type::gameState_ptr node, int &depth);
@@ -36,16 +35,24 @@ class GameTree {
   // transposition table
   //std::array<NodeCache, constant::MAXMOVES>
 
-
+  //std::vector<type::gameState_t> history;
   std::array<type::gameState_t, (constant::MAXMOVES * constant::MAXDEPTH + /*root*/1)> tree;
-  std::vector<type::gameState_ptr> treeDepths; // index i, will go to depth i at the first node. to simplify deleting.
-  void preallocateSearchTree();
-
   int maxDepth;
 
+  // keep track of game history
+  std::string startposFEN;
+  std::vector<std::string> history;
+
+  // Creates EGN moves for each possible move after root node. 1 - 256.
+  std::array<std::string, constant::MAXMOVES> EGNMoves; // calculate this after best move, dont waste time.
+  int nrOfEGNMoves; // holds the number of moves generated after root to reduce loop check
+
  public:
-  GameTree(type::engineContext_ptr ctx);
-  ~GameTree();
+  TreeGen(type::engineContext_ptr ctx);
+  TreeGen();
+  ~TreeGen();
+  void setRootNode(const type::gameState_t& gs);
+  void updateRootNodeTo(int index);
   void setRootNodeFromFEN(const std::string& FEN);
   void reset();
   void setMaxDepth(int depth);
@@ -61,6 +68,15 @@ class GameTree {
   void sortChildren(type::gameState_t& node);
   type::gameState_ptr getCurrent();
   int getDepth();
+
+  // generate EGN moves for root node
+  void generateEGNMoves();
+
+  // change root node based on EGN
+  void applyEGNMove(const std::string& EGN);
+
+  // sync engine's board track with GUI
+  //void syncGameRecord(); // should this take an array of strings, or just the uci param for moves?
 
 };
 
