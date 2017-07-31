@@ -1,3 +1,10 @@
+// check if any of the development flags are used
+#if defined(DAVID_DEBUG) || defined(DAVID_TEST) || defined(DAVID_BENCHMARK) || defined(DAVID_DEVELOPMENT)
+#define DAVID_FLAG_DEVELOPMENT
+#endif
+
+
+
 #include <iostream>
 #include <cassert>
 #include <chrono>
@@ -9,6 +16,7 @@
 #include "david/EngineMaster.h"
 
 #include "david/MoveGeneration.h"
+#include "david/log.h"
 
 
 
@@ -62,6 +70,14 @@ void gui() {
   engine.activateUCIProtocol();
 }
 
+int log1() {
+  int a = 432;
+
+  ::david::log::log("test");
+
+  return a;
+}
+
 
 int main (/*int argc, char * argv[]*/)
 {
@@ -71,7 +87,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint32_t) == 4);
   assert(sizeof(uint64_t) == 8);
 
-  const std::string mode = "fight"; // uci, fight, train, perft
+  const std::string mode = "gfdg"; // uci, fight, train, perft
 
 
   if (mode == "fight") {
@@ -89,6 +105,8 @@ int main (/*int argc, char * argv[]*/)
   else if (mode == "memTestMoveGen") {
     memTestMoveGen();
   }
+
+  log1();
 
   // Close program with exit code 0 after all threads have joined.
   return 0;
