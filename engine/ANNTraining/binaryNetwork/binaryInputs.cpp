@@ -1,6 +1,6 @@
 #include "fann/floatfann.h"
 #include "fann/fann_cpp.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -211,8 +211,8 @@ void binaryNetwork::generateTrainingFile(
     // write this to a file
     if (output.is_open()) {
       ::david::type::gameState_t node;
-      ::david::utils::generateBoardFromFen(node, line);
-      auto inputs = ::david::utils::convertGameStateToVectorInputs(node);
+      ::utils::generateBoardFromFen(node, line);
+      auto inputs = ::utils::convertGameStateToVectorInputs(node);
 
       // create an input string
       for (auto i : inputs) {
@@ -286,7 +286,7 @@ void binaryNetwork::run()
   const unsigned int iterations_between_reports = 1;
   const unsigned int nrOfLayers = 6;
   const unsigned int layers[nrOfLayers] = {95, 500, 128, 64, 12, 1}; // input, hidden1, ..., hiddenN, output
-  const auto folder = ::david::utils::getAbsoluteProjectPath() + "/engine";
+  const auto folder = ::utils::getAbsoluteProjectPath() + "/engine";
 
   // Generates the training data and returns the filename.
   std::string fileNameSuffix = trainingdatafile + "_" + std::to_string(nrOfLayers) + "_" + std::to_string(layers[0]) + "_" + std::to_string(layers[nrOfLayers - 1]);

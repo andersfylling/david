@@ -8,6 +8,7 @@
 #include <memory>
 #include "david/types.h"
 #include "david/david.h"
+#include "david/utils/utils.h"
 
 namespace david {
 namespace bitboard {
@@ -78,6 +79,54 @@ bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
+  move_t lastWhiteMove;
+  move_t lastBlackMove;
+
+  // Store the data as an array where index 0 relates to the active player.
+  // this means an index isn't constantly refering to eg. black
+  // but to the colour of the active player (who the children nodes should be generated for)
+  std::array<type::bitboard_t, 2> pawns   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> rooks   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> knights = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> bishops = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> queens  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> kings   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+
+  std::array<type::bitboard_t, 2> piecess  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+
+  type::bitboard_t combinedPieces         = ::david::constant::EMPTYBOARD;
+
+  //type::gameState_ptr* children;
+  //std::array<type::gameState_ptr, 256> children{{nullptr}};
+  //type::gameState_ptr parent = nullptr;
+
+  int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
+  int fullMoves = 1; // starts at 1, increments after every time black moves.
+
+  int score = ::david::constant::boardScore::LOWEST; // board score
+
+  int gameTreeLevel = 0;
+
+  int possibleSubMoves = 0; // is used by an iterator since everything is preinitialized, can by uint8
+
+
+  // castling, where index 0 and 1 refers to the current active player
+  // castling[0] == KingCastling
+  // castling[1] == QueenCastling
+  // castling[2] == KingCastling (opponent)
+  // castling[3] == QueenCastling (opponent)
+  uint8_t castling = utils::stringTo8bitArray("00001111");
+
+
+  ///
+  /// Legacy support. This will be removed in the future.
+  ///
+
+  bool blackQueenCastling = true;
+  bool blackKingCastling = true;
+  bool whiteQueenCastling = true;
+  bool whiteKingCastling = true;
+
   type::bitboard_t WhitePawn    = ::david::constant::EMPTYBOARD;
   type::bitboard_t WhiteRook    = ::david::constant::EMPTYBOARD;
   type::bitboard_t WhiteKnight  = ::david::constant::EMPTYBOARD;
@@ -97,28 +146,8 @@ struct gameState {
 
   type::bitboard_t pieces       = ::david::constant::EMPTYBOARD;
 
-  move_t lastWhiteMove;
-  move_t lastBlackMove;
-
-  //type::gameState_ptr* children;
-  //std::array<type::gameState_ptr, 256> children{{nullptr}};
-  //type::gameState_ptr parent = nullptr;
-
-  int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
-  int fullMoves = 1; // starts at 1, increments after every time black moves.
-
-  int score = ::david::constant::boardScore::LOWEST; // board score
-
-  int gameTreeLevel = 0;
-
-  int possibleSubMoves = 0; // is used by an iterator since everything is preinitialized, can by uint8
-
-  // should be convertet to an uint8 or smth
-  bool blackQueenCastling = true;
-  bool blackKingCastling = true;
-  bool whiteQueenCastling = true;
-  bool whiteKingCastling = true;
   COLOR playerColor = bitboard::COLOR::WHITE;
+  /// Legacy support END
 };
 
 struct pieceAttack {

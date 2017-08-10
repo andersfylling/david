@@ -6,7 +6,7 @@
 #include "david/genericUCIResponses.h"
 #include "david/Search.h"
 #include "david/david.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 #include "david/environment.h"
 #include "david/TreeGen.h"
 

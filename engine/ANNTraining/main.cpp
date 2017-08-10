@@ -1,6 +1,6 @@
 #include "fann/fann.h"
 #include "fann/fann_cpp.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 
 #include <cstdio>
 #include <iostream>

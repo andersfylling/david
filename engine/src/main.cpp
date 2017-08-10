@@ -3,8 +3,23 @@
 #define DAVID_FLAG_DEVELOPMENT
 #endif
 
+//
+// Supported compilers
+// * GCC 5.1 and higher
+//
+#if defined(__GNUC__) && __GNUC__ > 5
+#define DAVID_SUPPORTED_COMPILER
+#endif
+
+// if the compiler is not officially supported, create an error
+// This can be removed, but isn't recommended. Just remove the comments below:
+//#define I_DONT_CARE_LET_ME_THROUGH
+#if !defined(DAVID_SUPPORTED_COMPILER) && !defined(I_DONT_CARE_LET_ME_THROUGH)
+#error Compiler type or version is not supported.
+#endif
 
 
+// includes
 #include <iostream>
 #include <cassert>
 #include <chrono>
@@ -12,11 +27,11 @@
 #include "david/types.h"
 #include <david/ChessEngine.h>
 #include "david/bitboard.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 #include "david/EngineMaster.h"
 
 #include "david/MoveGeneration.h"
-#include "david/log.h"
+#include "david/utils/logger.h"
 
 
 
@@ -25,12 +40,12 @@ void memTestMoveGen() {
 
   // TreeGen
   for (int i = 0; i < arr.size(); i++) {
-    ::david::utils::setDefaultChessLayout(arr[i]);
+    ::utils::setDefaultChessLayout(arr[i]);
   }
 
 
   ::david::type::gameState_t gs;
-  ::david::utils::setDefaultChessLayout(gs);
+  ::utils::setDefaultChessLayout(gs);
 
   const auto len = 1000000000;
   const auto N = 2;
@@ -40,7 +55,7 @@ void memTestMoveGen() {
   // Any memory stored by the recursive should be deleted after the loop round is complete.
   // Therefore anything else, suggests a issue in MoveGen.
   for (int i = 0; i < len; i++) {
-    ::david::utils::perft(N, gs);
+    ::utils::perft(N, gs);
   }
 }
 
@@ -71,14 +86,17 @@ void gui() {
 }
 
 int log1() {
-  int a = 432;
+  int a = 3423;
 
-  ::david::log::log("test");
+  ::utils::logger::logtest([](){
+    std::string lol = "alkfsdj";
+    std::cout << lol << std::endl;
+  });
 
   return a;
 }
 
-
+// TODO: Should support changing mode without recompiling.
 int main (/*int argc, char * argv[]*/)
 {
   // Make sure its not some weird "cpu architecture".
@@ -87,7 +105,8 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint32_t) == 4);
   assert(sizeof(uint64_t) == 8);
 
-  const std::string mode = "gfdg"; // uci, fight, train, perft
+
+  const std::string mode = "uci"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
 
 
   if (mode == "fight") {
@@ -100,7 +119,7 @@ int main (/*int argc, char * argv[]*/)
     train();
   }
   else if (mode == "perft") {
-    ::david::utils::perft();
+    ::utils::perft();
   }
   else if (mode == "memTestMoveGen") {
     memTestMoveGen();
@@ -108,7 +127,7 @@ int main (/*int argc, char * argv[]*/)
 
   log1();
 
-  // Close program with exit code 0 after all threads have joined.
+  // Close program with exit code 0 (UCI: after all threads have joined.)
   return 0;
 }
 

@@ -1,6 +1,6 @@
 #include "benchmark/benchmark.h"
 #include "david/types.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 #include <cassert>
 
 namespace {
@@ -12,7 +12,7 @@ static void BM_normalBitArrayLoop(benchmark::State &state) {
     int nr = 0;
     auto n = bits;
     for (int i = 0; i < 64; i++) {
-      if (::david::utils::bitAt(n, i)) {
+      if (::utils::bitAt(n, i)) {
         nr += 1;
       }
     }
@@ -25,7 +25,7 @@ static void BM_bitArrayLoopUsingLSB(benchmark::State &state) {
     int nr = 0;
     auto n = bits;
     do {
-      ::david::utils::flipBitOff(n, ::david::utils::LSB(n));
+      ::utils::flipBitOff(n, ::utils::LSB(n));
       nr += 1;
     } while(n != 0ULL);
     if (n != 0ULL) {

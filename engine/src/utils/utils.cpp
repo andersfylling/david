@@ -1,4 +1,4 @@
-#include "david/utils.h"
+#include "david/utils/utils.h"
 #include "fann/floatfann.h"
 #include <sys/stat.h>
 #include <unistd.h>
@@ -20,7 +20,6 @@
 // windows code goes here
 #endif
 
-namespace david {
 namespace utils {
 
 /**
@@ -38,15 +37,16 @@ int stoi(const std::string v) {
 //}
 }
 
-bool isHalfMove(type::gameState_t &parent, type::gameState_t &child) {
-  using bitboard::COLOR::WHITE;
-  using bitboard::COLOR::BLACK;
-  using type::bitboard_t;
+bool isHalfMove(::david::type::gameState_t &parent, ::david::type::gameState_t &child) {
+  using ::david::bitboard::COLOR::WHITE;
+  using ::david::bitboard::COLOR::BLACK;
+  using ::david::type::bitboard_t;
+  using ::david::movegen::MoveGenerator;
 
-  movegen::MoveGenerator genP;
+  MoveGenerator genP;
   genP.setGameState(parent);
 
-  movegen::MoveGenerator genC;
+  MoveGenerator genC;
   genC.setGameState(child);
 
   // ** cheeze
@@ -95,11 +95,12 @@ bool isHalfMove(type::gameState_t &parent, type::gameState_t &child) {
  * @param node
  * @param whiteMovesNext
  * @return
+ * @Deprecated needs to use gameState_t not _ptr
  */
-std::string generateFen(type::gameState_ptr node) {
-  using bitboard::COLOR::WHITE;
-  using bitboard::COLOR::BLACK;
-  using type::bitboard_t;
+std::string generateFen(::david::type::gameState_ptr node) {
+  using ::david::bitboard::COLOR::WHITE;
+  using ::david::bitboard::COLOR::BLACK;
+  using ::david::type::bitboard_t;
 
   std::array<bitboard_t, 12> boards = {
       node->BlackBishop,
@@ -203,7 +204,7 @@ bool fileExists(const std::string &file) {
 
 template<std::size_t SIZE>
 void addPieceBoardIndexToVector(std::vector<float> &store,
-                                       std::array<type::bitboard_t, SIZE> &pieces,
+                                       std::array<::david::type::bitboard_t, SIZE> &pieces,
                                        uint8_t nr) {
   // ISSUE, this doesnt scale when more pieces than nr exist. what if there are 3 queens? or just 2?
 }
@@ -218,7 +219,7 @@ inline namespace neuralnet {
  * @param player
  * @return
  */
-std::vector<float> convertGameStateToVectorInputs(const type::gameState_t &node) {
+std::vector<float> convertGameStateToVectorInputs(const ::david::type::gameState_t &node) {
 //  movegen::MoveGenerator gen;
 //  gen.setGameState(node);
 //  gen.generateAttacks(node.playerColor);
@@ -226,7 +227,7 @@ std::vector<float> convertGameStateToVectorInputs(const type::gameState_t &node)
 //  // These are used to define whats benefitial and negative inputs
 //  auto attacks = gen.getAttackState();
 
-  environment::Environment env{node.playerColor};
+  ::david::environment::Environment env{node.playerColor};
   env.setGameState(node);
   env.generateAttacks();
 
@@ -253,7 +254,7 @@ std::vector<float> convertGameStateToVectorInputs(const type::gameState_t &node)
   auto blackPieces = node.blackPieces;
 
   std::array<double, 61> boardInfo = {
-      node.playerColor == bitboard::COLOR::WHITE ? 1.0 : -1.0,
+      node.playerColor == ::david::bitboard::COLOR::WHITE ? 1.0 : -1.0,
 
       nrOfBlackBishop < 0.1 ? 1.0 : -1.0,
       nrOfBlackKing < 0.1 ? 1.0 : -1.0,
@@ -343,11 +344,11 @@ std::vector<float> convertGameStateToVectorInputs(const type::gameState_t &node)
     inputs.push_back(static_cast<float>(b));
   }
 
-  std::array<type::bitboard_t, 2> boards1 = {
+  std::array<::david::type::bitboard_t, 2> boards1 = {
       node.BlackKing,
       node.WhiteKing
   };
-  std::array<type::bitboard_t, 8> boards2 = {
+  std::array<::david::type::bitboard_t, 8> boards2 = {
       node.BlackBishop,
       node.BlackKnight,
       node.BlackQueen,
@@ -357,7 +358,7 @@ std::vector<float> convertGameStateToVectorInputs(const type::gameState_t &node)
       node.WhiteKnight,
       node.WhiteRook
   };
-  std::array<type::bitboard_t, 2> boards8 = {
+  std::array<::david::type::bitboard_t, 2> boards8 = {
       node.BlackPawn,
       node.WhitePawn
   };
@@ -442,7 +443,7 @@ fann_type* convertVectorInputsToFannType(const std::vector<float> &inputs, unsig
   return fi;
 }
 
-fann_type* boardToFannInputs(const type::gameState_t& node) {
+fann_type* boardToFannInputs(const ::david::type::gameState_t& node) {
   std::vector<float> inputs = convertGameStateToVectorInputs(node);
   return convertVectorInputsToFannType(inputs, inputs.size());
 }
@@ -456,20 +457,20 @@ void yellDeprecated(const std::string info) {
  * Set default board values
  * @param node gameState_t&
  */
-void setDefaultChessLayout(type::gameState_t &n) {
-  n.BlackRook = constant::defaultPiecePosition::black::ROOK;
-  n.BlackQueen = constant::defaultPiecePosition::black::QUEEN;
-  n.BlackPawn = constant::defaultPiecePosition::black::PAWN;
-  n.BlackKnight = constant::defaultPiecePosition::black::KNIGHT;
-  n.BlackKing = constant::defaultPiecePosition::black::KING;
-  n.BlackBishop = constant::defaultPiecePosition::black::BISHOP;
+void setDefaultChessLayout(::david::type::gameState_t &n) {
+  n.BlackRook = ::david::constant::defaultPiecePosition::black::ROOK;
+  n.BlackQueen = ::david::constant::defaultPiecePosition::black::QUEEN;
+  n.BlackPawn = ::david::constant::defaultPiecePosition::black::PAWN;
+  n.BlackKnight = ::david::constant::defaultPiecePosition::black::KNIGHT;
+  n.BlackKing = ::david::constant::defaultPiecePosition::black::KING;
+  n.BlackBishop = ::david::constant::defaultPiecePosition::black::BISHOP;
 
-  n.WhiteRook = constant::defaultPiecePosition::white::ROOK;
-  n.WhiteQueen = constant::defaultPiecePosition::white::QUEEN;
-  n.WhitePawn = constant::defaultPiecePosition::white::PAWN;
-  n.WhiteKnight = constant::defaultPiecePosition::white::KNIGHT;
-  n.WhiteKing = constant::defaultPiecePosition::white::KING;
-  n.WhiteBishop = constant::defaultPiecePosition::white::BISHOP;
+  n.WhiteRook = ::david::constant::defaultPiecePosition::white::ROOK;
+  n.WhiteQueen = ::david::constant::defaultPiecePosition::white::QUEEN;
+  n.WhitePawn = ::david::constant::defaultPiecePosition::white::PAWN;
+  n.WhiteKnight = ::david::constant::defaultPiecePosition::white::KNIGHT;
+  n.WhiteKing = ::david::constant::defaultPiecePosition::white::KING;
+  n.WhiteBishop = ::david::constant::defaultPiecePosition::white::BISHOP;
 
   n.blackPieces = n.BlackPawn | n.BlackQueen | n.BlackKnight | n.BlackKing | n.BlackBishop | n.BlackRook;
   n.whitePieces = n.WhitePawn | n.WhiteQueen | n.WhiteKnight | n.WhiteKing | n.WhiteBishop | n.WhiteRook;
@@ -488,9 +489,9 @@ inline namespace cout {
  * Print out the chess board based on a gameState node
  * @param gs type::gameState_t&
  */
-void printGameState(const type::gameState_t &gs) {
+void printGameState(const ::david::type::gameState_t &gs) {
 
-  std::map<const char, type::bitboard_t> links = {
+  std::map<const char, ::david::type::bitboard_t> links = {
       {'b', gs.BlackBishop},
       {'k', gs.BlackKing},
       {'n', gs.BlackKnight},
@@ -538,7 +539,7 @@ void printGameState(const type::gameState_t &gs) {
  * Prints a bitboard as a chessboard with 0's and 1's
  * @param board - at bitboard_t
  */
-void printBoard(type::bitboard_t board) {
+void printBoard(::david::type::bitboard_t board) {
   std::string bits = std::bitset<64>(board).to_string();
   std::cout << "\n  ";
   for (int i = 'A'; i < 'A' + 8; i++)
@@ -567,8 +568,11 @@ void printBoard(type::bitboard_t board) {
  * @param gs gameState_t&
  * @param fen const std::string&, must be correctly formatted (!)
  */
-void generateBoardFromFen(type::gameState_t& gs, const std::string &fen) {
-  std::map<const char, type::bitboard_t&> links = {
+void generateBoardFromFen(::david::type::gameState_t& gs, const std::string &fen) {
+  using ::david::bitboard::COLOR::WHITE;
+  using ::david::bitboard::COLOR::BLACK;
+  
+  std::map<const char, ::david::type::bitboard_t&> links = {
       {'b', gs.BlackBishop},
       {'k', gs.BlackKing},
       {'n', gs.BlackKnight},
@@ -609,7 +613,7 @@ void generateBoardFromFen(type::gameState_t& gs, const std::string &fen) {
 
       // color
     else if (index == 64) {
-      gs.playerColor = fen[i + 1] == 'w' ? bitboard::COLOR::WHITE : bitboard::COLOR::BLACK;
+      gs.playerColor = fen[i + 1] == 'w' ? WHITE : BLACK;
 
       i += 2; // skip char and space afterwards
       index += 1;
@@ -649,7 +653,7 @@ void generateBoardFromFen(type::gameState_t& gs, const std::string &fen) {
         hm += fen[i];
       }
 
-      gs.halfMoves = ::david::utils::stoi(hm);
+      gs.halfMoves = ::utils::stoi(hm);
 
       i += 1; // skip space
       index += 1;
@@ -662,7 +666,7 @@ void generateBoardFromFen(type::gameState_t& gs, const std::string &fen) {
         fm += fen[i];
       }
 
-      gs.fullMoves = ::david::utils::stoi(fm);  //TODO potential error here
+      gs.fullMoves = ::utils::stoi(fm);  //TODO potential error here
       break; // finished reading FEN string
     }
   }
@@ -718,14 +722,19 @@ uint8_t chessIndexToArrayIndex(const std::string &chessIndex) {
  * @param chessIndex String such as "E6"
  * @return bitboard with a active bit in given position
  */
-type::bitboard_t chessIndexToBitboard(const std::string &chessIndex) {
-  type::bitboard_t board = 0ULL;
-  flipBit(board, static_cast<type::bitboard_t>(chessIndexToArrayIndex(chessIndex)));
+::david::type::bitboard_t chessIndexToBitboard(const std::string &chessIndex) {
+  using ::david::type::bitboard_t;
+  
+  bitboard_t board = 0ULL;
+  flipBit(board, static_cast<bitboard_t>(chessIndexToArrayIndex(chessIndex)));
 
   return board;
 }
 
-void affectGameStateByEGNMove(type::gameState_t& gs, const std::string& EGN) {
+void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string& EGN) {
+  using ::david::bitboard::COLOR::WHITE;
+  using ::david::bitboard::COLOR::BLACK;
+
   // get origin
   const std::string originEGN = EGN.substr(0, 2);
   const auto origin = chessIndexToArrayIndex(originEGN);
@@ -743,7 +752,7 @@ void affectGameStateByEGNMove(type::gameState_t& gs, const std::string& EGN) {
   // TODO: make the gameState use array for each type.. this is troublesome....
   if (!bitAt(gs.pieces, origin)) {
     std::cerr << "ORIGIN " << origin << " AT THE FOLLOWING BITBOARD DOES NOT EXIST!!" << std::endl;
-    printGameState(gs);
+    ::utils::printGameState(gs);
     return;
   }
 
@@ -792,11 +801,11 @@ void affectGameStateByEGNMove(type::gameState_t& gs, const std::string& EGN) {
   }
 
   // Swap colours after move
-  gs.playerColor = gs.playerColor == bitboard::COLOR::WHITE ? bitboard::COLOR::BLACK : bitboard::COLOR::WHITE;
+  gs.playerColor = gs.playerColor == WHITE ? BLACK : WHITE;
   
 }
 
-void movePiece(type::bitboard_t& board, uint8_t orig, uint8_t dest) {
+void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest) {
   flipBitOff(board, orig);
   flipBitOn(board, dest);
 }
@@ -819,7 +828,7 @@ void movePiece(type::bitboard_t& board, uint8_t orig, uint8_t dest) {
  * @param board type::bitboard_t
  * @return index[0, 63], if board is 0, 0 is returned.
  */
-type::bitboard_t LSB(type::bitboard_t board) {
+::david::type::bitboard_t LSB(::david::type::bitboard_t board) {
 #ifdef __linux__
   return (board != 0) ? __builtin_ffsll(board) - 1 : 0ULL;
 #elif _WIN32
@@ -841,12 +850,12 @@ type::bitboard_t LSB(type::bitboard_t board) {
  * @param board type::bitboard_t
  * @return index[0, 63], if the board is 0, 0 is returned
  */
-type::bitboard_t NSB(type::bitboard_t &board) {
+::david::type::bitboard_t NSB(::david::type::bitboard_t &board) {
   board &= ~(1LL << LSB(board));
   return LSB(board);
 }
 
-type::bitboard_t MSB(type::bitboard_t board) {
+::david::type::bitboard_t MSB(::david::type::bitboard_t board) {
 #ifdef __linux__
   return 63 - __builtin_clzll(board);
 #elif _WIN32
@@ -862,28 +871,28 @@ type::bitboard_t MSB(type::bitboard_t board) {
 #endif
 }
 
-type::bitboard_t NSB_r(type::bitboard_t &board) {
+::david::type::bitboard_t NSB_r(::david::type::bitboard_t &board) {
   board &= ~(1LL << MSB(board));
   return MSB(board);
 }
 
 // Turns on bit
-void flipBit(type::bitboard_t &board, type::bitboard_t index) {
+void flipBit(::david::type::bitboard_t &board, ::david::type::bitboard_t index) {
   board |= (1LL << index);
 }
 
 // YEAH tell that bit to flipp off!!!
 // Nobody wants you bit... NOBODY WANTS YOU
-void flipBitOff(type::bitboard_t &board, type::bitboard_t index) {
+void flipBitOff(::david::type::bitboard_t &board, ::david::type::bitboard_t index) {
   board &= ~(1ULL << index);
 }
 
 // Turns on bit
-void flipBitOn(type::bitboard_t &board, type::bitboard_t index) {
+void flipBitOn(::david::type::bitboard_t &board, ::david::type::bitboard_t index) {
   board |= (1LL << index);
 }
 
-int nrOfActiveBits(const type::bitboard_t b) {
+int nrOfActiveBits(const ::david::type::bitboard_t b) {
 #ifdef __linux__
   return __builtin_popcountll(b);
 #elif _WIN32
@@ -909,7 +918,7 @@ int nrOfActiveBits(const type::bitboard_t b) {
 #endif
 }
 
-bool bitAt(const type::bitboard_t b, const uint8_t i) {
+bool bitAt(const ::david::type::bitboard_t b, const uint8_t i) {
   return (b & (1ULL << i)) != 0;
 }
 
@@ -924,9 +933,9 @@ std::string getAbsoluteProjectPath() {
   }
 
   // find string until folder project name
-  std::string projectPath = path.substr(0, path.find(engineInformation::PROJECT_NAME)); //hackz
+  std::string projectPath = path.substr(0, path.find(::david::engineInformation::PROJECT_NAME)); //hackz
 
-  return projectPath + engineInformation::PROJECT_NAME;
+  return projectPath + ::david::engineInformation::PROJECT_NAME;
 #elif _WIN32
   // windows code goes here
   return "";
@@ -946,7 +955,7 @@ bool perft() {
 
 bool perft(const int limit) {
   ::david::type::gameState_t gs;
-  ::david::utils::setDefaultChessLayout(gs);
+  ::utils::setDefaultChessLayout(gs);
 
   // expected outputs
   std::array<uint64_t, 14> perftScores = {
@@ -967,7 +976,7 @@ bool perft(const int limit) {
   };
 
   auto len = limit == -1 ? static_cast<int>(perftScores.size()) : limit;
-  bool success = false;
+  bool success = true;
 
   if (limit != -1) {
     std::cerr << " * perft is depth limited to " << limit << ", max depth is " << (perftScores.size() - 1) << std::endl;
@@ -1000,7 +1009,7 @@ bool perft(const int limit) {
     long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 
     // run perft
-    auto moveGenPerft = ::david::utils::perft(i, gs);
+    auto moveGenPerft = ::utils::perft(i, gs);
 
     // time finished
     gettimeofday(&tp2, NULL);
@@ -1031,17 +1040,17 @@ bool perft(const int limit) {
   return success;
 }
 
-uint64_t perft(const int depth, const type::gameState_t &gs) {
+uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
   if (depth == 0) {
     return 1;
   }
 
 
   // create a holder for possible game outputs
-  std::vector<type::gameState_t> states;
+  std::vector<::david::type::gameState_t> states;
 
   {
-    movegen::MoveGenerator gen;
+    ::david::movegen::MoveGenerator gen;
     gen.setGameState(gs);
 
     // generate possible game outputs
@@ -1059,10 +1068,11 @@ uint64_t perft(const int depth, const type::gameState_t &gs) {
   return nodes;
 }
 
-const std::string getEGN(const type::gameState_t &first, const type::gameState_t &second) {
-  using bitboard::COLOR::WHITE;
-  using bitboard::COLOR::BLACK;
-  type::bitboard_t a, b;
+const std::string getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second) {
+  using ::david::bitboard::COLOR::WHITE;
+  using ::david::bitboard::COLOR::BLACK;
+  using ::david::type::bitboard_t;
+  bitboard_t a, b;
 
   if (first.playerColor == WHITE) {
     a = first.whitePieces;
@@ -1072,9 +1082,9 @@ const std::string getEGN(const type::gameState_t &first, const type::gameState_t
     b = second.blackPieces;
   }
 
-  type::bitboard_t difference = a ^ b;
-  type::bitboard_t from = LSB(a & difference);
-  type::bitboard_t to = LSB(b & difference);
+  bitboard_t difference = a ^ b;
+  bitboard_t from = LSB(a & difference);
+  bitboard_t to = LSB(b & difference);
 
 #ifdef DAVID_DEVELOPMENT
   assert(difference != 0ULL);
@@ -1095,10 +1105,9 @@ const std::string getEGN(const type::gameState_t &first, const type::gameState_t
 
   return EGN;
 }
-void getEGN(const type::gameState_t &first, const type::gameState_t &second, std::string &EGN) {
+void getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second, std::string &EGN) {
   EGN = getEGN(first, second);
 }
 
 } // End of utils
-} // End of david
 

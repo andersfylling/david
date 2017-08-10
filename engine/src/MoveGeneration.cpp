@@ -5,7 +5,7 @@
 
 #include "david/MoveGeneration.h"
 #include "david/bitboard.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 #include <utility>
 #include <assert.h>
 #include <vector>

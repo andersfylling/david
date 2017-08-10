@@ -3,7 +3,7 @@
 #include "david/bitboard.h"
 #include "david/environment.h"
 #include <david/TreeGen.h>
-#include <david/utils.h>
+#include <david/utils/utils.h>
 
 david::type::gameState_t testStruct; // White Queen in the middle. Rest is normal
 

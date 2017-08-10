@@ -10,7 +10,7 @@
 #include <math.h>
 #include <array>
 #include <algorithm>
-#include <david/utils.h>
+#include <david/utils/utils.h>
 #include <david/TreeGen.h>
 #include <map>
 

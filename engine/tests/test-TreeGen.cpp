@@ -1,5 +1,5 @@
 #include <iostream>
-#include <david/utils.h>
+#include <david/utils/utils.h>
 #include "david/TreeGen.h"
 #include "catch.hpp"
 
@@ -42,7 +42,7 @@ TEST_CASE("Retrieving a correctly set gameState_t [TreeGen::getGameState]") {
 TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGen::setGameState]") {
   using ::david::gameTree::TreeGen;
   using ::david::type::gameState_t;
-  using ::david::utils::setDefaultChessLayout;
+  using ::utils::setDefaultChessLayout;
 
   TreeGen tg{}; // testing constructor
   auto& gs = tg.getGameState(0);
@@ -54,7 +54,7 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
 
   // set new data
   gameState_t g;
-  setDefaultChessLayout(g);
+  ::utils::setDefaultChessLayout(g);
   tg.setRootNode(g);
 
   // verify data changes
@@ -78,8 +78,6 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
 
 TEST_CASE("Verify the index math [TreeGen::treeIndex]") {
   using ::david::gameTree::TreeGen;
-  using ::david::type::gameState_t;
-  using ::david::utils::setDefaultChessLayout;
   using ::david::constant::MAXMOVES;
 
   TreeGen tg{}; // testing constructor

@@ -1,7 +1,7 @@
 // local dependencies
 #include "david/ANN/ANN.h"
 #include "david/david.h"
-#include "david/utils.h"
+#include "david/utils/utils.h"
 #include "david/environment.h"
 
 // system dependencies

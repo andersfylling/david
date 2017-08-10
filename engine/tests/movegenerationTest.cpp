@@ -5,7 +5,7 @@
 #include "david/MoveGeneration.h"
 #include "david/bitboard.h"
 #include <utility>
-#include <david/utils.h>
+#include <david/utils/utils.h>
 
 using david::type::bitboard_t;
 using david::bitboard::COLOR;
@@ -85,21 +85,21 @@ TEST_CASE("DISTANCE TO EDGES") {
   std::pair <david::bitboard::bitboard_t, david::bitboard::bitboard_t> rp;
 
   // TESTS NORTH EAST MOVEMENT
-  rp = generator.distanceToEdge(david::utils::LSB(17179869184ULL), DIRECTION::NORTH_EAST);
+  rp = generator.distanceToEdge(::utils::LSB(17179869184ULL), DIRECTION::NORTH_EAST);
   REQUIRE(rp.first == 3);
   REQUIRE(rp.second == 2);
 
   // TESTS NORTH MOVEMENT
-  rp = generator.distanceToEdge(david::utils::LSB(137438953472ULL), DIRECTION::NORTH);
+  rp = generator.distanceToEdge(::utils::LSB(137438953472ULL), DIRECTION::NORTH);
   REQUIRE(rp.first == 3);
   REQUIRE(rp.second == 7);
 
   // NORTH WEST MOVEMENT
-  rp = generator.distanceToEdge(david::utils::LSB(2097152ULL), DIRECTION::NORTH_WEST);
+  rp = generator.distanceToEdge(::utils::LSB(2097152ULL), DIRECTION::NORTH_WEST);
   REQUIRE(rp.first == 5);
   REQUIRE(rp.second == 2);
 
-  rp = generator.distanceToEdge(david::utils::LSB(262144ULL), DIRECTION::SOUTH);
+  rp = generator.distanceToEdge(::utils::LSB(262144ULL), DIRECTION::SOUTH);
   REQUIRE(rp.first == 2);
   REQUIRE(rp.second == 7);
 }
@@ -415,7 +415,7 @@ TEST_CASE("LEGAL MOVES") {
 }
 
 TEST_CASE("PERFT") {
-  const int depth = 6;
+  const int depth = 1;
 
-  REQUIRE(::david::utils::perft(depth));
+  REQUIRE(::utils::perft(depth));
 }

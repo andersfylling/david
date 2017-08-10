@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <david/environment.h>
-#include <david/utils.h>
+#include <david/utils/utils.h>
 #include <assert.h>
 #include "david/ANN/ANN.h"
 #include "david/MoveGeneration.h"
