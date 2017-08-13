@@ -220,10 +220,10 @@ void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type
   // set the new array data
   int i = 0;
   int j = 1;
-  // i -> white, so if the active colour is white. index 0 should reference to the active coloured pieces.
+  // j -> white, so if the active colour is white. index 0 should reference to the active coloured pieces.
   if (n.playerColor == WHITE) {
-    j = 0;
     i = 1;
+    j = 0;
   }
   n.pawns[i]   = n.BlackPawn;
   n.pawns[j]   = n.WhitePawn;
