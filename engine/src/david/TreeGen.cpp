@@ -216,6 +216,31 @@ void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type
 
   n.halfMoves = parent.halfMoves + 1;
   n.fullMoves = (parent.gameTreeLevel + 1) / 2;
+  
+  // set the new array data
+  int i = 0;
+  int j = 1;
+  // i -> white, so if the active colour is white. index 0 should reference to the active coloured pieces.
+  if (n.playerColor == WHITE) {
+    j = 0;
+    i = 1;
+  }
+  n.pawns[i]   = n.BlackPawn;
+  n.pawns[j]   = n.WhitePawn;
+  n.rooks[i]   = n.BlackRook;
+  n.rooks[j]   = n.WhiteRook;
+  n.knights[i] = n.BlackKnight;
+  n.knights[j] = n.WhiteKnight;
+  n.bishops[i] = n.BlackBishop;
+  n.bishops[j] = n.WhiteBishop;
+  n.queens[i]  = n.BlackQueen;
+  n.queens[j]  = n.WhiteQueen;
+  n.kings[i]   = n.BlackKing;
+  n.kings[j]   = n.WhiteKing;
+  n.piecess[i] = n.blackPieces;
+  n.piecess[j] = n.whitePieces;
+  n.combinedPieces = n.pieces;
+  
 
   // Validate half moves
   if (!utils::isHalfMove(parent, n)) {
