@@ -212,7 +212,8 @@ void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type
 
   n.pieces = n.blackPieces | n.whitePieces;
 
-  n.playerColor = parent.playerColor == BLACK ? WHITE : BLACK;
+  n.isWhite = parent.playerColor == BLACK;
+  n.playerColor = isWhite ? BLACK : WHITE;
 
   n.halfMoves = parent.halfMoves + 1;
   n.fullMoves = (parent.gameTreeLevel + 1) / 2;
@@ -221,7 +222,7 @@ void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type
   int i = 0;
   int j = 1;
   // j -> white, so if the active colour is white. index 0 should reference to the active coloured pieces.
-  if (n.playerColor == WHITE) {
+  if (n.isWhite) {
     i = 1;
     j = 0;
   }
