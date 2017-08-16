@@ -66,7 +66,14 @@ class MoveGenerator {
   friend class genDebugger;
  private:
   std::vector<bitboard::move_t> moveList;
-  bitboard::gameState state;
+
+  // upgrade
+  std::array<bitboard::move_t, 400> moveList2;
+  unsigned int indexMoveList;
+
+
+  const type::gameState_t& constState; // the state should never change.
+  type::gameState_t state;
   type::bitboard_t attacks;
   pieceList pList;
 
@@ -77,6 +84,7 @@ class MoveGenerator {
 
  public:
   // Constructors
+  MoveGenerator(const type::gameState_t& gs);
   MoveGenerator();   // ONLY FOR TESTING
 
 
@@ -88,6 +96,7 @@ class MoveGenerator {
   bool nothernly(DIRECTION dir);
   void printMoves();
   int numberOfMoves();
+  void setGameState(const type::gameState_t& st);
 
 
   // Level 1 move basic generation of vectors
@@ -117,10 +126,9 @@ class MoveGenerator {
   // Level 4 handling
   void updatePlist();
   void capturePiece(bitboard::COLOR color, type::bitboard_t index, bitboard::gameState &st);
-  void setGameState(type::gameState_ptr st);
-  void setGameState(type::gameState_t st);
-  void applyMove(bitboard::move_t m);
-  void undoMove(type::move_t move);
+  void applyMove(bitboard::move_t m); // old version
+  void applyMove(bitboard::move_t m, type::gameState_t& gs);
+  void undoMove(type::move_t move); // is this needed?
   bool moveIsLegal(bitboard::move_t m, bitboard::COLOR c);
   void generateMoves(bitboard::COLOR color, bool legacy = false);
   void generateAttacks(bitboard::COLOR color);
@@ -177,7 +185,7 @@ class Move {
 
   MOVETYPE getType();
   type::bitboard_t getFrom();
-  type::bitboard_t getTo();
+  type::bitboard_t getTo() const;
   bitboard::move_t getMove();
 };
 

@@ -514,10 +514,10 @@ TEST_CASE("Vector Generation") {
 }
 
 TEST_CASE("ENCODING OF MOVES") {
-  david::bitboard::move_t case1, case2, case3;
-  case1 = 11572U;    // Pawn moves from 11 to 19 with capture
-  case2 = 21443U;  // Piece moves from 20 to 60 with queen castle
-  case3 = 50127U;   // Piece from 25 to 30 with max parameters
+  //david::bitboard::move_t case1, case2, case3;
+  //case1 = 11572U;    // Pawn moves from 11 to 19 with capture
+  //case2 = 21443U;  // Piece moves from 20 to 60 with queen castle
+  //case3 = 50127U;   // Piece from 25 to 30 with max parameters
 
   Move m1(11572);
   Move m2;
@@ -554,7 +554,7 @@ TEST_CASE("PERFT") {
   state.whiteKingCastling = true;
   state.whiteQueenCastling = true;
 
-  ::utils::perft(4); // has it's own rendering.
+  ::utils::perft(5); // has it's own rendering.
 }
 
 bool genDebugger::testCases() {

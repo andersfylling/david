@@ -4,6 +4,7 @@
 #include <string>
 #include "david/types.h"
 
+
 // only holds information about the engine or const that can be used.
 namespace david {
 inline namespace constant {
@@ -27,6 +28,7 @@ static const std::string ENGINE_COPYRIGHT = ENGINE_NAME + ". Copyright (C) 2017-
 } // ::david::constants::engineInformation
 
 namespace defaultPiecePosition {
+
 namespace black {
 static const type::bitboard_t BISHOP  = 2594073385365405696ULL;
 static const type::bitboard_t KING    = 576460752303423488ULL;
@@ -49,6 +51,11 @@ static const type::bitboard_t PIECES  = BISHOP | KNIGHT | PAWN | QUEEN | KING | 
 static const type::bitboard_t PIECES  = white::PIECES | black::PIECES;
 
 static const type::bitboard_t EMPTY   = 0ULL;
+
+
+
+//static const ::david::type::gameState_t DEFAULTCHESSBOARD = defaultGameState();
+
 } // ::david::constants::defaultPiecePosition
 
 static const type::bitboard_t EMPTYBOARD = 0ULL;

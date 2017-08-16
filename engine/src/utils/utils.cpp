@@ -1069,14 +1069,10 @@ uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
 
   // create a holder for possible game outputs
   std::vector<::david::type::gameState_t> states;
+  ::david::movegen::MoveGenerator gen{gs};
 
-  {
-    ::david::movegen::MoveGenerator gen;
-    gen.setGameState(gs);
-
-    // generate possible game outputs
-    gen.generateGameStates(states);
-  }
+  // generate possible game outputs
+  gen.generateGameStates(states);
 
   int len = static_cast<int>(states.size());
   uint64_t nodes = 0;

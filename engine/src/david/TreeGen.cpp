@@ -228,8 +228,9 @@ void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n
 
   n.pieces = n.blackPieces | n.whitePieces;
 
-  n.isWhite = parent.playerColor == BLACK; // TODO: make sure this is set on new root elements
-  n.playerColor = n.isWhite ? BLACK : WHITE;
+  // this is now done in movegen.. but should it be?
+  //n.isWhite = parent.playerColor == BLACK; // TODO: make sure this is set on new root elements
+  //n.playerColor = n.isWhite ? BLACK : WHITE;
 
   n.halfMoves = parent.halfMoves + 1;
   n.fullMoves = (parent.gameTreeLevel + 1) / 2;
