@@ -38,7 +38,7 @@ class TreeGen {
 
   // keep track of game history
   std::string startposFEN;
-  std::array<std::string, 300> history; // number of MAX moves in a game
+  std::array<std::string, 300> history; // number of MAX moves in a game. EGN => uint8_t * 4
   unsigned int historyIndex;
 
   // Creates EGN moves for each possible move after root node. 1 - 256.

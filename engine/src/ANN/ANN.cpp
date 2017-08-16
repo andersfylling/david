@@ -131,16 +131,14 @@ int ANN::ANNEvaluate(const type::gameState_t& board) {
 
   // populate array
   fann_type inputs[::david::constant::nn::INPUTSIZE];
-  auto len = arr.size();
+  const auto len = arr.size();
   for (int i = 0; i < len; i++) {
     inputs[i] = arr[i];
   }
 
   fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
 
-  int output = static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
-
-  return output;
+  return static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
 }
 
 /**

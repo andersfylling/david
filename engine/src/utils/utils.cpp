@@ -3,19 +3,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string>
-#include "david/bitboard.h"
+#include "david/types.h"
 
 #ifdef __linux__
 //linux code goes here
-#include <unistd.h>
-#include <bitset>
-#include <david/TreeGen.h>
 #include <david/environment.h>
 #include <david/ChessEngine.h>
 #include <assert.h>
 #include <david/MoveGeneration.h>
-#include <chrono>
-#include <thread>
 #elif _WIN32
 // windows code goes here
 #endif
@@ -577,22 +572,28 @@ void printGameState(const ::david::type::gameState_t &gs) {
  * Prints a bitboard as a chessboard with 0's and 1's
  * @param board - at bitboard_t
  */
-void printBoard(::david::type::bitboard_t board) {
-  std::string bits = std::bitset<64>(board).to_string();
-  std::cout << "\n  ";
-  for (int i = 'A'; i < 'A' + 8; i++)
-    std::cout << "  " << (char) i << " ";
-  std::cout << std::endl;
-  std::cout << "  +---+---+---+---+---+---+---+---+\n";
-  for (int i = 0; i < 8; i++) {
-    std::cout << i + 1 << " | ";
-    for (int j = 0; j < 8; j++) {
-      std::cout << bits.at((i * 8) + j) << " | ";
-    }
-    std::cout << '\n';
-    std::cout << "  +---+---+---+---+---+---+---+---+\n";
+void printBoard(::david::type::bitboard_t bb) {
+  std::string board(64, '-');
+
+  while (bb != 0ULL) {
+    const auto i = LSB(bb);
+    flipBitOff(bb, i);
+    board.at(i) = 'X';
   }
-  std::cout << '\n';
+
+  std::cout << "\n  ";
+  for (int i = 'A'; i < 'A' + 8; i++) {
+    std::cout << "  " << (char) i << " ";
+  }
+  std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
+  for (uint8_t i = 7; i < 8; i--) {
+    std::cout << i + 1 << " | ";
+    for (uint8_t j = 0; j < 8; j++) {
+      std::cout << board.at((i * 8) + j) << " | ";
+    }
+    std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
+  }
+  std::cout << std::endl;
 }
 }// inline namespace cout
 }// inline namespace print

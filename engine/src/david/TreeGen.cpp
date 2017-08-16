@@ -132,7 +132,7 @@ void TreeGen::reset() {
   // no need to delete the game tree itself as it just gets overwritten on demand
 
   // clear history
-  //this->history // no need to clear
+  this->history.empty();
   this->historyIndex = 0;
 
   // clear start position

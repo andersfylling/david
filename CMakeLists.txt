@@ -16,7 +16,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g") # add -g to read assembly code for O3 optimized program.
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Third party libraries in lib
 add_subdirectory(external)
