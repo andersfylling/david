@@ -11,9 +11,6 @@
 #include <atomic>
 #include <future>
 #include <thread>
-#ifdef DAVID_DEBUG
-#include <vector>
-#endif
 
 
 // forward declarations

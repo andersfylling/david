@@ -32,6 +32,7 @@ static const type::bitboard_t KNIGHT  = 4755801206503243776ULL;
 static const type::bitboard_t PAWN    = 71776119061217280ULL;
 static const type::bitboard_t QUEEN   = 1152921504606846976ULL;
 static const type::bitboard_t ROOK    = 9295429630892703744ULL;
+static const type::bitboard_t PIECES  = BISHOP | KNIGHT | PAWN | QUEEN | KING | ROOK;
 }
 namespace white {
 static const type::bitboard_t BISHOP  = 36ULL;
@@ -40,7 +41,10 @@ static const type::bitboard_t PAWN    = 65280ULL;
 static const type::bitboard_t QUEEN   = 16ULL;
 static const type::bitboard_t KING    = 8ULL;
 static const type::bitboard_t ROOK    = 129ULL;
+static const type::bitboard_t PIECES  = BISHOP | KNIGHT | PAWN | QUEEN | KING | ROOK;
 }
+
+static const type::bitboard_t PIECES  = white::PIECES | black::PIECES;
 
 static const type::bitboard_t EMPTY   = 0ULL;
 } // ::david::constants::defaultPiecePosition
@@ -55,7 +59,16 @@ static const int LOWEST   = -(std::numeric_limits<int>::max());
 static const int MAXMOVES = 256;
 static const int MAXDEPTH = 30;
 
+
+namespace nn {
+
+static const int INPUTSIZE = 83;
+
+} // ::david::constants::nn
+
 } // ::david::constants
+
+
 
 
 struct NodeCache {

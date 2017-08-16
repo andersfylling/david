@@ -2,7 +2,21 @@
 project (chess_ann_src)
 
 # Files to be compiled.
-file(GLOB chess_ann_srcfiles "*.cpp" "**/*.cpp")
+file(GLOB chess_ann_srcfiles
+        main.cpp
+
+        # utils namespace
+        utils/utils.cpp
+
+        # david namespace
+        david/ChessEngine.cpp
+        david/EngineContext.cpp
+        david/EngineMaster.cpp
+        david/environment.cpp
+        david/MoveGeneration.cpp
+        david/Search.cpp
+        david/TreeGen.cpp
+        ANN/ANN.cpp)
 add_executable(chess_ann_src ${chess_ann_srcfiles})
 
 target_compile_definitions(chess_ann_src PUBLIC DAVID_PRODUCTION)

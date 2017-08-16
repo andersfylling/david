@@ -212,7 +212,7 @@ void binaryNetwork::generateTrainingFile(
     if (output.is_open()) {
       ::david::type::gameState_t node;
       ::utils::generateBoardFromFen(node, line);
-      auto inputs = ::utils::convertGameStateToVectorInputs(node);
+      auto inputs = ::utils::convertGameStateToInputs(node);
 
       // create an input string
       for (auto i : inputs) {

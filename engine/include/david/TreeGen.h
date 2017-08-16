@@ -39,7 +39,7 @@ class TreeGen {
   // keep track of game history
   std::string startposFEN;
   std::array<std::string, 300> history; // number of MAX moves in a game
-  int historyIndex;
+  unsigned int historyIndex;
 
   // Creates EGN moves for each possible move after root node. 1 - 256.
   std::array<std::string, constant::MAXMOVES> EGNMoves; // calculate this after best move, dont waste time.
@@ -49,7 +49,7 @@ class TreeGen {
 
   // Constructors
   TreeGen(type::engineContext_ptr ctx);
-  TreeGen();
+  TreeGen(); // unit testing only
 
   // Destructor
   ~TreeGen();
@@ -66,8 +66,8 @@ class TreeGen {
   uint16_t /********/ generateChildren(const unsigned int index);
   unsigned int /****/ getChildIndex(const unsigned int parent, const unsigned int child) const;
   unsigned int /****/ treeIndex(const uint8_t depth, const uint8_t index) const;
-  type::gameState_t&  getGameState(const unsigned int index) const;
   type::gameState_t   getGameStateCopy(const unsigned int index) const;
+  type::gameState_t&  getGameState(const unsigned int index);
 
   // generate EGN moves for root node
   void generateEGNMoves();

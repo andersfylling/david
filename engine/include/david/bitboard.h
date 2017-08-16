@@ -79,8 +79,8 @@ bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
-  move_t lastWhiteMove;
-  move_t lastBlackMove;
+  move_t lastWhiteMove = 0;
+  move_t lastBlackMove = 0;
 
   // Store the data as an array where index 0 relates to the active player.
   // this means an index isn't constantly refering to eg. black
@@ -115,7 +115,7 @@ struct gameState {
   // castling[1] == QueenCastling
   // castling[2] == KingCastling (opponent)
   // castling[3] == QueenCastling (opponent)
-  uint8_t castling = utils::stringTo8bitArray("00001111");
+  uint8_t castling = 15; //utils::stringTo8bitArray("00001111");
   
   bool isWhite = true;
 

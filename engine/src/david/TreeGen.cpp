@@ -37,7 +37,8 @@ TreeGen::TreeGen()
       historyIndex(0)
 {
 #ifndef DAVID_TEST
-  std::cerr << "TreeGen::TreeGen() empty contructor can only be used for unit testing!" << std::endl;
+  //std::cerr << "TreeGen::TreeGen() empty contructor can only be used for unit testing!" << std::endl;
+  std::__throw_runtime_error("TreeGen::TreeGen() empty contructor can only be used for unit testing!");
 #endif
 
   int i = 0;
@@ -47,15 +48,57 @@ TreeGen::TreeGen()
   }
 }
 
+/**
+ * Destructor
+ */
+TreeGen::~TreeGen() {}
 
-type::gameState_t& TreeGen::getGameState(const unsigned int index) const {
+/**
+ * Get a reference of the given node at index.
+ *
+ * @param index unsigned int Index in game tree
+ * @return Mutable gameState reference
+ */
+type::gameState_t& TreeGen::getGameState(const unsigned int index) {
   return this->tree[index];
 }
 
+/**
+ * Get a copy of the given node at index.
+ *
+ * @param index unsigned int Index in game tree
+ * @return Mutable gameState copy
+ */
+type::gameState_t TreeGen::getGameStateCopy(const unsigned int index) const {
+  return this->tree[index];
+}
+
+/**
+ * Get score of node at index.
+ * @param index
+ * @return
+ */
 int TreeGen::getGameStateScore(const unsigned int index) const {
   return this->tree[index].score;
 }
 
+/**
+ * Maximum depth allowed to search to.
+ *
+ * @return int Max Depth of game tree
+ */
+int TreeGen::getDepth() const
+{
+  return this->maxDepth;
+}
+
+/**
+ * Get the tree index that represents the element at relative position from depth and index.
+ *
+ * @param depth -1 < depth < constant::MAXDEPTH
+ * @param index -1 < index < constant::MAXMOVES
+ * @return index that can be used in the game tree, range [0, constant::MAXMOVES * constant::MAXDEPTH]
+ */
 unsigned int TreeGen::treeIndex(const uint8_t depth, const uint8_t index) const {
   return constant::MAXMOVES * depth + index + 1; // will never be below 0
 }
@@ -80,12 +123,6 @@ void TreeGen::setRootNodeFromFEN(const std::string& FEN) {
 
 void TreeGen::setRootNode(const type::gameState_t& gs) { // TODO: bad?
   this->tree.front() = std::move(gs);
-}
-
-/**
- * Destructor
- */
-TreeGen::~TreeGen() {
 }
 
 /**
@@ -117,7 +154,7 @@ unsigned int TreeGen::getChildIndex(const unsigned int parent, const unsigned in
   else if (parent <= constant::MAXMOVES) {
     return constant::MAXMOVES + 1 + child;
   }
-  else if (parent > constant::MAXMOVES) {
+  else /*if (parent > constant::MAXMOVES)*/ {
     return ((parent / constant::MAXMOVES) + 1) * constant::MAXMOVES + 1 + child;
   }
 }
@@ -128,27 +165,23 @@ unsigned int TreeGen::getChildIndex(const unsigned int parent, const unsigned in
  * @param node std::share_ptr<::bitboard::gameState>
  */
 uint16_t TreeGen::generateChildren(const unsigned int index) {
-  using bitboard::gameState;
+  using type::gameState_t;
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
 
   auto& node = this->tree[index];
 
-  // created a environ instance based on parent node
-  movegen::MoveGenerator gen;
-  gen.setGameState(node);
-
-  //env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
-//  if (!(node->fullMoves == 1 && node->playerColor == WHITE)) {
-  //   env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
-  //}
+  // Get ready to generate all potential moves based on given chess board
+  movegen::MoveGenerator gen; // old version
+  gen.setGameState(node);     // old version
+  // movegen::MoveGenerator gen{node}; // new version
 
   // uint8 has a max num of 255. Max nr of children is 256. perfect af.
   unsigned int firstChildPos = index == 0 ? constant::MAXMOVES - 1 : (index - 1) % constant::MAXMOVES;
   firstChildPos = index + (constant::MAXMOVES - firstChildPos);
 
   // create a holder for possible game outputs
-  std::vector<gameState> states; // old version
+  std::vector<gameState_t> states; // old version
 
   // generate possible game outputs
   gen.generateGameStates(states); // old version
@@ -250,8 +283,8 @@ void TreeGen::setMaxDepth(int d)
   }
 }
 
-void TreeGen::generateEGNMoves() {
-
+void TreeGen::generateEGNMoves()
+{
   // TODO: have a bool that tells whether or not moves have been generated
   // TODO: This will avoid regenerating nodes that already exist.
   this->generateChildren(0);
@@ -263,7 +296,8 @@ void TreeGen::generateEGNMoves() {
   }
 }
 
-void TreeGen::applyEGNMove(const std::string& EGN) {
+void TreeGen::applyEGNMove(const std::string& EGN)
+{
   if (EGN.length() != 4) {
     std::cerr << "EGN length is not 4!!" << std::endl;
     return;

@@ -127,12 +127,18 @@ void ANN::createANNInstance() {
  * @return int board evaluation
  */
 int ANN::ANNEvaluate(const type::gameState_t& board) {
-  fann_type* inputs = utils::boardToFannInputs(board); // float array
+  const auto arr = ::utils::neuralnet::convertGameStateToInputs(board); // float array of the inputs
+
+  // populate array
+  fann_type inputs[::david::constant::nn::INPUTSIZE];
+  auto len = arr.size();
+  for (int i = 0; i < len; i++) {
+    inputs[i] = arr[i];
+  }
+
   fann_type* outputs = fann_run(this->ANNInstance, inputs); // float array
 
   int output = static_cast<int>(outputs[0] * 1000); // The expected output during training was multiplied by 0.001
-  delete inputs;
-  // delete outputs; // this might not need delete...
 
   return output;
 }

@@ -106,7 +106,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "uci"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
+  const std::string mode = "fight"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
 
 
   if (mode == "fight") {

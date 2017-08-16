@@ -18,6 +18,8 @@ int stoi(const std::string v);
 constexpr int ctoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
+
+void legacyGameStateUpdate(::david::type::gameState_t& n);
 }
 
 ::david::type::bitboard_t  LSB(::david::type::bitboard_t board);
@@ -36,12 +38,10 @@ template<std::size_t SIZE>
 void addPieceBoardIndexToVector(std::vector<float>& store, std::array<::david::type::bitboard_t, SIZE>& pieces, uint8_t nr);
 
 inline namespace neuralnet {
-std::vector<float> convertGameStateToVectorInputs(const ::david::type::gameState_t &node);
-fann_type* convertVectorInputsToFannType(const std::vector<float> &inputs, unsigned long size);
-fann_type* boardToFannInputs(const ::david::type::gameState_t& node);
+std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(const ::david::type::gameState_t &node);
 }
 
-std::string generateFen(::david::type::gameState_ptr node);
+std::string generateFen(const ::david::type::gameState_t& node);
 void generateBoardFromFen(::david::type::gameState_t& gs, const std::string& fen);
 bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::gameState_t& child);
 void setDefaultChessLayout(::david::type::gameState_t& node);
@@ -79,27 +79,27 @@ void getEGN(const ::david::type::gameState_t& first, const ::david::type::gameSt
  * @param desiredByteLook
  * @return
  */
-constexpr uint8_t stringTo8bitArray(const char desiredByteLook[]) {
-  const int len = sizeof(desiredByteLook) / sizeof(desiredByteLook[0]);
-  if (len > 8) {
-    return 0;
-  }
-
-  uint8_t arr = 0;
-
-
-  for (size_t i = 0; i < len; i++) {
-    const char c = desiredByteLook[i];
-
-    if (c == '0') {
-      continue;
-    }
-
-    arr |= (1 << i); // same as flipBitOn
-  }
-
-  return arr;
-}
+//constexpr uint8_t stringTo8bitArray(const char desiredByteLook[]) {
+//  const int len = sizeof(desiredByteLook) / sizeof(desiredByteLook[0]);
+//  if (len > 8) {
+//    return 0;
+//  }
+//
+//  uint8_t arr = 0;
+//
+//
+//  for (size_t i = 0; i < len; i++) {
+//    const char c = desiredByteLook[i];
+//
+//    if (c == '0') {
+//      continue;
+//    }
+//
+//    arr |= (1 << i); // same as flipBitOn
+//  }
+//
+//  return arr;
+//}
 
 
 } // utils
