@@ -17,7 +17,6 @@ namespace gameTree {
  */
 TreeGen::TreeGen(type::engineContext_ptr ctx)
     : engineContextPtr(ctx),
-      maxNumberOfNodes(100),
       maxDepth(5),
       startposFEN(constant::FENStartPosition),
       nrOfEGNMoves(-1),
@@ -32,7 +31,6 @@ TreeGen::TreeGen(type::engineContext_ptr ctx)
 
 TreeGen::TreeGen()
     : engineContextPtr(),
-      maxNumberOfNodes(100),
       maxDepth(5),
       startposFEN(constant::FENStartPosition),
       nrOfEGNMoves(-1),
@@ -50,19 +48,19 @@ TreeGen::TreeGen()
 }
 
 
-type::gameState_t& TreeGen::getGameState(unsigned int index) {
+type::gameState_t& TreeGen::getGameState(const unsigned int index) const {
   return this->tree[index];
 }
 
-int TreeGen::getGameStateScore(unsigned int index) {
+int TreeGen::getGameStateScore(const unsigned int index) const {
   return this->tree[index].score;
 }
 
-unsigned int TreeGen::treeIndex(uint8_t depth, uint8_t index) {
+unsigned int TreeGen::treeIndex(const uint8_t depth, const uint8_t index) const {
   return constant::MAXMOVES * depth + index + 1; // will never be below 0
 }
 
-void TreeGen::updateRootNodeTo(int index) {
+void TreeGen::updateRootNodeTo(const int index) {
   auto c = this->tree.front().playerColor;
   this->tree.front() = std::move(this->tree[index]);
 
@@ -110,7 +108,7 @@ void TreeGen::reset() {
 }
 
 
-unsigned int TreeGen::getChildIndex(unsigned int parent, unsigned int child) {
+unsigned int TreeGen::getChildIndex(const unsigned int parent, const unsigned int child) const {
   //return this->depthIndexes[parent + 1 + child];
   //utils::yellDeprecated("TreeGen::getChildIndex is not working correctly!!!!");
   if (parent == 0) {
@@ -129,20 +127,12 @@ unsigned int TreeGen::getChildIndex(unsigned int parent, unsigned int child) {
  *
  * @param node std::share_ptr<::bitboard::gameState>
  */
-void TreeGen::generateChildren(unsigned int index) {
+uint16_t TreeGen::generateChildren(const unsigned int index) {
   using bitboard::gameState;
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
 
   auto& node = this->tree[index];
-
-  // find some way to get all the different boards
-  // then call generate node
-  // you prolly need to change it's parameters
-  //int livingNodes = this->getNumberOfNodes();
-
-  // mock test
-  //node->gs->children.resize(0);
 
   // created a environ instance based on parent node
   movegen::MoveGenerator gen;
@@ -158,7 +148,7 @@ void TreeGen::generateChildren(unsigned int index) {
   firstChildPos = index + (constant::MAXMOVES - firstChildPos);
 
   // create a holder for possible game outputs
-  std::vector<gameState> states;
+  std::vector<gameState> states; // old version
 
   // generate possible game outputs
   gen.generateGameStates(states); // old version
@@ -166,43 +156,34 @@ void TreeGen::generateChildren(unsigned int index) {
 
   // create node pointers, and set some internal data
   //std::cout << "OPTIONS ========== " << std::endl;
-  const auto len = node.possibleSubMoves = static_cast<int>(states.size());
+  const uint16_t len = node.possibleSubMoves = static_cast<uint16_t>(states.size()); // should not need more than uint8
   //utils::printGameState(node);
 
 #ifdef DAVID_DEVELOPMENT
   assert(firstChildPos != 0);
 #endif
 
-  for (uint8_t i = 0; i < len; i++) {
+  for (uint16_t i = 0; i < len; i++) {
     this->generateNode(node, this->tree[firstChildPos + i], states.at(i));
   }
-  //std::cout << "OPTIONS END ====== " << std::endl;
 
   // once all the nodes are set, we need to sort the children.
   std::sort(this->tree.begin() + firstChildPos, this->tree.begin() + firstChildPos + len,
             [](const type::gameState_t& a, const type::gameState_t& b) -> bool {
               return a.score > b.score;
             });
-}
 
-
-/**
- * Retrieve the max allowed number of nodes in memory.
- * This amount is only limited to this instance.
- *
- * @return int from 0 to N, N <= maxNumberOfNodes
- */
-int TreeGen::getMaxNumberOfNodes() {
-  return this->maxNumberOfNodes;
+  return len;
 }
 
 /**
  * Generates a child node for a parent and correctly link them, and insert info.
+ * TODO: remove and write changes directly in loop.
  *
  * @param parent nodePtr
  * @return nodePtr of the new child, however parent will link to this anyways.
  */
-void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type::gameState_t child) {
+void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n, const type::gameState_t child) {
   using bitboard::gameState;
   using bitboard::COLOR::WHITE;
   using bitboard::COLOR::BLACK;
@@ -217,8 +198,8 @@ void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type
 
   n.pieces = n.blackPieces | n.whitePieces;
 
-  n.isWhite = parent.playerColor == BLACK;
-  n.playerColor = isWhite ? BLACK : WHITE;
+  n.isWhite = parent.playerColor == BLACK; // TODO: make sure this is set on new root elements
+  n.playerColor = n.isWhite ? BLACK : WHITE;
 
   n.halfMoves = parent.halfMoves + 1;
   n.fullMoves = (parent.gameTreeLevel + 1) / 2;
@@ -246,42 +227,16 @@ void TreeGen::generateNode(type::gameState_t& parent, type::gameState_t& n, type
   n.piecess[i] = n.blackPieces;
   n.piecess[j] = n.whitePieces;
   n.combinedPieces = n.pieces;
-  
 
   // Validate half moves
   if (!utils::isHalfMove(parent, n)) {
     n.halfMoves = 0;
   }
-  // check if there are any possible moves after this state
 
   // use ann to get score
   if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
     n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
   }
-
-//  n.WhitePawn    = child.WhitePawn;
-//  n.WhiteRook    = child.WhiteRook;
-//  n.WhiteKnight  = child.WhiteKnight;
-//  n.WhiteBishop  = child.WhiteBishop;
-//  n.WhiteQueen   = child.WhiteQueen;
-//  n.WhiteKing    = child.WhiteKing;
-//
-//  n.BlackPawn    = child.BlackPawn;
-//  n.BlackRook    = child.BlackRook;
-//  n.BlackKnight  = child.BlackKnight;
-//  n.BlackBishop  = child.BlackBishop;
-//  n.BlackQueen   = child.BlackQueen;
-//  n.BlackKing    = child.BlackKing;
-
-//  n.lastBlackMove = child.lastBlackMove;
-//  n.lastWhiteMove = child.lastWhiteMove;
-
-//  // set sub possibilities
-//  movegen::MoveGenerator gen;
-//  gen.setGameState(parent->children[index]->gs);
-//  std::vector<gameState> states;
-//  gen.generateGameStates(states);
-//  parent->children[index]->gs->possibleSubMoves = static_cast<int>(states.size()); //won't go above 40 or something.
 }
 
 void TreeGen::setMaxDepth(int d)

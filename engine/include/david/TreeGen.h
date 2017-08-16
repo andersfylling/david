@@ -23,21 +23,18 @@ namespace gameTree {
  */
 class TreeGen {
  private:
-  // previous can be used for en passant
-  int maxNumberOfNodes; // nodes in memory
-  std::array<int, (constant::MAXDEPTH + 1)> depthIndexes;
-
-  void getNumberOfNodes(type::gameState_ptr node, int &counter);
-  void getDepth(type::gameState_ptr node, int &depth);
-
+  // Context class
   type::engineContext_ptr engineContextPtr;
 
   // transposition table
   //std::array<NodeCache, constant::MAXMOVES>
 
-  //std::vector<type::gameState_t> history;
+  // Game tree
   std::array<type::gameState_t, (constant::MAXMOVES * constant::MAXDEPTH + /*root*/1)> tree;
   int maxDepth;
+
+  // Table to faster access child index of a parent node
+  std::array<int, (constant::MAXDEPTH + 1)> depthIndexes;
 
   // keep track of game history
   std::string startposFEN;
@@ -49,26 +46,28 @@ class TreeGen {
   int nrOfEGNMoves; // holds the number of moves generated after root to reduce loop check
 
  public:
+
+  // Constructors
   TreeGen(type::engineContext_ptr ctx);
   TreeGen();
+
+  // Destructor
   ~TreeGen();
-  void setRootNode(const type::gameState_t& gs);
-  void updateRootNodeTo(int index);
-  void setRootNodeFromFEN(const std::string& FEN);
-  void reset();
-  void setMaxDepth(int depth);
-  unsigned int getChildIndex(unsigned int parent, unsigned int child);
-  int getGameStateScore(unsigned int index);
-  type::gameState_t& getGameState(unsigned int index);
-  unsigned int treeIndex(uint8_t depth, uint8_t index);
-  void setMaxNumberOfNodes(int n);
-  int getMaxNumberOfNodes();
-  void generateNode(type::gameState_t& parent, type::gameState_t& n, type::gameState_t child);
-  int getNumberOfNodes();
-  void generateChildren(unsigned int index);
-  void sortChildren(type::gameState_t& node);
-  type::gameState_ptr getCurrent();
-  int getDepth();
+
+  // public methods
+  int /*************/ getGameStateScore(const unsigned int index) const;
+  int /*************/ getDepth() const;
+  void /************/ setRootNode(const type::gameState_t& gs);
+  void /************/ updateRootNodeTo(const int index);
+  void /************/ setRootNodeFromFEN(const std::string& FEN);
+  void /************/ reset();
+  void /************/ setMaxDepth(const int depth);
+  void /************/ generateNode(const type::gameState_t& p, type::gameState_t& n, const type::gameState_t c);
+  uint16_t /********/ generateChildren(const unsigned int index);
+  unsigned int /****/ getChildIndex(const unsigned int parent, const unsigned int child) const;
+  unsigned int /****/ treeIndex(const uint8_t depth, const uint8_t index) const;
+  type::gameState_t&  getGameState(const unsigned int index) const;
+  type::gameState_t   getGameStateCopy(const unsigned int index) const;
 
   // generate EGN moves for root node
   void generateEGNMoves();

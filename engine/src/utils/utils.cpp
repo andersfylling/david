@@ -37,7 +37,7 @@ int stoi(const std::string v) {
 //}
 }
 
-bool isHalfMove(::david::type::gameState_t &parent, ::david::type::gameState_t &child) {
+bool isHalfMove(const ::david::type::gameState_t &parent, const ::david::type::gameState_t &child) {
   //using ::david::bitboard::COLOR::WHITE;
   //using ::david::bitboard::COLOR::BLACK;
   //using ::david::type::bitboard_t;

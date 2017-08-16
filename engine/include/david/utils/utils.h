@@ -43,7 +43,7 @@ fann_type* boardToFannInputs(const ::david::type::gameState_t& node);
 
 std::string generateFen(::david::type::gameState_ptr node);
 void generateBoardFromFen(::david::type::gameState_t& gs, const std::string& fen);
-bool isHalfMove(::david::type::gameState_t& parent, ::david::type::gameState_t& child);
+bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::gameState_t& child);
 void setDefaultChessLayout(::david::type::gameState_t& node);
 ::david::type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
