@@ -116,6 +116,8 @@ struct gameState {
   // castling[2] == KingCastling (opponent)
   // castling[3] == QueenCastling (opponent)
   uint8_t castling = utils::stringTo8bitArray("00001111");
+  
+  bool isWhite = true;
 
 
   ///

@@ -38,16 +38,16 @@ int stoi(const std::string v) {
 }
 
 bool isHalfMove(::david::type::gameState_t &parent, ::david::type::gameState_t &child) {
-  using ::david::bitboard::COLOR::WHITE;
-  using ::david::bitboard::COLOR::BLACK;
-  using ::david::type::bitboard_t;
-  using ::david::movegen::MoveGenerator;
+  //using ::david::bitboard::COLOR::WHITE;
+  //using ::david::bitboard::COLOR::BLACK;
+  //using ::david::type::bitboard_t;
+  //using ::david::movegen::MoveGenerator;
 
-  MoveGenerator genP;
-  genP.setGameState(parent);
+  //MoveGenerator genP;
+  //genP.setGameState(parent);
 
-  MoveGenerator genC;
-  genC.setGameState(child);
+  //MoveGenerator genC;
+  //genC.setGameState(child);
 
   // ** cheeze
 
@@ -58,23 +58,23 @@ bool isHalfMove(::david::type::gameState_t &parent, ::david::type::gameState_t &
   /// since once a castling right is lost, it is lost forever, as considered in detecting repetitions.
 
   // check if parent or child is overlapping, AKA. a piece has been captured.
-  if ((genP.white() & genC.black()) != 0ULL) {
+  if ((parent.piecess[0] & child.piecess[0]) != 0ULL) {
     return false;
   }
 
-  // check if the black pawns has moved
-  if ((parent.BlackPawn | child.BlackPawn) != 0ULL) {
+  // check if the ---- pawns has moved
+  if ((parent.pawns[0] | child.pawns[1]) != 0ULL) {
     return false;
   }
 
-  // check if white pawns has moved
+  // check if !---- pawns has moved
   //if ((parent.WhitePawn | child.WhitePawn) != 0ULL) {
   //  return false;
   //}
   //
   // no rules of half moving were broken
   //return true;
-  return (parent.WhitePawn | child.WhitePawn) != 0ULL;
+  return (parent.pawns[1] | child.pawns[0]) != 0ULL;
 }
 
 /**
