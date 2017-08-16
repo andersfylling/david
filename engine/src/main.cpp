@@ -22,11 +22,9 @@
 // includes
 #include <iostream>
 #include <cassert>
-#include <chrono>
 
 #include "david/types.h"
 #include <david/ChessEngine.h>
-#include "david/bitboard.h"
 #include "david/utils/utils.h"
 #include "david/EngineMaster.h"
 
@@ -85,17 +83,6 @@ void gui() {
   engine.activateUCIProtocol();
 }
 
-int log1() {
-  int a = 3423;
-
-  ::utils::logger::logtest([](){
-    std::string lol = "alkfsdj";
-    std::cout << lol << std::endl;
-  });
-
-  return a;
-}
-
 // TODO: Should support changing mode without recompiling.
 int main (/*int argc, char * argv[]*/)
 {
@@ -106,7 +93,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "fight"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
+  const std::string mode = "perft"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
 
 
   if (mode == "fight") {
@@ -119,13 +106,11 @@ int main (/*int argc, char * argv[]*/)
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft();
+    ::utils::perft(0); // memory leak issue atm
   }
   else if (mode == "memTestMoveGen") {
     memTestMoveGen();
   }
-
-  log1();
 
   // Close program with exit code 0 (UCI: after all threads have joined.)
   return 0;

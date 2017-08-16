@@ -1,9 +1,7 @@
 #pragma once
 
 #include "david/david.h"
-#include "david/bitboard.h"
-#include <memory>
-#include <iomanip>
+#include "david/types.h"
 #include <array>
 #include "david/EngineContext.h"
 

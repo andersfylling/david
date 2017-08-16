@@ -1,6 +1,8 @@
 #pragma once
 
 #include <limits>
+#include <string>
+#include "david/types.h"
 
 // only holds information about the engine or const that can be used.
 namespace david {
@@ -52,8 +54,8 @@ static const type::bitboard_t EMPTY   = 0ULL;
 static const type::bitboard_t EMPTYBOARD = 0ULL;
 
 namespace boardScore {
-static const int HIGHEST  = +(std::numeric_limits<int>::max());
-static const int LOWEST   = -(std::numeric_limits<int>::max());
+static const int HIGHEST  = std::numeric_limits<int>::max();
+static const int LOWEST   = std::numeric_limits<int>::min();
 }
 
 static const int MAXMOVES = 256;

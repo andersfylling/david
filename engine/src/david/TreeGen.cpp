@@ -1,9 +1,6 @@
-#include "david/bitboard.h"
+
 #include "david/TreeGen.h"
-#include <memory>
-#include <iostream>
 #include <algorithm>
-#include <david/environment.h>
 #include <david/utils/utils.h>
 #include <assert.h>
 #include "david/ANN/ANN.h"
