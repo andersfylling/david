@@ -87,6 +87,9 @@ class MoveGenerator {
   MoveGenerator(const type::gameState_t& gs);
   MoveGenerator();   // ONLY FOR TESTING
 
+  // check if this gamestate is in a check situation
+  bool isInCheck(); // const be const, cause of generateAttacks
+
 
   // Utility
   type::bitboard_t white();
@@ -132,6 +135,7 @@ class MoveGenerator {
   bool moveIsLegal(bitboard::move_t m, bitboard::COLOR c);
   void generateMoves(bitboard::COLOR color, bool legacy = false);
   void generateAttacks(bitboard::COLOR color);
+  void generateAttacks(bool isWhite); // new version
 
 
   /*

@@ -123,6 +123,14 @@ MoveGenerator::MoveGenerator()
 }
 
 /**
+ * Validate that the gameState is check or not
+ */
+bool MoveGenerator::isInCheck() {
+  generateAttacks(this->constState.isWhite);
+  return (this->attacks & this->constState.kings[0]) > 0;
+}
+
+/**
  * adds a precalculated vecor to a specific location in the bitboard
  * @param destination - the bit the vector will start at
  * @param dir - direction of the movement
@@ -1119,6 +1127,20 @@ void MoveGenerator::generateAttacks(bitboard::COLOR color) {
   queenMoves(color, true);
   kingMoves(color, true);
 }
+void MoveGenerator::generateAttacks(bool forWhite) {
+  using bitboard::COLOR::WHITE;
+  using bitboard::COLOR::BLACK;
+
+  bitboard::COLOR color = forWhite ? WHITE : BLACK; // todo rewrite, so that the new structure can be used.
+
+  attacks = 0ULL;
+  pawnMoves(color, true);
+  bishopMoves(color, true);
+  knightMoves(color, true);
+  rookMoves(color, true);
+  queenMoves(color, true);
+  kingMoves(color, true);
+}
 
 /**
  * Generates moves for all pieces
@@ -1191,26 +1213,19 @@ void MoveGenerator::generateGameStates(std::vector<bitboard::gameState> &states)
 bool MoveGenerator::moveIsLegal(bitboard::move_t m, bitboard::COLOR c) {
   using bitboard::bitboard_t;
 
-  type::bitboard_t res = 0ULL;
+  //type::bitboard_t res = 0ULL;
 
   // Code for debugging
-  Move inter(m);
-  bitboard_t to, from;
-  to = inter.getTo();
-  from = inter.getFrom();
-  type::gameState_t gs = this->state;
+  Move inter{m};
+  //bitboard_t to, from;
+  //to = inter.getTo();
+  //from = inter.getFrom();
+  type::gameState_t gs = this->constState;
   applyMove(m, gs);
 
-  if (c == bitboard::COLOR::WHITE) {
-    generateAttacks(bitboard::COLOR::BLACK);
-    res = (attacks & gs.WhiteKing);
-  } else {
-    generateAttacks(bitboard::COLOR::WHITE);
-    res = (attacks & gs.BlackKing);
-  }
+  MoveGenerator moveGen{gs}; // don't call moveIsLegal. No recursion please.
 
-  return (res == 0ULL);
-
+  return !moveGen.isInCheck();
 }
 
 /**
