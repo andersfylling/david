@@ -63,22 +63,9 @@ void Search::enableUCIMode() {
  // TODO: return GameTree index in stead of a node copy..
 int Search::searchInit() {
   resetSearchValues();
-  //std::cout << "Search depth sat to: " << this->depth << std::endl;  //Debug
-  //std::cout << "Search time sat to: " << this->movetime << std::endl;  //Debug
 
-   int index = this->iterativeDeepening();
-
-#ifdef DAVID_DEBUG
-    std::vector<int>::iterator it;
-    std::cout << "Search objects score after complete search: " << this->searchScore << std::endl;  //Debug
-    for(it=this->expanded.begin(); it<this->expanded.end(); it++)
-      std::cout << ' ' << *it;
-    std::cout << std::endl;
-#endif
-  //
-  // Send some values/fenstring or whatever to UCI
-  //
-   return index;
+  // Index of best move in TreeGen.tree
+   return this->iterativeDeepening();
 }
 
 
@@ -101,8 +88,6 @@ int Search::iterativeDeepening() {
   int bScore = constant::boardScore::LOWEST;
 
   this->resetSearchValues();
-
-  std::vector<int> scoreCache; // store unsorted scores (!), sort every node after unchached results. Rewrite negamax.
 
   startTime = clock();              //Starting clock
 
@@ -279,25 +264,10 @@ int Search::negamax(unsigned int index, int alpha, int beta, int iDepth, int ite
                      -alpha,
                      iDepth + 1,
                      iterativeDepthLimit);
-//    if (this->isAborted.load()) { // since score will be the same, just make sure that the bestScore is set and then break.
-//      score = constant::boardScore::LOWEST;
-//    }
-//    else {
-//      score = -negamax(this->engineContextPtr->gameTreePtr->treeIndex(iDepth, i),
-//                       -beta,
-//                       -alpha,
-//                       iDepth + 1,
-//                       iterativeDepthLimit);
-//    }
 
     this->nodesSearched += 1;
     bestScore = std::max(score, bestScore);
     alpha = std::max(score, alpha);
-
-#ifdef DAVID_DEBUG
-    //std::cout << "Alpha: " << alpha << " Beta: " << beta << std::endl;
-    //this->expanded.push_back(child->score);
-#endif
 
     if (alpha >= beta) {
       break;
@@ -315,7 +285,6 @@ void Search::resetSearchValues() {
   //this->movetime = 1000; //Hardcoded variables as of now, need to switch to forwards later
   this->searchScore = 0;
   this->nodesSearched = 0;
-  this->expanded.clear();
   this->bestMoveIndex = -1;
 }
 

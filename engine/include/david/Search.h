@@ -11,6 +11,9 @@
 #include <atomic>
 #include <future>
 #include <thread>
+#ifdef DAVID_DEBUG
+#include <vector>
+#endif
 
 
 // forward declarations
@@ -98,7 +101,6 @@ class Search {
   bool isComplete;
   bool debug;
   int nodesSearched;
-  std::vector<int> expanded;
 };
 
 

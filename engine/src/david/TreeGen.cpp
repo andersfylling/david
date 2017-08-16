@@ -20,7 +20,8 @@ TreeGen::TreeGen(type::engineContext_ptr ctx)
       maxNumberOfNodes(100),
       maxDepth(5),
       startposFEN(constant::FENStartPosition),
-      nrOfEGNMoves(-1)
+      nrOfEGNMoves(-1),
+      historyIndex(0)
 {
   int i = 0;
   int iAfterFirstMove = 0;
@@ -34,7 +35,8 @@ TreeGen::TreeGen()
       maxNumberOfNodes(100),
       maxDepth(5),
       startposFEN(constant::FENStartPosition),
-      nrOfEGNMoves(-1)
+      nrOfEGNMoves(-1),
+      historyIndex(0)
 {
 #ifndef DAVID_TEST
   std::cerr << "TreeGen::TreeGen() empty contructor can only be used for unit testing!" << std::endl;
@@ -78,7 +80,7 @@ void TreeGen::setRootNodeFromFEN(const std::string& FEN) {
   }
 }
 
-void TreeGen::setRootNode(const type::gameState_t& gs) {
+void TreeGen::setRootNode(const type::gameState_t& gs) { // TODO: bad?
   this->tree.front() = std::move(gs);
 }
 
@@ -95,7 +97,8 @@ void TreeGen::reset() {
   // no need to delete the game tree itself as it just gets overwritten on demand
 
   // clear history
-  this->history.clear();
+  //this->history // no need to clear
+  this->historyIndex = 0;
 
   // clear start position
   this->startposFEN = "";
@@ -150,19 +153,21 @@ void TreeGen::generateChildren(unsigned int index) {
   //   env.setGameStateColor(node->playerColor == WHITE ? BLACK : WHITE);
   //}
 
+  // uint8 has a max num of 255. Max nr of children is 256. perfect af.
+  unsigned int firstChildPos = index == 0 ? constant::MAXMOVES - 1 : (index - 1) % constant::MAXMOVES;
+  firstChildPos = index + (constant::MAXMOVES - firstChildPos);
+
   // create a holder for possible game outputs
   std::vector<gameState> states;
 
   // generate possible game outputs
-  gen.generateGameStates(states);
+  gen.generateGameStates(states); // old version
+  // gen.generateGameStates(this->tree, firstChildPos, firstChildPos + constant::MAXMOVES); // new version
 
   // create node pointers, and set some internal data
   //std::cout << "OPTIONS ========== " << std::endl;
   const auto len = node.possibleSubMoves = static_cast<int>(states.size());
   //utils::printGameState(node);
-  // uint8 has a max num of 255. Max nr of children is 256. perfect af.
-  unsigned int firstChildPos = index == 0 ? constant::MAXMOVES - 1 : (index - 1) % constant::MAXMOVES;
-  firstChildPos = index + (constant::MAXMOVES - firstChildPos);
 
 #ifdef DAVID_DEVELOPMENT
   assert(firstChildPos != 0);
@@ -309,7 +314,11 @@ void TreeGen::applyEGNMove(const std::string& EGN) {
   this->updateRootNodeTo(index);
 
   // Add this move to the history
-  this->history.push_back(EGN);
+  this->history[this->historyIndex++] = EGN;
+
+  if (this->historyIndex >= this->history.size()) {
+    std::__throw_runtime_error("Need to grow the history array in TreeGen!!!");
+  }
 
   // now that the root node has changed, clear the EGN record
   this->EGNMoves.empty();
