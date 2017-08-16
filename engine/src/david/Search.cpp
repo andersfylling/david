@@ -3,11 +3,7 @@
 #include <ctime>
 #include <david/EngineMaster.h>
 #include <fstream>
-#include <future>
 #include "david/EngineContext.h"
-#include "uci/events.h"
-#include "uci/definitions.h"
-#include "uci/Listener.h"
 
 namespace david {
 //Signals Signal; //Scrapped for now
