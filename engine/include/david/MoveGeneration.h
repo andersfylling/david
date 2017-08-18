@@ -1,10 +1,10 @@
 #pragma once
 
-#include "bitboard.h"
-#include "types.h"
+#include "david/types.h"
 #include <utility>
 #include <vector>
 #include <array>
+#include <david/bitboard.h>
 namespace david {
 namespace movegen {
 
@@ -66,14 +66,7 @@ class MoveGenerator {
   friend class genDebugger;
  private:
   std::vector<bitboard::move_t> moveList;
-
-  // upgrade
-  std::array<bitboard::move_t, 400> moveList2;
-  unsigned int indexMoveList;
-
-
-  const type::gameState_t& constState; // the state should never change.
-  type::gameState_t state;
+  bitboard::gameState state;
   type::bitboard_t attacks;
   pieceList pList;
 
@@ -84,11 +77,7 @@ class MoveGenerator {
 
  public:
   // Constructors
-  MoveGenerator(const type::gameState_t& gs);
   MoveGenerator();   // ONLY FOR TESTING
-
-  // check if this gamestate is in a check situation
-  bool isInCheck(); // const be const, cause of generateAttacks
 
 
   // Utility
@@ -99,7 +88,6 @@ class MoveGenerator {
   bool nothernly(DIRECTION dir);
   void printMoves();
   int numberOfMoves();
-  void setGameState(const type::gameState_t& st);
 
 
   // Level 1 move basic generation of vectors
@@ -129,13 +117,13 @@ class MoveGenerator {
   // Level 4 handling
   void updatePlist();
   void capturePiece(bitboard::COLOR color, type::bitboard_t index, bitboard::gameState &st);
-  void applyMove(bitboard::move_t m); // old version
+  void setGameState(type::gameState_ptr st);
+  void setGameState(type::gameState_t st);
   void applyMove(bitboard::move_t m, type::gameState_t& gs);
-  void undoMove(type::move_t move); // is this needed?
+  void undoMove(type::move_t move);
   bool moveIsLegal(bitboard::move_t m, bitboard::COLOR c);
   void generateMoves(bitboard::COLOR color, bool legacy = false);
   void generateAttacks(bitboard::COLOR color);
-  void generateAttacks(bool isWhite); // new version
 
 
   /*
@@ -189,7 +177,7 @@ class Move {
 
   MOVETYPE getType();
   type::bitboard_t getFrom();
-  type::bitboard_t getTo() const;
+  type::bitboard_t getTo();
   bitboard::move_t getMove();
 };
 

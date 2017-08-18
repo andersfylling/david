@@ -82,19 +82,17 @@ struct gameState {
   move_t lastWhiteMove = 0;
   move_t lastBlackMove = 0;
 
-  // Store the data as an array where index 0 relates to the active player.
-  // this means an index isn't constantly refering to eg. black
-  // but to the colour of the active player (who the children nodes should be generated for)
-  std::array<type::bitboard_t, 2> pawns   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> rooks   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> knights = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> bishops = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> queens  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> kings   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<int8_t, 2> directions = {1, -1}; // 1=up, -1=down. Used for pawns.
 
-  std::array<type::bitboard_t, 2> piecess  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  // same as version 2, just easier to loop through
+  std::array<std::array<type::bitboard_t, 2>, 6> piecesArr = {{0}}; // version 3
+  uint8_t iPawns    = 0;
+  uint8_t iRooks    = 1;
+  uint8_t iKnights  = 2;
+  uint8_t iBishops  = 3;
+  uint8_t iQueens   = 4;
+  uint8_t iKings    = 5;
 
-  type::bitboard_t combinedPieces         = ::david::constant::EMPTYBOARD;
 
   //type::gameState_ptr* children;
   //std::array<type::gameState_ptr, 256> children{{nullptr}};
@@ -118,6 +116,24 @@ struct gameState {
   uint8_t castling = 15; //utils::stringTo8bitArray("00001111");
   
   bool isWhite = true;
+
+  //
+  // Legacy for version 2
+  //
+  // Store the data as an array where index 0 relates to the active player.
+  // this means an index isn't constantly refering to eg. black
+  // but to the colour of the active player (who the children nodes should be generated for)
+  std::array<type::bitboard_t, 2> pawns   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> rooks   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> knights = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> bishops = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> queens  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  std::array<type::bitboard_t, 2> kings   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+
+  std::array<type::bitboard_t, 2> piecess = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+
+  type::bitboard_t combinedPieces         = ::david::constant::EMPTYBOARD;
+
 
 
   ///

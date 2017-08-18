@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string>
 #include "david/types.h"
+#include "david/MoveGen.h"
 
 #ifdef __linux__
 //linux code goes here
@@ -458,6 +459,34 @@ void yellDeprecated(const std::string info) {
 void setDefaultChessLayout(::david::type::gameState_t &n) {
   using ::david::bitboard::COLOR::WHITE;
 
+
+  // set the new array data
+  n.piecesArr[0] = {
+      ::david::constant::defaultPiecePosition::white::PAWN,
+      ::david::constant::defaultPiecePosition::black::PAWN
+  };
+  n.piecesArr[1] = {
+      ::david::constant::defaultPiecePosition::white::ROOK,
+      ::david::constant::defaultPiecePosition::black::ROOK
+  };
+  n.piecesArr[2] = {
+      ::david::constant::defaultPiecePosition::white::KNIGHT,
+      ::david::constant::defaultPiecePosition::black::KNIGHT
+  };
+  n.piecesArr[3] = {
+      ::david::constant::defaultPiecePosition::white::BISHOP,
+      ::david::constant::defaultPiecePosition::black::BISHOP
+  };
+  n.piecesArr[4] = {
+      ::david::constant::defaultPiecePosition::white::QUEEN,
+      ::david::constant::defaultPiecePosition::black::QUEEN
+  };
+  n.piecesArr[5] = {
+      ::david::constant::defaultPiecePosition::white::KING,
+      ::david::constant::defaultPiecePosition::black::KING
+  };
+
+
   // set the new array data
   n.pawns   = {
       ::david::constant::defaultPiecePosition::white::PAWN,
@@ -849,9 +878,9 @@ void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest) {
  * @param board type::bitboard_t
  * @return index[0, 63], if board is 0, 0 is returned.
  */
-::david::type::bitboard_t LSB(::david::type::bitboard_t board) {
+uint8_t LSB(::david::type::bitboard_t board) {
 #ifdef __linux__
-  return (board != 0) ? __builtin_ffsll(board) - 1 : 0ULL;
+  return (board > 0) ? __builtin_ffsl(board) - 1 : 0; // ffsl is long
 #elif _WIN32
   // windows code goes here
   return 0LL;
@@ -1052,10 +1081,10 @@ bool perft(const int limit) {
                 (ms2 - ms) / 1000.0);
 
     // if the results are bad, don't continue
-    //if (moveGenPerft != expectedPerft) {
-    //  success = false;
-    //  break;
-    //}
+    if (moveGenPerft != expectedPerft) {
+      success = false;
+      //break;
+    }
   }
 
   return success;
@@ -1066,23 +1095,41 @@ uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
     return 1;
   }
 
-
   // create a holder for possible game outputs
-  std::vector<::david::type::gameState_t> states;
-  ::david::movegen::MoveGenerator gen{gs};
+  bool newMoveGen = false; // MoveGen.cpp/h or MoveGenerator.cpp/h
+  if (newMoveGen) {
+    ::david::MoveGen moveGen{gs};
 
-  // generate possible game outputs
-  gen.generateGameStates(states);
+    std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
+    const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+    uint64_t nodes = 0;
 
-  int len = static_cast<int>(states.size());
-  uint64_t nodes = 0;
+    // calculate move for every move
+    const auto nextDepth = depth - 1;
+    for (unsigned long i = 0; i < len; i++) {
+      nodes += perft(nextDepth, states[i]);
+    }
 
-  // calculate move for every move
-  for (int i = 0; i < len; i++) {
-    nodes += perft(depth - 1, states.at(i));
+    return nodes;
   }
+  else {
+    std::vector<::david::type::gameState_t> states;
 
-  return nodes;
+    // generate possible game outputs
+    ::david::movegen::MoveGenerator gen{};
+    gen.setGameState(gs);
+    gen.generateGameStates(states);
+
+    const auto len = states.size();
+    uint64_t nodes = 0;
+
+    // calculate move for every move
+    for (unsigned long i = 0; i < len; i++) {
+      nodes += perft(depth - 1, states.at(i));
+    }
+
+    return nodes;
+  }
 }
 
 const std::string getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second) {

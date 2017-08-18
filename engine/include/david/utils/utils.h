@@ -22,7 +22,7 @@ constexpr int ctoi(const char c) {
 void legacyGameStateUpdate(::david::type::gameState_t& n);
 }
 
-::david::type::bitboard_t  LSB(::david::type::bitboard_t board);
+uint8_t LSB(::david::type::bitboard_t board);
 ::david::type::bitboard_t  NSB(::david::type::bitboard_t &board);
 ::david::type::bitboard_t  MSB(::david::type::bitboard_t board);
 ::david::type::bitboard_t  NSB_r(::david::type::bitboard_t &board);

@@ -626,7 +626,7 @@ bool genDebugger::undoAndDo() {
   std::array <type::move_t, 10> moves = {16524, 24705, 17564, 30945, 22764, 31985, 23804, 36284, 37324};
   for (int i = 0; i < 9; i++) {
     before = m.white() | m.black();
-    m.applyMove(16524);
+    m.applyMove(16524, state);
     m.undoMove(16524);
     after = m.white() | m.black();
 

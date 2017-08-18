@@ -16,6 +16,7 @@ file(GLOB chess_ann_srcfiles
         david/MoveGeneration.cpp
         david/Search.cpp
         david/TreeGen.cpp
+        david/MoveGen.cpp
         ANN/ANN.cpp)
 add_executable(chess_ann_src ${chess_ann_srcfiles})
 
