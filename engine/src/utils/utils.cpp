@@ -1,3 +1,7 @@
+//#define MOVEGEN // MoveGen.cpp/h
+
+
+
 #include "david/utils/utils.h"
 #include "fann/floatfann.h"
 #include <sys/stat.h>
@@ -543,6 +547,16 @@ inline namespace cout {
 /**
  * Print out the chess board based on a gameState node
  * @param gs type::gameState_t&
+ *
+63	62	61	60	59	58	57	56
+55	54	53	52	51	50	49	48
+47	46	45	44	43	42	41	40
+39	38	37	36	35	34	33	32
+31	30	29	28	27	26	25	24
+23	22	21	20	19	18	17	16
+15	14	13	12	11	10	09	08
+07	06	05	04	03	02	01	00
+ *
  */
 void printGameState(const ::david::type::gameState_t &gs) {
 
@@ -553,6 +567,23 @@ void printGameState(const ::david::type::gameState_t &gs) {
     b = 0;
   }
 
+#ifdef MOVEGEN
+  std::map<const char, ::david::type::bitboard_t> links = {
+      {'b', gs.piecesArr[gs.iBishops][b]},
+      {'k', gs.piecesArr[gs.iKings][b]},
+      {'n', gs.piecesArr[gs.iKnights][b]},
+      {'p', gs.piecesArr[gs.iPawns][b]},
+      {'q', gs.piecesArr[gs.iQueens][b]},
+      {'r', gs.piecesArr[gs.iRooks][b]},
+
+      {'B', gs.piecesArr[gs.iBishops][w]},
+      {'K', gs.piecesArr[gs.iKings][w]},
+      {'N', gs.piecesArr[gs.iKnights][w]},
+      {'P', gs.piecesArr[gs.iPawns][w]},
+      {'Q', gs.piecesArr[gs.iQueens][w]},
+      {'R', gs.piecesArr[gs.iRooks][w]}
+  };
+#else
   std::map<const char, ::david::type::bitboard_t> links = {
       {'b', gs.bishops[b]},
       {'k', gs.kings[b]},
@@ -568,6 +599,7 @@ void printGameState(const ::david::type::gameState_t &gs) {
       {'Q', gs.queens[w]},
       {'R', gs.rooks[w]}
   };
+#endif
 
   std::string board(64, '-');
 
@@ -575,52 +607,71 @@ void printGameState(const ::david::type::gameState_t &gs) {
     const char piece = entry.first;
     auto bitboard = entry.second;
 
-    do {
+    while (bitboard != 0ULL) {
       auto i = LSB(bitboard);
       flipBitOff(bitboard, i);
-      board.at(i) = piece;
-    } while (bitboard != 0ULL);
+      board.at(board.size() - 1 - i) = piece;
+    }
   }
 
-  std::cout << "\n  ";
-  for (int i = 'A'; i < 'A' + 8; i++) {
-    std::cout << "  " << (char) i << " ";
-  }
+  std::cout << "\n ";
   std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
-  for (uint8_t i = 7; i < 8; i--) {
-    std::cout << i + 1 << " | ";
+  for (uint8_t i = 0; i < 8; i++) {
+    std::cout << 8 - i << " | ";
     for (uint8_t j = 0; j < 8; j++) {
       std::cout << board.at((i * 8) + j) << " | ";
     }
     std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
   }
+  std::cout << "  ";
+  for (int i = 'A'; i < 'A' + 8; i++) {
+    std::cout << "  " << (char) i << " ";
+  }
+
   std::cout << std::endl;
 }
 
 /**
  * Prints a bitboard as a chessboard with 0's and 1's
  * @param board - at bitboard_t
+ *
+63	62	61	60	59	58	57	56
+55	54	53	52	51	50	49	48
+47	46	45	44	43	42	41	40
+39	38	37	36	35	34	33	32
+31	30	29	28	27	26	25	24
+23	22	21	20	19	18	17	16
+15	14	13	12	11	10	09	08
+07	06	05	04	03	02	01	00
+ *
+ *
  */
-void printBoard(::david::type::bitboard_t bb) {
+void printBoard(uint64_t bb, const int index) {
   std::string board(64, '-');
 
   while (bb != 0ULL) {
     const auto i = LSB(bb);
     flipBitOff(bb, i);
-    board.at(i) = 'X';
+    board.at(board.size() - 1 - i) = 'X';
   }
 
-  std::cout << "\n  ";
-  for (int i = 'A'; i < 'A' + 8; i++) {
-    std::cout << "  " << (char) i << " ";
+  // add the index as a O
+  if (index > -1) {
+    board.at(board.size() - 1 - index) = 'O';
   }
+
+  std::cout << "\n ";
   std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
-  for (uint8_t i = 7; i < 8; i--) {
-    std::cout << i + 1 << " | ";
+  for (uint8_t i = 0; i < 8; i++) {
+    std::cout << 8 - i << " | ";
     for (uint8_t j = 0; j < 8; j++) {
       std::cout << board.at((i * 8) + j) << " | ";
     }
     std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
+  }
+  std::cout << "  ";
+  for (int i = 'A'; i < 'A' + 8; i++) {
+    std::cout << "  " << (char) i << " ";
   }
   std::cout << std::endl;
 }
@@ -871,106 +922,8 @@ void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest) {
   flipBitOn(board, dest);
 }
 
-/**
- * Finds the index of the first active bit, starting from right to left.
- * LSB: Least Significant Bit
- *
- * @param board type::bitboard_t
- * @return index[0, 63], if board is 0, 0 is returned.
- */
-uint8_t LSB(::david::type::bitboard_t board) {
-#ifdef __linux__
-  return (board > 0) ? __builtin_ffsl(board) - 1 : 0; // ffsl is long
-#elif _WIN32
-  // windows code goes here
-  return 0LL;
-#elif _WIN64
-  // windows code goes here
-  return 0LL;
-#else
-  // idk
-  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
-  return 0LL;
-#endif
-}
 
-/**
- * Deactivates the smallest active bit, and returns the LSB value.
- *
- * @param board type::bitboard_t
- * @return index[0, 63], if the board is 0, 0 is returned
- */
-::david::type::bitboard_t NSB(::david::type::bitboard_t &board) {
-  board &= ~(1LL << LSB(board));
-  return LSB(board);
-}
 
-::david::type::bitboard_t MSB(::david::type::bitboard_t board) {
-#ifdef __linux__
-  return 63 - __builtin_clzll(board);
-#elif _WIN32
-  // windows code goes here
-  return 0LL;
-#elif _WIN64
-  // windows code goes here
-  return 0LL;
-#else
-  // idk
-  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
-  return 0LL;
-#endif
-}
-
-::david::type::bitboard_t NSB_r(::david::type::bitboard_t &board) {
-  board &= ~(1LL << MSB(board));
-  return MSB(board);
-}
-
-// Turns on bit
-void flipBit(::david::type::bitboard_t &board, ::david::type::bitboard_t index) {
-  board |= (1LL << index);
-}
-
-// YEAH tell that bit to flipp off!!!
-// Nobody wants you bit... NOBODY WANTS YOU
-void flipBitOff(::david::type::bitboard_t &board, ::david::type::bitboard_t index) {
-  board &= ~(1ULL << index);
-}
-
-// Turns on bit
-void flipBitOn(::david::type::bitboard_t &board, ::david::type::bitboard_t index) {
-  board |= (1LL << index);
-}
-
-int nrOfActiveBits(const ::david::type::bitboard_t b) {
-#ifdef __linux__
-  return __builtin_popcountll(b);
-#elif _WIN32
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#elif _WIN64
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#else
-  // idk
-  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#endif
-}
-
-bool bitAt(const ::david::type::bitboard_t b, const uint8_t i) {
-  return (b & (1ULL << i)) != 0;
-}
 
 std::string getAbsoluteProjectPath() {
 #ifdef __linux__
@@ -1096,8 +1049,7 @@ uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
   }
 
   // create a holder for possible game outputs
-  bool newMoveGen = false; // MoveGen.cpp/h or MoveGenerator.cpp/h
-  if (newMoveGen) {
+#ifdef MOVEGEN
     ::david::MoveGen moveGen{gs};
 
     std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
@@ -1111,8 +1063,7 @@ uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
     }
 
     return nodes;
-  }
-  else {
+#else
     std::vector<::david::type::gameState_t> states;
 
     // generate possible game outputs
@@ -1129,7 +1080,7 @@ uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
     }
 
     return nodes;
-  }
+#endif
 }
 
 const std::string getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second) {

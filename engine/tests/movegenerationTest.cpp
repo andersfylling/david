@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "david/MoveGeneration.h"
+#include "david/types.h"
 #include "david/bitboard.h"
 #include <utility>
 #include <david/utils/utils.h>
@@ -474,7 +475,8 @@ bool genDebugger::vectorGeneration() {
 }
 
 bool genDebugger::edgeDistance() {
-  std::pair <type::bitboard_t ,type::bitboard_t > pai;
+
+  std::pair <bitboard_t, bitboard_t > pai;
   pai = m.distanceToEdge(63, NORTH_EAST);
   //std::cout << pai.first << "  " << pai.second << std::endl;
   if (pai.first != 0ULL)

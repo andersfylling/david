@@ -14,3 +14,21 @@
 //
 //  //TODO: convert int to bit array as a string using bitset, and test.
 //}
+
+
+TEST_CASE("vertical attack paths") {
+  const auto paths = ::utils::compileVerticalAttacks();
+
+  for (auto path : paths) {
+    //::utils::printBoard(path);
+  }
+}
+
+
+TEST_CASE("horizontal attack paths") {
+  const auto paths = ::utils::compileHorizontalAttacks();
+
+  for (auto path : paths) {
+    //::utils::printBoard(path);
+  }
+}

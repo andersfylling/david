@@ -13,6 +13,8 @@ MoveGen::MoveGen(const type::gameState_t& gs)
     , index_gameStates(0)
 {}
 
+//TODO: ((friendly ^ pieces) & hostileAttacks) > 0 => the piece cannot be moved away from the attack path. check.
+
 void MoveGen::runAllMoveGenerators() {
   // generate all the bitboards
   this->generatePawnMoves();
@@ -21,7 +23,6 @@ void MoveGen::runAllMoveGenerators() {
   this->generateBishopMoves();
   this->generateQueenMoves();
   this->generateKingMoves();
-
 
   //generate gameStates based on moves
   const auto nrOfPieceTypes = this->moves.size();
@@ -70,6 +71,12 @@ void MoveGen::runAllMoveGenerators() {
 
       // generate attack paths of enemy pieces and check for check / check mate
       // TODO: check check
+      type::bitboard_t attacks = 0ULL;
+      //attacks |= this->generatePawnAttack();
+
+      if ((attacks & gs.piecesArr[gs.iKings][0]) > 0) {
+        continue;
+      }
 
 
       // store the completed gamestate
@@ -91,6 +98,7 @@ void MoveGen::generatePawnMoves() {
   const auto friendly = this->state.piecess[0];
   const auto hostiles = this->state.piecess[1];
   const auto pieces = this->state.combinedPieces;
+  unsigned long index = 0;
 
   // stack over pieces to handle
   auto que = this->state.piecesArr[this->state.iPawns][0];
@@ -100,9 +108,7 @@ void MoveGen::generatePawnMoves() {
   do {
     uint8_t positionLimit = 1; // should the pawn only be move up/down one step?
 
-    auto resultCache = this->state.piecesArr[this->state.iPawns][0];
-    ::utils::flipBitOff(resultCache, i);
-
+    const auto resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[this->state.iPawns][0], i);
 
     // check if its a start position.
     uint8_t row = i / 8;
@@ -121,31 +127,51 @@ void MoveGen::generatePawnMoves() {
         ::utils::flipBitOn(result, to);
 
         // store the new board layout
-        this->moves[this->state.iPawns][this->index_moves[this->state.iPawns]++] = result;
+        this->moves[this->state.iPawns][index++] = result;
       }
     }
 
-    // remove this piece from the que
-    ::utils::flipBitOff(que, i);
+    // attacks
+    unsigned long to1 = i + (this->state.directions[0] * 8 + 1);
+    unsigned long to2 = i + (this->state.directions[0] * 8 - 1);
+    // its important that this only functions when the start position is at row 2 for white
+    // or row 7 for black
+    uint8_t to1Row = (to1 / 8);
+    uint8_t to2Row = (to2 / 8);
+
+    if (::utils::bitAt(hostiles, to1) && std::max(to1Row, i) - std::min(to1Row, i) == 1) {
+      // store results here
+      type::bitboard_t result = resultCache;
+      ::utils::flipBitOn(result, to1);
+
+      // store the new board layout
+      this->moves[this->state.iPawns][index++] = result;
+    }
+
+    if (::utils::bitAt(hostiles, to2) && std::max(to2Row, i) - std::min(to2Row, i) == 1) {
+      // store results here
+      type::bitboard_t result = resultCache;
+      ::utils::flipBitOn(result, to2);
+
+      // store the new board layout
+      this->moves[this->state.iPawns][index++] = result;
+    }
 
     // go to the next piece
-    i = ::utils::LSB(que);
+    i = ::utils::NSB(que, i);
   } while(i != 0);
+
+  this->index_moves[this->state.iPawns] = index;
 }
 
 /**
  * Generate legal moves for rook
  */
 void MoveGen::generateRookMoves() {
-  const auto friendly = this->state.piecess[0];
-  const auto hostiles = this->state.piecess[1];
-  const auto pieces = this->state.combinedPieces;
+  unsigned long index = 0;
 
   // stack over pieces to handle
   auto que = this->state.piecesArr[this->state.iRooks][0];
-
-  // directions a rook can move
-  std::array<int8_t, 4> directions = {/*up*/ +8, /*right*/ -1, /*down*/ -8, /*left*/ +1};
 
   // For every rook, see how far you can move it until it hits a piece
   // If it hits a friendly, don't add that position
@@ -156,117 +182,56 @@ void MoveGen::generateRookMoves() {
     auto resultCache = this->state.piecesArr[this->state.iRooks][0];
     ::utils::flipBitOff(resultCache, i);
 
-    // the different board limits related to directions
-    uint8_t row = i / 8;
-    uint8_t col = i % 8;
-    std::array<uint8_t, 4> limitations = {/*up*/7 - row, /*right*/col, /*down*/row, /*left*/7 - col};
+    type::bitboard_t attackPaths = this->generateRookAttack(i);
 
-    for (uint8_t direction = 0; direction < 4; direction++) {
-      for (unsigned long j = 1; j <= limitations[direction]; j++) {
-        unsigned long to = i + (directions[direction] * j);
-        // its important that this only functions when the start position is at row 2 for white
-        // or row 7 for black
+    while (attackPaths != 0) {
+      uint8_t position = ::utils::LSB(attackPaths);
 
-        if (::utils::bitAt(friendly, to)) {
-          break;
-        }
+      // store the new board layout
+      this->moves[this->state.iRooks][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
-        // check if it hit a hostile piece
-        // cause if so then this is the last check in this direction
-        if (::utils::bitAt(hostiles, to)) {
-          j = 64; // simple way to cancel the loop
-          // TODO: set max loop length to a const.
-          // TODO: should this have a way to say if an attack has happened?
-        }
-
-        // store results here
-        type::bitboard_t result = this->state.piecesArr[this->state.iRooks][0];
-        ::utils::flipBitOn(result, to);
-
-        // store the new board layout
-        this->moves[this->state.iRooks][this->index_moves[this->state.iRooks]++] = result;
-      }
+      attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
 
-    // remove this piece from the que
-    ::utils::flipBitOff(que, i);
-
     // go to the next piece
-    i = ::utils::LSB(que);
+    i = ::utils::NSB(que, i);
   } while(i != 0);
+
+  this->index_moves[this->state.iRooks] = index;
 }
 
 /**
  * Generate legal moves for knights
  */
 void MoveGen::generateKnightMoves() {
-  const auto friendly = this->state.piecess[0];
-  const auto hostiles = this->state.piecess[1];
-  const auto pieces = this->state.combinedPieces;
+  unsigned long index = 0;
 
   // stack over pieces to handle
   auto que = this->state.piecesArr[this->state.iKnights][0];
-
-  // directions a rook can move
-  std::array<int8_t, 4> directions = {/*up*/ +8, /*right*/ -1, /*down*/ -8, /*left*/ +1};
 
   // For every rook, see how far you can move it until it hits a piece
   // If it hits a friendly, don't add that position
   // If it hits an enemy then the position can be added
   uint8_t i = ::utils::LSB(que);
   do {
+    type::bitboard_t resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[this->state.iKnights][0], i);
 
-    type::bitboard_t resultCache = this->state.piecesArr[this->state.iKnights][0];
-    ::utils::flipBitOff(resultCache, i);
+    type::bitboard_t attackPaths = this->generateKnightAttack(i);
 
-    // the different board limits related to directions
-    uint8_t row = i / 8;
-    uint8_t col = i % 8;
-    std::array<uint8_t, 4> limitations = {/*up*/7 - row, /*right*/col, /*down*/row, /*left*/7 - col};
+    while (attackPaths != 0) {
+      uint8_t position = ::utils::LSB(attackPaths);
 
-    for (const auto direction : this->state.directions) {
-      // up / down
-      for (uint8_t y = 1; y < 3; y++) {
-        // make sure the knight doesnt go too high or too "low"
-        const auto heightPush = row + (direction * y);
-        if (heightPush > 7 || heightPush < 0) {
-          continue;
-        }
+      // store the new board layout
+      this->moves[this->state.iKnights][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
-        // how far to the side should the knight move, based on its desired height move
-        uint8_t colOffset = 3 - y; // if y == 1, then move 2 pos to the side, y == 2 move 1 pos to the side
-
-        // make sure it doesn't go too far to the sides
-        const auto sidePush = col + (direction * colOffset);
-        if (sidePush > 7 || sidePush < 0) {
-          continue;
-        }
-
-        // left && right
-        for (uint8_t x = 0; x < 2; x++) {
-          uint8_t to = i + (direction * colOffset) + (direction * 8 * y);
-
-          // Make sure position can be used
-          if (::utils::bitAt(friendly, to)) {
-            continue;
-          }
-
-          // store results here
-          type::bitboard_t result = resultCache;
-          ::utils::flipBitOn(result, to);
-
-          // store the new board layout
-          this->moves[this->state.iKnights][this->index_moves[this->state.iKnights]++] = result;
-        }
-      }
+      attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
 
-    // remove this piece from the que
-    ::utils::flipBitOff(que, i);
-
     // go to the next piece
-    i = ::utils::LSB(que);
+    i = ::utils::NSB(que, i);
   } while(i != 0);
+
+  this->index_moves[this->state.iKnights] = index;
 }
 
 /**
@@ -275,20 +240,10 @@ void MoveGen::generateKnightMoves() {
  *
  */
 void MoveGen::generateBishopMoves() {
-  const auto friendly = this->state.piecess[0];
-  const auto hostiles = this->state.piecess[1];
-  const auto pieces = this->state.combinedPieces;
+  unsigned long index = 0;
 
   // stack over pieces to handle
   auto que = this->state.piecesArr[this->state.iBishops][0];
-
-  // directions a rook can move
-  std::array<int8_t, 4> directions = {
-      /*up.right*/    +8 - 1,
-      /*right.down*/  -1 - 8,
-      /*down.left*/   -8 + 1,
-      /*left.up*/     +1 + 8
-  };
 
   // For every rook, see how far you can move it until it hits a piece
   // If it hits a friendly, don't add that position
@@ -298,45 +253,22 @@ void MoveGen::generateBishopMoves() {
     type::bitboard_t resultCache = this->state.piecesArr[this->state.iBishops][0];
     ::utils::flipBitOff(resultCache, i);
 
-    // the different board limits related to directions
-    uint8_t row = i / 8;
-    uint8_t col = i % 8;
-    std::array<uint8_t, 4> limitations = {/*up*/7 - row, /*right*/col, /*down*/row, /*left*/7 - col};
+    type::bitboard_t attackPaths = this->generateDiagonals(i);
 
-    for (uint8_t direction = 0; direction < 4; direction++) {
-      for (unsigned long j = 1; j <= limitations[direction] && j <= limitations[(direction + 1) % 4]; j++) {
-        unsigned long to = i + (directions[direction] * j);
-        // its important that this only functions when the start position is at row 2 for white
-        // or row 7 for black
+    while (attackPaths != 0) {
+      uint8_t position = ::utils::LSB(attackPaths);
 
-        if (::utils::bitAt(friendly, to)) {
-          break;
-        }
+      // store the new board layout
+      this->moves[this->state.iBishops][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
-        // check if it hit a hostile piece
-        // cause if so then this is the last check in this direction
-        if (::utils::bitAt(hostiles, to)) {
-          j = 64; // simple way to cancel the loop
-          // TODO: set max loop length to a const.
-          // TODO: should this have a way to say if an attack has happened?
-        }
-
-        // store results here
-        type::bitboard_t result = resultCache;
-        ::utils::flipBitOn(result, to);
-
-        // store the new board layout
-        this->moves[this->state.iBishops][this->index_moves[this->state.iBishops]++] = result;
-
-      }
+      attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
 
-    // remove this piece from the que
-    ::utils::flipBitOff(que, i);
-
     // go to the next piece
-    i = ::utils::LSB(que);
+    i = ::utils::NSB(que, i);
   } while(i != 0);
+
+  this->index_moves[this->state.iBishops] = index;
 }
 
 
@@ -344,128 +276,36 @@ void MoveGen::generateBishopMoves() {
  * Generate legal moves for queen
  */
 void MoveGen::generateQueenMoves() {
-  const auto friendly = this->state.piecess[0];
-  const auto hostiles = this->state.piecess[1];
-  const auto pieces = this->state.combinedPieces;
+  unsigned long index = 0;
 
-  // stolen from rook
-  {
-    // stack over pieces to handle
-    auto que = this->state.piecesArr[this->state.iQueens][0];
+  // stack over pieces to handle
+  auto que = this->state.piecesArr[this->state.iQueens][0];
 
-    // directions a rook can move
-    std::array<int8_t, 4> directions = {/*up*/ +8, /*right*/ -1, /*down*/ -8, /*left*/ +1};
+  // For every rook, see how far you can move it until it hits a piece
+  // If it hits a friendly, don't add that position
+  // If it hits an enemy then the position can be added
+  uint8_t i = ::utils::LSB(que);
+  do {
+    type::bitboard_t resultCache = this->state.piecesArr[this->state.iQueens][0];
+    ::utils::flipBitOff(resultCache, i);
 
-    // For every rook, see how far you can move it until it hits a piece
-    // If it hits a friendly, don't add that position
-    // If it hits an enemy then the position can be added
-    uint8_t i = ::utils::LSB(que);
-    do {
-      type::bitboard_t resultCache = this->state.piecesArr[this->state.iQueens][0];
-      ::utils::flipBitOff(resultCache, i);
+    type::bitboard_t attackPaths = this->generateDiagonals(i);
+    attackPaths |= this->generateRookAttack(i);
 
-      // the different board limits related to directions
-      uint8_t row = i / 8;
-      uint8_t col = i % 8;
-      std::array<uint8_t, 4> limitations = {/*up*/7 - row, /*right*/col, /*down*/row, /*left*/7 - col};
+    while (attackPaths != 0) {
+      uint8_t position = ::utils::LSB(attackPaths);
 
-      for (uint8_t direction = 0; direction < 4; direction++) {
-        for (unsigned long j = 1; j <= limitations[direction]; j++) {
-          unsigned long to = i + (directions[direction] * j);
-          // its important that this only functions when the start position is at row 2 for white
-          // or row 7 for black
+      // store the new board layout
+      this->moves[this->state.iQueens][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
-          if (::utils::bitAt(friendly, to)) {
-            break;
-          }
+      attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
+    }
 
-          // check if it hit a hostile piece
-          // cause if so then this is the last check in this direction
-          if (::utils::bitAt(hostiles, to)) {
-            j = 64; // simple way to cancel the loop
-            // TODO: set max loop length to a const.
-            // TODO: should this have a way to say if an attack has happened?
-          }
+    // go to the next piece
+    i = ::utils::NSB(que, i);
+  } while(i != 0);
 
-          // store results here
-          type::bitboard_t result = resultCache;
-          ::utils::flipBitOn(result, to);
-
-          // store the new board layout
-          this->moves[this->state.iQueens][this->index_moves[this->state.iQueens]++] = result;
-
-        }
-      }
-
-      // remove this piece from the que
-      ::utils::flipBitOff(que, i);
-
-      // go to the next piece
-      i = ::utils::LSB(que);
-    } while (i != 0);
-  }
-
-  // stolen from bishop
-  {
-    // stack over pieces to handle
-    auto que = this->state.piecesArr[this->state.iQueens][0];
-
-    // directions a rook can move
-    std::array<int8_t, 4> directions = {
-        /*up.right*/    +8 - 1,
-        /*right.down*/  -1 - 8,
-        /*down.left*/   -8 + 1,
-        /*left.up*/     +1 + 8
-    };
-
-    // For every rook, see how far you can move it until it hits a piece
-    // If it hits a friendly, don't add that position
-    // If it hits an enemy then the position can be added
-    uint8_t i = ::utils::LSB(que);
-    do {
-      type::bitboard_t resultCache = this->state.piecesArr[this->state.iQueens][0];
-      ::utils::flipBitOff(resultCache, i);
-
-      // the different board limits related to directions
-      uint8_t row = i / 8;
-      uint8_t col = i % 8;
-      std::array<uint8_t, 4> limitations = {/*up*/7 - row, /*right*/col, /*down*/row, /*left*/7 - col};
-
-      for (uint8_t direction = 0; direction < 4; direction++) {
-        for (unsigned long j = 1; j <= limitations[direction] && j <= limitations[(direction + 1) % 4]; j++) {
-          unsigned long to = i + (directions[direction] * j);
-          // its important that this only functions when the start position is at row 2 for white
-          // or row 7 for black
-
-          if (::utils::bitAt(friendly, to)) {
-            break;
-          }
-
-          // check if it hit a hostile piece
-          // cause if so then this is the last check in this direction
-          if (::utils::bitAt(hostiles, to)) {
-            j = 64; // simple way to cancel the loop
-            // TODO: set max loop length to a const.
-            // TODO: should this have a way to say if an attack has happened?
-          }
-
-          // store results here
-          type::bitboard_t result = resultCache;
-          ::utils::flipBitOn(result, to);
-
-          // store the new board layout
-          this->moves[this->state.iQueens][this->index_moves[this->state.iQueens]++] = result;
-
-        }
-      }
-
-      // remove this piece from the que
-      ::utils::flipBitOff(que, i);
-
-      // go to the next piece
-      i = ::utils::LSB(que);
-    } while(i != 0);
-  }
+  this->index_moves[this->state.iQueens] = index;
 }
 
 
@@ -473,6 +313,7 @@ void MoveGen::generateQueenMoves() {
  * Generate legal moves for king
  */
 void MoveGen::generateKingMoves() {
+  unsigned long index = 0;
   // TODO: castling
   const auto friendly = this->state.piecess[0];
 
@@ -511,10 +352,10 @@ void MoveGen::generateKingMoves() {
   i = ::utils::LSB(que);
   while (i != 0) {
     // store results here
-    type::bitboard_t result = 0ULL | (1ULL << i);
+    type::bitboard_t result = ::utils::indexToBitboard(i);
 
     // store the new board layout
-    this->moves[this->state.iKnights][this->index_moves[this->state.iKings]++] = result;
+    this->moves[this->state.iKnights][index++] = result;
 
     // remove this piece from the que
     que ^= result;
@@ -522,6 +363,8 @@ void MoveGen::generateKingMoves() {
     // go to the next piece
     i = ::utils::LSB(que);
   }
+
+  this->index_moves[this->state.iKings] = index;
 }
 
 
