@@ -8,7 +8,7 @@
 
 
 TEST_CASE("MoveGen perft [MoveGen]") {
-  REQUIRE(::utils::perft());
+  REQUIRE(::utils::perft(6));
 }
 
 TEST_CASE("MoveGen generation moves") {

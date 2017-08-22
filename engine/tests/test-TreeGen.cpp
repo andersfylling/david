@@ -28,6 +28,7 @@
   int getDepth();
  */
 
+#ifndef MOVEGEN
 TEST_CASE("Retrieving a correctly set gameState_t [TreeGen::getGameState]") {
   using ::david::gameTree::TreeGen;
 
@@ -98,3 +99,5 @@ TEST_CASE("Verify the index math [TreeGen::treeIndex]") {
   REQUIRE(tg.getChildIndex(2*MAXMOVES + 2, 0) == 3*MAXMOVES + 1);
   REQUIRE(tg.getChildIndex(2*MAXMOVES + 2, 1) == 3*MAXMOVES + 2);
 }
+
+#endif

@@ -1,7 +1,3 @@
-//#define MOVEGEN // MoveGen.cpp/h
-
-
-
 #include "david/utils/utils.h"
 #include "fann/floatfann.h"
 #include <sys/stat.h>
@@ -40,6 +36,8 @@ void legacyGameStateUpdate(::david::type::gameState_t& n) {
   using ::david::bitboard::COLOR::WHITE;
   using ::david::bitboard::COLOR::BLACK;
 
+#ifndef MOVEGEN
+
   // take all the data from the new fields and apply them to the old
   int w = 0;
   int b = 1;
@@ -71,37 +69,12 @@ void legacyGameStateUpdate(::david::type::gameState_t& n) {
   n.playerColor = n.isWhite ? WHITE : BLACK;
 
   // TODO: to use a uint8 for castling or not? seems slower, but less memory..
-  
+
+#endif
 }
 
 }
 
-bool isHalfMove(const ::david::type::gameState_t &parent, const ::david::type::gameState_t &child) {
-  // This counter is reset after captures or pawn moves, and incremented otherwise.
-  // Also moves which lose the castling rights, that is rook- and king moves from their initial squares,
-  // including castling itself, increment the Halfmove Clock.
-  // However, those moves are irreversible in the sense to reverse the same rights -
-  // since once a castling right is lost, it is lost forever, as considered in detecting repetitions.
-
-  // check if parent or child is overlapping, AKA. a piece has been captured.
-  if ((parent.piecess[0] & child.piecess[0]) != 0ULL) {
-    return false;
-  }
-
-  // check if the ---- pawns has moved
-  if ((parent.pawns[0] | child.pawns[1]) != 0ULL) {
-    return false;
-  }
-
-  // check if !---- pawns has moved
-  //if ((parent.WhitePawn | child.WhitePawn) != 0ULL) {
-  //  return false;
-  //}
-  //
-  // no rules of half moving were broken
-  //return true;
-  return (parent.pawns[1] | child.pawns[0]) != 0ULL;
-}
 
 /**
  * A FEN record contains six fields. The separator between fields is a space. The fields are:
@@ -126,6 +99,7 @@ bool isHalfMove(const ::david::type::gameState_t &parent, const ::david::type::g
 std::string generateFen(const ::david::type::gameState_t& node) {
   using ::david::type::bitboard_t;
 
+#ifndef MOVEGEN
   int w = 0;
   int b = 1;
   
@@ -135,35 +109,36 @@ std::string generateFen(const ::david::type::gameState_t& node) {
   }
 
   std::array<bitboard_t, 12> boards = {
-      node.bishops[w],
-      node.kings[w],
-      node.knights[w],
       node.pawns[w],
-      node.queens[w],
       node.rooks[w],
+      node.kings[w],
+      node.bishops[w],
+      node.queens[w],
+      node.knights[w],
       
-      node.bishops[b],
-      node.kings[b],
-      node.knights[b],
       node.pawns[b],
+      node.rooks[b],
+      node.kings[b],
+      node.bishops[b],
       node.queens[b],
-      node.rooks[b]
+      node.knights[b]
   };
+#endif
 
   std::array<char, 12> symbols = {
-      'b',
-      'k',
-      'n',
       'p',
-      'q',
       'r',
+      'n',
+      'b',
+      'q',
+      'k',
 
-      'B',
-      'K',
-      'N',
       'P',
+      'R',
+      'N',
+      'B',
       'Q',
-      'R'
+      'K'
   };
 
   char spaces[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8'};
@@ -180,7 +155,14 @@ std::string generateFen(const ::david::type::gameState_t& node) {
 
     char p = ' ';
     for (uint8_t j = 0; j < 12; j++) {
-      if (utils::bitAt(boards[j], i)) {
+
+#ifdef MOVEGEN
+      const uint64_t board = node.piecesArr[j % 6][j / 6];
+#else
+      const uint64_t board = boards[j];
+#endif
+
+      if (utils::bitAt(board, i)) {
         p = symbols[j];
         break;
       }
@@ -258,6 +240,11 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
 //  // These are used to define whats benefitial and negative inputs
 //  auto attacks = gen.getAttackState();
 
+#ifdef MOVEGEN
+   std::array<float, ::david::constant::nn::INPUTSIZE> boardInfo{};
+
+   return boardInfo;
+#else
   ::david::environment::Environment env{node.playerColor}; // TODO: REMOVE ASAP
   env.setGameState(node);
   env.generateAttacks();
@@ -449,6 +436,7 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
   }
 
   return boardInfo;
+#endif
 }
 }
 
@@ -463,7 +451,7 @@ void yellDeprecated(const std::string info) {
 void setDefaultChessLayout(::david::type::gameState_t &n) {
   using ::david::bitboard::COLOR::WHITE;
 
-
+#ifdef MOVEGEN
   // set the new array data
   n.piecesArr[0] = {
       ::david::constant::defaultPiecePosition::white::PAWN,
@@ -489,7 +477,10 @@ void setDefaultChessLayout(::david::type::gameState_t &n) {
       ::david::constant::defaultPiecePosition::white::KING,
       ::david::constant::defaultPiecePosition::black::KING
   };
-
+  n.castling = 15; //utils::stringTo8bitArray("00001111");
+  n.kingCastlings = {true, true};
+  n.queenCastlings = {true, true};
+#else
 
   // set the new array data
   n.pawns   = {
@@ -517,18 +508,17 @@ void setDefaultChessLayout(::david::type::gameState_t &n) {
       ::david::constant::defaultPiecePosition::black::BISHOP
   };
 
+  n.blackKingCastling   = true;
+  n.blackQueenCastling  = true;
+  n.whiteKingCastling   = true;
+  n.whiteQueenCastling  = true;
+#endif
   n.piecess = {
       ::david::constant::defaultPiecePosition::white::PIECES,
       ::david::constant::defaultPiecePosition::black::PIECES
   };
 
   n.combinedPieces = ::david::constant::defaultPiecePosition::PIECES;
-
-  n.blackKingCastling   = true;
-  n.blackQueenCastling  = true;
-  n.whiteKingCastling   = true;
-  n.whiteQueenCastling  = true;
-  n.castling = 15; //utils::stringTo8bitArray("00001111");
 
   n.isWhite = true;
 
@@ -541,6 +531,36 @@ void setDefaultChessLayout(::david::type::gameState_t &n) {
   // add data to old fields
   ::utils::convert::legacyGameStateUpdate(n);
 }
+
+#ifndef MOVEGEN
+bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::gameState_t& child) {
+
+  // This counter is reset after captures or pawn moves, and incremented otherwise.
+  // Also moves which lose the castling rights, that is rook- and king moves from their initial squares,
+  // including castling itself, increment the Halfmove Clock.
+  // However, those moves are irreversible in the sense to reverse the same rights -
+  // since once a castling right is lost, it is lost forever, as considered in detecting repetitions.
+
+  // check if parent or child is overlapping, AKA. a piece has been captured.
+  if ((parent.piecess[0] & child.piecess[0]) != 0ULL) {
+    return false;
+  }
+
+  // check if the ---- pawns has moved
+  if ((parent.pawns[0] | child.pawns[1]) != 0ULL) {
+    return false;
+  }
+
+  // check if !---- pawns has moved
+  //if ((parent.WhitePawn | child.WhitePawn) != 0ULL) {
+  //  return false;
+  //}
+  //
+  // no rules of half moving were broken
+  //return true;
+  return (parent.pawns[1] | child.pawns[0]) != 0ULL;
+}
+#endif
 
 inline namespace print {
 inline namespace cout {
@@ -698,6 +718,23 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string &fen
     b = 0;
   }
 
+#ifdef MOVEGEN
+  std::map<const char, ::david::type::bitboard_t> links = {
+      {'b', gs.piecesArr[gs.iBishops][b]},
+      {'k', gs.piecesArr[gs.iKings][b]},
+      {'n', gs.piecesArr[gs.iKnights][b]},
+      {'p', gs.piecesArr[gs.iPawns][b]},
+      {'q', gs.piecesArr[gs.iQueens][b]},
+      {'r', gs.piecesArr[gs.iRooks][b]},
+
+      {'B', gs.piecesArr[gs.iBishops][w]},
+      {'K', gs.piecesArr[gs.iKings][w]},
+      {'N', gs.piecesArr[gs.iKnights][w]},
+      {'P', gs.piecesArr[gs.iPawns][w]},
+      {'Q', gs.piecesArr[gs.iQueens][w]},
+      {'R', gs.piecesArr[gs.iRooks][w]}
+  };
+#else
   std::map<const char, ::david::type::bitboard_t> links = {
       {'b', gs.bishops[b]},
       {'k', gs.kings[b]},
@@ -713,6 +750,8 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string &fen
       {'Q', gs.queens[w]},
       {'R', gs.rooks[w]}
   };
+#endif
+
 
   uint8_t index = 0; //64 = space, 66 = space,
   auto len = static_cast<uint8_t>(fen.length());
@@ -739,8 +778,11 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string &fen
 
       // color
     else if (index == 64) {
+#ifdef MOVEGEN
+      gs.isWhite = fen[i + 1] == 'w';
+#else
       gs.playerColor = fen[i + 1] == 'w' ? WHITE : BLACK;
-      gs.isWhite = gs.playerColor == WHITE;
+#endif
 
       i += 2; // skip char and space afterwards
       index += 1;
@@ -797,10 +839,18 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string &fen
       break; // finished reading FEN string
     }
   }
+#ifdef MOVEGEN
+  for (int c = 0; c < 2; c++) {
+    for (int i = 0; i < 6; i++) {
+      gs.piecess[c] |= gs.piecesArr[i][c];
+    }
+  }
+#else
   gs.piecess = {
       gs.pawns[0] | gs.rooks[0] | gs.queens[0] | gs.knights[0] | gs.kings[0] | gs.bishops[0],
       gs.pawns[1] | gs.rooks[1] | gs.queens[1] | gs.knights[1] | gs.kings[1] | gs.bishops[1]
   };
+#endif
   gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
 
   // LEGACY SUPPORT
@@ -888,6 +938,13 @@ void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string&
   
   for (int i = 0; i < 2; i++) {
     if (bitAt(gs.piecess[i], origin)) {
+#ifdef MOVEGEN
+      for (int j = 0; j < 6; j++) {
+        if (bitAt(gs.piecesArr[j][i], origin)) {
+          movePiece(gs.piecesArr[j][i], origin, destination);
+        }
+      }
+#else
       if (bitAt(gs.pawns[i], origin)) {
         movePiece(gs.pawns[i], origin, destination);
       }
@@ -906,15 +963,16 @@ void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string&
       else if (bitAt(gs.knights[i], origin)) {
         movePiece(gs.knights[i], origin, destination);
       }
+#endif
     }
   }
 
   gs.isWhite = !gs.isWhite;
 
-
+#ifndef MOVEGEN
   // LEGACY SUPPORT
   ::utils::convert::legacyGameStateUpdate(gs);
-  
+#endif
 }
 
 void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest) {
@@ -956,7 +1014,7 @@ bool perft() {
   return perft(-1);
 }
 
-bool perft(const int limit) {
+bool perft(const uint8_t limit, const uint8_t startDepth) {
   ::david::type::gameState_t gs;
   ::utils::setDefaultChessLayout(gs);
 
@@ -1005,7 +1063,7 @@ bool perft(const int limit) {
               "--------------------------------",
               "----------",
               "----------");
-  for (int i = 0; i <= len; i++) {
+  for (uint8_t i = startDepth; i <= len; i++) {
     // start time
     struct timeval tp, tp2;
     gettimeofday(&tp, NULL);
@@ -1043,7 +1101,7 @@ bool perft(const int limit) {
   return success;
 }
 
-uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
+uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
   if (depth == 0) {
     return 1;
   }
@@ -1059,6 +1117,11 @@ uint64_t perft(const int depth, const ::david::type::gameState_t &gs) {
     // calculate move for every move
     const auto nextDepth = depth - 1;
     for (unsigned long i = 0; i < len; i++) {
+
+      //if (depth == 1 && states[i].piecesArr[gs.iBishops][1] != gs.piecesArr[gs.iBishops][0]) {
+      //  printGameState(states[i]);
+      //}
+
       nodes += perft(nextDepth, states[i]);
     }
 

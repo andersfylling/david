@@ -106,7 +106,7 @@ int main (/*int argc, char * argv[]*/)
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(0); // memory leak issue atm
+    ::utils::perft(5);
   }
   else if (mode == "memTestMoveGen") {
     memTestMoveGen();

@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "david/ANN/ANN.h"
 #include "david/MoveGeneration.h"
+#include "david/MoveGen.h"
 
 namespace david {
 namespace gameTree {
@@ -101,10 +102,10 @@ unsigned int TreeGen::treeIndex(const uint8_t depth, const uint8_t index) const 
 }
 
 void TreeGen::updateRootNodeTo(const int index) {
-  auto c = this->tree.front().playerColor;
+  auto c = this->tree.front().isWhite;
   this->tree.front() = std::move(this->tree[index]);
 
-  if (c == this->tree.front().playerColor) {
+  if (c == this->tree.front().isWhite) {
     std::cerr << "color was not changed!!!" << std::endl;
   }
 }
@@ -169,32 +170,48 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
   auto& node = this->tree[index];
 
   // Get ready to generate all potential moves based on given chess board
+#ifdef MOVEGEN
+  MoveGen gen{node}; // new version
+#else
   movegen::MoveGenerator gen; // old version
   gen.setGameState(node);     // old version
-  // movegen::MoveGenerator gen{node}; // new version
+#endif
 
   // uint8 has a max num of 255. Max nr of children is 256. perfect af.
   unsigned int firstChildPos = index == 0 ? constant::MAXMOVES - 1 : (index - 1) % constant::MAXMOVES;
   firstChildPos = index + (constant::MAXMOVES - firstChildPos);
 
   // create a holder for possible game outputs
+#ifdef MOVEGEN
+  const uint16_t len = gen.generateGameStates(this->tree, firstChildPos, firstChildPos + constant::MAXMOVES); // new version
+#else
   std::vector<gameState_t> states; // old version
 
   // generate possible game outputs
   gen.generateGameStates(states); // old version
-  // gen.generateGameStates(this->tree, firstChildPos, firstChildPos + constant::MAXMOVES); // new version
 
   // create node pointers, and set some internal data
   //std::cout << "OPTIONS ========== " << std::endl;
   const uint16_t len = node.possibleSubMoves = static_cast<uint16_t>(states.size()); // should not need more than uint8
   //utils::printGameState(node);
+#endif
 
 #ifdef DAVID_DEVELOPMENT
   assert(firstChildPos != 0);
 #endif
 
   for (uint16_t i = 0; i < len; i++) {
+#ifdef MOVEGEN
+
+    auto& n = this->tree[firstChildPos + i];
+
+    // use ann to get score
+    if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
+      n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
+    }
+#else
     this->generateNode(node, this->tree[firstChildPos + i], states.at(i));
+#endif
   }
 
   // once all the nodes are set, we need to sort the children.
@@ -222,6 +239,8 @@ void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n
   // There should be some record that stores the difference between the node left to this one to improve
   // updating the node. cause shit this is way slower than it needs to be.
   n = child;
+
+#ifndef MOVEGEN
 
   n.blackPieces = n.BlackPawn | n.BlackQueen | n.BlackKnight | n.BlackKing | n.BlackBishop | n.BlackRook;
   n.whitePieces = n.WhitePawn | n.WhiteQueen | n.WhiteKnight | n.WhiteKing | n.WhiteBishop | n.WhiteRook;
@@ -268,6 +287,7 @@ void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n
   if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
     n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
   }
+#endif
 }
 
 void TreeGen::setMaxDepth(int d)

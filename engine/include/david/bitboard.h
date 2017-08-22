@@ -79,8 +79,22 @@ bitboard_t makeBoardFromArray(const array<int, SIZE> &arr) {
 // Each game state is represented by a struct of
 // bitboards. A tree of moves will be made up by
 struct gameState {
-  move_t lastWhiteMove = 0;
-  move_t lastBlackMove = 0;
+  int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
+  int fullMoves = 1; // starts at 1, increments after every time black moves.
+
+  int score = ::david::constant::boardScore::LOWEST; // board score
+
+  int gameTreeLevel = 0;
+
+  int possibleSubMoves = 0; // is used by an iterator since everything is preinitialized, can by uint8
+
+  std::array<type::bitboard_t, 2> piecess = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
+  type::bitboard_t combinedPieces         = ::david::constant::EMPTYBOARD;
+
+
+  bool isWhite = true;
+
+#ifdef MOVEGEN
 
   std::array<int8_t, 2> directions = {1, -1}; // 1=up, -1=down. Used for pawns.
 
@@ -93,20 +107,16 @@ struct gameState {
   uint8_t iQueens   = 4;
   uint8_t iKings    = 5;
 
+  uint8_t enPassant = 0; // if a pawn moves by two blocks, add the passant index here. where the attack piece will stand.
+  uint8_t enPassantPawn = 0; // where the pawn stands, will be one up or down from enPassant.
+
+  ::std::array<bool, 2> queenCastlings  = {true, true};
+  ::std::array<bool, 2> kingCastlings   = {true, true};
+
 
   //type::gameState_ptr* children;
   //std::array<type::gameState_ptr, 256> children{{nullptr}};
   //type::gameState_ptr parent = nullptr;
-
-  int halfMoves = 0; // number of moves since last capture or pawn moves, otherwise incremented.
-  int fullMoves = 1; // starts at 1, increments after every time black moves.
-
-  int score = ::david::constant::boardScore::LOWEST; // board score
-
-  int gameTreeLevel = 0;
-
-  int possibleSubMoves = 0; // is used by an iterator since everything is preinitialized, can by uint8
-
 
   // castling, where index 0 and 1 refers to the current active player
   // castling[0] == KingCastling
@@ -114,8 +124,6 @@ struct gameState {
   // castling[2] == KingCastling (opponent)
   // castling[3] == QueenCastling (opponent)
   uint8_t castling = 15; //utils::stringTo8bitArray("00001111");
-  
-  bool isWhite = true;
 
   //
   // Legacy for version 2
@@ -123,6 +131,7 @@ struct gameState {
   // Store the data as an array where index 0 relates to the active player.
   // this means an index isn't constantly refering to eg. black
   // but to the colour of the active player (who the children nodes should be generated for)
+#else
   std::array<type::bitboard_t, 2> pawns   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
   std::array<type::bitboard_t, 2> rooks   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
   std::array<type::bitboard_t, 2> knights = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
@@ -130,20 +139,19 @@ struct gameState {
   std::array<type::bitboard_t, 2> queens  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
   std::array<type::bitboard_t, 2> kings   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
 
-  std::array<type::bitboard_t, 2> piecess = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-
-  type::bitboard_t combinedPieces         = ::david::constant::EMPTYBOARD;
 
 
 
   ///
   /// Legacy support. This will be removed in the future.
   ///
-
+  move_t lastWhiteMove = 0;
+  move_t lastBlackMove = 0;
   bool blackQueenCastling = true;
   bool blackKingCastling = true;
   bool whiteQueenCastling = true;
   bool whiteKingCastling = true;
+
 
   type::bitboard_t WhitePawn    = ::david::constant::EMPTYBOARD;
   type::bitboard_t WhiteRook    = ::david::constant::EMPTYBOARD;
@@ -166,6 +174,7 @@ struct gameState {
 
   COLOR playerColor = bitboard::COLOR::WHITE;
   /// Legacy support END
+#endif
 };
 
 struct pieceAttack {

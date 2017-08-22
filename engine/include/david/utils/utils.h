@@ -1,8 +1,8 @@
 #pragma once
 
+#include "david/david.h"
 
 #include "david/types.h"
-#include "david/david.h"
 
 #include "fann/floatfann.h"
 
@@ -140,12 +140,51 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
 
 std::string generateFen(const ::david::type::gameState_t& node);
 void generateBoardFromFen(::david::type::gameState_t& gs, const std::string& fen);
-bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::gameState_t& child);
 void setDefaultChessLayout(::david::type::gameState_t& node);
 ::david::type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
 void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string& EGN);
 void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest);
+
+
+// define the params based on what movegen class is used
+#ifdef MOVEGEN
+inline bool isHalfMove(
+    const uint64_t parentActivePieces,
+    const uint64_t childActivePieces,
+    const uint64_t parentActivePawns,
+    const uint64_t parentOtherPawns,
+    const uint64_t childActivePawns,
+    const uint64_t childOtherPawns
+) {
+  // This counter is reset after captures or pawn moves, and incremented otherwise.
+  // Also moves which lose the castling rights, that is rook- and king moves from their initial squares,
+  // including castling itself, increment the Halfmove Clock.
+  // However, those moves are irreversible in the sense to reverse the same rights -
+  // since once a castling right is lost, it is lost forever, as considered in detecting repetitions.
+
+  // check if parent or child is overlapping, AKA. a piece has been captured.
+  if ((parentActivePieces & childActivePieces) != 0ULL) {
+    return false;
+  }
+
+  // check if the ---- pawns has moved
+  if ((parentActivePawns | childOtherPawns) != 0ULL) {
+    return false;
+  }
+
+  // check if !---- pawns has moved
+  //if ((parent.WhitePawn | child.WhitePawn) != 0ULL) {
+  //  return false;
+  //}
+  //
+  // no rules of half moving were broken
+  //return true;
+  return (parentOtherPawns | childActivePawns) != 0ULL;
+}
+#else
+bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::gameState_t& child);
+#endif
 
 // Everything printing related
 // utils::print
@@ -161,8 +200,8 @@ void printBoard(uint64_t board, const int index = -1);
 void yellDeprecated(const std::string info);
 
 bool perft();
-bool perft(const int limit);
-uint64_t perft(const int depth, const ::david::type::gameState_t& gs);
+bool perft(const uint8_t limit, const uint8_t startDepth = 0);
+uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs);
 const std::string getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second);
 void getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second, std::string& EGN);
 
@@ -292,5 +331,91 @@ constexpr ::std::array<uint64_t, 64> compileRookAttacks() {
   return attacks;
 };
 
+constexpr ::std::array<uint64_t, 64> compilePawnAttacks () {
+  ::std::array<uint64_t, 64> attacks{};
+
+  for (uint8_t i = 0; i < 64; i++) {
+    auto board = 0ULL;
+    const auto piece = ::utils::indexToBitboard(i);
+
+    if ((71775015237779198 & piece) > 0) {
+      // shift right and up
+      board |= piece << (8 - 1);
+    }
+
+    if ((35887507618889599 & piece) > 0) {
+      // shift up and left
+      board |= piece << (8 + 1);
+    }
+
+    if ((9187201950435737344 & piece) > 0) {
+      // shift down and left
+      board |= piece >> (8 - 1);
+    }
+
+    if ((18374403900871474688 & piece) > 0) {
+      // shift down and right
+      board |= piece >> (8 + 1);
+    }
+
+    attacks[i] = board;
+  }
+
+  return attacks;
+};
+
+namespace constant {
+const ::std::array<uint64_t, 64> knightAttackPaths = ::utils::compileKnightAttacks();
+
+const ::std::array<uint64_t, 64> rookAttackPaths = ::utils::compileRookAttacks();
+
+// horixontal attack paths
+const ::std::array<uint64_t, 64> horizontalAttackPaths = ::utils::compileHorizontalAttacks();
+
+// Vertical attack paths
+const ::std::array<uint64_t, 64> verticalAttackPaths = ::utils::compileVerticalAttacks();
+
+// pawn attacks
+const ::std::array<uint64_t, 64> pawnAttackPaths = ::utils::compilePawnAttacks();
+
+//diagonal attack paths
+// ->, down to up
+const std::array<uint64_t, 15> duAttackPaths = {
+    0,
+    4647714815446351872,
+    2323998145211531264,
+    1161999622361579520,
+    580999813328273408,
+    290499906672525312,
+    145249953336295424,
+    72624976668147840, // middle
+    283691315109952,
+    1108169199648,
+    4328785936,
+    16909320,
+    66052,
+    258,
+    0
+};
+
+// ->, up to down
+const std::array<uint64_t, 15> udAttackPaths = {
+    0,
+    32832,
+    8405024,
+    2151686160,
+    550831656968,
+    141012904183812,
+    36099303471055874,
+    9241421688590303745, // middle diagonal
+    4620710844295151872,
+    2310355422147575808,
+    1155177711073755136,
+    577588855528488960,
+    288794425616760832,
+    144396663052566528,
+    0
+};
+}
 
 } // utils

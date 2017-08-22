@@ -1,11 +1,13 @@
 #pragma once
 
+#include "david/david.h"
 #include "david/types.h"
 #include <utility>
 #include <vector>
 #include <array>
 #include <david/bitboard.h>
 namespace david {
+#ifndef MOVEGEN
 namespace movegen {
 
 /**
@@ -182,4 +184,6 @@ class Move {
 };
 
 };  // End of movegeneration
+
+#endif
 }; // End of david

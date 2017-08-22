@@ -32,3 +32,11 @@ TEST_CASE("horizontal attack paths") {
     //::utils::printBoard(path);
   }
 }
+
+TEST_CASE("pawn attacks") {
+  const auto paths = ::utils::compilePawnAttacks();
+
+  for (int i = 0; i < 64; i++) {
+    //::utils::printBoard(paths[i], i);
+  }
+}

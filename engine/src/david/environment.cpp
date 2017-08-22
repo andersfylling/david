@@ -2,6 +2,7 @@
 // Created by lolos on 05.04.2017.
 //
 
+#include "david/david.h"
 #include "david/environment.h"
 #include "david/bitboard.h"
 #include <string>
@@ -15,6 +16,7 @@
 #include <map>
 
 namespace david {
+#ifndef MOVEGEN
 namespace environment {
 
 using std::string;
@@ -1164,4 +1166,6 @@ void Move::set(move_t m) {
 }
 
 } // End of move
+
+#endif
 }

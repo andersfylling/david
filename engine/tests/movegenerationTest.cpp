@@ -5,6 +5,8 @@
 #include <utility>
 #include <david/utils/utils.h>
 
+#ifndef MOVEGEN
+
 using david::type::bitboard_t;
 using david::bitboard::COLOR;
 using david::movegen::DIRECTION;
@@ -653,3 +655,5 @@ TEST_CASE("BOARD CASES") {
 
 }
 }
+
+#endif

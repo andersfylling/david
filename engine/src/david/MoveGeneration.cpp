@@ -9,7 +9,7 @@ namespace david {
 
 
 // ############# MOVE GENERATOR ######################
-
+#ifndef MOVEGEN
 movegen::MoveGenerator::MoveGenerator() {
   state.BlackBishop = 2594073385365405696ULL;
   state.BlackKing = 576460752303423488ULL;
@@ -300,11 +300,15 @@ void movegen::MoveGenerator::knightMoves(bitboard::COLOR color, bool vector) {
   }
 
   if (vector) {
-    for (bitboard_t index = utils::LSB(board); index; index = utils::NSB(board), ++boardValue) {
-      bitboard_t bb = 0ULL;
-      uint8_t row = index / 8; // index is never higher than 63
-      uint8_t col = index - (row * 8); // index is never higher than 63
+    for (uint8_t index = utils::LSB(board); index; index = utils::NSB(board, index)) {
+      attacks |= (~friends) & ::utils::constant::knightAttackPaths[index]; // too slow, place in a uint16?
 
+
+      //bitboard_t bb = 0ULL;
+      //uint8_t row = index / 8; // index is never higher than 63
+      //uint8_t col = index - (row * 8); // index is never higher than 63
+
+      /*
       // Two steps up, one left
       if (row < 6 && col < 7 && !utils::bitAt(friends, index + 17)) {
         utils::flipBitOn(attacks, 17);
@@ -344,6 +348,8 @@ void movegen::MoveGenerator::knightMoves(bitboard::COLOR color, bool vector) {
       if (row > 0 && col > 1 && !utils::bitAt(friends, index + (-8 - 2))) {
         utils::flipBitOn(attacks, index - 10);
       }
+      */
+
     }
   } else {
 
@@ -1408,6 +1414,7 @@ void movegen::Move::printMove() {
   std::cout << "Type:\t" << (int) getType() << std::endl << std::endl;
 }
 
+#endif
 
 } // End of david
 

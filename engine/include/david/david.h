@@ -1,5 +1,7 @@
 #pragma once
 
+//#define MOVEGEN // MoveGen.cpp/h
+
 #include <limits>
 #include <string>
 #include "david/types.h"
@@ -67,6 +69,7 @@ static const int LOWEST   = std::numeric_limits<int>::min();
 
 static const int MAXMOVES = 256;
 static const int MAXDEPTH = 30;
+
 
 
 namespace nn {

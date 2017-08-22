@@ -313,10 +313,11 @@ void ::david::ChessEngine::linkUCICommands()
       }
 
       // the root node should always have the same colour as the engine!
-      if (this->player.color != this->gameTreePtr->getGameState(0).playerColor) {
+      bool whitePlayer = this->player.color == bitboard::COLOR::WHITE;
+      if (whitePlayer != this->gameTreePtr->getGameState(0).isWhite) {
         std::cerr << "Root node is not the same as engine, do not search!!!" << std::endl;
-        std::cerr << "\tplayer:    " << (this->player.color == bitboard::COLOR::BLACK ? "black" : "white") << std::endl;
-        std::cerr << "\tgameState: " << (this->gameTreePtr->getGameState(0).playerColor == bitboard::COLOR::BLACK ? "black" : "white") << std::endl;
+        std::cerr << "\tplayer:    " << (!whitePlayer ? "black" : "white") << std::endl;
+        std::cerr << "\tgameState: " << (!whitePlayer ? "white" : "black") << std::endl;
       }
 
       //utils::affectGameStateByEGNMove(this->gameTreePtr->getGameState(0), args["moves"]);
