@@ -1055,7 +1055,7 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
               "Depth",
               "David MoveGen Result",
               "Expected MoveGen Result",
-              "Error %",
+              "Error  ",
               "Seconds");
   std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
               "-------",
@@ -1082,13 +1082,14 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
     // generated node error estimation
     const double difference =
         static_cast<double>(std::max(moveGenPerft, expectedPerft) - std::min(moveGenPerft, expectedPerft)) / std::max(moveGenPerft, expectedPerft);
+    const long long int difference2 = (long long int)moveGenPerft - (long long int)expectedPerft;
 
     // print results for perft[i]
-    std::printf("| %5i | %30lu | %30lu | %8.1f | %8.2f |\n",
+    std::printf("| %5i | %30lu | %30lu | %8lli | %8.2f |\n",
                 i,
                 moveGenPerft,
                 expectedPerft,
-                difference * 100.0, // difference
+                difference2, //difference * 100.0, // difference
                 (ms2 - ms) / 1000.0);
 
     // if the results are bad, don't continue
@@ -1124,6 +1125,7 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
   // calculate move for every move
   const auto nextDepth = depth - 1;
   std::vector<std::thread> threads;
+  const bool threading = false;
   for (unsigned long i = 0; i < len; i++) {
 
     //if (depth == 1 && states[i].piecesArr[gs.iBishops][1] != gs.piecesArr[gs.iBishops][0]) {
@@ -1131,7 +1133,7 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
     //}
     auto& state = states[i];
 
-    if (depth > 4) {
+    if (threading && depth > 4) {
       threads.push_back(std::thread([&nodes, nextDepth, &state]() {
         nodes += perft(nextDepth, state);
       }));
@@ -1141,7 +1143,7 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
     }
   }
 
-  if (depth  > 4) {
+  if (threading && depth  > 4) {
     for (auto &t : threads) {
       t.join();
     }

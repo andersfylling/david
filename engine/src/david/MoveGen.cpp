@@ -28,12 +28,12 @@ void MoveGen::runAllMoveGenerators() {
   // +--------------------------------------------------------+
   // | # combination:  depth:    david / Chess.js, difference |
   // +--------------------------------------------------------+
-  // | * pawns:           d6: 11517040 / 11515584, 1456       |
-  // | * pawns + knights: d3:     7766 /     7686,   70       | <- outdated
-  // | * pawns + rooks:   d4:    59184 /    60662, 1478       | <- outdated
-  // | * pawns + bishops: d3:     3882 /     4290,  408       | <- outdated
-  // | * pawns + queens:  d3:     3902 /     4118,  216       | <- outdated
-  // | * pawns + kings:   d6: 13530927 / 13529441, 1486       | <- outdated
+  // | * pawns:           d7:153456226 /153456226,      0     | <- haven't tested for a higher depth, d8 crashes
+  // | * pawns + knights: d6: 51508542 / 51452646,  55896     |
+  // | * pawns + rooks:   d7:199668752 /199668724,     28     |
+  // | * pawns + bishops: d3:     3882 /     4290,    408     | <- outdated
+  // | * pawns + queens:  d3:     3902 /     4118,    216     | <- outdated
+  // | * pawns + kings:   d6: 13530927 / 13529441,   1486     | <- outdated
   // +--------------------------------------------------------+
   //
 
@@ -83,7 +83,7 @@ void MoveGen::runAllMoveGenerators() {
       }
 
       // en passant capture. this made no difference... wtf TODO
-      else if (pieceType == 0 && (::utils::indexToBitboard(this->state.enPassant) & this->moves[0][board]) > 0) {
+      else if (pieceType == 0 && this->state.enPassant > 0 && (::utils::indexToBitboard(this->state.enPassant) & this->moves[0][board]) > 0) {
         ::utils::flipBitOff(gs.piecesArr[0][0], this->state.enPassantPawn);
       }
 
@@ -174,6 +174,11 @@ void MoveGen::runAllMoveGenerators() {
         gs.piecesArr[0][1] ^= this->promotedPawns[pieceType][board];
       }
 
+      // check?
+      if (this->dangerousPosition(gs.piecesArr[gs.iKings][1], gs, 0)) {
+        continue;
+      }
+
       // valid move, add it to the record.
       this->gameStates[this->index_gameStates++] = gs;
     }
@@ -185,8 +190,6 @@ void MoveGen::runAllMoveGenerators() {
 /**
  * Generate all legal moves for pawns
  *
- * TODO: Implement attacking
- * TODO-2: Implement en passant
  */
 void MoveGen::generatePawnMoves() {
   const auto friendly = this->state.piecess[0];
@@ -203,7 +206,13 @@ void MoveGen::generatePawnMoves() {
   while (que != 0  || i != 0) {
     const auto resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[this->state.iPawns][0], i);
 
-    auto paths = this->generatePawnPaths(i); // TODO: for every promotion, we need to add empty pawns....
+    auto paths = this->generatePawnPaths(i);
+
+
+    // if this piece blocks a enemy attack, don't bother moving it
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0 || (this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  paths &= (this->xRayDiagonalPaths | xRayRookPaths);
+    //}
 
     for (uint8_t ii = ::utils::LSB(paths); paths != 0; ii = ::utils::NSB(paths, ii)) {
       this->moves[this->state.iPawns][index++] = ::utils::flipBitOnCopy(resultCache, ii);
@@ -230,6 +239,14 @@ void MoveGen::generateRookMoves() {
   // If it hits an enemy then the position can be added
   uint8_t i = ::utils::LSB(que);
   do {
+
+
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0 || (this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  // since this piece doesnt move diagonal nor vertical/horizontal, just ignore the piece
+    //  i = ::utils::NSB(que, i);
+    //  continue;
+    //}
+
 
     auto resultCache = this->state.piecesArr[this->state.iRooks][0];
     ::utils::flipBitOff(resultCache, i);
@@ -314,9 +331,9 @@ void MoveGen::generateBishopMoves() {
     type::bitboard_t attackPaths = this->generateDiagonals(i);
 
     // if this piece blocks a enemy attack, don't bother moving it
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-      attackPaths &= (this->xRayDiagonalPaths);
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= (this->xRayDiagonalPaths);
+    //}
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -356,9 +373,9 @@ void MoveGen::generateQueenMoves() {
     attackPaths |= this->generateRookAttack(i);
 
     // if this piece blocks a enemy attack, don't bother moving it
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0 || (this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      attackPaths &= (this->xRayDiagonalPaths | xRayRookPaths);
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0 || (this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= (this->xRayDiagonalPaths | xRayRookPaths);
+    //}
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -399,10 +416,10 @@ void MoveGen::generateKingMoves() {
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
 
-      if (this->dangerousPosition(::utils::indexToBitboard(position), this->state)) {
-        attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
-        continue;
-      }
+      //if (this->dangerousPosition(::utils::indexToBitboard(position), this->state)) {
+      //  attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
+      //  continue;
+      //}
 
       // store the new board layout
       this->moves[this->state.iKings][index++] = ::utils::flipBitOnCopy(resultCache, position);

@@ -600,10 +600,10 @@ class MoveGen {
   /**
    * Attack position for knights
    */
-  inline uint64_t generateKnightAttack (const uint8_t index, const bool hostilePath = false) const {
-    const type::bitboard_t friendly = this->state.piecess[hostilePath ? 1 : 0];
+  inline uint64_t generateKnightAttack (const uint8_t index, const uint8_t friendly = 0) const {
+    const type::bitboard_t friendlies = this->state.piecess[friendly];
 
-    return ~friendly & ::utils::constant::knightAttackPaths[index];
+    return (~friendlies) & ::utils::constant::knightAttackPaths[index];
   }
 
   /**

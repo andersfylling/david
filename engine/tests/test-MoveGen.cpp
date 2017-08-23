@@ -8,7 +8,7 @@
 
 
 TEST_CASE("MoveGen perft [MoveGen]") {
-  REQUIRE(::utils::perft(5));
+  //REQUIRE(::utils::perft(6));
 }
 
 TEST_CASE("MoveGen generation moves") {
@@ -18,26 +18,27 @@ TEST_CASE("MoveGen generation moves") {
 
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
   uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
-  ::david::type::gameState_t gs2 = states[7];
+  ::david::type::gameState_t gs2 = states[3];
 
   ::david::MoveGen b{gs2};
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states2;
   len = b.template generateGameStates<::david::constant::MAXMOVES>(states2);
-  ::david::type::gameState_t gs3 = states2[7];
+  ::david::type::gameState_t gs3 = states2[1];
 
   ::david::MoveGen c{gs3};
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states3;
   len = c.template generateGameStates<::david::constant::MAXMOVES>(states3);
   ::david::type::gameState_t gs4 = states3[1];
 
-  ::david::MoveGen d{gs4};
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states4;
-  len = d.template generateGameStates<::david::constant::MAXMOVES>(states4);
+  //::david::MoveGen d{gs4};
+  //std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states4;
+  //len = d.template generateGameStates<::david::constant::MAXMOVES>(states4);
 
+  //::utils::printGameState(gs3);
 
   for (int i = 0; i < len; i++) {
-    auto g = states4[i];
-    //::utils::printGameState(g);
+    auto g = states3[i];
+    ::utils::printGameState(g);
   }
 
 }
