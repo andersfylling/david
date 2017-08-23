@@ -280,21 +280,13 @@ class MoveGen {
     }
 
     // pawns
-    type::bitboard_t pawns = 0ULL;
-    if (!gs.isWhite) {
-      // but it's not int128..
-      pawns = ((board & 18374403900871474688) >> 9) | ((board & 9187201950435737344) >> 7);
-    }
-    else {
-      pawns = ((board & 35887507618889599) << 9) | ((board & 71775015237779198) << 7);
-    }
-    if ((pawns & gs.piecesArr[gs.iPawns][hostile]) > 0) {
+    if ((::utils::constant::pawnAttackPaths[pos] & gs.piecesArr[gs.iPawns][hostile]) > 0) {
       return true;
     }
 
     // bishop & diagonal queens
     const type::bitboard_t diagonals = this->generateDiagonals(pos);
-    if (((diagonals & gs.piecesArr[gs.iBishops][1]) | (diagonals & gs.piecesArr[gs.iQueens][hostile])) > 0) {
+    if (((diagonals & gs.piecesArr[gs.iBishops][hostile]) | (diagonals & gs.piecesArr[gs.iQueens][hostile])) > 0) {
       return true;
     }
 

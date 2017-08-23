@@ -176,6 +176,8 @@ void MoveGen::runAllMoveGenerators() {
 
       // check?
       if (this->dangerousPosition(gs.piecesArr[gs.iKings][1], gs, 0)) {
+        //std::cout << (gs.isWhite ? "black" : "white") << " moved:" << std::endl;
+        //::utils::printGameState(gs);
         continue;
       }
 

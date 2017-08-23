@@ -8,7 +8,7 @@
 
 
 TEST_CASE("MoveGen perft [MoveGen]") {
-  //REQUIRE(::utils::perft(6));
+  REQUIRE(::utils::perft(5));
 }
 
 TEST_CASE("MoveGen generation moves") {
@@ -16,29 +16,47 @@ TEST_CASE("MoveGen generation moves") {
   ::utils::setDefaultChessLayout(gs);
   ::david::MoveGen moveGen{gs};
 
+  REQUIRE(gs.isWhite);
+
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
   uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
-  ::david::type::gameState_t gs2 = states[3];
+  ::david::type::gameState_t gs2 = states[1];
+
+  REQUIRE(!gs2.isWhite);
 
   ::david::MoveGen b{gs2};
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states2;
   len = b.template generateGameStates<::david::constant::MAXMOVES>(states2);
   ::david::type::gameState_t gs3 = states2[1];
 
+  REQUIRE(gs3.isWhite);
+
   ::david::MoveGen c{gs3};
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states3;
   len = c.template generateGameStates<::david::constant::MAXMOVES>(states3);
-  ::david::type::gameState_t gs4 = states3[1];
+  ::david::type::gameState_t gs4 = states3[len - 1];
 
-  //::david::MoveGen d{gs4};
-  //std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states4;
-  //len = d.template generateGameStates<::david::constant::MAXMOVES>(states4);
+  REQUIRE(!gs4.isWhite);
+
+  ::david::MoveGen d{gs4};
+  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states4;
+  len = d.template generateGameStates<::david::constant::MAXMOVES>(states4);
+  ::david::type::gameState_t gs5 = states4[len - 4];
+
+  REQUIRE(gs5.isWhite);
+
+  ::david::MoveGen e{gs5};
+  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states5;
+  len = e.template generateGameStates<::david::constant::MAXMOVES>(states5);
+  ::david::type::gameState_t gs6 = states5[len - 1];
+
+  REQUIRE(!gs6.isWhite);
 
   //::utils::printGameState(gs3);
 
   for (int i = 0; i < len; i++) {
-    auto g = states3[i];
-    ::utils::printGameState(g);
+    auto g = states5[i];
+    //::utils::printGameState(g);
   }
 
 }
