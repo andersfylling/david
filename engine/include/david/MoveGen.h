@@ -97,7 +97,7 @@ class MoveGen {
   type::bitboard_t hostileAttackPaths;
 
   // attack paths for pawns
-  inline type::bitboard_t generatePawnAttack(const type::gameState_t& gs) {
+  inline type::bitboard_t generatePawnAttack(const type::gameState_t& gs) const {
     using type::bitboard_t;
 
     bitboard_t attacks = 0ULL;
@@ -123,8 +123,6 @@ class MoveGen {
       bitboard_t r1 = (pawns ^ (pawns & blackPawnsRightAttackFilter)) >> 9;
       r1 ^= pawns & r1;
 
-
-
       attacks = r1;
     }
 
@@ -147,9 +145,8 @@ class MoveGen {
       const type::bitboard_t northArea,
       const uint8_t offset = 7
   ) const {
-    type::bitboard_t interest = psuedoPath & northArea;
     // find all path blockers
-    type::bitboard_t northBlockers = (friendlyBlockers & interest) | (((hostiles & interest) << offset)); // & northArea);
+    type::bitboard_t northBlockers = (friendlyBlockers | ((hostiles & northArea) << offset)) & northArea; // & northArea);
 
     if (northBlockers > 0) {
       // find the area south of the closest blocker
@@ -171,9 +168,8 @@ class MoveGen {
       const type::bitboard_t southArea,
       const uint8_t offset = 7
   ) const {
-    type::bitboard_t interest = psuedoPath & southArea;
     // find all southern blockers
-    type::bitboard_t southBlockers = (friendlyBlockers & interest) | ((hostiles & interest) >> offset);
+    type::bitboard_t southBlockers = (friendlyBlockers | ((hostiles & southArea) >> offset)) & southArea;
 
     if (southBlockers > 0) {
       // get the area of illegal moves, starting from the first blocker downwards to index 0.
@@ -206,6 +202,8 @@ class MoveGen {
 
   /**
    * generate pawn moves for a given index
+   *
+   * On promotions, the promoted pieces are added directly to the move array
    */
   inline type::bitboard_t generatePawnPaths (const uint8_t index) {
     const auto pieceBoard = ::utils::indexToBitboard(index);
@@ -287,6 +285,13 @@ class MoveGen {
     // bishop & diagonal queens
     const type::bitboard_t diagonals = this->generateDiagonals(pos);
     if (((diagonals & gs.piecesArr[gs.iBishops][hostile]) | (diagonals & gs.piecesArr[gs.iQueens][hostile])) > 0) {
+      // bug: generates a attack path that goes through a hostile piece.
+      // in this case, king is at E8, a friendly pawn at G6 and a hostile queen at H5.
+      // yet the path stretches beyond the pawn and into the queen, making this seem like
+      // the queen has a open route to attack the king. This is obviusly false.
+      // attack path generated: 1128103225065472
+
+      //std::cout << diagonals << std::endl;
       return true;
     }
 
@@ -569,21 +574,17 @@ class MoveGen {
     const type::bitboard_t southArea = iBoard - 1;
     const type::bitboard_t northArea = (~iBoard) ^ southArea;
 
-    type::bitboard_t blockers = 0ULL;
-
     // attack path starting from bottom going upwards, reading left to right
     type::bitboard_t r1 = iBoard ^ ::utils::constant::duAttackPaths[14 - (index % 8) - (index / 8)];
-    blockers = r1 & friendly;
 
-    r1 = this->extractLegalSouthPath(r1, blockers, hostiles, southArea >> 6);
-    r1 = this->extractLegalNorthPath(r1, blockers, hostiles, northArea);
+    r1 = this->extractLegalSouthPath(r1, friendly, hostiles, southArea & r1, 7);
+    r1 = this->extractLegalNorthPath(r1, friendly, hostiles, northArea & r1, 7);
 
     // attack path starting from bottom going upwards, reading left to right
     type::bitboard_t r2 = iBoard ^ ::utils::constant::udAttackPaths[7 - (index % 8) + (index / 8)];
-    blockers = r2 & friendly;
 
-    r2 = this->extractLegalSouthPath(r2, blockers, hostiles, southArea >> 8, 9);
-    r2 = this->extractLegalNorthPath(r2, blockers, hostiles, northArea, 9);
+    r2 = this->extractLegalSouthPath(r2, friendly, hostiles, southArea & r2, 9);
+    r2 = this->extractLegalNorthPath(r2, friendly, hostiles, northArea & r2, 9);
 
     // combine
     return r1 | r2; // remove start position of piece
@@ -642,21 +643,17 @@ class MoveGen {
     const type::bitboard_t southArea = iBoard - 1;
     const type::bitboard_t northArea = (~iBoard) ^ southArea;
 
-    type::bitboard_t blockers = 0ULL;
-
     // attack path starting from bottom going upwards, reading left to right
     type::bitboard_t r1 = iBoard ^ ::utils::constant::verticalAttackPaths[index];
-    blockers = r1 & friendly;
 
-    r1 = this->extractLegalSouthPath(r1, blockers, hostiles, southArea & r1, 8);
-    r1 = this->extractLegalNorthPath(r1, blockers, hostiles, northArea & r1, 8);
+    r1 = this->extractLegalSouthPath(r1, friendly, hostiles, southArea & r1, 8);
+    r1 = this->extractLegalNorthPath(r1, friendly, hostiles, northArea & r1, 8);
 
     // attack path starting from bottom going upwards, reading left to right
     type::bitboard_t r2 = iBoard ^ ::utils::constant::horizontalAttackPaths[index];
-    blockers = r2 & friendly;
 
-    r2 = this->extractLegalSouthPath(r2, blockers, hostiles, southArea, 1);
-    r2 = this->extractLegalNorthPath(r2, blockers, hostiles, northArea, 1);
+    r2 = this->extractLegalSouthPath(r2, friendly, hostiles, southArea & r2, 1);
+    r2 = this->extractLegalNorthPath(r2, friendly, hostiles, northArea & r2, 1);
 
     // combine
     return r1 | r2; // remove start position of piece
