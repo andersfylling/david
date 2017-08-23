@@ -1045,7 +1045,7 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
   }
 
 
-  std::printf("|%7s|%32s|%32s|%10s|%10s|\n",
+  std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
               "-------",
               "--------------------------------",
               "--------------------------------",
@@ -1057,7 +1057,7 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
               "Expected MoveGen Result",
               "Error %",
               "Seconds");
-  std::printf("|%7s|%32s|%32s|%10s|%10s|\n",
+  std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
               "-------",
               "--------------------------------",
               "--------------------------------",
@@ -1098,6 +1098,13 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
     }
   }
 
+  std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
+              "-------",
+              "--------------------------------",
+              "--------------------------------",
+              "----------",
+              "----------");
+
   return success;
 }
 
@@ -1108,41 +1115,56 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
 
   // create a holder for possible game outputs
 #ifdef MOVEGEN
-    ::david::MoveGen moveGen{gs};
+  ::david::MoveGen moveGen{gs};
 
-    std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
-    const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
-    uint64_t nodes = 0;
+  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
+  const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+  uint64_t nodes = 0;
 
-    // calculate move for every move
-    const auto nextDepth = depth - 1;
-    for (unsigned long i = 0; i < len; i++) {
+  // calculate move for every move
+  const auto nextDepth = depth - 1;
+  std::vector<std::thread> threads;
+  for (unsigned long i = 0; i < len; i++) {
 
-      //if (depth == 1 && states[i].piecesArr[gs.iBishops][1] != gs.piecesArr[gs.iBishops][0]) {
-      //  printGameState(states[i]);
-      //}
+    //if (depth == 1 && states[i].piecesArr[gs.iBishops][1] != gs.piecesArr[gs.iBishops][0]) {
+    //  printGameState(states[i]);
+    //}
+    auto& state = states[i];
 
-      nodes += perft(nextDepth, states[i]);
+    if (depth > 4) {
+      threads.push_back(std::thread([&nodes, nextDepth, &state]() {
+        nodes += perft(nextDepth, state);
+      }));
     }
+    else {
+      nodes += perft(nextDepth, state);
+    }
+  }
 
-    return nodes;
+  if (depth  > 4) {
+    for (auto &t : threads) {
+      t.join();
+    }
+  }
+
+  return nodes;
 #else
-    std::vector<::david::type::gameState_t> states;
+  std::vector<::david::type::gameState_t> states;
 
-    // generate possible game outputs
-    ::david::movegen::MoveGenerator gen{};
-    gen.setGameState(gs);
-    gen.generateGameStates(states);
+  // generate possible game outputs
+  ::david::movegen::MoveGenerator gen{};
+  gen.setGameState(gs);
+  gen.generateGameStates(states);
 
-    const auto len = states.size();
-    uint64_t nodes = 0;
+  const auto len = states.size();
+  uint64_t nodes = 0;
 
-    // calculate move for every move
-    for (unsigned long i = 0; i < len; i++) {
-      nodes += perft(depth - 1, states.at(i));
-    }
+  // calculate move for every move
+  for (unsigned long i = 0; i < len; i++) {
+    nodes += perft(depth - 1, states.at(i));
+  }
 
-    return nodes;
+  return nodes;
 #endif
 }
 

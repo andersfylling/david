@@ -66,6 +66,9 @@ class MoveGen {
   type::bitboard_t xRayRookPaths;
   type::bitboard_t xRayDiagonalPaths;
 
+  // TODO: reduce memory usage
+  std::array<std::array<type::bitboard_t, 256>, 6> promotedPawns = {{0}};
+
   // TODO: reduce memory size.
   // knight attacks
   //const ::std::array<type::bitboard_t, 64> knightAttacks = ::utils::compileKnightAttacks();
@@ -187,11 +190,15 @@ class MoveGen {
   /**
    * Create promotions
    */
-   inline void generatePromotions (const type::bitboard_t board) {
+   inline void generatePromotions (const type::bitboard_t board, const type::bitboard_t pawn) {
     // promotion
     if ((18374686479671623935 & board) > 0)  {
       // add every option
       for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 6; pieceType++) {
+        // since promotions removes a pawn with a promoted piece
+        // it's needed to store which pawn should be removed for a given
+        // move/promotion!
+        this->promotedPawns[pieceType][this->index_moves[pieceType]] = pawn;
         this->moves[pieceType][this->index_moves[pieceType]++] = board | this->state.piecesArr[pieceType][0];
       }
     }
@@ -247,7 +254,7 @@ class MoveGen {
 
     auto i = ::utils::LSB(promotions);
     while (promotions != 0 || i != 0) {
-      this->generatePromotions(board);
+      this->generatePromotions(board, pieceBoard);
 
       promotions = ::utils::flipBitOffCopy(promotions, i);
       i = ::utils::LSB(promotions);

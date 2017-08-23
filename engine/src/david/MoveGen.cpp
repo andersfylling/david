@@ -169,6 +169,11 @@ void MoveGen::runAllMoveGenerators() {
         }
       }
 
+      // a piece was promoted, so remove the pawn that was sacrificed for this promotion
+      if (this->promotedPawns[pieceType][board] > 0) {
+        gs.piecesArr[0][1] ^= this->promotedPawns[pieceType][board];
+      }
+
       // valid move, add it to the record.
       this->gameStates[this->index_gameStates++] = gs;
     }
@@ -198,7 +203,7 @@ void MoveGen::generatePawnMoves() {
   while (que != 0  || i != 0) {
     const auto resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[this->state.iPawns][0], i);
 
-    auto paths = this->generatePawnPaths(i);
+    auto paths = this->generatePawnPaths(i); // TODO: for every promotion, we need to add empty pawns....
 
     for (uint8_t ii = ::utils::LSB(paths); paths != 0; ii = ::utils::NSB(paths, ii)) {
       this->moves[this->state.iPawns][index++] = ::utils::flipBitOnCopy(resultCache, ii);
@@ -226,17 +231,15 @@ void MoveGen::generateRookMoves() {
   uint8_t i = ::utils::LSB(que);
   do {
 
-    // if this rook blocks a enemy attack, don't bother moving it
-    if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      // go to the next piece
-      i = ::utils::NSB(que, i);
-      continue;
-    }
-
     auto resultCache = this->state.piecesArr[this->state.iRooks][0];
     ::utils::flipBitOff(resultCache, i);
 
     type::bitboard_t attackPaths = this->generateRookAttack(i);
+
+    // if this rook blocks a enemy attack, don't bother moving it
+    if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+      attackPaths &= this->xRayRookPaths;
+    }
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -291,7 +294,6 @@ void MoveGen::generateKnightMoves() {
 
 /**
  * Generate legal moves for bishop
- * TODO: doesnt affect perft at depth 3...
  *
  */
 void MoveGen::generateBishopMoves() {
@@ -305,17 +307,16 @@ void MoveGen::generateBishopMoves() {
   // If it hits an enemy then the position can be added
   uint8_t i = ::utils::LSB(que);
   do {
-    // if this piece blocks a enemy attack, don't bother moving it
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-      // go to the next piece
-      i = ::utils::NSB(que, i);
-      continue;
-    }
 
     type::bitboard_t resultCache = this->state.piecesArr[this->state.iBishops][0];
     ::utils::flipBitOff(resultCache, i);
 
     type::bitboard_t attackPaths = this->generateDiagonals(i);
+
+    // if this piece blocks a enemy attack, don't bother moving it
+    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+      attackPaths &= (this->xRayDiagonalPaths);
+    }
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -348,17 +349,16 @@ void MoveGen::generateQueenMoves() {
   // If it hits an enemy then the position can be added
   uint8_t i = ::utils::LSB(que);
   do {
-    // if this piece blocks a enemy attack, don't bother moving it
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0 || (this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      // go to the next piece
-      i = ::utils::NSB(que, i);
-      continue;
-    }
     type::bitboard_t resultCache = this->state.piecesArr[this->state.iQueens][0];
     ::utils::flipBitOff(resultCache, i);
 
     type::bitboard_t attackPaths = this->generateDiagonals(i);
     attackPaths |= this->generateRookAttack(i);
+
+    // if this piece blocks a enemy attack, don't bother moving it
+    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0 || (this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+      attackPaths &= (this->xRayDiagonalPaths | xRayRookPaths);
+    }
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
