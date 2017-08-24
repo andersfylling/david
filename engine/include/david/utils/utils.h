@@ -201,7 +201,7 @@ void yellDeprecated(const std::string info);
 
 bool perft();
 bool perft(const uint8_t limit, const uint8_t startDepth = 0);
-uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs);
+uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
 const std::string getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second);
 void getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second, std::string& EGN);
 

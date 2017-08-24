@@ -1040,27 +1040,45 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
   bool success = true;
 
   if (limit != -1) {
-    std::cerr << " * perft is depth limited to " << limit << ", max depth is " << (perftScores.size() - 1) << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::cerr << " * perft is depth limited to " << (int)limit << ", max depth is " << (perftScores.size() - 1) << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
   }
 
 
-  std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
+  std::printf("+%7s+%32s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
               "-------",
               "--------------------------------",
               "--------------------------------",
               "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
               "----------");
-  std::printf("| %5s | %30s | %30s | %8s | %8s |\n",
+  std::printf("| %5s | %30s | %30s | %8s | %8s | %8s | %8s | %8s | %8s | %8s | %8s |\n",
               "Depth",
               "David MoveGen Result",
               "Expected MoveGen Result",
               "Error  ",
-              "Seconds");
-  std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
+              "Seconds",
+              "Captures",
+              "E.P.",
+              "Castling",
+              "Promos",
+              "Checks",
+              "Checkm's");
+  std::printf("+%7s+%32s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
               "-------",
               "--------------------------------",
               "--------------------------------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
               "----------",
               "----------");
   for (uint8_t i = startDepth; i <= len; i++) {
@@ -1070,7 +1088,8 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
     long int ms = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 
     // run perft
-    auto moveGenPerft = ::utils::perft(i, gs);
+    std::array<int, 6> perftResults{};
+    auto moveGenPerft = ::utils::perft(i, gs, perftResults);
 
     // time finished
     gettimeofday(&tp2, NULL);
@@ -1080,17 +1099,21 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
     auto expectedPerft = perftScores[i];
 
     // generated node error estimation
-    const double difference =
-        static_cast<double>(std::max(moveGenPerft, expectedPerft) - std::min(moveGenPerft, expectedPerft)) / std::max(moveGenPerft, expectedPerft);
-    const long long int difference2 = (long long int)moveGenPerft - (long long int)expectedPerft;
+    const long long int diff = (long long int)moveGenPerft - (long long int)expectedPerft;
 
     // print results for perft[i]
-    std::printf("| %5i | %30lu | %30lu | %8lli | %8.2f |\n",
+    std::printf("| %5i | %30lu | %30lu | %8lli | %8.2f | %8i | %8i | %8i | %8i | %8i | %8i |\n",
                 i,
                 moveGenPerft,
                 expectedPerft,
-                difference2, //difference * 100.0, // difference
-                (ms2 - ms) / 1000.0);
+                diff, //difference * 100.0, // difference
+                (ms2 - ms) / 1000.0,
+                perftResults[0],
+                perftResults[1],
+                perftResults[2],
+                perftResults[3],
+                perftResults[4],
+                perftResults[5]);
 
     // if the results are bad, don't continue
     if (moveGenPerft != expectedPerft) {
@@ -1099,17 +1122,23 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
     }
   }
 
-  std::printf("+%7s+%32s+%32s+%10s+%10s+\n",
+  std::printf("+%7s+%32s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
               "-------",
               "--------------------------------",
               "--------------------------------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
+              "----------",
               "----------",
               "----------");
 
   return success;
 }
 
-uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
+uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<int, 6>& results) {
   if (depth == 0) {
     return 1;
   }
@@ -1133,13 +1162,46 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
     //}
     auto& state = states[i];
 
+    // add any captures
+    if ((gs.piecess[1] & state.piecess[1]) > 0) {
+      results[0] += 1;
+    }
+
+    // en passant
+    else if (::utils::nrOfActiveBits(gs.combinedPieces) - ::utils::nrOfActiveBits(state.combinedPieces) == 1) {
+      results[1] += 1;
+    }
+
+    // castling
+    else if ((gs.kingCastlings[0] != state.kingCastlings[1]) || (gs.queenCastlings[0] != state.queenCastlings[1])) {
+      results[2] += 1;
+    }
+
+    // promotion
+    else if (::utils::nrOfActiveBits(gs.piecesArr[0][0]) - ::utils::nrOfActiveBits(state.piecesArr[0][1]) == 1) {
+      results[3] += 1;
+    }
+
+    // check
+    if (state.isInCheck) {
+      results[4] += 1;
+    }
+
+    // TODO: check mates
+    auto tmpNode = nodes;
+
     if (threading && depth > 4) {
-      threads.push_back(std::thread([&nodes, nextDepth, &state]() {
-        nodes += perft(nextDepth, state);
+      threads.push_back(std::thread([&nodes, nextDepth, &state, &results]() {
+        nodes += perft(nextDepth, state, results);
       }));
     }
     else {
-      nodes += perft(nextDepth, state);
+      nodes += perft(nextDepth, state, results);
+    }
+
+    // check mate
+    if (tmpNode == nodes) {
+      results[5] += 1;
     }
   }
 
@@ -1163,7 +1225,7 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
 
   // calculate move for every move
   for (unsigned long i = 0; i < len; i++) {
-    nodes += perft(depth - 1, states.at(i));
+    nodes += perft(depth - 1, states.at(i), results);
   }
 
   return nodes;

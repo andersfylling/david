@@ -187,16 +187,14 @@ class MoveGen {
    * Create promotions
    */
    inline void generatePromotions (const type::bitboard_t board, const type::bitboard_t pawn) {
-    // promotion
-    if ((18374686479671623935 & board) > 0)  {
-      // add every option
-      for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 6; pieceType++) {
-        // since promotions removes a pawn with a promoted piece
-        // it's needed to store which pawn should be removed for a given
-        // move/promotion!
-        this->promotedPawns[pieceType][this->index_moves[pieceType]] = pawn;
-        this->moves[pieceType][this->index_moves[pieceType]++] = board | this->state.piecesArr[pieceType][0];
-      }
+    // add every option
+    assert(this->state.iKings == 5);
+    for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 5/*skip king*/; pieceType++) {
+      // since promotions removes a pawn with a promoted piece
+      // it's needed to store which pawn should be removed for a given
+      // move/promotion!
+      this->promotedPawns[pieceType][this->index_moves[pieceType]] = pawn;
+      this->moves[pieceType][this->index_moves[pieceType]++] = board | this->state.piecesArr[pieceType][0];
     }
   }
 
@@ -250,12 +248,11 @@ class MoveGen {
     auto promotions = 18374686479671623935 & board;
     board ^= promotions; // remove promotions as those are no longer pawns
 
-    auto i = ::utils::LSB(promotions);
-    while (promotions != 0 || i != 0) {
-      this->generatePromotions(board, pieceBoard);
+    while (promotions != 0) {
+      auto i = ::utils::LSB(promotions);
+      this->generatePromotions(::utils::indexToBitboard(i), pieceBoard);
 
       promotions = ::utils::flipBitOffCopy(promotions, i);
-      i = ::utils::LSB(promotions);
     }
 
     return board;
@@ -306,6 +303,7 @@ class MoveGen {
       return true;
     }
 
+    // position seems to be safe
     return false;
   }
 
