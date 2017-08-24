@@ -1,9 +1,10 @@
+
 [submodule "external/Catch"]
 	path = external/Catch
-	url = git://github.com/philsquared/Catch.git
+	url = https://github.com/philsquared/Catch
 [submodule "external/fann"]
 	path = external/fann
-	url = git://github.com/sciencefyll/fann
+	url = https://github.com/sciencefyll/fann
 [submodule "external/benchmark"]
 	path = external/benchmark
 	url = https://github.com/google/benchmark
@@ -12,4 +13,4 @@
 	url = https://github.com/klyngen/pgnToFen
 [submodule "external/uci"]
 	path = external/uci
-	url = https://github.com/sciencefyll/uci/
+	url = https://github.com/sciencefyll/uci
