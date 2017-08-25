@@ -325,14 +325,16 @@ class MoveGen {
     // the number of blocker hits
     uint8_t hitTracker = 0;
 
+    uint8_t mult = 1;
+
 
     // #####
     // Vertical attacks
     //
 
     // upwards, TODO: slow..
-    for (uint8_t i = iRow + 1; i < 8; i++) {
-      type::bitboard_t board = pBoard << 8;
+    for (uint8_t i = iRow + 1; i < 8; i++, mult++) {
+      type::bitboard_t board = pBoard << (8 * mult);
 
       // on hit increment tracker
       if ((friendlies & board) > 0) {
@@ -347,6 +349,7 @@ class MoveGen {
       tmp |= board;
     }
     hitTracker = 0;
+    mult = 1;
 
     // check that there are hostile queen and rooks in this path
     if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
@@ -355,8 +358,8 @@ class MoveGen {
     }
 
     // downwards, TODO: slow..
-    for (uint8_t i = iRow - 1; i > 0; i--) {
-      type::bitboard_t board = pBoard >> 8;
+    for (uint8_t i = iRow - 1; i > 0; i--, mult++) {
+      type::bitboard_t board = pBoard >> (8 * mult);
 
       // on hit increment tracker
       if ((friendlies & board) > 0) {
@@ -371,6 +374,7 @@ class MoveGen {
       tmp |= board;
     }
     hitTracker = 0;
+    mult = 1;
 
     // check that there are hostile queen and rooks in this path
     if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
@@ -383,8 +387,8 @@ class MoveGen {
     //
 
     // left, TODO: slow..
-    for (uint8_t i = iCol + 1; i < 8; i++) {
-      type::bitboard_t board = pBoard << 1; // left
+    for (uint8_t i = iCol + 1; i < 8; i++, mult++) {
+      type::bitboard_t board = pBoard << (1 * mult); // left
 
       // is it on the same row?
       if (::utils::LSB(board) != iRow) {
@@ -404,6 +408,7 @@ class MoveGen {
       tmp |= board;
     }
     hitTracker = 0;
+    mult = 1;
 
     // check that there are hostile queen and rooks in this path
     if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
@@ -412,8 +417,8 @@ class MoveGen {
     }
 
     // right, TODO: slow..
-    for (uint8_t i = iCol - 1; i > 0; i--) {
-      type::bitboard_t board = pBoard >> 1;
+    for (uint8_t i = iCol - 1; i > 0; i--, mult++) {
+      type::bitboard_t board = pBoard >> (1 * mult);
 
       // is it on the same row?
       if (::utils::LSB(board) != iRow) {
@@ -458,13 +463,15 @@ class MoveGen {
     // the number of blocker hits
     uint8_t hitTracker = 0;
 
+    uint8_t mult = 1;
+
     // ######
     // Diagonal attacks, up right
     //
 
     // up and right
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++) {
-      type::bitboard_t board = pBoard << 7;
+    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard << (7 * mult);
 
       // on hit increment tracker
       if ((friendlies & board) > 0) {
@@ -479,6 +486,7 @@ class MoveGen {
       tmp |= board;
     }
     hitTracker = 0;
+    mult = 1;
 
     // check that there are hostile queen and rooks in this path
     if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
@@ -487,8 +495,8 @@ class MoveGen {
     }
 
     // up and left
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++) {
-      type::bitboard_t board = pBoard << 9;
+    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard << (9 * mult);
 
       // on hit increment tracker
       if ((friendlies & board) > 0) {
@@ -503,6 +511,7 @@ class MoveGen {
       tmp |= board;
     }
     hitTracker = 0;
+    mult = 1;
 
     // check that there are hostile queen and rooks in this path
     if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
@@ -511,8 +520,8 @@ class MoveGen {
     }
 
     // down and right
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++) {
-      type::bitboard_t board = pBoard >> 9;
+    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard >> (9 * mult);
 
       // on hit increment tracker
       if ((friendlies & board) > 0) {
@@ -526,6 +535,8 @@ class MoveGen {
       // add attack path
       tmp |= board;
     }
+    hitTracker = 0;
+    mult = 1;
 
     // check that there are hostile queen and rooks in this path
     if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
@@ -534,8 +545,8 @@ class MoveGen {
     }
 
     // down and left
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++) {
-      type::bitboard_t board = pBoard >> 7;
+    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard >> (7 * mult);
 
       // on hit increment tracker
       if ((friendlies & board) > 0) {

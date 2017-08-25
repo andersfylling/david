@@ -1202,6 +1202,11 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs, std::a
     // check mate
     if (tmpNode == nodes) {
       results[5] += 1;
+
+      // print all checkmate nodes + parent
+      //std::cout << "Printing check mate node" << std::endl;
+      //::utils::printGameState(gs);
+      //::utils::printGameState(state);
     }
   }
 
