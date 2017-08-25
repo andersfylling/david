@@ -440,12 +440,18 @@ void MoveGen::generateKingMoves() {
 
   // king side castling
   if (this->state.kingCastlings[0] && (6917529027641081952 & friendly) == 0 && (10376293541461622928 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    this->moves[this->state.iKings][index++] = kingBoard << 2; // move two left
+    type::bitboard_t board = kingBoard << 2; // move two left
+    if (!this->dangerousPosition(board, this->state)) {
+      this->moves[this->state.iKings][index++] = board;
+    }
   }
 
   // queen side castling
   if (this->state.queenCastlings[0] && (1008806316530991118 & friendly) == 0 && (1224979098644774929 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    this->moves[this->state.iKings][index++] = kingBoard >> 3; // move three right
+    type::bitboard_t board = kingBoard >> 3; // move three right
+    if (!this->dangerousPosition(board, this->state)) {
+      this->moves[this->state.iKings][index++] = board;
+    }
   }
 
   this->index_moves[this->state.iKings] = index;
