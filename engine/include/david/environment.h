@@ -128,8 +128,6 @@ class Environment {
   bitboard_t intToUint64(int i);
 
   void setFen(std::string fen);
-  type::gameState_ptr generateBoardFromFen(const std::string fen);
-
 };
 }
 

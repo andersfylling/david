@@ -119,7 +119,6 @@ class MoveGenerator {
   // Level 4 handling
   void updatePlist();
   void capturePiece(bitboard::COLOR color, type::bitboard_t index, bitboard::gameState &st);
-  void setGameState(type::gameState_ptr st);
   void setGameState(type::gameState_t st);
   void applyMove(bitboard::move_t m, type::gameState_t& gs);
   void undoMove(type::move_t move);

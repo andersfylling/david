@@ -32,31 +32,6 @@
 #include "david/utils/logger.h"
 
 
-
-void memTestMoveGen() {
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * 30 + 1> arr;
-
-  // TreeGen
-  for (int i = 0; i < arr.size(); i++) {
-    ::utils::setDefaultChessLayout(arr[i]);
-  }
-
-
-  ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
-
-  const auto len = 1000000000;
-  const auto N = 2;
-
-  // MoveGen
-  // Find everything from depth 0 to depth N and count the nodes.
-  // Any memory stored by the recursive should be deleted after the loop round is complete.
-  // Therefore anything else, suggests a issue in MoveGen.
-  for (int i = 0; i < len; i++) {
-    ::utils::perft(N, gs);
-  }
-}
-
 void train() {}
 
 void fight() {
@@ -93,7 +68,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "perft"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
+  const std::string mode = "perft"; // uci, fight, train, perft. Default: "uci"
 
 
   if (mode == "fight") {
@@ -107,9 +82,6 @@ int main (/*int argc, char * argv[]*/)
   }
   else if (mode == "perft") {
     ::utils::perft(5);
-  }
-  else if (mode == "memTestMoveGen") {
-    memTestMoveGen();
   }
 
   // Close program with exit code 0 (UCI: after all threads have joined.)

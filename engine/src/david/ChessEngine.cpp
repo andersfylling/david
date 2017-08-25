@@ -1,14 +1,13 @@
 #include "david/ChessEngine.h"
 
 // local dependencies
-#include "david/EngineContext.h"
-#include "david/ANN/ANN.h"
 #include "david/genericUCIResponses.h"
-#include "david/Search.h"
 #include "david/david.h"
 #include "david/utils/utils.h"
 #include "david/environment.h"
-#include "david/TreeGen.h"
+
+#include "david/types.h"
+#include "david/bitboard.h"
 
 // git submodule dependencies
 #include "fann/floatfann.h"
@@ -22,21 +21,15 @@
  * Constructor
  */
 david::ChessEngine::ChessEngine()
-    : engineContextPtr(std::make_shared<david::EngineContext>()),
-      uciProtocolPtr(std::make_shared<::uci::Listener>()),
-      searchPtr(std::make_shared<Search>(engineContextPtr)),
-      gameTreePtr(std::make_shared<gameTree::TreeGen>(engineContextPtr)),
-      neuralNetworkPtr(std::make_shared<ANN>("")),
-      player(),
-      UCIProtocolActivated(false),
-      uciMode(false)
+    : neuralNet()
+    , treeGen(neuralNet)
+    , search(treeGen)
+    , UCI()
+    , player()
+    , UCIProtocolActivated(false)
+    , uciMode(false)
 
-{
-  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
-  this->engineContextPtr->searchPtr         = this->searchPtr;
-  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
-  this->engineContextPtr->uciProtocolPtr    = this->uciProtocolPtr;
-}
+{}
 
 /**
  * Constructor
@@ -44,44 +37,30 @@ david::ChessEngine::ChessEngine()
  * @param self
  */
 david::ChessEngine::ChessEngine(Player self)
-    : engineContextPtr(std::make_shared<david::EngineContext>()),
-      uciProtocolPtr(std::make_shared<::uci::Listener>()),
-      searchPtr(std::make_shared<Search>(engineContextPtr)),
-      gameTreePtr(std::make_shared<gameTree::TreeGen>(engineContextPtr)),
-      neuralNetworkPtr(std::make_shared<ANN>("")),
-      player(self),
-      UCIProtocolActivated(false),
-      uciMode(false)
+    : neuralNet()
+    , treeGen(neuralNet)
+    , search(treeGen)
+    , UCI()
+    , player(self)
+    , UCIProtocolActivated(false)
+    , uciMode(false)
 
-{
-  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
-  this->engineContextPtr->searchPtr         = this->searchPtr;
-  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
-  this->engineContextPtr->uciProtocolPtr    = this->uciProtocolPtr;
-}
+{}
 
 /**
  * Constructor
  *
  * @param ANNFile std::string The ANN network file (The product of ANN training)
  */
-david::ChessEngine::ChessEngine(std::string ANNFile)
-    : engineContextPtr(std::make_shared<david::EngineContext>()),
-      uciProtocolPtr(std::make_shared<::uci::Listener>()),
-      searchPtr(std::make_shared<Search>(engineContextPtr)),
-      gameTreePtr(std::make_shared<gameTree::TreeGen>(engineContextPtr)),
-      neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
-      player(),
-      UCIProtocolActivated(false),
-      uciMode(false)
-
-{
-  this->createANNInstance(ANNFile);
-  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
-  this->engineContextPtr->searchPtr         = this->searchPtr;
-  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
-  this->engineContextPtr->uciProtocolPtr    = this->uciProtocolPtr;
-}
+david::ChessEngine::ChessEngine(const std::string ANNFile)
+    : neuralNet(ANNFile)
+    , treeGen(neuralNet)
+    , search(treeGen)
+    , UCI()
+    , player()
+    , UCIProtocolActivated(false)
+    , uciMode(false)
+{}
 
 /**
  * Constructor
@@ -89,23 +68,16 @@ david::ChessEngine::ChessEngine(std::string ANNFile)
  * @param self Player struct Which player instance you are (black / white)
  * @param ANNFile std::string The ANN network file (The product of ANN training)
  */
-david::ChessEngine::ChessEngine(Player self, std::string ANNFile)
-    : engineContextPtr(std::make_shared<david::EngineContext>()),
-      uciProtocolPtr(std::make_shared<::uci::Listener>()),
-      searchPtr(std::make_shared<Search>(engineContextPtr)),
-      gameTreePtr(std::make_shared<gameTree::TreeGen>(engineContextPtr)),
-      neuralNetworkPtr(std::make_shared<ANN>(engineContextPtr, ANNFile)),
-      player(self),
-      UCIProtocolActivated(false),
-      uciMode(false)
+david::ChessEngine::ChessEngine(Player self, const std::string ANNFile)
+    : neuralNet(ANNFile)
+    , treeGen(neuralNet)
+    , search(treeGen)
+    , UCI()
+    , player(self)
+    , UCIProtocolActivated(false)
+    , uciMode(false)
 
-{
-  this->createANNInstance(ANNFile);
-  this->engineContextPtr->neuralNetworkPtr  = this->neuralNetworkPtr;
-  this->engineContextPtr->searchPtr         = this->searchPtr;
-  this->engineContextPtr->gameTreePtr       = this->gameTreePtr;
-  this->engineContextPtr->uciProtocolPtr    = this->uciProtocolPtr;
-}
+{}
 
 /**
  * Destructor
@@ -115,7 +87,7 @@ david::ChessEngine::~ChessEngine() {
 
 void david::ChessEngine::enableUCIMode() {
   this->uciMode = true;
-  this->searchPtr->enableUCIMode();
+  this->search.enableUCIMode();
 }
 
 
@@ -150,10 +122,10 @@ void ::david::ChessEngine::linkUCICommands()
     bool movetime = false;
     // All of the "go" parameters
     if (args.count("depth") > 0) {
-      this->searchPtr->setDepth(utils::stoi(args["depth"]));
+      this->search.setDepth(utils::stoi(args["depth"]));
     }
     if (args.count("searchmoves") > 0) {
-      this->searchPtr->setSearchMoves(args["searchmoves"]);
+      this->search.setSearchMoves(args["searchmoves"]);
     }
     if (args.count("wtime") > 0) {
       //this->searchPtr->setWTime(utils::stoi(args["wtime"]));
@@ -176,72 +148,72 @@ void ::david::ChessEngine::linkUCICommands()
       //this->searchPtr->setBinc(utils::stoi(args["binc"]));
     }
     if (args.count("movestogo") > 0) {
-      this->searchPtr->setMovesToGo(utils::stoi(args["movestogo"]));
+      this->search.setMovesToGo(utils::stoi(args["movestogo"]));
     }
     if (args.count("nodes") > 0) {
-      this->searchPtr->setNodes(utils::stoi(args["nodes"]));
+      this->search.setNodes(utils::stoi(args["nodes"]));
     }
     if (args.count("movetime") > 0) {
-      this->searchPtr->setMoveTime(utils::stoi(args["movetime"]));
+      this->search.setMoveTime(utils::stoi(args["movetime"]));
       movetime = true;
     }
     if (args.count("mate") > 0) {
-      this->searchPtr->setMate(utils::stoi(args["mate"]));
+      this->search.setMate(utils::stoi(args["mate"]));
     }
     if (args.count("infinite") > 0) {
-      this->searchPtr->setInfinite(true);
+      this->search.setInfinite(true);
       startSearch = true;
       infinite = true;
     }
     if (args.count("ponder") > 0) {
-      this->searchPtr->setPonder(true);
+      this->search.setPonder(true);
     }
     if (args.count("difficulty") > 0) {
-      this->searchPtr->setDifficulty(utils::stoi(args["difficulty"]));
+      this->search.setDifficulty(utils::stoi(args["difficulty"]));
     }
 
 
     // update time remaining for search class
     if (!movetime) {
-      this->searchPtr->setMoveTime(this->timeLeft);
+      this->search.setMoveTime(this->timeLeft);
     }
 
     if (infinite) {
       this->searchThread = std::thread([&]() {
-        this->searchPtr->searchInit();
+        this->search.searchInit();
       });
     }
     else {
-      this->searchPtr->searchInit();
+      this->search.searchInit();
     }
 
     if (!infinite) {
       // send best move
-      int bestIndex = this->searchPtr->getSearchResult();
-      auto EGN = utils::getEGN(this->gameTreePtr->getGameState(0), gameTreePtr->getGameState(bestIndex));
+      int bestIndex = this->search.getSearchResult();
+      auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
       std::cout << "bestmove " << EGN << std::endl;
 
       // update time used
-      this->timeLeft -= this->searchPtr->getTimeUsed();
+      this->timeLeft -= this->search.getTimeUsed();
 
     }
   };
   auto uci_stop = [&](arguments_t args) {
     //std::cerr << "called stop" << std::endl;
-    this->searchPtr->setAbort(true); // needs semaphores to avoid caching the isAbort variable
+    this->search.setAbort(true); // needs semaphores to avoid caching the isAbort variable
     if (this->searchThread.joinable()) {
       this->searchThread.join();
     }
-    int bestIndex = this->searchPtr->getSearchResult();
-    auto EGN = utils::getEGN(this->gameTreePtr->getGameState(0), gameTreePtr->getGameState(bestIndex));
+    int bestIndex = this->search.getSearchResult();
+    auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
     std::cout << "bestmove " << EGN << std::endl;
   };
   auto uci_quit = [&](arguments_t args) {
-    this->searchPtr->setAbort(true); // needs semaphores to avoid caching the isAbort variable
+    this->search.setAbort(true); // needs semaphores to avoid caching the isAbort variable
     if (this->searchThread.joinable()) {
       this->searchThread.join();
     }
-    this->searchPtr->quitSearch();
+    this->search.quitSearch();
   };
   auto uci_ponderhit = [&](arguments_t args) {
 //     * ponderhit
@@ -259,21 +231,21 @@ void ::david::ChessEngine::linkUCICommands()
 //      As the engine's reaction to "ucinewgame" can take some time the GUI should always send "isready"
 //    after "ucinewgame" to wait for the engine to finish its operation.
     // TODO: clear gameTree history
-    this->gameTreePtr->reset();
+    this->treeGen.reset();
 
   };
 
   auto uci_position = [&](arguments_t args) {
     if (args.count("fen") > 0) {
-      this->gameTreePtr->setRootNodeFromFEN(args["fen"]);
+      this->treeGen.setRootNodeFromFEN(args["fen"]);
 
 #ifdef DAVID_DEVELOPMENT
       std::cout << "Root node of game tree:" << std::endl;
-      utils::printGameState(this->gameTreePtr->getGameState(0));
+      utils::printGameState(this->treeGen.getGameState(0));
 #endif
     }
     else if (args.count("startpos") > 0) {
-      this->gameTreePtr->setRootNodeFromFEN(constant::FENStartPosition);
+      this->treeGen.setRootNodeFromFEN(constant::FENStartPosition);
     }
     else {
       std::cerr << "NOT SUPPORTED UCI PARAMETERS!" << std::endl;
@@ -301,7 +273,7 @@ void ::david::ChessEngine::linkUCICommands()
 
           // a EGN has been registered
           //egns.push_back(move);
-          this->gameTreePtr->applyEGNMove(move);
+          this->treeGen.applyEGNMove(move);
 
           // clear the move var
           move.clear();
@@ -314,7 +286,7 @@ void ::david::ChessEngine::linkUCICommands()
 
       // the root node should always have the same colour as the engine!
       bool whitePlayer = this->player.color == bitboard::COLOR::WHITE;
-      if (whitePlayer != this->gameTreePtr->getGameState(0).isWhite) {
+      if (whitePlayer != this->treeGen.getGameState(0).isWhite) {
         std::cerr << "Root node is not the same as engine, do not search!!!" << std::endl;
         std::cerr << "\tplayer:    " << (!whitePlayer ? "black" : "white") << std::endl;
         std::cerr << "\tgameState: " << (!whitePlayer ? "white" : "black") << std::endl;
@@ -324,20 +296,20 @@ void ::david::ChessEngine::linkUCICommands()
     }
 
 #ifdef DAVID_DEVELOPMENT
-    utils::printGameState(this->gameTreePtr->getGameState(0));
+    utils::printGameState(this->treeGen.getGameState(0));
 #endif
   };
 
 
   // bind the listeners
-  this->uciProtocolPtr->addListener(BLACK, uci_colour_black);
-  this->uciProtocolPtr->addListener(WHITE, uci_colour_white);
-  this->uciProtocolPtr->addListener(GO, uci_go);
-  this->uciProtocolPtr->addListener(STOP, uci_stop);
-  this->uciProtocolPtr->addListener(QUIT, uci_quit);
-  this->uciProtocolPtr->addListener(PONDERHIT, uci_ponderhit);
-  this->uciProtocolPtr->addListener(UCINEWGAME, uci_ucinewgame);
-  this->uciProtocolPtr->addListener(POSITION, uci_position);
+  this->UCI.addListener(BLACK, uci_colour_black);
+  this->UCI.addListener(WHITE, uci_colour_white);
+  this->UCI.addListener(GO, uci_go);
+  this->UCI.addListener(STOP, uci_stop);
+  this->UCI.addListener(QUIT, uci_quit);
+  this->UCI.addListener(PONDERHIT, uci_ponderhit);
+  this->UCI.addListener(UCINEWGAME, uci_ucinewgame);
+  this->UCI.addListener(POSITION, uci_position);
 }
 
 
@@ -347,10 +319,16 @@ void ::david::ChessEngine::linkUCICommands()
  */
 std::string david::ChessEngine::getANNFile() {
   if (this->hasANNInstance()) {
-    return this->neuralNetworkPtr->getANNFile();
+    return this->neuralNet.getANNFile();
   }
   else {
     return "";
+  }
+}
+
+void david::ChessEngine::setANNFile(const std::string ANNFile) {
+  if (!this->hasANNInstance()) {
+    this->neuralNet.setANNFile(ANNFile);
   }
 }
 
@@ -358,14 +336,14 @@ std::string david::ChessEngine::getANNFile() {
  * Check if there exists a ANN instance
  */
 bool david::ChessEngine::hasANNFile() {
-  return this->neuralNetworkPtr->getANNFile() != "";
+  return this->neuralNet.getANNFile() != "";
 }
 
 /**
  * Check if there exists a ANN instance
  */
 bool david::ChessEngine::hasANNInstance() {
-  return this->neuralNetworkPtr != nullptr && this->neuralNetworkPtr->hasANNInstance();
+  return this->neuralNet.hasANNInstance();
 }
 
 /**
@@ -399,12 +377,12 @@ void david::ChessEngine::configureUCIProtocol() {
   // ###
   // Here the UCI protocol is dealt with.
   // add basic responses
-  this->uciProtocolPtr->addListener(UCI, uciResponses::responseToUCI); // forwards
-  this->uciProtocolPtr->addListener(ISREADY, uciResponses::responseToISREADY); // isready
+  this->UCI.addListener(UCI, uciResponses::responseToUCI); // forwards
+  this->UCI.addListener(ISREADY, uciResponses::responseToISREADY); // isready
 
   // Got a quit forwards command so stop listener [and exit program]
-  this->uciProtocolPtr->addListener(QUIT, [&](::uci::arguments_t args){
-    this->uciProtocolPtr->stopListening();
+  this->UCI.addListener(QUIT, [&](::uci::arguments_t args){
+    this->UCI.stopListening();
   });
 }
 
@@ -415,7 +393,7 @@ void david::ChessEngine::activateUCIProtocol() {
 
   // ###
   // Creates a forever listening UCI thread, this is to not block everything else.
-  this->UCIProtocolActivated = this->uciProtocolPtr->setupListener();
+  this->UCIProtocolActivated = this->UCI.setupListener();
 }
 
 /**
@@ -440,7 +418,7 @@ void david::ChessEngine::sayUCICommand(std::string command) {
  * Creates the neural network based on the ANNFile
  */
 void david::ChessEngine::createANNInstance(std::string ANNFile) {
-  this->neuralNetworkPtr->createANNInstance();
+  this->neuralNet.createANNInstance();
 }
 
 /**
@@ -450,7 +428,7 @@ void david::ChessEngine::createANNInstance(std::string ANNFile) {
  * @return int board evaluation
  */
 int david::ChessEngine::ANNEvaluate(const type::gameState_t& board) {
-  return this->neuralNetworkPtr->ANNEvaluate(board);
+  return this->neuralNet.ANNEvaluate(board);
 }
 
 
@@ -461,7 +439,7 @@ int david::ChessEngine::ANNEvaluate(const type::gameState_t& board) {
  * @return int board evaluation
  */
 int david::ChessEngine::ANNEvaluate(std::string fen) {
-  return this->neuralNetworkPtr->ANNEvaluate(fen);
+  return this->neuralNet.ANNEvaluate(fen);
 }
 
 
@@ -481,7 +459,7 @@ void david::ChessEngine::setPlayerColor(bitboard::COLOR color) {
  * @return shared_ptr of gameState
  */
 david::type::gameState_t david::ChessEngine::getGameState() {
-  return this->engineContextPtr->gameTreePtr->getGameState(0);
+  return this->treeGen.getGameState(0);
 }
 
 
@@ -495,7 +473,7 @@ david::type::gameState_t david::ChessEngine::getGameState() {
 bool david::ChessEngine::setGameState(const type::gameState_t& gs) {
   // std::cerr << "updated version" << std::endl;
   // utils::printGameState(gs);
-  this->gameTreePtr->setRootNode(gs);
+  this->treeGen.setRootNode(gs);
 }
 
 
@@ -515,10 +493,10 @@ bool david::ChessEngine::lost() {
 void david::ChessEngine::findBestMove() {
   // update currentGameState
   // TODO: something is very wrong here
-  this->engineContextPtr->searchPtr->setInfinite(false); // must be false, or a incorrect index is returned.
-  int index = this->searchPtr->searchInit(); // maybe store the index and then idk? why is this sigsegv..
+  this->search.setInfinite(false); // must be false, or a incorrect index is returned.
+  int index = this->search.searchInit(); // maybe store the index and then idk? why is this sigsegv..
 
-  auto& gs = this->gameTreePtr->getGameState(index);
+  auto& gs = this->treeGen.getGameState(index);
   this->setGameState(gs);
 
   //utils::printGameState(this->gameTreePtr->getGameState(0));
@@ -536,7 +514,7 @@ void david::ChessEngine::setNewGameBoard(const std::string fen) {
 
   // first clear any children
   //this->gameTreePtr->resetChildren(this->currentGameState);
-  auto& node = this->engineContextPtr->gameTreePtr->getGameState(0);
+  auto& node = this->treeGen.getGameState(0);
 
   // check if its a default setup
   if (fen == david::FENStartPosition) {

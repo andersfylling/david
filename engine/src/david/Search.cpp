@@ -3,7 +3,7 @@
 #include <ctime>
 #include <david/EngineMaster.h>
 #include <fstream>
-#include "david/EngineContext.h"
+#include "../../spike/EngineContext.h"
 
 namespace david {
 //Signals Signal; //Scrapped for now
@@ -11,19 +11,10 @@ namespace david {
 
 
 /**
- * Constructor used in debug/test
+ * Constructor
  */
-Search::Search()
-    : engineContextPtr(nullptr),
-      depth(3),
-      uciMode(false),
-      isAborted(false),
-      isComplete(false),
-      movetime(1000)
-{}
-
-Search::Search(type::engineContext_ptr ctx)
-    : engineContextPtr(ctx),
+Search::Search(type::TreeGen_t& tg)
+    : treeGen(tg),
       depth(3),
       uciMode(false),
       isAborted(false),
@@ -91,8 +82,8 @@ int Search::iterativeDeepening() {
   //
   // Create move tree
   //
-  this->engineContextPtr->gameTreePtr->generateChildren(0);
-  auto nrOfPossibleMoves = this->engineContextPtr->gameTreePtr->getGameState(0).possibleSubMoves;
+  this->treeGen.generateChildren(0);
+  auto nrOfPossibleMoves = this->treeGen.getGameState(0).possibleSubMoves;
 
   //
   // Iterate down in the search tree for each search tree
@@ -243,19 +234,19 @@ int Search::negamax(unsigned int index, int alpha, int beta, int iDepth, int ite
   // a danger move in the next depth in this branch
   //
   if (iDepth == iterativeDepthLimit) {
-    return this->engineContextPtr->gameTreePtr->getGameStateScore(index);
+    return this->treeGen.getGameStateScore(index);
   }
 
   // generate children for this board
-  this->engineContextPtr->gameTreePtr->generateChildren(index);
-  const uint16_t len = static_cast<uint16_t>(this->engineContextPtr->gameTreePtr->getGameState(index).possibleSubMoves);
+  this->treeGen.generateChildren(index);
+  const uint16_t len = static_cast<uint16_t>(this->treeGen.getGameState(index).possibleSubMoves);
 
   for (uint16_t i = 0; i < len; i++) { // uint8_t can cause issues if len == 256
     if (this->isAborted.load()) {
       break;
     }
 
-    score = -negamax(this->engineContextPtr->gameTreePtr->getChildIndex(/*parent*/index, /*child0..256*/i),
+    score = -negamax(this->treeGen.getChildIndex(/*parent*/index, /*child0..256*/i),
                      -beta,
                      -alpha,
                      iDepth + 1,

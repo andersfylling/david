@@ -12,22 +12,18 @@ namespace david {
  * Constructor
  * @param filename The ANN weight file.
  */
-ANN::ANN(std::string filename)
-    : engineContextPtr(nullptr),
-      ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+ANN::ANN()
+    : ANNFile(""),
       ANNInstance(nullptr) {}
 
 /**
  * Constructor
- *
- * @param ctx engineContext_ptr which holds links to other initiated classes
  * @param filename The ANN weight file.
- * @see /engine/includes/david/definitions.h
  */
-ANN::ANN(type::engineContext_ptr ctx, std::string filename)
-    : engineContextPtr(ctx),
-      ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+ANN::ANN(const std::string filename)
+    : ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr) {}
+
 
 /**
  * Destructor
@@ -42,7 +38,7 @@ ANN::~ANN() {
  * Retrieve the ANN file this engine instance uses for evaluating game boards.
  * @return std::string absolute path of ann file.
  */
-std::string ANN::getANNFile() {
+std::string ANN::getANNFile() const {
   return this->ANNFile;
 }
 
@@ -83,14 +79,14 @@ void ANN::setANNFile(std::string filename) {
 /**
  * Check if there exists a ANN instance
  */
-bool ANN::hasANNFile() {
+bool ANN::hasANNFile() const {
   return this->ANNFile != "";
 }
 
 /**
  * Check if there exists a ANN instance
  */
-bool ANN::hasANNInstance() {
+bool ANN::hasANNInstance() const {
   return this->ANNInstance != nullptr;
 }
 
@@ -126,7 +122,7 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(const type::gameState_t& board) {
+int ANN::ANNEvaluate(const type::gameState_t& board) const {
   const auto arr = ::utils::neuralnet::convertGameStateToInputs(board); // float array of the inputs
 
   // populate array
@@ -147,8 +143,7 @@ int ANN::ANNEvaluate(const type::gameState_t& board) {
  * @param fen std::string FEN(Forsyth–Edwards Notation)
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(const std::string& fen) {
-
+int ANN::ANNEvaluate(const std::string& fen) const {
   type::gameState_t gs;
   utils::generateBoardFromFen(gs, fen);
 

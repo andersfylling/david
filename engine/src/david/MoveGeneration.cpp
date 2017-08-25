@@ -414,10 +414,6 @@ void movegen::MoveGenerator::knightMoves(bitboard::COLOR color, bool vector) {
  * sets the current gameState
  * @param st - the gamestate to be set
  */
-void movegen::MoveGenerator::setGameState(type::gameState_ptr st) {
-  state = (*st); // dereference
-}
-
 void movegen::MoveGenerator::setGameState(type::gameState_t st) {
   state = st;
 }

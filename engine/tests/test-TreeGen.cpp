@@ -1,6 +1,7 @@
 #include <iostream>
 #include <david/utils/utils.h>
 #include "david/TreeGen.h"
+#include "david/ANN/ANN.h"
 #include "catch.hpp"
 
 
@@ -31,8 +32,10 @@
 #ifndef MOVEGEN
 TEST_CASE("Retrieving a correctly set gameState_t [TreeGen::getGameState]") {
   using ::david::gameTree::TreeGen;
+  using ::david::ANN;
 
-  TreeGen tg{}; // testing constructor
+  ANN nn{};
+  TreeGen tg{nn};
   auto& gs = tg.getGameState(0);
 
   REQUIRE(gs.pieces == 0ULL);
@@ -44,8 +47,10 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
   using ::david::gameTree::TreeGen;
   using ::david::type::gameState_t;
   using ::utils::setDefaultChessLayout;
+  using ::david::ANN;
 
-  TreeGen tg{}; // testing constructor
+  ANN nn{};
+  TreeGen tg{nn};
   auto& gs = tg.getGameState(0);
 
 
@@ -80,8 +85,10 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
 TEST_CASE("Verify the index math [TreeGen::treeIndex]") {
   using ::david::gameTree::TreeGen;
   using ::david::constant::MAXMOVES;
+  using ::david::ANN;
 
-  TreeGen tg{}; // testing constructor
+  ANN nn{};
+  TreeGen tg{nn};
 
   // parent 0 ... N
   REQUIRE(tg.getChildIndex(0, 0) == 1);

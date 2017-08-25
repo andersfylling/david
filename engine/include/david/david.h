@@ -84,7 +84,8 @@ static const int INPUTSIZE = 83;
 
 
 struct NodeCache {
-  type::gameState_ptr node; // should not be a leaf but a leaf parent.
+  //type::gameState_t node;
+  //type::gameState_ptr node; // should not be a leaf but a leaf parent.
   // in the future create a setup where the best node doesnt get overwritten
   // this will let u search trough the already generated, sorted and pruned children.
   // should speed up search time.

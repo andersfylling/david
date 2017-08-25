@@ -14,12 +14,11 @@ david::EngineMaster::EngineMaster(const std::string filename)
 {}
 
 int david::EngineMaster::spawnEngine() {
-  auto engine = std::make_shared<ChessEngine>(this->ANNFilename);
+  // insert engine and update last id
+  this->lastEngineInstanceID += 1;
+  this->engineInstances[this->lastEngineInstanceID].setANNFile(this->ANNFilename);
 
-  if (engine->hasANNInstance()) {
-    // insert engine and update last id
-    this->lastEngineInstanceID += 1;
-    this->engineInstances[this->lastEngineInstanceID] = engine; //.insert( std::make_pair(this->lastEngineInstanceID, engine) );
+  if (this->engineInstances[this->lastEngineInstanceID].hasANNInstance()) {
     return this->lastEngineInstanceID;
   }
   else {
@@ -57,22 +56,22 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   }
 
   // make sure they don't use UCI
-  auto eng1 = this->engineInstances[engineID1];
-  auto eng2 = this->engineInstances[engineID2];
-  if (eng1->hasInitiatedUCIProtocol()) {
+  auto& eng1 = this->engineInstances[engineID1];
+  auto& eng2 = this->engineInstances[engineID2];
+  if (eng1.hasInitiatedUCIProtocol()) {
     return -1;
   }
-  if (eng2->hasInitiatedUCIProtocol()) {
+  if (eng2.hasInitiatedUCIProtocol()) {
     return -1;
   }
 
   // construct the board for each engine
-  eng1->setNewGameBoard(fen);
-  eng2->setNewGameBoard(fen);
+  eng1.setNewGameBoard(fen);
+  eng2.setNewGameBoard(fen);
 
   // set eng1 to white.
-  eng1->setPlayerColor(bitboard::COLOR::WHITE);
-  eng2->setPlayerColor(bitboard::COLOR::BLACK);
+  eng1.setPlayerColor(bitboard::COLOR::WHITE);
+  eng2.setPlayerColor(bitboard::COLOR::BLACK);
 
   // Find out who is the current player
   // TODO: use color from gs node inside eng1 in stead
@@ -82,7 +81,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   sstr >> color; // now it gets the color
 
   // lets start the game!
-  auto currentGame = (color == "w" ? eng1 : eng2)->getGameState();
+  auto currentGame = (color == "w" ? eng1 : eng2).getGameState();
   auto previousGame = currentGame;
   bool error = false;
   int rounds = 0;
@@ -90,18 +89,20 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   do {
     utils::printGameState(currentGame);
 
+    //auto&& active = color == "w" ? eng1 : eng2;
+
     // ask for player / engine move decision
-    (color == "w" ? eng1 : eng2)->findBestMove();
+    (color == "w" ? eng1 : eng2).findBestMove();
 
     // update current game state
     previousGame = currentGame;
-    currentGame = (color == "w" ? eng1 : eng2)->getGameState();
+    currentGame = (color == "w" ? eng1 : eng2).getGameState();
 
     // update active player / engine
     color = color == "w" ? "b" : "w";
 
     // update game state of new current player
-    (color == "w" ? eng1 : eng2)->setGameState(currentGame);
+    (color == "w" ? eng1 : eng2).setGameState(currentGame);
 
     rounds += 1;
   } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != -1 && rounds < maxRounds);
@@ -109,10 +110,10 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   //std::cout << currentGame.possibleSubMoves << std::endl;
 
   auto winnerID = -1;
-  if (eng1->lost()) {
+  if (eng1.lost()) {
     winnerID = engineID2;
   }
-  else if (eng2->lost()) {
+  else if (eng2.lost()) {
     winnerID = engineID1;
   }
 

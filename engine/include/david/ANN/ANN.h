@@ -10,13 +10,13 @@
 // system dependencies
 #include <iostream>
 
-// forward decleration
+// forward declaration
 
 namespace david {
 class ANN {
  public:
-  ANN(std::string filename);
-  ANN(type::engineContext_ptr context, std::string filename);
+  ANN();
+  ANN(const std::string filename);
   ~ANN();
 
 
@@ -24,12 +24,12 @@ class ANN {
    * Retrieve the ANN file this engine instance uses for evaluating game boards.
    * @return std::string absolute path of ann file.
    */
-  std::string getANNFile();
+  std::string getANNFile() const;
 
   /**
    * Check if there exists a ANNFile
    */
-  bool hasANNFile();
+  bool hasANNFile() const;
 
   /**
    * Update the ANN file even if already set or not.
@@ -42,7 +42,7 @@ class ANN {
   /**
    * Check if there exists a ANN instance
    */
-  bool hasANNInstance();
+  bool hasANNInstance() const;
 
   /**
    * Start the ANN from given files.
@@ -55,7 +55,7 @@ class ANN {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(const type::gameState_t& board);
+  int ANNEvaluate(const type::gameState_t& board) const;
 
 
   /**
@@ -64,12 +64,11 @@ class ANN {
    * @param fen std::string FEN(Forsyth–Edwards Notation)
    * @return int board evaluation
    */
-  int ANNEvaluate(const std::string& fen);
+  int ANNEvaluate(const std::string& fen) const;
 
 
 
  private:
-  type::engineContext_ptr engineContextPtr;
   std::string ANNFile;
   fann* ANNInstance;
 };

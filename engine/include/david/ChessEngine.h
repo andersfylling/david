@@ -3,6 +3,11 @@
 // local dependencies
 #include "david/types.h"
 #include "david/bitboard.h"
+#include "david/ANN/ANN.h"
+#include "david/Search.h"
+#include "david/TreeGen.h"
+
+// git submodule dependencies
 #include "uci/Listener.h"
 
 // forward declarations
@@ -26,13 +31,10 @@ class ChessEngine {
   int timeLeft;
 
   // this is sent to other classes so they can communicate with each other
-  type::engineContext_ptr engineContextPtr;
-
-  // contents of the engineContextPtr
-  type::search_ptr        searchPtr;
-  type::neuralNetwork_ptr neuralNetworkPtr;
-  type::gameTree_ptr      gameTreePtr;
-  type::uciProtocol_ptr   uciProtocolPtr;
+  type::NeuralNetwork_t neuralNet;
+  type::TreeGen_t treeGen;
+  type::Search_t search;
+  type::UciProtocol_t UCI;
 
 
   type::gameState_t currentGameState;
@@ -46,8 +48,8 @@ class ChessEngine {
 
   ChessEngine();
   ChessEngine(Player self);
-  ChessEngine(std::string ANNFile);
-  ChessEngine(Player self, std::string ANNFile);
+  ChessEngine(const std::string ANNFile);
+  ChessEngine(Player self, const std::string ANNFile);
   ~ChessEngine();
 
   void linkUCICommands();
@@ -85,6 +87,8 @@ class ChessEngine {
    * @return std::string absolute path of ann file.
    */
   std::string getANNFile();
+
+  void setANNFile(const std::string ANNFile);
 
   /**
    * Check if there exists a ANNFile

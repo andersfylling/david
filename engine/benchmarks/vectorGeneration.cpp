@@ -7,6 +7,7 @@
 #include "david/MoveGeneration.h"
 #include "david/environment.h"
 
+#ifndef MOVEGEN
 namespace {
 david::bitboard::bitboard_t board = 65280ULL;
 static void BM_environment(benchmark::State& state) {
@@ -53,4 +54,6 @@ BENCHMARK(BM_new_movegen_diag);
 BENCHMARK(BM_environment);
 BENCHMARK(BM_environment_diag);
 }
+
+#endif
 

@@ -1014,7 +1014,7 @@ bool perft() {
   return perft(-1);
 }
 
-bool perft(const uint8_t limit, const uint8_t startDepth) {
+bool perft(const int limit, const uint8_t startDepth) {
   ::david::type::gameState_t gs;
   ::utils::setDefaultChessLayout(gs);
 
@@ -1036,7 +1036,7 @@ bool perft(const uint8_t limit, const uint8_t startDepth) {
       /* 13 */1981066775000396239 // 1,981,066,775,000,396,239
   };
 
-  auto len = limit == -1 ? static_cast<int>(perftScores.size()) : limit;
+  auto len = limit < 0 ? static_cast<int>(perftScores.size()) : limit;
   bool success = true;
 
   if (limit != -1) {

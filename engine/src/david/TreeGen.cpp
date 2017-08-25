@@ -13,32 +13,13 @@ namespace gameTree {
 /**
  * Constructor
  */
-TreeGen::TreeGen(type::engineContext_ptr ctx)
-    : engineContextPtr(ctx),
+TreeGen::TreeGen(const type::NeuralNetwork_t& NeuralNetRef)
+    : neuralnet(NeuralNetRef),
       maxDepth(5),
       startposFEN(constant::FENStartPosition),
       nrOfEGNMoves(-1),
       historyIndex(0)
 {
-  int i = 0;
-  int iAfterFirstMove = 0;
-  while (this->depthIndexes.end() == 0) {
-    this->depthIndexes[++i] = constant::MAXMOVES * iAfterFirstMove + 1;
-  }
-}
-
-TreeGen::TreeGen()
-    : engineContextPtr(),
-      maxDepth(5),
-      startposFEN(constant::FENStartPosition),
-      nrOfEGNMoves(-1),
-      historyIndex(0)
-{
-#ifndef DAVID_TEST
-  //std::cerr << "TreeGen::TreeGen() empty contructor can only be used for unit testing!" << std::endl;
-  std::__throw_runtime_error("TreeGen::TreeGen() empty contructor can only be used for unit testing!");
-#endif
-
   int i = 0;
   int iAfterFirstMove = 0;
   while (this->depthIndexes.end() == 0) {
@@ -142,21 +123,6 @@ void TreeGen::reset() {
 
 }
 
-
-unsigned int TreeGen::getChildIndex(const unsigned int parent, const unsigned int child) const {
-  //return this->depthIndexes[parent + 1 + child];
-  //utils::yellDeprecated("TreeGen::getChildIndex is not working correctly!!!!");
-  if (parent == 0) {
-    return 1 + child;
-  }
-  else if (parent <= constant::MAXMOVES) {
-    return constant::MAXMOVES + 1 + child;
-  }
-  else /*if (parent > constant::MAXMOVES)*/ {
-    return ((parent / constant::MAXMOVES) + 1) * constant::MAXMOVES + 1 + child;
-  }
-}
-
 /**
  * Generates children for a given node, and sorts the children.
  *
@@ -206,9 +172,10 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
     auto& n = this->tree[firstChildPos + i];
 
     // use ann to get score
-    if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
-      n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
-    }
+    n.score = this->neuralnet.ANNEvaluate(n);
+    //if (this->NN != nullptr) {
+    //  n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
+    //}
 #else
     this->generateNode(node, this->tree[firstChildPos + i], states.at(i));
 #endif
@@ -284,9 +251,7 @@ void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n
   }
 
   // use ann to get score
-  if (this->engineContextPtr->neuralNetworkPtr != nullptr) {
-    n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
-  }
+  n.score = this->neuralnet.ANNEvaluate(n);
 #endif
 }
 
