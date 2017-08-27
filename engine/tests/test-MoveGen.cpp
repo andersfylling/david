@@ -2,138 +2,191 @@
 #include <iostream>
 #include <david/utils/utils.h>
 #include "david/MoveGen.h"
+#include "david/MoveGenTest.h"
 #include "catch.hpp"
 
 #ifdef MOVEGEN
 
 
 TEST_CASE("MoveGen perft [MoveGen]") {
-  REQUIRE(::utils::perft(5));
+  REQUIRE(::utils::perft(6));
 }
 
-TEST_CASE("MoveGen generation moves") {
+TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
   ::david::type::gameState_t gs;
   ::utils::setDefaultChessLayout(gs);
-  ::david::MoveGen moveGen{gs};
 
-  REQUIRE(gs.isWhite);
+  // rook moves
+  {
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
 
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
-  uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
-  ::david::type::gameState_t gs2 = states[1];
+    auto p = ::utils::constant::verticalAttackPaths[0];
+    auto& h = gs.piecess[1];
+    auto& f = gs.piecess[0];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 8) == 72340172838076672);
 
-  REQUIRE(!gs2.isWhite);
+    p = ::utils::constant::verticalAttackPaths[26];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(26) - 1) & p, 8) == 289360691285196800);
 
-  ::david::MoveGen b{gs2};
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states2;
-  len = b.template generateGameStates<::david::constant::MAXMOVES>(states2);
-  ::david::type::gameState_t gs3 = states2[1];
+    p = ::utils::constant::horizontalAttackPaths[0];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 1) == 254);
 
-  REQUIRE(gs3.isWhite);
+    p = ::utils::constant::horizontalAttackPaths[35];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(35) - 1) & p, 1) == 1060856922112);
+  }
 
-  ::david::MoveGen c{gs3};
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states3;
-  len = c.template generateGameStates<::david::constant::MAXMOVES>(states3);
-  ::david::type::gameState_t gs4 = states3[len - 1];
+  {
+    gs.piecesArr[0][0] = 37065331200;
+    gs.piecesArr[0][1] = 1145450631528448;
+    ::utils::generateMergedBoardVersion(gs);
 
-  REQUIRE(!gs4.isWhite);
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
 
-  ::david::MoveGen d{gs4};
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states4;
-  len = d.template generateGameStates<::david::constant::MAXMOVES>(states4);
-  ::david::type::gameState_t gs5 = states4[len - 4];
+    auto p = ::utils::constant::verticalAttackPaths[0];
+    auto& h = gs.piecess[1];
+    auto& f = gs.piecess[0];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 8) == 72340172838076672);
 
-  REQUIRE(gs5.isWhite);
+    p = ::utils::constant::verticalAttackPaths[26];
+    //mgt.print();
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(26) - 1) & p, 8) == 289360691284934656);
 
-  ::david::MoveGen e{gs5};
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states5;
-  len = e.template generateGameStates<::david::constant::MAXMOVES>(states5);
-  ::david::type::gameState_t gs6 = states5[len - 1];
+    p = ::utils::constant::horizontalAttackPaths[0];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 1) == 254);
 
-  REQUIRE(!gs6.isWhite);
+    p = ::utils::constant::horizontalAttackPaths[35];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(35) - 1) & p, 1) == 1060856922112);
+  }
 
-  //::utils::printGameState(gs3);
+  // bishop moves
+  {
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
 
-  for (int i = 0; i < len; i++) {
-    auto g = states5[i];
-    //::utils::printGameState(g);
+    auto p = ::utils::constant::diagonalDUAttackPaths[0];
+    auto& h = gs.piecess[1];
+    auto& f = gs.piecess[0];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 7) == 0);
+
+    p = ::utils::constant::diagonalDUAttackPaths[26];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(26) - 1) & p, 7) == 1108102086656);
+
+    p = ::utils::constant::diagonalUDAttackPaths[0];
+    bool ok = mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 9) == 9241421688590303744;
+    REQUIRE(ok);
+
+    p = ::utils::constant::diagonalUDAttackPaths[35];
+    ok = mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(35) - 1) & p, 9) == 4620710809935413504;
+    REQUIRE(ok);
+  }
+
+  {
+    gs.piecesArr[0][0] = 37065331200;
+    gs.piecesArr[0][1] = 1145450631528448;
+    ::utils::generateMergedBoardVersion(gs);
+
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
+
+    auto p = ::utils::constant::diagonalDUAttackPaths[0];
+    auto& h = gs.piecess[1];
+    auto& f = gs.piecess[0];
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 7) == 0);
+
+    p = ::utils::constant::diagonalDUAttackPaths[26];
+    //mgt.print();
+    REQUIRE(mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(26) - 1) & p, 7) == 1108102086656);
+
+    p = ::utils::constant::diagonalUDAttackPaths[0];
+    bool ok = mgt.extractLegalSouthPath(p, p & f, h, 0 & p, 9) == 9241421688590303744;
+    REQUIRE(ok);
+
+    p = ::utils::constant::diagonalUDAttackPaths[35];
+    ok = mgt.extractLegalSouthPath(p, p & f, h, (::utils::indexToBitboard(35) - 1) & p, 9) == 4620710809935413504;
+    REQUIRE(ok);
+  }
+
+
+}
+
+TEST_CASE("extract legal north attack [MoveGen.extractLegalNorthPath]") {
+  ::david::type::gameState_t gs;
+  ::utils::setDefaultChessLayout(gs);
+
+  // rook moves
+  {
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
+
+    auto p = ::utils::constant::verticalAttackPaths[0];
+    auto& h = gs.piecess[1];
+    auto& f = gs.piecess[0];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, 18446744073709551614 & p, 8) == 0);
+
+    p = ::utils::constant::verticalAttackPaths[26];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, ~(::utils::indexToBitboard(26) - 1) & p, 8) == 1130315133486084);
+
+    p = ::utils::constant::horizontalAttackPaths[0];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, 18446744073709551614 & p, 1) == 0);
+
+    p = ::utils::constant::horizontalAttackPaths[35];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, ~(::utils::indexToBitboard(35) - 1) & p, 1) == 1060856922112);
+  }
+
+  {
+    gs.piecesArr[0][0] = 37065331200;
+    gs.piecesArr[0][1] = 1145450631528448;
+    ::utils::generateMergedBoardVersion(gs);
+
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
+
+    auto p = ::utils::constant::verticalAttackPaths[0];
+    auto& h = gs.piecess[1];
+    auto& f = gs.piecess[0];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, 18446744073709551614 & p, 8) == 65792);
+
+    p = ::utils::constant::verticalAttackPaths[26];
+    //mgt.print();
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, ~(::utils::indexToBitboard(26) - 1) & p, 8) == 1130315133486084);
+
+    p = ::utils::constant::horizontalAttackPaths[0];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, 18446744073709551614 & p, 1) == 0);
+
+    p = ::utils::constant::horizontalAttackPaths[35];
+    REQUIRE(mgt.extractLegalNorthPath(p, p & f, h, ~(::utils::indexToBitboard(35) - 1) & p, 1) == 511101108224);
   }
 
 }
 
-TEST_CASE("diagonal attacks [MoveGen]") {
+TEST_CASE("rook attack [MoveGen.generateRookAttack]") {
   ::david::type::gameState_t gs;
   ::utils::setDefaultChessLayout(gs);
 
-  ::david::MoveGen moveGen{gs};
+  {
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
 
-  auto b = false;
+    REQUIRE(mgt.generateRookAttack(20, gs) == 4521260816990208);
+    REQUIRE(mgt.generateRookAttack(20, gs, true) == 17661189623808);
+  }
 
-  b = moveGen.test_diagonalAttackPaths(262144) == 18049656063787008;
-  REQUIRE(b);
+  // move h2h4 pawn.
+  {
+    gs.piecesArr[0][0] = 16842240;
+    ::utils::generateMergedBoardVersion(gs);
 
-  b = moveGen.test_diagonalAttackPaths(268435456) == 36666685564387328;
-  REQUIRE(b);
+    ::david::MoveGen moveGen{gs};
+    ::david::MoveGenTest mgt{moveGen};
 
-  /*
-  // place the piece on top of an enemy piece. This results in a 0ULL.
-  b = moveGen.test_diagonalAttackPaths(18014398509481984) == 11529391036782870528;
-  REQUIRE(b);
+    REQUIRE(mgt.generateRookAttack(0, gs) == 65792);
+    REQUIRE(mgt.generateRookAttack(0, gs, true) == 16843010);
+    REQUIRE(mgt.generateRookAttack(26, gs) == 1130319327789056);
+    REQUIRE(mgt.generateRookAttack(26, gs, true) == 4419437724672);
 
-  b = moveGen.test_diagonalAttackPaths(2305843009213693952) == 22517998136852480;
-  REQUIRE(b);
-  */
-
-  b = moveGen.test_diagonalAttackPaths(4294967296) == 1128098963914752;
-  REQUIRE(b);
-
-  b = moveGen.test_diagonalAttackPaths(2048) == 141017232965632;
-  REQUIRE(b);
-
-
-}
-TEST_CASE("knight attacks [MoveGen]") {
-  ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
-
-  ::david::MoveGen moveGen{gs};
-
-
-  //uint64_t piece = 64;
-  //::utils::printBoard(piece);
-  //::utils::printBoard(moveGen.test_knightAttackPaths(piece));
-
-}
-
-TEST_CASE("rook attacks [MoveGen]") {
-  ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
-
-  ::david::MoveGen moveGen{gs};
-
-  //moveGen.test_rookAttackPaths();
-
-  //uint64_t piece = 64;
-  //::utils::printBoard(piece);
-  //::utils::printBoard(moveGen.test_knightAttackPaths(piece));
-
-}
-
-
-TEST_CASE("queen attacks [MoveGen]") {
-  ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
-
-  ::david::MoveGen moveGen{gs};
-
-  //moveGen.test_bishopAttackPaths();
-  //moveGen.test_queenAttackPaths();
-  //moveGen.test_rookAttackPaths();
-
-  //uint64_t piece = 64;
-  //::utils::printBoard(piece);
-  //::utils::printBoard(moveGen.test_knightAttackPaths(piece));
-
+  }
 }
 
 #endif

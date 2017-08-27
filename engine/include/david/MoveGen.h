@@ -3,6 +3,7 @@
 #include "david/david.h"
 #include "david/types.h"
 #include "david/bitboard.h"
+#include "david/MoveGenTest.h"
 #include <assert.h>
 
 namespace david {
@@ -10,6 +11,7 @@ namespace david {
 #ifdef MOVEGEN
 
 class MoveGen {
+  friend class MoveGenTest;
  public:
   MoveGen(const type::gameState_t& gs);
 
@@ -41,7 +43,7 @@ class MoveGen {
 
     uint16_t nrOfMoves = 0; // use nrOfMoves++ for everyone added. at end, it represents length.
 
-    for (; nrOfMoves < this->index_gameStates && nrOfMoves < stop - start; nrOfMoves++) {
+    for (; nrOfMoves < this->index_gameStates && nrOfMoves < (stop - start); nrOfMoves++) {
       arr[start + nrOfMoves] = this->gameStates[nrOfMoves];
     }
 
@@ -50,7 +52,7 @@ class MoveGen {
   }
 
   uint64_t test_diagonalAttackPaths (const uint64_t board) {
-    return this->generateDiagonals(::utils::LSB(board));
+    return this->generateDiagonals(::utils::LSB(board), this->state);
   }
 
   uint64_t test_knightAttackPaths (const uint64_t board) {
@@ -61,6 +63,7 @@ class MoveGen {
  private:
   // the current board status of the game
   const type::gameState_t& state;
+  type::gameState_t reversedState;
 
   // xray attack path for king
   type::bitboard_t xRayRookPaths;
@@ -97,37 +100,37 @@ class MoveGen {
   type::bitboard_t hostileAttackPaths;
 
   // attack paths for pawns
-  inline type::bitboard_t generatePawnAttack(const type::gameState_t& gs) const {
-    using type::bitboard_t;
-
-    bitboard_t attacks = 0ULL;
-    bitboard_t pawns = gs.piecesArr[gs.iPawns][1];
-
-    if (!this->state.isWhite) {
-      // pawn attack for white, up right
-      const bitboard_t whitePawnsRightAttackFilter = 282578800148737;
-      bitboard_t r1 = (pawns ^ (pawns & whitePawnsRightAttackFilter)) << 7; // attack up and right
-      r1 ^= pawns & r1;
-      // filter on &= hostiles
-      // loop
-
-      // pawn attack for white, up left
-      const bitboard_t whitePawnsLeftAttackFilter = 36170086419038336;
-      bitboard_t r2 = (pawns ^ (pawns & whitePawnsLeftAttackFilter)) << 9;
-      r2 ^= pawns & r2;
-
-      attacks = r1 | r2;
-    }
-    else {
-      const bitboard_t blackPawnsRightAttackFilter = 72340172838076672;
-      bitboard_t r1 = (pawns ^ (pawns & blackPawnsRightAttackFilter)) >> 9;
-      r1 ^= pawns & r1;
-
-      attacks = r1;
-    }
-
-    return attacks;
-  }
+//  inline type::bitboard_t generatePawnAttack(const type::gameState_t& gs) const {
+//    using type::bitboard_t;
+//
+//    bitboard_t attacks = 0ULL;
+//    bitboard_t pawns = gs.piecesArr[gs.iPawns][1];
+//
+//    if (!this->state.isWhite) {
+//      // pawn attack for white, up right
+//      const bitboard_t whitePawnsRightAttackFilter = 282578800148737;
+//      bitboard_t r1 = (pawns ^ (pawns & whitePawnsRightAttackFilter)) << 7; // attack up and right
+//      r1 ^= pawns & r1;
+//      // filter on &= hostiles
+//      // loop
+//
+//      // pawn attack for white, up left
+//      const bitboard_t whitePawnsLeftAttackFilter = 36170086419038336;
+//      bitboard_t r2 = (pawns ^ (pawns & whitePawnsLeftAttackFilter)) << 9;
+//      r2 ^= pawns & r2;
+//
+//      attacks = r1 | r2;
+//    }
+//    else {
+//      const bitboard_t blackPawnsRightAttackFilter = 72340172838076672;
+//      bitboard_t r1 = (pawns ^ (pawns & blackPawnsRightAttackFilter)) >> 9;
+//      r1 ^= pawns & r1;
+//
+//      attacks = r1;
+//    }
+//
+//    return attacks;
+//  }
 
   /**
    * Remove the parts of the Psuedo attack path that is illegal / invalid.
@@ -207,52 +210,60 @@ class MoveGen {
     const auto pieceBoard = ::utils::indexToBitboard(index);
 
     type::bitboard_t board = 0ULL;
+    type::bitboard_t promotions = 0ULL;
 
-    // shift upwards
-    board |= pieceBoard << 8;
-
-    // shift downwards
-    board |= pieceBoard >> 8;
-
-    // if it's at an double square start position, shift 2 times....... -_-
-    if ((71776119061282560 & pieceBoard) > 0) {
+    if (this->state.isWhite) {
       // shift upwards
-      if ((this->state.combinedPieces & (pieceBoard << 8)) == 0) {
+      board |= pieceBoard << 8;
+
+      // double shift
+      if ((65280 & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard << 8)) == 0) {
         board |= pieceBoard << 16;
       }
 
+      // remove any blocking pieces
+      board &= ~this->state.combinedPieces;
+
+      // attacks
+      auto attacks = ::utils::constant::pawnAttackPaths[index];
+      attacks &= (this->state.piecess[1] | ::utils::indexToBitboard(this->state.enPassant));
+      board |= attacks & ~(pieceBoard - 1);
+
+      // promotions
+      promotions = 18374686479671623680 & board;
+      // remove pawns that will turn into other pieces
+      board ^= promotions;
+    }
+
+    // black
+    else {
       // shift downwards
-      if ((this->state.combinedPieces & (pieceBoard >> 8)) == 0) {
+      board |= pieceBoard >> 8;
+
+      // double shift
+      if ((71776119061217280 & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard >> 8)) == 0) {
         board |= pieceBoard >> 16;
       }
+
+      // remove any blocking pieces
+      board &= ~this->state.combinedPieces;
+
+      // attacks
+      auto attacks = ::utils::constant::pawnAttackPaths[index];
+      attacks &= (this->state.piecess[1] | ::utils::indexToBitboard(this->state.enPassant));
+      board |= attacks & (pieceBoard - 1);
+
+      // promotions
+      promotions = 255 & board;
+      // remove pawns that will turn into other pieces
+      board ^= promotions;
     }
-
-    // remove any blocking pieces
-    board &= ~this->state.combinedPieces;
-
-    // attacks
-    auto attacks = ::utils::constant::pawnAttackPaths[index];
-    attacks &= (this->state.piecess[1] | ::utils::indexToBitboard(this->state.enPassant));
-    board |= attacks;
-
-
-    // remove illegal direction / move path
-    if (this->state.isWhite) {
-      board &= ~(pieceBoard - 1);
-    }
-    else {
-      board &= pieceBoard - 1;
-    }
-
-
-    auto promotions = 18374686479671623935 & board;
-    board ^= promotions; // remove promotions as those are no longer pawns
 
     while (promotions != 0) {
       auto i = ::utils::LSB(promotions);
-      this->generatePromotions(::utils::indexToBitboard(i), pieceBoard);
-
       promotions = ::utils::flipBitOffCopy(promotions, i);
+
+      this->generatePromotions(::utils::indexToBitboard(i), pieceBoard);
     }
 
     return board;
@@ -274,13 +285,17 @@ class MoveGen {
       return true;
     }
 
-    // pawns
-    if ((::utils::constant::pawnAttackPaths[pos] & gs.piecesArr[gs.iPawns][hostile]) > 0) {
+    // pawns. TODO: wtf? need to be related to direction of active pieces.
+     type::bitboard_t pawnAttacks = ::utils::constant::pawnAttackPaths[pos];
+     pawnAttacks &= gs.isWhite ? ~(board - 1) : board - 1;
+    if ((pawnAttacks & gs.piecesArr[gs.iPawns][hostile]) > 0) {
       return true;
     }
 
     // bishop & diagonal queens
-    const type::bitboard_t diagonals = this->generateDiagonals(pos);
+     //TODO: must use data from the new game state...
+     // right now this only works if its a king that has moved..
+    const type::bitboard_t diagonals = this->generateDiagonals(pos, gs, hostile == 0);
     if (((diagonals & gs.piecesArr[gs.iBishops][hostile]) | (diagonals & gs.piecesArr[gs.iQueens][hostile])) > 0) {
       // bug: generates a attack path that goes through a hostile piece.
       // in this case, king is at E8, a friendly pawn at G6 and a hostile queen at H5.
@@ -293,7 +308,7 @@ class MoveGen {
     }
 
     // rook & vertical+horizontal queens
-    const type::bitboard_t rookPaths = this->generateRookAttack(pos);
+    const type::bitboard_t rookPaths = this->generateRookAttack(pos, gs, hostile == 0);
     if (((rookPaths & gs.piecesArr[gs.iRooks][hostile]) | (rookPaths & gs.piecesArr[gs.iQueens][hostile])) > 0) {
       return true;
     }
@@ -315,6 +330,7 @@ class MoveGen {
     const uint8_t index = ::utils::LSB(pBoard);
     const uint8_t iRow = index / 8;
     const uint8_t iCol = index % 8;
+    const type::bitboard_t hostiles = (this->state.piecesArr[this->state.iQueens][hostile] | this->state.piecesArr[this->state.iRooks][hostile]);
 
     // the result board
     type::bitboard_t result = 0ULL;
@@ -351,12 +367,6 @@ class MoveGen {
     hitTracker = 0;
     mult = 1;
 
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
-      result |= tmp;
-      tmp = 0ULL;
-    }
-
     // downwards, TODO: slow..
     for (uint8_t i = iRow - 1; i > 0; i--, mult++) {
       type::bitboard_t board = pBoard >> (8 * mult);
@@ -375,9 +385,7 @@ class MoveGen {
     }
     hitTracker = 0;
     mult = 1;
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
@@ -409,9 +417,7 @@ class MoveGen {
     }
     hitTracker = 0;
     mult = 1;
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
@@ -437,9 +443,7 @@ class MoveGen {
       // add attack path
       tmp |= board;
     }
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iRooks][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
@@ -453,6 +457,7 @@ class MoveGen {
     const uint8_t index = ::utils::LSB(pBoard);
     const uint8_t iRow = index / 8;
     const uint8_t iCol = index % 8;
+    const type::bitboard_t hostiles = (this->state.piecesArr[this->state.iQueens][hostile] | this->state.piecesArr[this->state.iBishops][hostile]);
 
     // the result board
     type::bitboard_t result = 0ULL;
@@ -470,7 +475,7 @@ class MoveGen {
     //
 
     // up and right
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 9259542123273814271) == 0; i++, mult++) {
       type::bitboard_t board = pBoard << (7 * mult);
 
       // on hit increment tracker
@@ -487,15 +492,13 @@ class MoveGen {
     }
     hitTracker = 0;
     mult = 1;
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
 
     // up and left
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 72340172838076927) == 0; i++, mult++) {
       type::bitboard_t board = pBoard << (9 * mult);
 
       // on hit increment tracker
@@ -512,15 +515,14 @@ class MoveGen {
     }
     hitTracker = 0;
     mult = 1;
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
 
+
     // down and right
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 18410856566090662016) == 0; i++, mult++) {
       type::bitboard_t board = pBoard >> (9 * mult);
 
       // on hit increment tracker
@@ -537,15 +539,14 @@ class MoveGen {
     }
     hitTracker = 0;
     mult = 1;
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
 
+
     // down and left
-    for (uint8_t i = 0; i < 8 && (tmp & 18411139144890810879) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 18374969058471772417) == 0; i++, mult++) {
       type::bitboard_t board = pBoard >> (7 * mult);
 
       // on hit increment tracker
@@ -560,9 +561,7 @@ class MoveGen {
       // add attack path
       tmp |= board;
     }
-
-    // check that there are hostile queen and rooks in this path
-    if ((this->state.piecesArr[this->state.iQueens][hostile] & tmp) > 0 || (this->state.piecesArr[this->state.iBishops][hostile] & tmp) > 0) {
+    if ((hostiles & tmp) > 0) {
       result |= tmp;
       tmp = 0ULL;
     }
@@ -576,21 +575,21 @@ class MoveGen {
    * @param piece index
    * @return
    */
-  inline type::bitboard_t generateDiagonals (const uint8_t index, const bool hostilePath = false) const {
-    const auto friendly   = this->state.piecess[hostilePath ? 1 : 0];
-    const auto hostiles   = this->state.piecess[hostilePath ? 0 : 1];
+  inline type::bitboard_t generateDiagonals (const uint8_t index, const type::gameState_t& gs, const bool hostilePath = false) const {
+    const auto friendly   = gs.piecess[hostilePath ? 1 : 0];
+    const auto hostiles   = gs.piecess[hostilePath ? 0 : 1];
     const auto iBoard     = ::utils::indexToBitboard(index);
     const type::bitboard_t southArea = iBoard - 1;
     const type::bitboard_t northArea = (~iBoard) ^ southArea;
 
     // attack path starting from bottom going upwards, reading left to right
-    type::bitboard_t r1 = iBoard ^ ::utils::constant::duAttackPaths[14 - (index % 8) - (index / 8)];
+    type::bitboard_t r1 = ::utils::constant::diagonalDUAttackPaths[index];
 
     r1 = this->extractLegalSouthPath(r1, friendly, hostiles, southArea & r1, 7);
     r1 = this->extractLegalNorthPath(r1, friendly, hostiles, northArea & r1, 7);
 
     // attack path starting from bottom going upwards, reading left to right
-    type::bitboard_t r2 = iBoard ^ ::utils::constant::udAttackPaths[7 - (index % 8) + (index / 8)];
+    type::bitboard_t r2 = ::utils::constant::diagonalUDAttackPaths[index];
 
     r2 = this->extractLegalSouthPath(r2, friendly, hostiles, southArea & r2, 9);
     r2 = this->extractLegalNorthPath(r2, friendly, hostiles, northArea & r2, 9);
@@ -645,21 +644,21 @@ class MoveGen {
     return (rMask & friendly) ^ rMask;
   }
 
-  inline uint64_t generateRookAttack (const uint8_t index, const bool hostilePath = false) const {
-    const auto friendly   = this->state.piecess[hostilePath ? 1 : 0];
-    const auto hostiles   = this->state.piecess[hostilePath ? 0 : 1];
+  inline uint64_t generateRookAttack (const uint8_t index, const type::gameState_t& gs, const bool hostilePath = false) const {
+    const auto friendly   = gs.piecess[hostilePath ? 1 : 0];
+    const auto hostiles   = gs.piecess[hostilePath ? 0 : 1];
     const auto iBoard     = ::utils::indexToBitboard(index);
     const type::bitboard_t southArea = iBoard - 1;
     const type::bitboard_t northArea = (~iBoard) ^ southArea;
 
     // attack path starting from bottom going upwards, reading left to right
-    type::bitboard_t r1 = iBoard ^ ::utils::constant::verticalAttackPaths[index];
+    type::bitboard_t r1 = ::utils::constant::verticalAttackPaths[index];
 
     r1 = this->extractLegalSouthPath(r1, friendly, hostiles, southArea & r1, 8);
     r1 = this->extractLegalNorthPath(r1, friendly, hostiles, northArea & r1, 8);
 
     // attack path starting from bottom going upwards, reading left to right
-    type::bitboard_t r2 = iBoard ^ ::utils::constant::horizontalAttackPaths[index];
+    type::bitboard_t r2 = ::utils::constant::horizontalAttackPaths[index];
 
     r2 = this->extractLegalSouthPath(r2, friendly, hostiles, southArea & r2, 1);
     r2 = this->extractLegalNorthPath(r2, friendly, hostiles, northArea & r2, 1);

@@ -3,6 +3,7 @@
 #include "david/david.h"
 
 #include "david/types.h"
+#include "david/bitboard.h"
 
 #include "fann/floatfann.h"
 
@@ -197,6 +198,8 @@ void printBoard(uint64_t board, const int index = -1);
 }
 }
 
+void generateMergedBoardVersion(::david::type::gameState_t& gs);
+
 void yellDeprecated(const std::string info);
 
 bool perft();
@@ -295,6 +298,7 @@ constexpr ::std::array<uint64_t, 64> compileHorizontalAttacks() {
 
   for (uint8_t i = 0; i < 64; i++) {
     attacks[i] = bottom << (8 * (i / 8));
+    attacks[i] ^= ::utils::indexToBitboard(i);
   }
 
   return attacks;
@@ -310,6 +314,7 @@ constexpr ::std::array<uint64_t, 64> compileVerticalAttacks() {
 
   for (uint8_t i = 0; i < 64; i++) {
     attacks[i] = right << (i % 8);
+    attacks[i] ^= ::utils::indexToBitboard(i);
   }
 
   return attacks;
@@ -364,58 +369,104 @@ constexpr ::std::array<uint64_t, 64> compilePawnAttacks () {
   return attacks;
 };
 
+
+constexpr ::std::array<uint64_t, 64> compileDUAttacks () {
+  ::std::array<uint64_t, 64> attacks{};
+
+  // ->, down to up
+  const std::array<uint64_t, 15> duAttackPaths = {
+      0,
+      4647714815446351872,
+      2323998145211531264,
+      1161999622361579520,
+      580999813328273408,
+      290499906672525312,
+      145249953336295424,
+      72624976668147840, // middle
+      283691315109952,
+      1108169199648,
+      4328785936,
+      16909320,
+      66052,
+      258,
+      0
+  };
+
+  for (uint8_t i = 0; i < 64; i++) {
+    auto board = duAttackPaths[14 - (i % 8) - (i / 8)];
+    const auto piece = ::utils::indexToBitboard(i);
+
+    if (board == 0) {
+      attacks[i] = 0ULL;
+    }
+    else {
+      attacks[i] = board ^ piece;
+    }
+  }
+
+  return attacks;
+};
+
+
+constexpr ::std::array<uint64_t, 64> compileUDAttacks () {
+  ::std::array<uint64_t, 64> attacks{};
+
+  // ->, up to down
+  const std::array<uint64_t, 15> udAttackPaths = {
+      0,
+      32832,
+      8405024,
+      2151686160,
+      550831656968,
+      141012904183812,
+      36099303471055874,
+      9241421688590303745, // middle diagonal
+      4620710844295151872,
+      2310355422147575808,
+      1155177711073755136,
+      577588855528488960,
+      288794425616760832,
+      144396663052566528,
+      0
+  };
+
+  for (uint8_t i = 0; i < 64; i++) {
+    auto board = udAttackPaths[7 - (i % 8) + (i / 8)];
+    const auto piece = ::utils::indexToBitboard(i);
+
+    if (board == 0) {
+      attacks[i] = 0ULL;
+    }
+    else {
+      attacks[i] = board ^ piece;
+    }
+  }
+
+  return attacks;
+};
+
+
+
+
 namespace constant {
 const ::std::array<uint64_t, 64> knightAttackPaths = ::utils::compileKnightAttacks();
 
 const ::std::array<uint64_t, 64> rookAttackPaths = ::utils::compileRookAttacks();
 
-// horixontal attack paths
+// horizontal attack paths
 const ::std::array<uint64_t, 64> horizontalAttackPaths = ::utils::compileHorizontalAttacks();
 
 // Vertical attack paths
 const ::std::array<uint64_t, 64> verticalAttackPaths = ::utils::compileVerticalAttacks();
 
+// diagonal attack paths, from down to up, going left to right
+const ::std::array<uint64_t, 64> diagonalDUAttackPaths = ::utils::compileDUAttacks();
+
+// diagonal attack paths, from up to down, going left to right
+const ::std::array<uint64_t, 64> diagonalUDAttackPaths = ::utils::compileUDAttacks();
+
 // pawn attacks
 const ::std::array<uint64_t, 64> pawnAttackPaths = ::utils::compilePawnAttacks();
-
-//diagonal attack paths
-// ->, down to up
-const std::array<uint64_t, 15> duAttackPaths = {
-    0,
-    4647714815446351872,
-    2323998145211531264,
-    1161999622361579520,
-    580999813328273408,
-    290499906672525312,
-    145249953336295424,
-    72624976668147840, // middle
-    283691315109952,
-    1108169199648,
-    4328785936,
-    16909320,
-    66052,
-    258,
-    0
-};
-
-// ->, up to down
-const std::array<uint64_t, 15> udAttackPaths = {
-    0,
-    32832,
-    8405024,
-    2151686160,
-    550831656968,
-    141012904183812,
-    36099303471055874,
-    9241421688590303745, // middle diagonal
-    4620710844295151872,
-    2310355422147575808,
-    1155177711073755136,
-    577588855528488960,
-    288794425616760832,
-    144396663052566528,
-    0
-};
 }
 
 } // utils

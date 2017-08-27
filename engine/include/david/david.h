@@ -1,6 +1,6 @@
 #pragma once
 
-#define MOVEGEN // MoveGen.cpp/h
+//#define MOVEGEN // MoveGen.cpp/h
 
 #include <limits>
 #include <string>

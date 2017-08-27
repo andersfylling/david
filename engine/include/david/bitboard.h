@@ -114,6 +114,7 @@ struct gameState {
   ::std::array<bool, 2> kingCastlings   = {true, true};
 
   bool isInCheck = false;
+  bool passant = false;
 
   //type::gameState_ptr* children;
   //std::array<type::gameState_ptr, 256> children{{nullptr}};

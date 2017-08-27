@@ -40,3 +40,8 @@ TEST_CASE("pawn attacks") {
     //::utils::printBoard(paths[i], i);
   }
 }
+
+TEST_CASE("index to bitboard") {
+  REQUIRE(::utils::indexToBitboard(0) == 1ULL);
+  REQUIRE(::utils::indexToBitboard(1) == 2ULL);
+}
