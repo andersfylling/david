@@ -9,7 +9,7 @@
 
 
 TEST_CASE("MoveGen perft [MoveGen]") {
-  REQUIRE(::utils::perft(6));
+  //REQUIRE(::utils::perft(6));
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {

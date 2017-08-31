@@ -113,7 +113,7 @@ class ChessEngine {
   /**
    * Start the ANN from given files.
    */
-  void createANNInstance(std::string ANNFile);
+  void createANNInstance();
 
   /**
    * Run the boards through the trained neural network to get a generated output.

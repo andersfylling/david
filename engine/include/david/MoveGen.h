@@ -51,12 +51,70 @@ class MoveGen {
     return nrOfMoves;
   }
 
-  uint64_t test_diagonalAttackPaths (const uint64_t board) {
-    return this->generateDiagonals(::utils::LSB(board), this->state);
+  // how many possible moves can be generated from this state?
+  uint16_t nrOfPossibleMoves()
+  {
+    this->runAllMoveGenerators();
+
+    return static_cast<uint16_t>(this->index_gameStates);
   }
 
-  uint64_t test_knightAttackPaths (const uint64_t board) {
-    return this->generateKnightAttack(::utils::LSB(board));
+  type::gameState_t generateAttacks() {
+    type::gameState_t gs = this->state;
+
+    type::bitboard_t que = 0ULL;
+
+    // pawns
+    for (uint8_t j = 0; j < 2; j++) {
+      que = gs.piecesArr[0][j];
+      for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
+        gs.piecesArr[0][j] |= this->generatePawnPaths(i, gs, j == 1);
+      }
+    }
+
+    // knights
+    for (uint8_t j = 0; j < 2; j++) {
+      que = gs.piecesArr[gs.iKnights][0];
+      for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
+        gs.piecesArr[gs.iKnights][0] |= this->generateKnightAttack(i, j == 1);
+      }
+    }
+
+    // rooks
+    for (uint8_t j = 0; j < 2; j++) {
+      que = gs.piecesArr[gs.iRooks][0];
+      for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
+        gs.piecesArr[gs.iRooks][0] |= this->generateRookAttack(i, gs, j == 1);
+      }
+    }
+
+    // bishop
+    for (uint8_t j = 0; j < 2; j++) {
+      que = gs.piecesArr[gs.iBishops][0];
+      for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
+        gs.piecesArr[gs.iBishops][0] |= this->generateDiagonals(i, gs, j == 1);
+      }
+    }
+
+    // queen
+    for (uint8_t j = 0; j < 2; j++) {
+      que = gs.piecesArr[gs.iQueens][0];
+      for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
+        gs.piecesArr[gs.iQueens][0] |= this->generateDiagonals(i, gs, j == 1) | this->generateRookAttack(i, gs, j == 1);
+      }
+    }
+
+    // king
+    for (uint8_t j = 0; j < 2; j++) {
+      que = gs.piecesArr[gs.iKings][0];
+      for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
+        gs.piecesArr[gs.iKings][0] |= this->generateKingAttack(i, j == 1);
+      }
+    }
+
+    // TODO: don't let pieces move into places where their king goes into check.
+
+    return gs;
   }
 
 
@@ -66,8 +124,8 @@ class MoveGen {
   type::gameState_t reversedState;
 
   // xray attack path for king
-  type::bitboard_t xRayRookPaths;
-  type::bitboard_t xRayDiagonalPaths;
+  //type::bitboard_t xRayRookPaths;
+  //type::bitboard_t xRayDiagonalPaths;
 
   // TODO: reduce memory usage
   std::array<std::array<type::bitboard_t, 256>, 6> promotedPawns = {{0}};
@@ -191,7 +249,6 @@ class MoveGen {
    */
    inline void generatePromotions (const type::bitboard_t board, const type::bitboard_t pawn) {
     // add every option
-    assert(this->state.iKings == 5);
     for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 5/*skip king*/; pieceType++) {
       // since promotions removes a pawn with a promoted piece
       // it's needed to store which pawn should be removed for a given
@@ -206,13 +263,18 @@ class MoveGen {
    *
    * On promotions, the promoted pieces are added directly to the move array
    */
-  inline type::bitboard_t generatePawnPaths (const uint8_t index) {
+  inline type::bitboard_t generatePawnPaths (const uint8_t index, const type::gameState_t& gs, const bool hostile = false) {
     const auto pieceBoard = ::utils::indexToBitboard(index);
+    const auto hostiles = gs.piecess[hostile ? 0 : 1];
+    const auto friendly = gs.piecess[hostile ? 1 : 0];
+    const bool whiteMoving = gs.isWhite && !hostile;
 
     type::bitboard_t board = 0ULL;
     type::bitboard_t promotions = 0ULL;
 
-    if (this->state.isWhite) {
+
+
+    if (whiteMoving) {
       // shift upwards
       board |= pieceBoard << 8;
 
@@ -226,7 +288,7 @@ class MoveGen {
 
       // attacks
       auto attacks = ::utils::constant::pawnAttackPaths[index];
-      attacks &= (this->state.piecess[1] | ::utils::indexToBitboard(this->state.enPassant));
+      attacks &= (hostiles | ::utils::indexToBitboard(this->state.enPassant));
       board |= attacks & ~(pieceBoard - 1);
 
       // promotions
@@ -250,7 +312,7 @@ class MoveGen {
 
       // attacks
       auto attacks = ::utils::constant::pawnAttackPaths[index];
-      attacks &= (this->state.piecess[1] | ::utils::indexToBitboard(this->state.enPassant));
+      attacks &= (hostiles | ::utils::indexToBitboard(this->state.enPassant)); // hostile pieces that can be attacked.
       board |= attacks & (pieceBoard - 1);
 
       // promotions

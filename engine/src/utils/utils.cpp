@@ -12,6 +12,7 @@
 #include <david/ChessEngine.h>
 #include <assert.h>
 #include <david/MoveGeneration.h>
+#include <sstream>
 #elif _WIN32
 // windows code goes here
 #endif
@@ -232,7 +233,7 @@ inline namespace neuralnet {
  * @return
  */
  // TODO: convert to the new node setup
-std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(const ::david::type::gameState_t& node) {
+std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(const ::david::type::gameState_t& gs) {
 //  movegen::MoveGenerator gen;
 //  gen.setGameState(node);
 //  gen.generateAttacks(node.playerColor);
@@ -242,6 +243,155 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
 
 #ifdef MOVEGEN
    std::array<float, ::david::constant::nn::INPUTSIZE> boardInfo{};
+
+   uint8_t w = 1;
+   uint8_t b = 0;
+   int offset = 0;
+
+   if (gs.isWhite) {
+     w = 0;
+     b = 1;
+   }
+
+   ::david::MoveGen moveGen{gs};
+
+   // empty game state that holds all the attacks
+   ::david::type::gameState_t attacks = moveGen.generateAttacks();
+
+
+   // which colour is the active / currently playing
+   boardInfo[offset++] = gs.isWhite ? 1 : -1;
+
+   //
+   // Black pieces, then white pieces
+   //
+   for (uint8_t c = b, ii = 0; ii < 2; ii++, c = static_cast<uint8_t>((c + 1) % 2) ) {
+     uint8_t co = static_cast<uint8_t>((c + 1) % 2);
+     // Does every black piece type exist?
+     auto len = gs.piecesArr.size();
+     for (uint8_t i = 0; i < len; i++) {
+       boardInfo[i + offset] = static_cast<float>(gs.piecesArr[i][c] > 0 ? 1.0 : -1.0);
+     }
+     offset += len;
+
+     // nr of each black piece type
+     for (uint8_t i = 0; i < len; i++) {
+       boardInfo[i + len] = static_cast<float>(gs.piecesArr[i][c] / 100.0);
+     }
+     offset += len;
+
+     // How many white pieces can each black chess type attack?
+     for (uint8_t i = 0; i < len; i++) {
+       boardInfo[i + len] = static_cast<float>(utils::nrOfActiveBits(attacks.piecesArr[i][c] & gs.piecess[co])  / 100.0);
+     }
+     offset += len;
+
+     // Are any of the piece types safe?
+     for (uint8_t i = 0; i < len; i++) {
+       boardInfo[i + len] = static_cast<float>(utils::nrOfActiveBits(attacks.piecesArr[i][c] & gs.piecess[co])  / 100.0);
+     }
+     offset += len;
+   }
+
+   // how many pieces are there?
+   boardInfo[offset++] = static_cast<float>(::utils::nrOfActiveBits(gs.piecess[b]) / 100.0);
+   boardInfo[offset++] = static_cast<float>(::utils::nrOfActiveBits(gs.piecess[w]) / 100.0);
+   boardInfo[offset++] = static_cast<float>(::utils::nrOfActiveBits(gs.combinedPieces) / 100.0);
+
+   // how many pieces can colour attack?
+   boardInfo[offset++] = static_cast<float>(::utils::nrOfActiveBits(attacks.piecess[b] & gs.piecess[w]) / 100.0);
+   boardInfo[offset++] = static_cast<float>(::utils::nrOfActiveBits(attacks.piecess[w] & gs.piecess[b]) / 100.0);
+
+   // castling
+   boardInfo[offset++] = static_cast<float>(gs.queenCastlings[b]  ? 1.0 : -1.0);
+   boardInfo[offset++] = static_cast<float>(gs.kingCastlings[b]   ? 1.0 : -1.0);
+   boardInfo[offset++] = static_cast<float>(gs.queenCastlings[w]  ? 1.0 : -1.0);
+   boardInfo[offset++] = static_cast<float>(gs.kingCastlings[w]   ? 1.0 : -1.0);
+
+   // game progress
+   boardInfo[offset++] = static_cast<float>(100 - gs.halfMoves / 100.0);
+   boardInfo[offset++] = static_cast<float>(50 - gs.fullMoves  / 100.0);
+
+   // how many possible moves from this game state
+   boardInfo[offset++] = static_cast<float>(moveGen.nrOfPossibleMoves() / 100.0); // is this smart??
+
+  // old version
+
+   unsigned int index = 61;
+
+   std::array<::david::type::bitboard_t, 2> boards1 = {
+       gs.piecesArr[5][b],
+       gs.piecesArr[5][w]
+   };
+   std::array<::david::type::bitboard_t, 8> boards2 = {
+       gs.piecesArr[gs.iBishops][b],
+       gs.piecesArr[gs.iKnights][b],
+       gs.piecesArr[gs.iQueens][b],
+       gs.piecesArr[gs.iRooks][b],
+       gs.piecesArr[gs.iBishops][w],
+       gs.piecesArr[gs.iQueens][w],
+       gs.piecesArr[gs.iKnights][w],
+       gs.piecesArr[gs.iRooks][w]
+   };
+   std::array<::david::type::bitboard_t, 2> boards8 = {
+       gs.piecesArr[0][b],
+       gs.piecesArr[0][w]
+   };
+
+   // generate inputs
+   for (auto b : boards1) {
+     //auto ba = std::bitset<64>(b);
+     //double arr[1] = {-1.0};
+     auto prog = 0;
+     do {
+       auto i = LSB(b);
+       flipBitOff(b, i);
+
+       boardInfo[offset++] = (i == 0 ? 0.0f : i / 100.0f);
+       prog += 1;
+     } while (b != 0ULL && prog < 1);
+
+     // fill in missing pieces
+     for (; prog < 1; prog++) {
+       boardInfo[offset++] = (-1.0f);
+     }
+   }
+
+   // Issue, what if the first on is gone? same on boards8
+   for (auto b : boards2) {
+     //auto ba = std::bitset<64>(b);
+     //double arr[2] = {-1.0, -1.0};
+     auto prog = 0;
+     do {
+       auto i = LSB(b);
+       flipBitOff(b, i);
+
+       boardInfo[offset++] = (i == 0 ? 0.0f : i / 100.0f);
+       prog += 1;
+     } while (b != 0ULL && prog < 2);
+
+     // fill in missing pieces
+     for (; prog < 2; prog++) {
+       boardInfo[offset++] = (-1.0f);
+     }
+   }
+   for (auto b : boards8) {
+     //auto ba = std::bitset<64>(b);
+     //double arr[8] = {-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0};
+     auto prog = 0;
+     do {
+       auto i = LSB(b);
+       flipBitOff(b, i);
+
+       boardInfo[offset++] = (i == 0 ? 0.0f : i / 100.0f);
+       prog += 1;
+     } while (b != 0ULL && prog < 8);
+
+     // fill in missing pieces
+     for (; prog < 8; prog++) {
+       boardInfo[offset++] = (-1.0f);
+     }
+   }
 
    return boardInfo;
 #else
@@ -562,8 +712,6 @@ bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::g
 }
 #endif
 
-inline namespace print {
-inline namespace cout {
 /**
  * Print out the chess board based on a gameState node
  * @param gs type::gameState_t&
@@ -695,8 +843,6 @@ void printBoard(uint64_t bb, const int index) {
   }
   std::cout << std::endl;
 }
-}// inline namespace cout
-}// inline namespace print
 
 /**
  * Get a shared pointer of a fresh gameState based on a fen string.
@@ -895,21 +1041,6 @@ uint8_t chessIndexToArrayIndex(const std::string &chessIndex) {
   return index;
 }
 
-/**
- * Takes a chess position such as "E6" and creates a bitboard with a on bit at that given index.
- *
- * @param chessIndex String such as "E6"
- * @return bitboard with a active bit in given position
- */
-::david::type::bitboard_t chessIndexToBitboard(const std::string &chessIndex) {
-  using ::david::type::bitboard_t;
-  
-  bitboard_t board = 0ULL;
-  flipBit(board, static_cast<bitboard_t>(chessIndexToArrayIndex(chessIndex)));
-
-  return board;
-}
-
 // TODO: support new gameNode type
 void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string& EGN) {
   using ::david::bitboard::COLOR::WHITE;
@@ -986,17 +1117,18 @@ void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest) {
 std::string getAbsoluteProjectPath() {
 #ifdef __linux__
   //linux code goes here
-  char buffer[PATH_MAX];
-  std::string path = getcwd(buffer, PATH_MAX) ? std::string(buffer) : std::string("");
+  //char buffer[PATH_MAX];
+  //std::string path = getcwd(buffer, PATH_MAX) ? std::string(buffer) : std::string("");
 
-  if (path == "") {
-    return "";
+  if (const char* usr = std::getenv("USER")) {
+    std::string username(usr);
+    return "/home/" + username + "/.chess_david/"; //folder
+  }
+  else {
+    std::__throw_logic_error("Unable to get username in linux!");
   }
 
-  // find string until folder project name
-  std::string projectPath = path.substr(0, path.find(::david::engineInformation::PROJECT_NAME)); //hackz
-
-  return projectPath + ::david::engineInformation::PROJECT_NAME;
+  return "";
 #elif _WIN32
   // windows code goes here
   return "";
@@ -1272,9 +1404,7 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs, std::a
 
         // to see if the state is in check mate, lets just see how many moves it can generate
         ::david::MoveGen mg{state};
-        std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> ss;
-        const uint16_t ll = mg.template generateGameStates<::david::constant::MAXMOVES>(ss);
-        if (ll == 0) {
+        if (mg.nrOfPossibleMoves() == 0) {
           results[5] += 1; // unable to generate any valid moves, aka check mate.
         }
       }
@@ -1312,13 +1442,32 @@ const std::string getEGN(const ::david::type::gameState_t &first, const ::david:
   using ::david::bitboard::COLOR::BLACK;
   using ::david::type::bitboard_t;
 
-  // 0 == 1 if the colour has changed. aka new step has been made.
-  bitboard_t a = first.piecess[0]; // this can be either black or white, doesnt matter
-  bitboard_t b = second.piecess[1]; // but it's always the opposite of this
+  const ::std::array<char, 4> pieceTypes = {'r', 'n', 'b', 'q'};
+  const std::array<char, 8> indexes = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
+  const std::array<char, 8> ints = {'1', '2', '3', '4', '5', '6', '7', '8'};
+  std::string EGN = "----";
+  bool castling = false;
 
+  // 0 == 1 if the colour has changed. aka new step has been made.
+  bitboard_t a = first.piecess[0];
+  bitboard_t b = second.piecess[1];
   bitboard_t difference = a ^ b;
-  bitboard_t from = LSB(a & difference);
-  bitboard_t to = LSB(b & difference);
+  bitboard_t from;
+  bitboard_t to;
+
+  // castling
+  if (::utils::nrOfActiveBits(difference) == 4) {
+    castling = true;
+
+    // if there's more than one king per colour, use the commented out solution.
+    from = ::utils::LSB(first.piecesArr[5][0]); //::utils::LSB(first.piecesArr[5][0] & difference);
+    to = ::utils::LSB(first.piecesArr[5][1]); //::utils::LSB(second.piecesArr[5][1] & difference);
+  }
+  else {
+    from = LSB(a & difference);
+    to = LSB(b & difference);
+  }
+
 
 #ifdef DAVID_DEVELOPMENT
   assert(difference != 0ULL);
@@ -1326,16 +1475,29 @@ const std::string getEGN(const ::david::type::gameState_t &first, const ::david:
   assert(to < 64);
 #endif
 
-  std::array<char, 8> indexes = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-  std::string EGN = "";
-
   // from
-  EGN += indexes[from % 8];
-  EGN += std::to_string((from + 8) / 8);
+  EGN.at(0) = indexes[from % 8];
+  EGN.at(1) = ints[from / 8];
 
   // to
-  EGN += indexes[to % 8];
-  EGN += std::to_string((to + 8) / 8);
+  EGN.at(2) = indexes[to % 8];
+  EGN.at(3) = ints[to / 8];
+
+  // check for promotion
+  if (!castling && (first.piecesArr[0][0] & from) > 0 && (second.piecesArr[0][1] & to) == 0) {
+    // find out which piece type
+    for (uint8_t i = 1; i < 5; i++) {
+      if ((second.piecesArr[i][1] & to) > 0) {
+        // found piece: i
+        EGN += pieceTypes[i];
+        break;
+      }
+    }
+  }
+  else if (castling) {
+    // add the castling char?
+    // now it just shows that the king jumps 2 or 3 moves.
+  }
 
   return EGN;
 }

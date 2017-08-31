@@ -1,6 +1,7 @@
 #include "david/MoveGen.h"
 
 #include <david/bitboard.h>
+#include "david/utils/gameState.h"
 
 namespace david {
 
@@ -14,12 +15,12 @@ namespace david {
 MoveGen::MoveGen(const type::gameState_t& gs)
     : state(gs)
     , index_gameStates(0)
-    , xRayRookPaths(0ULL)
-    , xRayDiagonalPaths(0ULL)
+    //, xRayRookPaths(0ULL)
+    //, xRayDiagonalPaths(0ULL)
 {
   // use this to figure out which pieces can move without putting the king in check
-  xRayRookPaths = this->generateRookXRayPaths(this->state.piecesArr[this->state.iKings][0]);
-  xRayDiagonalPaths = this->generateDiagonalXRayPaths(this->state.piecesArr[this->state.iKings][0]);
+  //xRayRookPaths = this->generateRookXRayPaths(this->state.piecesArr[this->state.iKings][0]);
+  //xRayDiagonalPaths = this->generateDiagonalXRayPaths(this->state.piecesArr[this->state.iKings][0]);
 
 
   // create a reversed version of state.
@@ -92,8 +93,9 @@ void MoveGen::runAllMoveGenerators() {
 
       // identify a castling situation
       else if (pieceType == gs.iKings) {
-        // TODO: assumption, castling happens early, so i assume that a friendly rook, is not on the opposite side, vertically. From the castling rook
-        // OTHERWISE. this is a flaw
+        // TODO-castling1a: assumption, castling happens early, so i assume that a friendly rook,
+        // TODO-castling1b: is not on the opposite side, vertically. From the castling rook
+        // TODO-castling1c: OTHERWISE. this is a flaw
 
         // king side castling
         if (this->state.kingCastlings[0] && (gs.piecesArr[pieceType][1] & 4611686018427387968) > 0) {
@@ -120,7 +122,6 @@ void MoveGen::runAllMoveGenerators() {
         gs.piecesArr[0][1] ^= this->promotedPawns[pieceType][board];
       }
 
-
       // compile the new pieces
       gs.piecess[0] = gs.piecess[1] = 0; // reset
       for (uint8_t i = 0; i < 2; i++) {
@@ -132,30 +133,6 @@ void MoveGen::runAllMoveGenerators() {
       // complete board merge
       gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
 
-      //
-      // ***************
-      // generate attack paths of enemy pieces and check for check / check mate
-      //
-
-      //is the king in check? this is done while generating pieces
-
-
-
-      // store the completed gamestate
-      // TODO: fullstep, etc.
-
-      // half step
-      // Validate half moves
-      if (!::utils::isHalfMove(
-          this->state.piecess[0],
-          gs.piecess[0],
-          this->state.piecesArr[0][0],
-          this->state.piecesArr[0][1],
-          gs.piecesArr[0][0],
-          gs.piecesArr[0][1]
-      )) {
-        gs.halfMoves = 0;
-      }
 
       // en passant record
       gs.enPassant = 0;
@@ -180,12 +157,31 @@ void MoveGen::runAllMoveGenerators() {
         continue;
       }
 
+
+
+      // store the completed gamestate
+      // TODO: fullstep, etc.
+
+      // half step
+      // Validate half moves
+      if (!::utils::gameState::isHalfMove(
+          this->state.piecess[0],
+          gs.piecess[0],
+          this->state.piecesArr[0][0],
+          this->state.piecesArr[0][1],
+          gs.piecesArr[0][0],
+          gs.piecesArr[0][1]
+      )) {
+        gs.halfMoves = 0;
+      }
+
+      gs.isWhite = !this->state.isWhite;
+
       // is this new game state in check?
       if (this->dangerousPosition(gs.piecesArr[gs.iKings][0], gs)) {
         gs.isInCheck = true;
       }
 
-      gs.isWhite = !this->state.isWhite;
       // valid move, add it to the record.
       this->gameStates[this->index_gameStates++] = gs;
     }
@@ -199,10 +195,10 @@ void MoveGen::runAllMoveGenerators() {
  *
  */
 void MoveGen::generatePawnMoves() {
-  const auto friendly = this->state.piecess[0];
-  const auto hostiles = this->state.piecess[1];
-  const auto pieces = this->state.combinedPieces;
-  const auto direction = this->state.directions[0];
+  //const auto friendly = this->state.piecess[0];
+  //const auto hostiles = this->state.piecess[1];
+  //const auto pieces = this->state.combinedPieces;
+  //const auto direction = this->state.directions[0];
   unsigned long index = 0;
 
   // stack over pieces to handle
@@ -216,15 +212,15 @@ void MoveGen::generatePawnMoves() {
     const auto resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[this->state.iPawns][0], i);
 
     // psuedo paths for pawns
-    auto paths = this->generatePawnPaths(i);
+    auto paths = this->generatePawnPaths(i, this->state);
 
     // if this piece blocks a enemy attack, don't bother moving it
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-      //paths &= this->xRayDiagonalPaths;
-    }
-    else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      //paths &= xRayRookPaths;
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  paths &= this->xRayDiagonalPaths;
+    //}
+    //else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  paths &= xRayRookPaths;
+    //}
 
     for (uint8_t ii = ::utils::LSB(paths); paths != 0; ii = ::utils::NSB(paths, ii)) {
       this->moves[this->state.iPawns][index++] = ::utils::flipBitOnCopy(resultCache, ii);
@@ -257,12 +253,12 @@ void MoveGen::generateRookMoves() {
 
 
     // filter out moves that puts us in check
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-      //attackPaths &= this->xRayDiagonalPaths;
-    }
-    else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      //attackPaths &= this->xRayRookPaths;
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= this->xRayDiagonalPaths;
+    //}
+    //else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= this->xRayRookPaths;
+    //}
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -296,12 +292,12 @@ void MoveGen::generateKnightMoves() {
 
     // if this piece keeps the king from danger, don't move it out of the way.
     // but only in the directions where the king would still be safe.
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-     // attackPaths &= this->xRayDiagonalPaths;
-    }
-    else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-     // attackPaths &= this->xRayRookPaths;
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+    // attackPaths &= this->xRayDiagonalPaths;
+    //}
+    //else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    // attackPaths &= this->xRayRookPaths;
+    //}
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -335,12 +331,12 @@ void MoveGen::generateBishopMoves() {
     type::bitboard_t attackPaths = this->generateDiagonals(i, this->state);
 
     // if this piece blocks a enemy attack, don't bother moving it outside the path
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-      //attackPaths &= this->xRayDiagonalPaths;
-    }
-    else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      //attackPaths &= this->xRayRookPaths;
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= this->xRayDiagonalPaths;
+    //}
+    //else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= this->xRayRookPaths;
+    //}
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);
@@ -376,12 +372,12 @@ void MoveGen::generateQueenMoves() {
     attackPaths |= this->generateRookAttack(i, this->state);
 
     // if this piece blocks a enemy attack, don't bother moving it
-    if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
-      //attackPaths &= this->xRayDiagonalPaths;
-    }
-    else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
-      //attackPaths &= this->xRayRookPaths;
-    }
+    //if ((this->xRayDiagonalPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= this->xRayDiagonalPaths;
+    //}
+    //else if ((this->xRayRookPaths & ::utils::indexToBitboard(i)) > 0) {
+    //  attackPaths &= this->xRayRookPaths;
+    //}
 
     while (attackPaths != 0) {
       uint8_t position = ::utils::LSB(attackPaths);

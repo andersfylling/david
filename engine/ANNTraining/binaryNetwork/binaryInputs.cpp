@@ -15,7 +15,6 @@
 #include <sstream>
 #include <string>
 #include <fstream>
-#include <david/environment.h>
 #include <david/TreeGen.h>
 #include <fann/parallel_fann.h>
 #include "david/ANN/binaryInputs.h"
@@ -188,7 +187,6 @@ void binaryNetwork::generateTrainingFile(
 
   int trainingPairs = 0;
   int lines = 0;
-  ::david::environment::Environment env(::david::bitboard::COLOR::WHITE);
 
   std::string line;
   int lineNr = 1;

@@ -29,7 +29,9 @@ david::ChessEngine::ChessEngine()
     , UCIProtocolActivated(false)
     , uciMode(false)
 
-{}
+{
+  this->createANNInstance();
+}
 
 /**
  * Constructor
@@ -45,7 +47,9 @@ david::ChessEngine::ChessEngine(Player self)
     , UCIProtocolActivated(false)
     , uciMode(false)
 
-{}
+{
+  this->createANNInstance();
+}
 
 /**
  * Constructor
@@ -60,7 +64,9 @@ david::ChessEngine::ChessEngine(const std::string ANNFile)
     , player()
     , UCIProtocolActivated(false)
     , uciMode(false)
-{}
+{
+  this->createANNInstance();
+}
 
 /**
  * Constructor
@@ -77,7 +83,9 @@ david::ChessEngine::ChessEngine(Player self, const std::string ANNFile)
     , UCIProtocolActivated(false)
     , uciMode(false)
 
-{}
+{
+  this->createANNInstance();
+}
 
 /**
  * Destructor
@@ -192,7 +200,9 @@ void ::david::ChessEngine::linkUCICommands()
       int bestIndex = this->search.getSearchResult();
       auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
       std::cout << "bestmove " << EGN << std::endl;
-
+#ifdef DAVID_DEVELOPMENT
+      ::utils::printGameState(this->treeGen.getGameState(bestIndex));
+#endif
       // update time used
       this->timeLeft -= this->search.getTimeUsed();
 
@@ -205,8 +215,14 @@ void ::david::ChessEngine::linkUCICommands()
       this->searchThread.join();
     }
     int bestIndex = this->search.getSearchResult();
-    auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
-    std::cout << "bestmove " << EGN << std::endl;
+    if (bestIndex > 0) {
+      // if a search hasn't been done, this stops us from a sigsegv.
+      auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
+#ifdef DAVID_DEVELOPMENT
+      ::utils::printGameState(this->treeGen.getGameState(bestIndex));
+#endif
+      std::cout << "bestmove " << EGN << std::endl;
+    }
   };
   auto uci_quit = [&](arguments_t args) {
     this->search.setAbort(true); // needs semaphores to avoid caching the isAbort variable
@@ -378,7 +394,9 @@ void david::ChessEngine::configureUCIProtocol() {
   // Here the UCI protocol is dealt with.
   // add basic responses
   this->UCI.addListener(UCI, uciResponses::responseToUCI); // forwards
-  this->UCI.addListener(ISREADY, uciResponses::responseToISREADY); // isready
+  this->UCI.addListener(ISREADY, [&](const uci::arguments_t args){
+    uci::send("readyok"); // wtf UCI..
+  }); // isready
 
   // Got a quit forwards command so stop listener [and exit program]
   this->UCI.addListener(QUIT, [&](::uci::arguments_t args){
@@ -417,7 +435,7 @@ void david::ChessEngine::sayUCICommand(std::string command) {
 /**
  * Creates the neural network based on the ANNFile
  */
-void david::ChessEngine::createANNInstance(std::string ANNFile) {
+void david::ChessEngine::createANNInstance() {
   this->neuralNet.createANNInstance();
 }
 

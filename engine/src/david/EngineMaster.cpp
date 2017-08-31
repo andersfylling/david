@@ -17,6 +17,7 @@ int david::EngineMaster::spawnEngine() {
   // insert engine and update last id
   this->lastEngineInstanceID += 1;
   this->engineInstances[this->lastEngineInstanceID].setANNFile(this->ANNFilename);
+  this->engineInstances[this->lastEngineInstanceID].createANNInstance();
 
   if (this->engineInstances[this->lastEngineInstanceID].hasANNInstance()) {
     return this->lastEngineInstanceID;
@@ -85,7 +86,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   auto previousGame = currentGame;
   bool error = false;
   int rounds = 0;
-  int maxRounds = 10;
+  int maxRounds = 100;
   do {
     utils::printGameState(currentGame);
 
@@ -105,7 +106,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
     (color == "w" ? eng1 : eng2).setGameState(currentGame);
 
     rounds += 1;
-  } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != -1 && rounds < maxRounds);
+  } while (currentGame.halfMoves < 50 && currentGame.possibleSubMoves != -1); // && rounds < maxRounds);
 
   //std::cout << currentGame.possibleSubMoves << std::endl;
 

@@ -84,7 +84,7 @@ unsigned int TreeGen::treeIndex(const uint8_t depth, const uint8_t index) const 
 
 void TreeGen::updateRootNodeTo(const int index) {
   auto c = this->tree.front().isWhite;
-  this->tree.front() = std::move(this->tree[index]);
+  this->tree[0] = std::move(this->tree[index]);
 
   if (c == this->tree.front().isWhite) {
     std::cerr << "color was not changed!!!" << std::endl;
@@ -150,6 +150,7 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
   // create a holder for possible game outputs
 #ifdef MOVEGEN
   const uint16_t len = gen.generateGameStates(this->tree, firstChildPos, firstChildPos + constant::MAXMOVES); // new version
+  node.possibleSubMoves = len;
 #else
   std::vector<gameState_t> states; // old version
 
@@ -275,14 +276,14 @@ void TreeGen::generateEGNMoves()
   const auto& root = this->tree.front();
   const int len = this->nrOfEGNMoves = root.possibleSubMoves;
   for (int i = 0; i < len; i++) {
-    this->EGNMoves[i] = utils::getEGN(root, this->tree[i + 1]);
+    this->EGNMoves[i] = ::utils::getEGN(root, this->tree[i + 1]);
   }
 }
 
 void TreeGen::applyEGNMove(const std::string& EGN)
 {
-  if (EGN.length() != 4) {
-    std::cerr << "EGN length is not 4!!" << std::endl;
+  if (EGN.length() < 4) {
+    std::cerr << "EGN length is less than 4!!" << std::endl;
     return;
   }
 
@@ -302,7 +303,9 @@ void TreeGen::applyEGNMove(const std::string& EGN)
   // if the EGNMove wasn't found, exit cause then it isn't valid for this board layout!
   if (index == -1) {
     std::cerr
-        << "Invalid EGN based on current board layout inside the engine.. Did you forget to update the layout?"
+        << "Invalid EGN["
+        << EGN
+        << "] based on current board layout inside the engine.. Did you forget to update the layout?"
         << std::endl;
     utils::printGameState(this->tree.front());
     return;

@@ -108,7 +108,8 @@ void ANN::createANNInstance() {
 
   // Check that the file exists on the machine
   if (!utils::fileExists(this->ANNFile)) {
-    std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
+    std::string error = "ANN file does not exist: " + this->ANNFile;
+    std::__throw_runtime_error(error.c_str());
     return;
   }
 
@@ -128,7 +129,7 @@ int ANN::ANNEvaluate(const type::gameState_t& board) const {
   // populate array
   fann_type inputs[::david::constant::nn::INPUTSIZE];
   const auto len = arr.size();
-  for (int i = 0; i < len; i++) {
+  for (auto i = 0; i < len; i++) {
     inputs[i] = arr[i];
   }
 
