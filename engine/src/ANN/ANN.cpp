@@ -2,7 +2,6 @@
 #include "david/ANN/ANN.h"
 #include "david/david.h"
 #include "david/utils/utils.h"
-#include "david/environment.h"
 
 // system dependencies
 #include <sstream>
@@ -24,6 +23,18 @@ ANN::ANN(const std::string filename)
     : ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr) {}
 
+
+void ANN::guarenteeANNFile() const {
+#if defined(__linux__)
+  // make sure the chess david folder exists
+  // make sure the ANN folder exists
+  // make sure the ann file exists.
+  //::utils::fileExists(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename)
+#elif defined(_WIN32) || defined(_WIN64)
+  std::__throw_runtime_error("ERROR: Windows support is lacking!")
+#endif
+
+}
 
 /**
  * Destructor

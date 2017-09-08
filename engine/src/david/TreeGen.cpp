@@ -4,7 +4,6 @@
 #include <david/utils/utils.h>
 #include <assert.h>
 #include "david/ANN/ANN.h"
-#include "david/MoveGeneration.h"
 #include "david/MoveGen.h"
 
 namespace david {
@@ -136,40 +135,21 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
   auto& node = this->tree[index];
 
   // Get ready to generate all potential moves based on given chess board
-#ifdef MOVEGEN
   MoveGen gen{node}; // new version
-#else
-  movegen::MoveGenerator gen; // old version
-  gen.setGameState(node);     // old version
-#endif
 
   // uint8 has a max num of 255. Max nr of children is 256. perfect af.
   unsigned int firstChildPos = index == 0 ? constant::MAXMOVES - 1 : (index - 1) % constant::MAXMOVES;
   firstChildPos = index + (constant::MAXMOVES - firstChildPos);
 
   // create a holder for possible game outputs
-#ifdef MOVEGEN
   const uint16_t len = gen.generateGameStates(this->tree, firstChildPos, firstChildPos + constant::MAXMOVES); // new version
   node.possibleSubMoves = len;
-#else
-  std::vector<gameState_t> states; // old version
-
-  // generate possible game outputs
-  gen.generateGameStates(states); // old version
-
-  // create node pointers, and set some internal data
-  //std::cout << "OPTIONS ========== " << std::endl;
-  const uint16_t len = node.possibleSubMoves = static_cast<uint16_t>(states.size()); // should not need more than uint8
-  //utils::printGameState(node);
-#endif
 
 #ifdef DAVID_DEVELOPMENT
   assert(firstChildPos != 0);
 #endif
 
   for (uint16_t i = 0; i < len; i++) {
-#ifdef MOVEGEN
-
     auto& n = this->tree[firstChildPos + i];
 
     // use ann to get score
@@ -177,9 +157,6 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
     //if (this->NN != nullptr) {
     //  n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
     //}
-#else
-    this->generateNode(node, this->tree[firstChildPos + i], states.at(i));
-#endif
   }
 
   // once all the nodes are set, we need to sort the children.
@@ -208,52 +185,6 @@ void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n
   // updating the node. cause shit this is way slower than it needs to be.
   n = child;
 
-#ifndef MOVEGEN
-
-  n.blackPieces = n.BlackPawn | n.BlackQueen | n.BlackKnight | n.BlackKing | n.BlackBishop | n.BlackRook;
-  n.whitePieces = n.WhitePawn | n.WhiteQueen | n.WhiteKnight | n.WhiteKing | n.WhiteBishop | n.WhiteRook;
-
-  n.pieces = n.blackPieces | n.whitePieces;
-
-  // this is now done in movegen.. but should it be?
-  //n.isWhite = parent.playerColor == BLACK; // TODO: make sure this is set on new root elements
-  //n.playerColor = n.isWhite ? BLACK : WHITE;
-
-  n.halfMoves = parent.halfMoves + 1;
-  n.fullMoves = (parent.gameTreeLevel + 1) / 2;
-  
-  // set the new array data
-  int i = 0;
-  int j = 1;
-  // j -> white, so if the active colour is white. index 0 should reference to the active coloured pieces.
-  if (n.isWhite) {
-    i = 1;
-    j = 0;
-  }
-  n.pawns[i]   = n.BlackPawn;
-  n.pawns[j]   = n.WhitePawn;
-  n.rooks[i]   = n.BlackRook;
-  n.rooks[j]   = n.WhiteRook;
-  n.knights[i] = n.BlackKnight;
-  n.knights[j] = n.WhiteKnight;
-  n.bishops[i] = n.BlackBishop;
-  n.bishops[j] = n.WhiteBishop;
-  n.queens[i]  = n.BlackQueen;
-  n.queens[j]  = n.WhiteQueen;
-  n.kings[i]   = n.BlackKing;
-  n.kings[j]   = n.WhiteKing;
-  n.piecess[i] = n.blackPieces;
-  n.piecess[j] = n.whitePieces;
-  n.combinedPieces = n.pieces;
-
-  // Validate half moves
-  if (!utils::isHalfMove(parent, n)) {
-    n.halfMoves = 0;
-  }
-
-  // use ann to get score
-  n.score = this->neuralnet.ANNEvaluate(n);
-#endif
 }
 
 void TreeGen::setMaxDepth(int d)

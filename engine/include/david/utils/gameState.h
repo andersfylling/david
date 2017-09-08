@@ -38,7 +38,6 @@ void print(const ::david::type::gameState_t& gs);
 void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen);
 
 
-#ifdef MOVEGEN
 inline bool isHalfMove(
     const uint64_t parentActivePieces,
     const uint64_t childActivePieces,
@@ -72,9 +71,6 @@ inline bool isHalfMove(
   //return true;
   return (parentOtherPawns | childActivePawns) != 0ULL;
 }
-#else
-bool isHalfMove(const ::david::type::gameState_t& parent, const ::david::type::gameState_t& child);
-#endif
 
 
 const std::string getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second);

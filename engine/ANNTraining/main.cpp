@@ -14,7 +14,6 @@
 #include <sstream>
 #include <string>
 #include <fstream>
-#include <david/environment.h>
 #include <david/TreeGen.h>
 #include "david/ANN/binaryInputs.h"
 using std::cout;

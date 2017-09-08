@@ -5,8 +5,6 @@
 
 namespace david {
 
-#ifdef MOVEGEN
-
 
 /**
  * Constructor
@@ -36,6 +34,8 @@ MoveGen::MoveGen(const type::gameState_t& gs)
   this->reversedState.kingCastlings[1] = this->state.kingCastlings[0];
   this->reversedState.isInCheck = false;
   this->reversedState.passant = false;
+  this->reversedState.enPassant = 0;
+  this->reversedState.enPassantPawn = 0;
 
   // reverse the pieces to respect the active player change
   const auto nrOfPieces = this->state.piecesArr.size();
@@ -62,7 +62,7 @@ void MoveGen::runAllMoveGenerators() {
     // for every pieceType
     for (unsigned long board = 0; board < this->index_moves[pieceType]; board++) {
 
-      //make sure the king hasnt been captured. this should never trigger.
+      //make sure the king hasn't been captured.
       if ((this->state.piecesArr[this->state.iKings][1] & this->moves[pieceType][board]) > 0) {
         continue;
       }
@@ -74,6 +74,13 @@ void MoveGen::runAllMoveGenerators() {
       // Check for capture, and destroy captured piece!
       if ((this->moves[pieceType][board] & this->state.piecess[1]) > 0) {
         const uint8_t attackedPiecePosition = ::utils::LSB(this->moves[pieceType][board] & this->state.piecess[1]);
+
+        //
+        // This did not fire at depth 6. where there are +34 captures.
+        //
+        //if (::utils::nrOfActiveBits(this->moves[pieceType][board] & this->state.piecess[1]) != 1) {
+        //  std::cerr << " OMG MORE THAN ONE PIECE ATTACKED AT ONCE! " << std::endl;
+        //}
 
         for (auto& bbArr : gs.piecesArr) {
           // since gs has the opposite indexes, use 0 in stead of 1.
@@ -92,6 +99,7 @@ void MoveGen::runAllMoveGenerators() {
       }
 
       // identify a castling situation
+        // TODO: verify that the new positions cannot be attacked!
       else if (pieceType == gs.iKings) {
         // TODO-castling1a: assumption, castling happens early, so i assume that a friendly rook,
         // TODO-castling1b: is not on the opposite side, vertically. From the castling rook
@@ -135,10 +143,8 @@ void MoveGen::runAllMoveGenerators() {
 
 
       // en passant record
-      gs.enPassant = 0;
-      gs.enPassantPawn = 0;
       // TODO: slow
-      if (pieceType == this->state.iPawns) {
+      if (pieceType == this->state.iPawns && !gs.passant) {
         auto before = this->state.piecesArr[0][0];
         auto now = gs.piecesArr[0][1];
         const auto diff = (before ^ now);
@@ -434,7 +440,4 @@ void MoveGen::generateKingMoves() {
 
   this->index_moves[this->state.iKings] = index;
 }
-
-
-#endif
 }

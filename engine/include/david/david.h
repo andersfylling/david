@@ -1,7 +1,5 @@
 #pragma once
 
-#define MOVEGEN // MoveGen.cpp/h
-
 #include <limits>
 #include <string>
 #include "david/types.h"

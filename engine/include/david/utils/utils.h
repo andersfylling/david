@@ -140,7 +140,7 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
 }
 
 std::string generateFen(const ::david::type::gameState_t& node);
-void generateBoardFromFen(::david::type::gameState_t& gs, const std::string& fen);
+void generateBoardFromFen(::david::type::gameState_t& gs, const std::string fen);
 void setDefaultChessLayout(::david::type::gameState_t& node);
 ::david::type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
@@ -169,9 +169,22 @@ void generateMergedBoardVersion(::david::type::gameState_t& gs);
 
 void yellDeprecated(const std::string info);
 
-bool perft();
-bool perft(const int limit, const uint8_t startDepth = 0);
-uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
+// normal perft
+void perft();
+void perft(const uint8_t max);
+void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
+uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs);
+
+// perft debug that shows the difference. standard board layout
+bool perft_debug();
+bool perft_debug(const int limit, const uint8_t startDepth = 0);
+uint64_t perft_debug(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
+
+// perft debug that shows the difference. standard board layout
+bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1); // max depth 6 completion.
+uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
+
+// egn stuff.. yeah
 const std::string getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second);
 void getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second, std::string& EGN);
 

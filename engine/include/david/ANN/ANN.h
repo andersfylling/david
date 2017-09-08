@@ -21,6 +21,12 @@ class ANN {
 
 
   /**
+   * Check if the ANN file exist, if not download and install it.
+   */
+  void guarenteeANNFile() const;
+
+
+  /**
    * Retrieve the ANN file this engine instance uses for evaluating game boards.
    * @return std::string absolute path of ann file.
    */

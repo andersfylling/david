@@ -10,10 +10,7 @@ file(GLOB chess_ann_srcfiles
 
         # david namespace
         david/ChessEngine.cpp
-        ../spike/EngineContext.cpp
         david/EngineMaster.cpp
-        david/environment.cpp
-        david/MoveGeneration.cpp
         david/Search.cpp
         david/TreeGen.cpp
         david/MoveGen.cpp

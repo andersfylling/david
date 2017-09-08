@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "david/MoveGeneration.h"
+#include "MoveGeneration.h"
 #include "david/types.h"
 #include "david/bitboard.h"
 #include <utility>

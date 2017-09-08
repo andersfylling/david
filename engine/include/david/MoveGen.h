@@ -8,8 +8,6 @@
 
 namespace david {
 
-#ifdef MOVEGEN
-
 class MoveGen {
   friend class MoveGenTest;
  public:
@@ -732,6 +730,5 @@ class MoveGen {
 
 };
 
-#endif
 
 }

@@ -3,7 +3,7 @@
 //
 
 #include "david/david.h"
-#include "david/environment.h"
+#include "environment.h"
 #include "david/bitboard.h"
 #include <string>
 #include <bitset>

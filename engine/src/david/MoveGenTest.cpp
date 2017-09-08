@@ -4,7 +4,6 @@
 
 namespace david {
 
-#ifdef MOVEGEN
 MoveGenTest::MoveGenTest(const MoveGen &mg)
     : moveGen(mg)
 {}
@@ -36,7 +35,5 @@ type::bitboard_t MoveGenTest::extractLegalNorthPath(const type::bitboard_t psued
                                                     const uint8_t offset) const {
   return this->moveGen.extractLegalNorthPath(psuedoPath, friendlyBlockers, hostiles, northArea, offset);
 }
-
-#endif
 
 }

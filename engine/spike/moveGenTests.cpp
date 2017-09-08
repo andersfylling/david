@@ -1,7 +1,7 @@
 #include <iostream>
 #include "catch.hpp"
 #include "david/bitboard.h"
-#include "david/environment.h"
+#include "environment.h"
 #include <david/TreeGen.h>
 #include <david/utils/utils.h>
 

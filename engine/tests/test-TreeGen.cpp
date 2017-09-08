@@ -29,7 +29,6 @@
   int getDepth();
  */
 
-#ifndef MOVEGEN
 TEST_CASE("Retrieving a correctly set gameState_t [TreeGen::getGameState]") {
   using ::david::gameTree::TreeGen;
   using ::david::ANN;
@@ -38,9 +37,9 @@ TEST_CASE("Retrieving a correctly set gameState_t [TreeGen::getGameState]") {
   TreeGen tg{nn};
   auto& gs = tg.getGameState(0);
 
-  REQUIRE(gs.pieces == 0ULL);
-  REQUIRE(gs.blackPieces == 0ULL);
-  REQUIRE(gs.whitePieces == 0ULL);
+  REQUIRE(gs.combinedPieces == 0ULL);
+  REQUIRE(gs.piecess[0] == 0ULL);
+  REQUIRE(gs.piecess[1] == 0ULL);
 }
 
 TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGen::setGameState]") {
@@ -54,9 +53,9 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
   auto& gs = tg.getGameState(0);
 
 
-  REQUIRE(gs.pieces == 0ULL);
-  REQUIRE(gs.blackPieces == 0ULL);
-  REQUIRE(gs.whitePieces == 0ULL);
+  REQUIRE(gs.combinedPieces == 0ULL);
+  REQUIRE(gs.piecess[0] == 0ULL);
+  REQUIRE(gs.piecess[1] == 0ULL);
 
   // set new data
   gameState_t g;
@@ -64,22 +63,22 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
   tg.setRootNode(g);
 
   // verify data changes
-  REQUIRE(gs.blackPieces == g.blackPieces);
-  REQUIRE(gs.whitePieces == g.whitePieces);
-  REQUIRE(gs.pieces == g.pieces);
-  REQUIRE(gs.blackKingCastling == g.blackKingCastling);
+  REQUIRE(gs.piecess[0] == g.piecess[0]);
+  REQUIRE(gs.piecess[1] == g.piecess[1]);
+  REQUIRE(gs.combinedPieces == g.combinedPieces);
+  REQUIRE(gs.kingCastlings[1] == g.kingCastlings[1]);
 
   // verify that it's copied when changing the root node!
   {
     gameState_t g2;
-    g2.blackKingCastling = false;
+    g2.kingCastlings[1] = false;
     tg.setRootNode(g2);
   }
 
-  REQUIRE(!gs.blackKingCastling);
-  REQUIRE(gs.pieces == 0ULL);
-  REQUIRE(gs.blackPieces == 0ULL);
-  REQUIRE(gs.whitePieces == 0ULL);
+  REQUIRE(!gs.kingCastlings[1]);
+  REQUIRE(gs.combinedPieces == 0ULL);
+  REQUIRE(gs.piecess[0] == 0ULL);
+  REQUIRE(gs.piecess[1] == 0ULL);
 }
 
 TEST_CASE("Verify the index math [TreeGen::treeIndex]") {
@@ -106,5 +105,3 @@ TEST_CASE("Verify the index math [TreeGen::treeIndex]") {
   REQUIRE(tg.getChildIndex(2*MAXMOVES + 2, 0) == 3*MAXMOVES + 1);
   REQUIRE(tg.getChildIndex(2*MAXMOVES + 2, 1) == 3*MAXMOVES + 2);
 }
-
-#endif

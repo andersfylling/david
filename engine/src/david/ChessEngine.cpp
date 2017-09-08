@@ -4,7 +4,6 @@
 #include "david/genericUCIResponses.h"
 #include "david/david.h"
 #include "david/utils/utils.h"
-#include "david/environment.h"
 
 #include "david/types.h"
 #include "david/bitboard.h"

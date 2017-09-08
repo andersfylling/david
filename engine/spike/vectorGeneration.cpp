@@ -4,8 +4,8 @@
 
 #include "benchmark/benchmark.h"
 #include "david/bitboard.h"
-#include "david/MoveGeneration.h"
-#include "david/environment.h"
+#include "MoveGeneration.h"
+#include "environment.h"
 
 #ifndef MOVEGEN
 namespace {

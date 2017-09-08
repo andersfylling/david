@@ -94,8 +94,6 @@ struct gameState {
 
   bool isWhite = true;
 
-#ifdef MOVEGEN
-
   std::array<int8_t, 2> directions = {1, -1}; // 1=up, -1=down. Used for pawns.
 
   // same as version 2, just easier to loop through
@@ -133,66 +131,6 @@ struct gameState {
   // Store the data as an array where index 0 relates to the active player.
   // this means an index isn't constantly refering to eg. black
   // but to the colour of the active player (who the children nodes should be generated for)
-#else
-  std::array<type::bitboard_t, 2> pawns   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> rooks   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> knights = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> bishops = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> queens  = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-  std::array<type::bitboard_t, 2> kings   = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};
-
-
-
-
-  ///
-  /// Legacy support. This will be removed in the future.
-  ///
-  move_t lastWhiteMove = 0;
-  move_t lastBlackMove = 0;
-  bool blackQueenCastling = true;
-  bool blackKingCastling = true;
-  bool whiteQueenCastling = true;
-  bool whiteKingCastling = true;
-
-
-  type::bitboard_t WhitePawn    = ::david::constant::EMPTYBOARD;
-  type::bitboard_t WhiteRook    = ::david::constant::EMPTYBOARD;
-  type::bitboard_t WhiteKnight  = ::david::constant::EMPTYBOARD;
-  type::bitboard_t WhiteBishop  = ::david::constant::EMPTYBOARD;
-  type::bitboard_t WhiteQueen   = ::david::constant::EMPTYBOARD;
-  type::bitboard_t WhiteKing    = ::david::constant::EMPTYBOARD;
-
-  type::bitboard_t BlackPawn    = ::david::constant::EMPTYBOARD;
-  type::bitboard_t BlackRook    = ::david::constant::EMPTYBOARD;
-  type::bitboard_t BlackKnight  = ::david::constant::EMPTYBOARD;
-  type::bitboard_t BlackBishop  = ::david::constant::EMPTYBOARD;
-  type::bitboard_t BlackQueen   = ::david::constant::EMPTYBOARD;
-  type::bitboard_t BlackKing    = ::david::constant::EMPTYBOARD;
-
-  type::bitboard_t blackPieces  = ::david::constant::EMPTYBOARD;
-  type::bitboard_t whitePieces  = ::david::constant::EMPTYBOARD;
-
-  type::bitboard_t pieces       = ::david::constant::EMPTYBOARD;
-
-  COLOR playerColor = bitboard::COLOR::WHITE;
-  /// Legacy support END
-#endif
-};
-
-struct pieceAttack {
-  bitboard_t *WhitePawn = nullptr;
-  bitboard_t *WhiteRook = nullptr;
-  bitboard_t *WhiteKnight = nullptr;
-  bitboard_t *WhiteBishop = nullptr;
-  bitboard_t *WhiteQueen = nullptr;
-  bitboard_t *WhiteKing = nullptr;
-
-  bitboard_t *BlackPawn = nullptr;
-  bitboard_t *BlackRook = nullptr;
-  bitboard_t *BlackKnight = nullptr;
-  bitboard_t *BlackBishop = nullptr;
-  bitboard_t *BlackQueen = nullptr;
-  bitboard_t *BlackKing = nullptr;
 };
 
 } // END Of bitboard
