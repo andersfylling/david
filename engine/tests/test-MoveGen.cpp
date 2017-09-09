@@ -17,7 +17,7 @@ TEST_CASE("MoveGen perft [MoveGen]") {
 
   ::utils::printGameState(gs);
 
-  //::utils::perft_debug_advanced(gs);
+  ::utils::perft_debug_advanced(gs);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {

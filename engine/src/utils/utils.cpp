@@ -505,9 +505,8 @@ void printBoard(uint64_t bb, const int index) {
  * @param fen const std::string&, must be correctly formatted (!)
  */
 // TODO the colour can swap the chess pieces 0.o
-void generateBoardFromFen(::david::type::gameState_t& gs, const std::string fen) {
-  using ::david::bitboard::COLOR::WHITE;
-  using ::david::bitboard::COLOR::BLACK;
+void generateBoardFromFen(::david::type::gameState_t& gameState, const std::string fen) {
+  ::david::type::gameState_t gs;
 
   // reset
   gs.enPassant = 0;
@@ -516,12 +515,11 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string fen)
   gs.kingCastlings = {0, 0};
   gs.queenCastlings = {0, 0};
 
+
+
   int w = 0;
   int b = 1;
-  if (!gs.isWhite) {
-    w = 1;
-    b = 0;
-  }
+
 
   // if its a small letter, use black. otherwise use white.
   std::map<const char, ::david::type::bitboard_t&> links = {
@@ -566,7 +564,7 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string fen)
 
       // color
     else if (index == 64) {
-      gs.isWhite = fen[i + 1] == 'w';
+      gs.isWhite = fen[i + 1] != 'b';
 
       i += 2; // skip char and space afterwards
       index += 1;
@@ -634,13 +632,19 @@ void generateBoardFromFen(::david::type::gameState_t& gs, const std::string fen)
       break; // finished reading FEN string
     }
   }
-  for (int c = 0; c < 2; c++) {
-    gs.piecess[c] = 0; // reset
-    for (int i = 0; i < 6; i++) {
-      gs.piecess[c] |= gs.piecesArr[i][c]; // save
+
+  gameState = gs;
+
+  // if its blacks turn then reverse the colour index
+  if (!gs.isWhite) {
+    for (uint8_t i = 0; i < 6; i++) {
+      gameState.piecesArr[i][0] = gs.piecesArr[i][1];
+      gameState.piecesArr[i][1] = gs.piecesArr[i][0];
     }
   }
-  gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
+
+  // fix piecess and combinedPieces
+  ::utils::generateMergedBoardVersion(gameState);
 }
 
 /**
@@ -1150,7 +1154,7 @@ bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t st
   for (uint8_t depth = start; depth <= 6; depth++) {
     // run perft
     std::array<int, 6> perftResults = {}; // zero initialization
-    auto moveGenPerft = ::utils::perft_debug(depth, gs, perftResults);
+    auto moveGenPerft = ::utils::perft_debug_advanced(depth, gs, perftResults);
 
     std::printf("| %5i | %30lu | %8i | %8i | %8i | %8i | %8i | %8i |\n",
                 depth,
@@ -1194,6 +1198,11 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
     //  printGameState(states[i]);
     //}
     auto& state = states[i];
+
+    if (state.isWhite) {
+      std::cout << "w" << std::endl;
+    }
+    ::utils::printGameState(state);
     // NOTE: state is not const, but gs is!
 
     if (depth == 1) {
