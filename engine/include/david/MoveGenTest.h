@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef DAVID_TEST
+
 #include "david/types.h"
 
 namespace david {
@@ -41,3 +43,5 @@ class MoveGenTest {
 
 
 }
+
+#endif

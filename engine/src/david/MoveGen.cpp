@@ -6,6 +6,7 @@
 namespace david {
 
 
+
 /**
  * Constructor
  * @param gs non-mutable gameState instance
@@ -36,6 +37,7 @@ MoveGen::MoveGen(const type::gameState_t& gs)
   this->reversedState.passant = false;
   this->reversedState.enPassant = 0;
   this->reversedState.enPassantPawn = 0;
+  //this->reversedState.promotion = false;
 
   // reverse the pieces to respect the active player change
   const auto nrOfPieces = this->state.piecesArr.size();
@@ -78,9 +80,9 @@ void MoveGen::runAllMoveGenerators() {
         //
         // This did not fire at depth 6. where there are +34 captures.
         //
-        //if (::utils::nrOfActiveBits(this->moves[pieceType][board] & this->state.piecess[1]) != 1) {
-        //  std::cerr << " OMG MORE THAN ONE PIECE ATTACKED AT ONCE! " << std::endl;
-        //}
+//        if (::utils::nrOfActiveBits(this->moves[pieceType][board] & this->state.piecess[1]) != 1) {
+//          std::cerr << " OMG MORE THAN ONE PIECE ATTACKED AT ONCE! " << std::endl;
+//        }
 
         for (auto& bbArr : gs.piecesArr) {
           // since gs has the opposite indexes, use 0 in stead of 1.
@@ -92,7 +94,7 @@ void MoveGen::runAllMoveGenerators() {
       }
 
       // en passant capture.
-      else if (pieceType == 0 && this->state.enPassant > 0 && ::utils::bitAt(this->moves[0][board], this->state.enPassant)) {
+      else if (pieceType == 0 && this->state.enPassant > 15 && ::utils::bitAt(this->moves[0][board], this->state.enPassant)) {
         ::utils::flipBitOff(gs.piecesArr[0][0], this->state.enPassantPawn);
         //::utils::printGameState(gs);
         gs.passant = true;
@@ -126,8 +128,10 @@ void MoveGen::runAllMoveGenerators() {
       }
 
       // a piece was promoted, so remove the pawn that was sacrificed for this promotion
+      // TODO:save memory by adding the position of the pawn to the upgraded board and do an XOR to check for promotion.
       if (this->promotedPawns[pieceType][board] > 0) {
         gs.piecesArr[0][1] ^= this->promotedPawns[pieceType][board];
+        //gs.promotion = true;
       }
 
       // compile the new pieces
@@ -158,6 +162,11 @@ void MoveGen::runAllMoveGenerators() {
         }
       }
 
+      // print before check, just to validate how moves are generated
+      //gs.isWhite = !this->state.isWhite;
+      //::utils::printGameState(gs);
+      //gs.isWhite = this->state.isWhite;
+
       // check?
       if (this->dangerousPosition(gs.piecesArr[gs.iKings][1], gs, 0)) {
         continue;
@@ -187,6 +196,16 @@ void MoveGen::runAllMoveGenerators() {
       if (this->dangerousPosition(gs.piecesArr[gs.iKings][0], gs)) {
         gs.isInCheck = true;
       }
+
+      // only add states with activity in between G2 and E3
+//      if (pieceType != 0 || ((gs.combinedPieces ^ this->state.combinedPieces) & 921088) == 0) {
+//        continue;
+//      }
+//
+//
+//      std::cout << gs.combinedPieces << std::endl;
+//      ::utils::gameState::print(gs);
+
 
       // valid move, add it to the record.
       this->gameStates[this->index_gameStates++] = gs;
@@ -422,17 +441,17 @@ void MoveGen::generateKingMoves() {
     this->moves[this->state.iKings][index++] = ::utils::indexToBitboard(position);
   }
 
-  // king side castling
-  if (this->state.kingCastlings[0] && (6917529027641081952 & friendly) == 0 && (10376293541461622928 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    type::bitboard_t board = kingBoard << 2; // move two left
+  // queen side castling
+  if (this->state.queenCastlings[0] && (8070450532247928944 & friendly) == 0 && (9799832789158199432 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
+    type::bitboard_t board = kingBoard << 3; // move three left
     if (!this->dangerousPosition(board, this->state)) {
       this->moves[this->state.iKings][index++] = board;
     }
   }
 
-  // queen side castling
-  if (this->state.queenCastlings[0] && (1008806316530991118 & friendly) == 0 && (1224979098644774929 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    type::bitboard_t board = kingBoard >> 3; // move three right
+  // king side castling
+  if (this->state.kingCastlings[0] && (432345564227567622 & friendly) == 0 && (648518346341351433 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
+    type::bitboard_t board = kingBoard >> 2; // move two right
     if (!this->dangerousPosition(board, this->state)) {
       this->moves[this->state.iKings][index++] = board;
     }

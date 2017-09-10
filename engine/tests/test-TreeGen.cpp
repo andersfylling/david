@@ -1,5 +1,6 @@
 #include <iostream>
 #include <david/utils/utils.h>
+#include <david/utils/gameState.h>
 #include "david/TreeGen.h"
 #include "david/ANN/ANN.h"
 #include "catch.hpp"
@@ -45,7 +46,6 @@ TEST_CASE("Retrieving a correctly set gameState_t [TreeGen::getGameState]") {
 TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGen::setGameState]") {
   using ::david::gameTree::TreeGen;
   using ::david::type::gameState_t;
-  using ::utils::setDefaultChessLayout;
   using ::david::ANN;
 
   ANN nn{};
@@ -59,7 +59,7 @@ TEST_CASE("Setting a gameState_t and verified that it's copied correctly [TreeGe
 
   // set new data
   gameState_t g;
-  ::utils::setDefaultChessLayout(g);
+  ::utils::gameState::setDefaultChessLayout(g);
   tg.setRootNode(g);
 
   // verify data changes

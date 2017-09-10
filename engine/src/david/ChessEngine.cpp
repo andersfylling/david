@@ -15,6 +15,7 @@
 
 // system dependencies
 #include <functional>
+#include <david/utils/gameState.h>
 
 /**
  * Constructor
@@ -197,10 +198,10 @@ void ::david::ChessEngine::linkUCICommands()
     if (!infinite) {
       // send best move
       int bestIndex = this->search.getSearchResult();
-      auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
+      auto EGN = utils::gameState::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
       std::cout << "bestmove " << EGN << std::endl;
 #ifdef DAVID_DEVELOPMENT
-      ::utils::printGameState(this->treeGen.getGameState(bestIndex));
+      ::utils::gameState::print(this->treeGen.getGameState(bestIndex));
 #endif
       // update time used
       this->timeLeft -= this->search.getTimeUsed();
@@ -216,9 +217,9 @@ void ::david::ChessEngine::linkUCICommands()
     int bestIndex = this->search.getSearchResult();
     if (bestIndex > 0) {
       // if a search hasn't been done, this stops us from a sigsegv.
-      auto EGN = utils::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
+      auto EGN = utils::gameState::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));
 #ifdef DAVID_DEVELOPMENT
-      ::utils::printGameState(this->treeGen.getGameState(bestIndex));
+      ::utils::gameState::print(this->treeGen.getGameState(bestIndex));
 #endif
       std::cout << "bestmove " << EGN << std::endl;
     }
@@ -256,7 +257,7 @@ void ::david::ChessEngine::linkUCICommands()
 
 #ifdef DAVID_DEVELOPMENT
       std::cout << "Root node of game tree:" << std::endl;
-      utils::printGameState(this->treeGen.getGameState(0));
+      utils::gameState::print(this->treeGen.getGameState(0));
 #endif
     }
     else if (args.count("startpos") > 0) {
@@ -311,7 +312,7 @@ void ::david::ChessEngine::linkUCICommands()
     }
 
 #ifdef DAVID_DEVELOPMENT
-    utils::printGameState(this->treeGen.getGameState(0));
+    utils::gameState::print(this->treeGen.getGameState(0));
 #endif
   };
 
@@ -535,9 +536,9 @@ void david::ChessEngine::setNewGameBoard(const std::string fen) {
 
   // check if its a default setup
   if (fen == david::FENStartPosition) {
-    utils::setDefaultChessLayout(node);
+    ::utils::gameState::setDefaultChessLayout(node);
     return;
   }
 
-  utils::generateBoardFromFen(node, fen);
+  ::utils::gameState::generateFromFEN(node, fen);
 }

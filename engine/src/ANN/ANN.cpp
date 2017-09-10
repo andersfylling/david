@@ -2,9 +2,11 @@
 #include "david/ANN/ANN.h"
 #include "david/david.h"
 #include "david/utils/utils.h"
+#include "david/utils/gameState.h"
 
 // system dependencies
 #include <sstream>
+#include <david/utils/neuralNet.h>
 
 namespace david {
 /**
@@ -135,7 +137,7 @@ void ANN::createANNInstance() {
  * @return int board evaluation
  */
 int ANN::ANNEvaluate(const type::gameState_t& board) const {
-  const auto arr = ::utils::neuralnet::convertGameStateToInputs(board); // float array of the inputs
+  const auto arr = ::utils::neuralNet::convertGameStateToInputs(board); // float array of the inputs
 
   // populate array
   fann_type inputs[::david::constant::nn::INPUTSIZE];
@@ -157,7 +159,7 @@ int ANN::ANNEvaluate(const type::gameState_t& board) const {
  */
 int ANN::ANNEvaluate(const std::string& fen) const {
   type::gameState_t gs;
-  utils::generateBoardFromFen(gs, fen);
+  utils::gameState::generateFromFEN(gs, fen);
 
   return this->ANNEvaluate(gs);
 }

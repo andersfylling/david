@@ -2,7 +2,7 @@
 #include <string>
 #include <map>
 #include "david/types.h"
-#include "david/utils/utils.h"
+#include "david/utils/gameState.h"
 
 namespace utils {
 namespace gameState {
@@ -23,14 +23,20 @@ namespace gameState {
 
     6. Fullmove number: The number of the full move. It starts at 1, and is incremented after Black's move.
 
- * @param node
+ * @param gs
  * @param whiteMovesNext
  * @return
  * @Deprecated needs to use gameState_t not _ptr
  */
-std::string generateFen(const ::david::type::gameState_t& node) {
+std::string generateFen(const ::david::type::gameState_t& gs) {
   using ::david::type::bitboard_t;
 
+  int w = 0;
+  int b = 1;
+  if (!gs.isWhite) {
+    w = 1;
+    b = 1;
+  }
 
   std::array<char, 12> symbols = {
       'p',
@@ -51,22 +57,28 @@ std::string generateFen(const ::david::type::gameState_t& node) {
   char spaces[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8'};
 
   int spacing = 0;
-  int pos = 1;
+  int pos = 0; // fenstring position
   std::string fen = "";
 
   for (uint8_t i = 0; i < 64; i++) {
-    if (pos == 9) {
-      pos = 1;
+    if (pos == 8) {
+      pos = 0;
       fen += '/';
     }
 
+    // find the most significant bit, or chess pieces from left top to right bottom
     char p = ' ';
-    for (uint8_t j = 0; j < 12; j++) {
-      const uint64_t board = node.piecesArr[j % 6][j / 6];
+    for (uint8_t j = 0; j < gs.piecesArr.size(); j++) {
+      const auto boards = gs.piecesArr[j];
 
-      if (utils::bitAt(board, i)) {
-        p = symbols[j];
-        break;
+      // for each colour
+      for (uint8_t c = 0; c < 2; c++) {
+        const bool white = (c == 0 && gs.isWhite) || (c == 1 && !gs.isWhite); // check if teh current piece is white
+
+        if (utils::bitAt(boards[c], 63 - i)) {
+          p = symbols[j + (white ? 6 : 0)];
+          break;
+        }
       }
     }
 
@@ -74,7 +86,7 @@ std::string generateFen(const ::david::type::gameState_t& node) {
       spacing += 1;
     }
 
-    if (pos == 8 || p != ' ') {
+    if (pos == 7 || p != ' ') {
       fen += spaces[spacing];
       spacing = 0;
     }
@@ -89,23 +101,52 @@ std::string generateFen(const ::david::type::gameState_t& node) {
   fen += ' '; // spacing
 
   // who is the active player
-  fen += node.isWhite ? 'w' : 'b';
+  fen += gs.isWhite ? 'w' : 'b';
   fen += ' '; // spacing
 
-  // missing castling verification support
-  fen += "-";
+  // Castling
+  if (gs.queenCastlings[w] || gs.queenCastlings[b] || gs.kingCastlings[w] || gs.kingCastlings[b]) {
+    // white king
+    if (gs.kingCastlings[w]) {
+      fen += 'K';
+    }
+
+    // white queen
+    if (gs.queenCastlings[w]) {
+      fen += 'Q';
+    }
+
+    // black king
+    if (gs.kingCastlings[b]) {
+      fen += 'k';
+    }
+
+    // black queen
+    if (gs.queenCastlings[b]) {
+      fen += 'q';
+    }
+  }
+  else {
+    fen += '-';
+  }
   fen += ' '; // spacing
 
   // missing passant target verification support
-  fen += "-";
+  // TODO: convert index to EGN
+  if (gs.enPassant != 0) {
+    fen += std::to_string(gs.enPassant);
+  }
+  else {
+    fen += "-";
+  }
   fen += ' '; // spacing
 
   // missing halfmove verification support
-  fen += std::to_string(node.halfMoves);
+  fen += std::to_string(gs.halfMoves);
   fen += ' '; // spacing
 
   // missing fullmove verification support
-  fen += std::to_string(node.fullMoves);
+  fen += std::to_string(gs.fullMoves);
 
   return fen;
 }
@@ -152,9 +193,9 @@ void print(const ::david::type::gameState_t& gs) {
     auto bitboard = entry.second;
 
     while (bitboard != 0ULL) {
-      auto i = LSB(bitboard);
+      auto i = ::utils::LSB(bitboard);
       flipBitOff(bitboard, i);
-      board.at(board.size() - 1 - i) = piece;
+      board.at(63 - i) = piece;
     }
   }
 
@@ -185,18 +226,24 @@ void print(const ::david::type::gameState_t& gs) {
  * @param gs gameState_t&
  * @param fen const std::string&, must be correctly formatted (!)
  */
-void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen) {
-  using ::david::bitboard::COLOR::WHITE;
-  using ::david::bitboard::COLOR::BLACK;
+void generateFromFEN(::david::type::gameState_t& gameState, const std::string &fen) {
+  ::david::type::gameState_t gs;
+
+  // reset
+  gs.enPassant = 0;
+  gs.enPassantPawn = 0;
+  gs.passant = false;
+  gs.kingCastlings = {{ false }};
+  gs.queenCastlings = {{ false }};
+
+
 
   int w = 0;
   int b = 1;
-  if (!gs.isWhite) {
-    w = 1;
-    b = 0;
-  }
 
-  std::map<const char, ::david::type::bitboard_t> links = {
+
+  // if its a small letter, use black. otherwise use white.
+  std::map<const char, ::david::type::bitboard_t&> links = {
       {'b', gs.piecesArr[gs.iBishops][b]},
       {'k', gs.piecesArr[gs.iKings][b]},
       {'n', gs.piecesArr[gs.iKnights][b]},
@@ -216,6 +263,7 @@ void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen) {
   uint8_t index = 0; //64 = space, 66 = space,
   auto len = static_cast<uint8_t>(fen.length());
   for (uint8_t i = 0; i < len; i++) {
+    //::utils::gameState::generateMergedBoardVersion(gs);
     const auto &c = fen[i];
 
     // piece positions
@@ -227,7 +275,8 @@ void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen) {
       // check if the char is a piece type
       if (links.count(c) > 0) {
         // it's a piece type
-        flipBit(links.at(c), index); // set bit at correct index on correct board
+        // since this index starts at the top of the string, we need to start at index 63.
+        flipBit(links.at(c), 63 - index); // set bit at correct index on correct board
         index += 1;
       } else {
         // assumption: it's a number
@@ -238,7 +287,7 @@ void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen) {
 
       // color
     else if (index == 64) {
-      gs.isWhite = fen[i + 1] == 'w';
+      gs.isWhite = fen[i + 1] != 'b';
 
       i += 2; // skip char and space afterwards
       index += 1;
@@ -247,7 +296,18 @@ void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen) {
       // castling
     else if (index == 65) {
       for (; i < len && fen[i] != ' '; i += 1) {
-        // TODO: Implement castling for fen string
+        if (fen[i] == 'K') {
+          gs.kingCastlings[w] = true;
+        }
+        else if (fen[i] == 'Q') {
+          gs.queenCastlings[w] = true;
+        }
+        else if (fen[i] == 'k') {
+          gs.kingCastlings[b] = true;
+        }
+        else if (fen[i] == 'q') {
+          gs.queenCastlings[b] = true;
+        }
       }
 
       i += 1; // skip space
@@ -296,14 +356,19 @@ void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen) {
     }
   }
 
-  for (int c = 0; c < 2; c++) {
-    for (int i = 0; i < 6; i++) {
-      gs.piecess[c] |= gs.piecesArr[i][c];
+  gameState = gs;
+
+  // if its blacks turn then reverse the colour index
+  if (!gs.isWhite) {
+    for (uint8_t i = 0; i < 6; i++) {
+      gameState.piecesArr[i][0] = gs.piecesArr[i][1];
+      gameState.piecesArr[i][1] = gs.piecesArr[i][0];
     }
   }
-  gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
 
-} // generateBoardFromFen(...)
+  // fix piecess and combinedPieces
+  ::utils::gameState::generateMergedBoardVersion(gameState);
+} // generateFromFEN
 
 
 
@@ -312,24 +377,55 @@ const std::string getEGN(const ::david::type::gameState_t &first, const ::david:
   using ::david::bitboard::COLOR::BLACK;
   using ::david::type::bitboard_t;
 
+  const ::std::array<char, 4> pieceTypes = {'r', 'n', 'b', 'q'};
+  const std::array<char, 8> indexes = {'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'};
+  const std::array<char, 8> ints = {'1', '2', '3', '4', '5', '6', '7', '8'};
+  std::string EGN = "----";
+  bool castling = false;
+
   // 0 == 1 if the colour has changed. aka new step has been made.
-  bitboard_t a = first.piecess[0]; // this can be either black or white, doesnt matter
-  bitboard_t b = second.piecess[1]; // but it's always the opposite of this
-
+  bitboard_t a = first.piecess[0];
+  bitboard_t b = second.piecess[1];
   bitboard_t difference = a ^ b;
-  bitboard_t from = LSB(a & difference);
-  bitboard_t to = LSB(b & difference);
+  bitboard_t from;
+  bitboard_t to;
 
-  std::array<char, 8> indexes = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-  std::string EGN = "";
+  // castling
+  if (::utils::nrOfActiveBits(difference) == 4) {
+    castling = true;
+
+    // if there's more than one king per colour, use the commented out solution.
+    from = ::utils::LSB(first.piecesArr[5][0]); //::utils::LSB(first.piecesArr[5][0] & difference);
+    to = ::utils::LSB(first.piecesArr[5][1]); //::utils::LSB(second.piecesArr[5][1] & difference);
+  }
+  else {
+    from = LSB(a & difference);
+    to = LSB(b & difference);
+  }
 
   // from
-  EGN += indexes[from % 8];
-  EGN += std::to_string((from + 8) / 8);
+  EGN.at(0) = indexes[from % 8];
+  EGN.at(1) = ints[from / 8];
 
   // to
-  EGN += indexes[to % 8];
-  EGN += std::to_string((to + 8) / 8);
+  EGN.at(2) = indexes[to % 8];
+  EGN.at(3) = ints[to / 8];
+
+  // check for promotion
+  if (!castling && (first.piecesArr[0][0] & from) > 0 && (second.piecesArr[0][1] & to) == 0) {
+    // find out which piece type
+    for (uint8_t i = 1; i < 5; i++) {
+      if ((second.piecesArr[i][1] & to) > 0) {
+        // found piece: i
+        EGN += pieceTypes[i];
+        break;
+      }
+    }
+  }
+  else if (castling) {
+    // add the castling char?
+    // now it just shows that the king jumps 2 or 3 moves.
+  }
 
   return EGN;
 }
@@ -349,65 +445,6 @@ void generateMergedBoardVersion(::david::type::gameState_t& gs) {
   // complete board merge
   gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
 }
-
-
-/**
- * @deprecated
- * @param gs
- * @param EGN
- */
-// TODO: support new gameNode type
-void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string& EGN) {
-  using ::david::bitboard::COLOR::WHITE;
-  using ::david::bitboard::COLOR::BLACK;
-
-  // get origin
-  const std::string originEGN = EGN.substr(0, 2);
-  const auto origin = chessIndexToArrayIndex(originEGN);
-
-  // get destination
-  const std::string destinationEGN = EGN.substr(2, 2);
-  const auto destination = chessIndexToArrayIndex(destinationEGN);
-
-  // check for issues
-  if (origin == 64 || destination == 64) {
-    std::cerr << "Unable to get origin || destination for EGN: " << EGN << std::endl;
-    return;
-  }
-
-  // TODO: make the gameState use array for each type.. this is troublesome....
-  if (!bitAt(gs.combinedPieces, origin)) {
-    std::cerr << "ORIGIN " << origin << " AT THE FOLLOWING BITBOARD DOES NOT EXIST!!" << std::endl;
-    ::utils::printGameState(gs);
-    return;
-  }
-
-  for (int i = 0; i < 2; i++) {
-    if (bitAt(gs.piecess[i], origin)) {
-      for (int j = 0; j < 6; j++) {
-        if (bitAt(gs.piecesArr[j][i], origin)) {
-          movePiece(gs.piecesArr[j][i], origin, destination);
-        }
-      }
-
-    }
-  }
-
-  gs.isWhite = !gs.isWhite;
-}
-
-/**
- *
- * @deprecated
- * @param board
- * @param orig
- * @param dest
- */
-void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest) {
-  flipBitOff(board, orig);
-  flipBitOn(board, dest);
-}
-
 
 /**
  * Set default board values

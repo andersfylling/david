@@ -4,6 +4,7 @@
 
 #ifdef __linux__
 #include <unistd.h>
+#include <david/utils/gameState.h>
 #elif _WIN32
 // windows code goes here
 #endif
@@ -69,7 +70,7 @@ TEST_CASE ("chess index parser") {
   REQUIRE(::utils::chessIndexToArrayIndex("d5") == 36);
 
   ::david::type::gameState_t gs1;
-  ::utils::setDefaultChessLayout(gs1);
+  ::utils::gameState::setDefaultChessLayout(gs1);
 
   ::david::type::gameState_t gs2;
 
@@ -81,9 +82,9 @@ TEST_CASE ("chess index parser") {
   }
 
   gs2.piecesArr[0][1] = 4243200;
-  ::utils::generateMergedBoardVersion(gs2);
+  ::utils::gameState::generateMergedBoardVersion(gs2);
 
-  REQUIRE(::utils::getEGN(gs1, gs2) == "b2b3");
+  REQUIRE(::utils::gameState::getEGN(gs1, gs2) == "b2b3");
 
 //  ::david::type::gameState_t gs;
 //  ::utils::setDefaultChessLayout(gs);

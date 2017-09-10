@@ -72,27 +72,15 @@ inline bool isHalfMove(
   return (parentOtherPawns | childActivePawns) != 0ULL;
 }
 
-
 const std::string getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second);
 void getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second, std::string &EGN);
 void generateMergedBoardVersion(::david::type::gameState_t& gs);
-
-
-/**
- * @deprecated
- * @param gs
- * @param EGN
- */
-// TODO: support new gameNode type
-void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string& EGN);
-void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest);
-
 
 /**
  * Set default board values
  * @param node gameState_t&
  */
-void setDefaultChessLayout(::david::type::gameState_t &n);
+void setDefaultChessLayout(::david::type::gameState_t &gs);
 } // ::utils::gameState
 } // End of utils
 

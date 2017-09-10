@@ -1,6 +1,10 @@
+
+#ifdef DAVID_TEST
+
 #include "david/MoveGenTest.h"
 #include "david/MoveGen.h"
 #include "david/utils/utils.h"
+#include "david/utils/gameState.h"
 
 namespace david {
 
@@ -10,7 +14,7 @@ MoveGenTest::MoveGenTest(const MoveGen &mg)
 
 
 void MoveGenTest::print() const {
-  ::utils::printGameState(moveGen.state);
+  ::utils::gameState::print(moveGen.state);
 }
 
 
@@ -37,3 +41,5 @@ type::bitboard_t MoveGenTest::extractLegalNorthPath(const type::bitboard_t psued
 }
 
 }
+
+#endif

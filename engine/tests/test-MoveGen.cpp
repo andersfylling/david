@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <david/utils/utils.h>
+#include <david/utils/gameState.h>
 #include "david/MoveGen.h"
 #include "david/MoveGenTest.h"
 #include "catch.hpp"
@@ -10,19 +11,17 @@
 TEST_CASE("MoveGen perft [MoveGen]") {
   // https://chessprogramming.wikispaces.com/Perft+Results
   ::david::type::gameState_t gs;
-  //::utils::generateBoardFromFen(gs, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
-  ::utils::generateBoardFromFen(gs, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -");
-  //::utils::generateBoardFromFen(gs, "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
 
+  //::utils::gameState::generateFromFEN(gs, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -");
+  ::utils::gameState::generateFromFEN(gs, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
+  //::utils::gameState::print(gs);
 
-  ::utils::printGameState(gs);
-
-  ::utils::perft_debug_advanced(gs);
+  ::utils::perft_debug_advanced(gs, 1);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
   ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
+  ::utils::gameState::setDefaultChessLayout(gs);
 
   // rook moves
   {
@@ -47,7 +46,7 @@ TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
   {
     gs.piecesArr[0][0] = 37065331200;
     gs.piecesArr[0][1] = 1145450631528448;
-    ::utils::generateMergedBoardVersion(gs);
+    ::utils::gameState::generateMergedBoardVersion(gs);
 
     ::david::MoveGen moveGen{gs};
     ::david::MoveGenTest mgt{moveGen};
@@ -93,7 +92,7 @@ TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
   {
     gs.piecesArr[0][0] = 37065331200;
     gs.piecesArr[0][1] = 1145450631528448;
-    ::utils::generateMergedBoardVersion(gs);
+    ::utils::gameState::generateMergedBoardVersion(gs);
 
     ::david::MoveGen moveGen{gs};
     ::david::MoveGenTest mgt{moveGen};
@@ -121,7 +120,7 @@ TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
 
 TEST_CASE("extract legal north attack [MoveGen.extractLegalNorthPath]") {
   ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
+  ::utils::gameState::setDefaultChessLayout(gs);
 
   // rook moves
   {
@@ -146,7 +145,7 @@ TEST_CASE("extract legal north attack [MoveGen.extractLegalNorthPath]") {
   {
     gs.piecesArr[0][0] = 37065331200;
     gs.piecesArr[0][1] = 1145450631528448;
-    ::utils::generateMergedBoardVersion(gs);
+    ::utils::gameState::generateMergedBoardVersion(gs);
 
     ::david::MoveGen moveGen{gs};
     ::david::MoveGenTest mgt{moveGen};
@@ -171,7 +170,7 @@ TEST_CASE("extract legal north attack [MoveGen.extractLegalNorthPath]") {
 
 TEST_CASE("rook attack [MoveGen.generateRookAttack]") {
   ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
+  ::utils::gameState::setDefaultChessLayout(gs);
 
   {
     ::david::MoveGen moveGen{gs};
@@ -184,7 +183,7 @@ TEST_CASE("rook attack [MoveGen.generateRookAttack]") {
   // move h2h4 pawn.
   {
     gs.piecesArr[0][0] = 16842240;
-    ::utils::generateMergedBoardVersion(gs);
+    ::utils::gameState::generateMergedBoardVersion(gs);
 
     ::david::MoveGen moveGen{gs};
     ::david::MoveGenTest mgt{moveGen};

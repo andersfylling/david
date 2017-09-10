@@ -113,6 +113,7 @@ struct gameState {
 
   bool isInCheck = false;
   bool passant = false;
+  //bool promotion = false;
 
   //type::gameState_ptr* children;
   //std::array<type::gameState_ptr, 256> children{{nullptr}};

@@ -19,6 +19,7 @@
 #endif
 
 
+
 // includes
 #include <iostream>
 #include <cassert>
@@ -67,7 +68,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "uci"; // uci, fight, train, perft. Default: "uci"
+  const std::string mode = "perft"; // uci, fight, train, perft. Default: "uci"
 
 
   if (mode == "fight") {
@@ -80,7 +81,7 @@ int main (/*int argc, char * argv[]*/)
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(5);
+    ::utils::perft(6);
   }
 
   // Close program with exit code 0 (UCI: after all threads have joined.)

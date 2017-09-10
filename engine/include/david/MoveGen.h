@@ -3,13 +3,19 @@
 #include "david/david.h"
 #include "david/types.h"
 #include "david/bitboard.h"
-#include "david/MoveGenTest.h"
 #include <assert.h>
+
+#ifdef DAVID_TEST
+#include "david/MoveGenTest.h"
+#endif
 
 namespace david {
 
+
 class MoveGen {
+#ifdef DAVID_TEST
   friend class MoveGenTest;
+#endif
  public:
   MoveGen(const type::gameState_t& gs);
 
@@ -117,6 +123,7 @@ class MoveGen {
 
 
  private:
+
   // the current board status of the game
   const type::gameState_t& state;
   type::gameState_t reversedState;
@@ -268,9 +275,6 @@ class MoveGen {
     const bool whiteMoving = gs.isWhite && !hostile;
 
     type::bitboard_t board = 0ULL;
-    type::bitboard_t promotions = 0ULL;
-
-
 
     if (whiteMoving) {
       // shift upwards
@@ -288,11 +292,6 @@ class MoveGen {
       auto attacks = ::utils::constant::pawnAttackPaths[index];
       attacks &= (hostiles | ::utils::indexToBitboard(this->state.enPassant));
       board |= attacks & ~(pieceBoard - 1);
-
-      // promotions
-      promotions = 18374686479671623680 & board;
-      // remove pawns that will turn into other pieces
-      board ^= promotions;
     }
 
     // black
@@ -312,12 +311,12 @@ class MoveGen {
       auto attacks = ::utils::constant::pawnAttackPaths[index];
       attacks &= (hostiles | ::utils::indexToBitboard(this->state.enPassant)); // hostile pieces that can be attacked.
       board |= attacks & (pieceBoard - 1);
-
-      // promotions
-      promotions = 255 & board;
-      // remove pawns that will turn into other pieces
-      board ^= promotions;
     }
+
+    // get the promotions from the moves
+    type::bitboard_t promotions = 18374686479671623935 & board;
+    // remove pawn moves that hits a promotion square
+    board ^= promotions;
 
     while (promotions != 0) {
       auto i = ::utils::LSB(promotions);

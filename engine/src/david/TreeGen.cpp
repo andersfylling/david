@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <david/utils/utils.h>
 #include <assert.h>
+#include <david/utils/gameState.h>
 #include "david/ANN/ANN.h"
 #include "david/MoveGen.h"
 
@@ -91,16 +92,16 @@ void TreeGen::updateRootNodeTo(const int index) {
 }
 
 void TreeGen::setRootNodeFromFEN(const std::string& FEN) {
-  if (FEN == constant::FENStartPosition) {
-    utils::setDefaultChessLayout(this->tree.front());
+  if (FEN == ::david::constant::FENStartPosition) {
+    ::utils::gameState::setDefaultChessLayout(this->tree.front());
   }
   else {
-    utils::generateBoardFromFen(this->tree.front(), FEN);
+    ::utils::gameState::generateFromFEN(this->tree.front(), FEN);
   }
 }
 
 void TreeGen::setRootNode(const type::gameState_t& gs) { // TODO: bad?
-  this->tree.front() = std::move(gs);
+  this->tree.front() = gs;
 }
 
 /**
@@ -207,7 +208,7 @@ void TreeGen::generateEGNMoves()
   const auto& root = this->tree.front();
   const int len = this->nrOfEGNMoves = root.possibleSubMoves;
   for (int i = 0; i < len; i++) {
-    this->EGNMoves[i] = ::utils::getEGN(root, this->tree[i + 1]);
+    this->EGNMoves[i] = ::utils::gameState::getEGN(root, this->tree[i + 1]);
   }
 }
 
@@ -238,7 +239,7 @@ void TreeGen::applyEGNMove(const std::string& EGN)
         << EGN
         << "] based on current board layout inside the engine.. Did you forget to update the layout?"
         << std::endl;
-    utils::printGameState(this->tree.front());
+    utils::gameState::print(this->tree.front());
     return;
   }
 

@@ -7,6 +7,8 @@ file(GLOB chess_ann_srcfiles
 
         # utils namespace
         utils/utils.cpp
+        utils/gameState.cpp
+        utils/neuralNet.cpp
 
         # david namespace
         david/ChessEngine.cpp
@@ -14,6 +16,7 @@ file(GLOB chess_ann_srcfiles
         david/Search.cpp
         david/TreeGen.cpp
         david/MoveGen.cpp
+        david/MoveGenTest.cpp
         ANN/ANN.cpp)
 add_executable(chess_ann_src ${chess_ann_srcfiles})
 

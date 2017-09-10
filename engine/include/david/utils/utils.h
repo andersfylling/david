@@ -19,8 +19,6 @@ int stoi(const std::string v);
 constexpr int ctoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
-
-void legacyGameStateUpdate(::david::type::gameState_t& n);
 }
 
 
@@ -132,20 +130,8 @@ constexpr uint64_t flipBitOnCopy(const uint64_t board, const uint8_t index) {
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
 
-template<std::size_t SIZE>
-void addPieceBoardIndexToVector(std::vector<float>& store, std::array<::david::type::bitboard_t, SIZE>& pieces, uint8_t nr);
-
-inline namespace neuralnet {
-std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(const ::david::type::gameState_t &node);
-}
-
-std::string generateFen(const ::david::type::gameState_t& node);
-void generateBoardFromFen(::david::type::gameState_t& gs, const std::string fen);
-void setDefaultChessLayout(::david::type::gameState_t& node);
 ::david::type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
-void affectGameStateByEGNMove(::david::type::gameState_t& gs, const std::string& EGN);
-void movePiece(::david::type::bitboard_t& board, uint8_t orig, uint8_t dest);
 
 
 /**
@@ -159,14 +145,7 @@ inline ::david::type::bitboard_t chessIndexToBitboard(const std::string chessInd
 }
 
 // Everything printing related
-// utils::print
-// utils::cout
-// utils::print::cout
-void printGameState(const ::david::type::gameState_t &gs);
 void printBoard(uint64_t board, const int index = -1);
-
-void generateMergedBoardVersion(::david::type::gameState_t& gs);
-
 void yellDeprecated(const std::string info);
 
 // normal perft
@@ -181,12 +160,9 @@ bool perft_debug(const int limit, const uint8_t startDepth = 0);
 uint64_t perft_debug(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
 
 // perft debug that shows the difference. standard board layout
-bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1); // max depth 6 completion.
+bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
 uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
 
-// egn stuff.. yeah
-const std::string getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second);
-void getEGN(const ::david::type::gameState_t& first, const ::david::type::gameState_t& second, std::string& EGN);
 
 
 /**

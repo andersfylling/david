@@ -5,6 +5,7 @@
 #include <memory>
 #include <sstream>
 #include <david/david.h>
+#include <david/utils/gameState.h>
 
 david::EngineMaster::EngineMaster(const std::string filename)
     :ANNFilename(filename),
@@ -88,7 +89,7 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   int rounds = 0;
   int maxRounds = 100;
   do {
-    utils::printGameState(currentGame);
+    utils::gameState::print(currentGame);
 
     //auto&& active = color == "w" ? eng1 : eng2;
 
