@@ -108,24 +108,26 @@ void MoveGen::runAllMoveGenerators() {
         // TODO-castling1c: OTHERWISE. this is a flaw
 
         // king side castling
-        if (this->state.kingCastlings[0] && (gs.piecesArr[pieceType][1] & 4611686018427387968) > 0) {
-          uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 9223372036854775936);
-          ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
-
-          ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos >> 2);
-          gs.kingCastlings[1] = false;
-          gs.queenCastlings[1] = false;
-        }
-
-        else if (this->state.queenCastlings[0] && (gs.piecesArr[pieceType][1] & 144115188075855874) > 0) {
+        if (this->state.kingCastlings[0] && (gs.piecesArr[5][1] & 144115188075855874) > 0) {
           uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 72057594037927937);
           ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
 
           ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos << 2);
+          gs.kingCastlings[1] = false;
+          gs.queenCastlings[1] = false;
+        }
+
+        else if (this->state.queenCastlings[0] && (gs.piecesArr[5][1] & 2305843009213693984) > 0) {
+          uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 9223372036854775936);
+          ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
+
+          ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos >> 3);
           gs.queenCastlings[1] = false;
           gs.kingCastlings[1] = false;
         }
       }
+
+      // TODO: if a rook is moved, its castling side should be disabled
 
       // a piece was promoted, so remove the pawn that was sacrificed for this promotion
       // TODO:save memory by adding the position of the pawn to the upgraded board and do an XOR to check for promotion.
@@ -442,15 +444,15 @@ void MoveGen::generateKingMoves() {
   }
 
   // queen side castling
-  if (this->state.queenCastlings[0] && (8070450532247928944 & friendly) == 0 && (9799832789158199432 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    type::bitboard_t board = kingBoard << 3; // move three left
+  if (this->state.queenCastlings[0] && (8070450532247928944 & friendly) == 0 && (9223372036854775936 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
+    type::bitboard_t board = kingBoard << 2; // move two left
     if (!this->dangerousPosition(board, this->state)) {
       this->moves[this->state.iKings][index++] = board;
     }
   }
 
   // king side castling
-  if (this->state.kingCastlings[0] && (432345564227567622 & friendly) == 0 && (648518346341351433 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
+  if (this->state.kingCastlings[0] && (432345564227567622 & friendly) == 0 && (72057594037927937 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
     type::bitboard_t board = kingBoard >> 2; // move two right
     if (!this->dangerousPosition(board, this->state)) {
       this->moves[this->state.iKings][index++] = board;

@@ -16,7 +16,7 @@ TEST_CASE("MoveGen perft [MoveGen]") {
   ::utils::gameState::generateFromFEN(gs, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
   //::utils::gameState::print(gs);
 
-  ::utils::perft_debug_advanced(gs, 1);
+  ::utils::perft_debug_advanced(gs, 1, 7);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
