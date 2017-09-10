@@ -252,9 +252,12 @@ bool perft_debug() {
   return perft_debug(-1);
 }
 
+// @deprecated
 bool perft_debug(const int limit, const uint8_t startDepth) {
   ::david::type::gameState_t gs;
   ::utils::gameState::setDefaultChessLayout(gs);
+
+  yellDeprecated("use perft_debug_advanced");
 
   // expected outputs
   std::array<uint64_t, 14> perftScores = {
@@ -541,7 +544,7 @@ bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t st
               "Nodes",
               "Captures",
               "E.P.",
-              "Castling",
+              "Castles",
               "Promos",
               "Checks",
               "Checkm's");
@@ -612,7 +615,11 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
 
         // castling
       else if ((gs.kingCastlings[0] != state.kingCastlings[1]) || (gs.queenCastlings[0] != state.queenCastlings[1])) {
-        results[2] += 1;
+        // castling state has changed, but did the king move?
+        // check if the king has moved more than one position.
+        if ((gs.piecesArr[5][0] & 576460752303423496) > 0 && (state.piecesArr[5][1] & 2449958197289549858) > 0) {
+          results[2] += 1;
+        }
       }
 
         // promotion

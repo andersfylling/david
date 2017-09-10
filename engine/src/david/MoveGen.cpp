@@ -127,7 +127,19 @@ void MoveGen::runAllMoveGenerators() {
         }
       }
 
-      // TODO: if a rook is moved, its castling side should be disabled
+        // If a rook move, disable that sides castling rights
+      else if (pieceType == this->state.iRooks) {
+        // king side
+        if (this->state.kingCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 72057594037927937) == 0) {
+          // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
+          gs.kingCastlings[1] = false;
+        }
+        // queen side
+        else if (this->state.queenCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 9223372036854775936) == 0) {
+          // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
+          gs.queenCastlings[1] = false;
+        }
+      }
 
       // a piece was promoted, so remove the pawn that was sacrificed for this promotion
       // TODO:save memory by adding the position of the pawn to the upgraded board and do an XOR to check for promotion.
