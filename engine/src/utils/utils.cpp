@@ -530,6 +530,10 @@ uint64_t perft_debug(const uint8_t depth, const ::david::type::gameState_t &gs, 
 
 // advanced movegen debugging
 bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end, const bool showEGN) {
+
+  // Display perft for given FEN
+  std::cout << "FEN string: " << ::utils::gameState::generateFen(gs) << '\n';
+
   std::printf("+%7s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
               "-------",
               "--------------------------------",
@@ -598,13 +602,16 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
   uint64_t nodes = 0;
 
   // calculate move for every move
-  const auto nextDepth = depth - 1;
+  const uint8_t nextDepth = depth - 1;
   for (unsigned long i = 0; i < len; i++) {
     auto& state = states[i];
 
     if (depth == 1) {
       // add any captures
-      if ((gs.piecess[1] & state.piecess[1]) > 0 || state.passant) {
+      if (((gs.piecess[1] & state.piecess[1]) > 0 || state.passant)
+          && ::utils::nrOfActiveBits(gs.piecess[0] ^ state.piecess[1]) == 2
+          && ::utils::nrOfActiveBits(gs.piecess[1] ^ state.piecess[0]) == 1
+          ) {
         results[0] += 1;
 
         // en passant
@@ -613,21 +620,38 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
         }
       }
 
-        // castling
+      // castling
+#ifdef DAVID_TEST
+      if (state.castled) {
+        results[2] += 1;
+      }
+#else
       else if ((gs.kingCastlings[0] != state.kingCastlings[1]) || (gs.queenCastlings[0] != state.queenCastlings[1])) {
         // castling state has changed, but did the king move?
         // check if the king has moved more than one position.
         if ((gs.piecesArr[5][0] & 576460752303423496) > 0 && (state.piecesArr[5][1] & 2449958197289549858) > 0) {
-          results[2] += 1;
+          // check that rook also moved
+          if ((gs.piecesArr[gs.iRooks][0] & 9295429630892703873) > 0 && (state.piecesArr[gs.iRooks][1] & 1441151880758558740) > 0) {
+            results[2] += 1;
+          }
         }
       }
+#endif
 
-        // promotion
-      else if (::utils::nrOfActiveBits(gs.piecesArr[0][0]) - ::utils::nrOfActiveBits(state.piecesArr[0][1]) == 1) {
-      //else if (state.promotion) {
+      // promotion
+#ifdef DAVID_TEST
+      if (state.promoted) {
         results[3] += 1;
       }
-
+#else
+      // check if a pawn has been reduced by one, but that nr of total pieces hasn't been reduced
+      if (
+          ::utils::nrOfActiveBits(gs.piecesArr[0][0]) - ::utils::nrOfActiveBits(state.piecesArr[0][1]) == 1 &&
+              ::utils::nrOfActiveBits(gs.piecess[0]) == ::utils::nrOfActiveBits(state.piecess[1])
+          ) {
+        results[3] += 1;
+      }
+#endif
       // check, but also check mate
       if (state.isInCheck) {
         results[4] += 1;
@@ -642,7 +666,7 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
       nodes += 1;
     }
     else {
-      nodes += perft_debug(nextDepth, state, results);
+      nodes += ::utils::perft_debug_advanced(nextDepth, state, results);
     }
   }
 

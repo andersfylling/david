@@ -115,6 +115,11 @@ struct gameState {
   bool passant = false;
   //bool promotion = false;
 
+#ifdef DAVID_TEST
+  bool promoted = false;
+  bool castled = false;
+#endif
+
   //type::gameState_ptr* children;
   //std::array<type::gameState_ptr, 256> children{{nullptr}};
   //type::gameState_ptr parent = nullptr;

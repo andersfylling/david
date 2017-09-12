@@ -87,7 +87,9 @@ std::string generateFen(const ::david::type::gameState_t& gs) {
     }
 
     if (pos == 7 || p != ' ') {
-      fen += spaces[spacing];
+      if (spacing > 0) {
+        fen += spaces[spacing];
+      }
       spacing = 0;
     }
 
@@ -324,6 +326,7 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
       if (pos.length() == 2) {
         // this ignores '-' and only takes board positions
         // TODO: what to do about en passant
+        // convert the EGN to a index, and give it to gs.enPassant..
         //auto passantBoard = ::david::utils::chessIndexToBitboard(pos);
       }
 
@@ -424,7 +427,7 @@ const std::string getEGN(const ::david::type::gameState_t &first, const ::david:
   }
   else if (castling) {
     // add the castling char?
-    // now it just shows that the king jumps 2 or 3 moves.
+    // now it just shows that the king jumps 2 moves.
   }
 
   return EGN;
@@ -451,7 +454,6 @@ void generateMergedBoardVersion(::david::type::gameState_t& gs) {
  * @param node gameState_t&
  */
 void setDefaultChessLayout(::david::type::gameState_t &n) {
-  using ::david::bitboard::COLOR::WHITE;
 
   // set the new array data
   n.piecesArr[0] = {

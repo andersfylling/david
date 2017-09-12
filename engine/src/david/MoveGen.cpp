@@ -37,7 +37,11 @@ MoveGen::MoveGen(const type::gameState_t& gs)
   this->reversedState.passant = false;
   this->reversedState.enPassant = 0;
   this->reversedState.enPassantPawn = 0;
-  //this->reversedState.promotion = false;
+
+#ifdef DAVID_TEST
+  this->reversedState.promoted = false;
+  this->reversedState.castled = false;
+#endif
 
   // reverse the pieces to respect the active player change
   const auto nrOfPieces = this->state.piecesArr.size();
@@ -115,6 +119,10 @@ void MoveGen::runAllMoveGenerators() {
           ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos << 2);
           gs.kingCastlings[1] = false;
           gs.queenCastlings[1] = false;
+
+#ifdef DAVID_TEST
+          gs.castled = true;
+#endif
         }
 
         else if (this->state.queenCastlings[0] && (gs.piecesArr[5][1] & 2305843009213693984) > 0) {
@@ -122,6 +130,16 @@ void MoveGen::runAllMoveGenerators() {
           ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
 
           ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos >> 3);
+          gs.queenCastlings[1] = false;
+          gs.kingCastlings[1] = false;
+
+#ifdef DAVID_TEST
+          gs.castled = true;
+#endif
+        }
+
+        // the king has moved so disable castling for that colour
+        else {
           gs.queenCastlings[1] = false;
           gs.kingCastlings[1] = false;
         }
@@ -145,7 +163,9 @@ void MoveGen::runAllMoveGenerators() {
       // TODO:save memory by adding the position of the pawn to the upgraded board and do an XOR to check for promotion.
       if (this->promotedPawns[pieceType][board] > 0) {
         gs.piecesArr[0][1] ^= this->promotedPawns[pieceType][board];
-        //gs.promotion = true;
+#ifdef DAVID_TEST
+        gs.promoted = true;
+#endif
       }
 
       // compile the new pieces
@@ -455,19 +475,27 @@ void MoveGen::generateKingMoves() {
     this->moves[this->state.iKings][index++] = ::utils::indexToBitboard(position);
   }
 
-  // queen side castling
-  if (this->state.queenCastlings[0] && (8070450532247928944 & friendly) == 0 && (9223372036854775936 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    type::bitboard_t board = kingBoard << 2; // move two left
-    if (!this->dangerousPosition(board, this->state)) {
-      this->moves[this->state.iKings][index++] = board;
-    }
-  }
+  // castling if not in check
+  if (!this->state.isInCheck) {
+    // queen side castling
+    if (this->state.queenCastlings[0] && (8070450532247928944 & friendly) == 0
+        && (9223372036854775936 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
+      type::bitboard_t board = kingBoard << 2; // move two left
 
-  // king side castling
-  if (this->state.kingCastlings[0] && (432345564227567622 & friendly) == 0 && (72057594037927937 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
-    type::bitboard_t board = kingBoard >> 2; // move two right
-    if (!this->dangerousPosition(board, this->state)) {
-      this->moves[this->state.iKings][index++] = board;
+      // make sure the squares in between arent in check
+      // make sure the king isnt in check now
+      if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard << 1, this->state)) {
+        this->moves[this->state.iKings][index++] = board;
+      }
+    }
+
+    // king side castling
+    if (this->state.kingCastlings[0] && (432345564227567622 & friendly) == 0
+        && (72057594037927937 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
+      type::bitboard_t board = kingBoard >> 2; // move two right
+      if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard >> 1, this->state)) {
+        this->moves[this->state.iKings][index++] = board;
+      }
     }
   }
 
