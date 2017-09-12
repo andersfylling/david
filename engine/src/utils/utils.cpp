@@ -246,290 +246,8 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
 }
 
 
-
-// for debugging perft!!!
-bool perft_debug() {
-  return perft_debug(-1);
-}
-
-// @deprecated
-bool perft_debug(const int limit, const uint8_t startDepth) {
-  ::david::type::gameState_t gs;
-  ::utils::gameState::setDefaultChessLayout(gs);
-
-  yellDeprecated("use perft_debug_advanced");
-
-  // expected outputs
-  std::array<uint64_t, 14> perftScores = {
-      /*  0 */1,                  // 1
-      /*  1 */20,                 // 20
-      /*  2 */400,                // 400
-      /*  3 */8902,               // 8,902
-      /*  4 */197281,             // 197,281
-      /*  5 */4865609,            // 4,865,609
-      /*  6 */119060324,          // 119,060,324
-      /*  7 */3195901860,         // 3,195,901,860
-      /*  8 */84998978956,        // 84,998,978,956
-      /*  9 */2439530234167,      // 2,439,530,234,167
-      /* 10 */69352859712417,     // 69,352,859,712,417
-      /* 11 */2097651003696806,   // 2,097,651,003,696,806
-      /* 12 */62854969236701747,  // 62,854,969,236,701,747
-      /* 13 */1981066775000396239 // 1,981,066,775,000,396,239
-  };
-
-  std::array<std::array<int, 7>, 6> expected = {{
-      // captures
-      {
-          /* 0 */0,
-          /* 1 */0,
-          /* 2 */0,
-          /* 3 */34,
-          /* 4 */1576,
-          /* 5 */82719,
-          /* 6 */2812008
-      },
-
-      // en passant
-      {
-          /* 0 */0,
-          /* 1 */0,
-          /* 2 */0,
-          /* 3 */0,
-          /* 4 */0,
-          /* 5 */258,
-          /* 6 */5248
-      },
-
-      // castling
-      {
-          /* 0 */0,
-          /* 1 */0,
-          /* 2 */0,
-          /* 3 */0,
-          /* 4 */0,
-          /* 5 */0,
-          /* 6 */0
-      },
-
-      // promos
-      {
-          /* 0 */0,
-          /* 1 */0,
-          /* 2 */0,
-          /* 3 */0,
-          /* 4 */0,
-          /* 5 */0,
-          /* 6 */0
-      },
-
-      // checks
-      {
-          /* 0 */0,
-          /* 1 */0,
-          /* 2 */0,
-          /* 3 */12,
-          /* 4 */469,
-          /* 5 */27351,
-          /* 6 */809099
-      },
-
-      //checkmates
-      {
-          /* 0 */0,
-          /* 1 */0,
-          /* 2 */0,
-          /* 3 */0,
-          /* 4 */8,
-          /* 5 */347,
-          /* 6 */10828
-      }
-  }};
-
-  auto len = limit < 0 ? static_cast<int>(perftScores.size()) : limit;
-  bool success = true;
-
-  if (limit != -1) {
-    std::cerr << " * perft is depth limited to " << (int)limit << ", max depth is " << (perftScores.size() - 1) << std::endl;
-  }
-
-  // info
-  std::cout << "This is not a normal perft! This only shows the difference between your results and expected results!" << std::endl;
-
-
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
-  std::printf("+%7s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
-              "-------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------");
-  std::printf("| %5s | %8s | %8s | %8s | %8s | %8s | %8s | %8s |\n",
-              "Depth",
-              "Nodes",
-              "Captures",
-              "E.P.",
-              "Castling",
-              "Promos",
-              "Checks",
-              "Checkm's");
-  std::printf("+%7s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
-              "-------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------");
-  for (uint8_t i = startDepth; i <= len; i++) {
-    // run perft
-    std::array<int, 6> perftResults = {}; // zero initialization
-    auto moveGenPerft = ::utils::perft_debug(i, gs, perftResults);
-
-
-    // expect node count
-    auto expectedPerft = perftScores[i];
-
-    // generated node error estimation
-    const long long int diff = (long long int)moveGenPerft - (long long int)expectedPerft;
-
-    // print results for perft[i]
-
-    auto extras = [&]() -> bool {
-      if (i > 6) {
-        return false;
-      }
-
-      // captures, en passant, castling, promotions, check, checkmate
-      for (uint8_t j = 0; j < 6; j++) {
-        if (perftResults[j] - expected[j][i] != 0) {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    // show that this has an error
-    std::string msg = "";
-    if (diff != 0 || extras()) {
-      msg = " <-- ERROR";
-    }
-    if (i < 7) {
-      std::printf("| %5i | %8lli | %8i | %8i | %8i | %8i | %8i | %8i | %8s\n",
-                  i,
-                  diff, //difference * 100.0, // difference
-                  perftResults[0] - expected[0][i],
-                  perftResults[1] - expected[1][i],
-                  perftResults[2] - expected[2][i],
-                  perftResults[3] - expected[3][i],
-                  perftResults[4] - expected[4][i],
-                  perftResults[5] - expected[5][i],
-                  msg.c_str());
-    } else {
-      std::printf("| %5i | %8lli | %8c | %8c | %8c | %8c | %8c | %8c | %8s\n",
-                  i,
-                  diff, //difference * 100.0, // difference
-                  '?',
-                  '?',
-                  '?',
-                  '?',
-                  '?',
-                  '?',
-                  msg.c_str());
-    }
-
-    // if the results are bad, don't continue
-    if (msg != "") {
-      success = false;
-      //break;
-    }
-  }
-
-  std::printf("+%7s+%10s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
-              "-------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------",
-              "----------");
-
-  return success;
-}
-
-uint64_t perft_debug(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<int, 6>& results) {
-  if (depth == 0) {
-    return 1;
-  }
-
-  // create a holder for possible game outputs
-  ::david::MoveGen moveGen{gs};
-
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
-  const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
-  uint64_t nodes = 0;
-
-  // calculate move for every move
-  const auto nextDepth = depth - 1;
-  for (unsigned long i = 0; i < len; i++) {
-
-    //if (depth == 1 && states[i].piecesArr[gs.iBishops][1] != gs.piecesArr[gs.iBishops][0]) {
-    //  printGameState(states[i]);
-    //}
-    auto& state = states[i];
-    // NOTE: state is not const, but gs is!
-
-    if (depth == 1) {
-      // add any captures
-      if ((gs.piecess[1] & state.piecess[1]) > 0 || state.passant) {
-        results[0] += 1;
-
-        // en passant
-        if (state.passant) {
-          results[1] += 1;
-        }
-      }
-
-        // castling
-      else if ((gs.kingCastlings[0] != state.kingCastlings[1]) || (gs.queenCastlings[0] != state.queenCastlings[1])) {
-        results[2] += 1;
-      }
-
-        // promotion
-      else if (::utils::nrOfActiveBits(gs.piecesArr[0][0]) - ::utils::nrOfActiveBits(state.piecesArr[0][1]) == 1) {
-        results[3] += 1;
-      }
-
-      // check, but also check mate
-      if (state.isInCheck) {
-        results[4] += 1;
-
-        // to see if the state is in check mate, lets just see how many moves it can generate
-        ::david::MoveGen mg{state};
-        if (mg.nrOfPossibleMoves() == 0) {
-          results[5] += 1; // unable to generate any valid moves, aka check mate.
-        }
-      }
-
-      nodes += 1;
-    }
-    else {
-      nodes += perft_debug(nextDepth, state, results);
-    }
-  }
-
-  return nodes;
-}
-
-
 // advanced movegen debugging
-bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end, const bool showEGN) {
+bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end, const bool showEGN) {
 
   // Display perft for given FEN
   std::cout << "FEN string: " << ::utils::gameState::generateFen(gs) << '\n';
@@ -565,7 +283,7 @@ bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t st
     // run perft
     std::array<int, 6> perftResults = {}; // zero initialization
 
-    auto moveGenPerft = ::utils::perft_debug_advanced(depth, gs, perftResults);
+    auto moveGenPerft = ::utils::perft_advanced(depth, gs, perftResults);
 
     std::printf("| %5i | %30lu | %8i | %8i | %8i | %8i | %8i | %8i |\n",
                 depth,
@@ -589,7 +307,7 @@ bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t st
               "----------");
 }
 
-uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<int, 6>& results) {
+uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<int, 6>& results) {
   if (depth == 0) {
     return 1;
   }
@@ -653,6 +371,7 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
       }
 #endif
       // check, but also check mate
+#ifdef DAVID_TEST
       if (state.isInCheck) {
         results[4] += 1;
 
@@ -662,11 +381,12 @@ uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameStat
           results[5] += 1; // unable to generate any valid moves, aka check mate.
         }
       }
+#endif
 
       nodes += 1;
     }
     else {
-      nodes += ::utils::perft_debug_advanced(nextDepth, state, results);
+      nodes += ::utils::perft_advanced(nextDepth, state, results);
     }
   }
 

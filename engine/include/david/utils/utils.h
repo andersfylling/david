@@ -160,8 +160,8 @@ bool perft_debug(const int limit, const uint8_t startDepth = 0);
 uint64_t perft_debug(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
 
 // perft debug that shows the difference. standard board layout
-bool perft_debug_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
-uint64_t perft_debug_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
+bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
+uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
 
 
 

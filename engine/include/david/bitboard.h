@@ -111,11 +111,10 @@ struct gameState {
   ::std::array<bool, 2> queenCastlings  = {true, true};
   ::std::array<bool, 2> kingCastlings   = {true, true};
 
-  bool isInCheck = false;
   bool passant = false;
-  //bool promotion = false;
 
 #ifdef DAVID_TEST
+  bool isInCheck = false;
   bool promoted = false;
   bool castled = false;
 #endif

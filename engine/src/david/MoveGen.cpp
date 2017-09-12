@@ -33,7 +33,6 @@ MoveGen::MoveGen(const type::gameState_t& gs)
   this->reversedState.queenCastlings[1] = this->state.queenCastlings[0];
   this->reversedState.kingCastlings[0] = this->state.kingCastlings[1];
   this->reversedState.kingCastlings[1] = this->state.kingCastlings[0];
-  this->reversedState.isInCheck = false;
   this->reversedState.passant = false;
   this->reversedState.enPassant = 0;
   this->reversedState.enPassantPawn = 0;
@@ -41,6 +40,7 @@ MoveGen::MoveGen(const type::gameState_t& gs)
 #ifdef DAVID_TEST
   this->reversedState.promoted = false;
   this->reversedState.castled = false;
+  this->reversedState.isInCheck = false;
 #endif
 
   // reverse the pieces to respect the active player change
@@ -227,18 +227,11 @@ void MoveGen::runAllMoveGenerators() {
       gs.isWhite = !this->state.isWhite;
 
       // is this new game state in check?
+#ifdef DAVID_TEST
       if (this->dangerousPosition(gs.piecesArr[gs.iKings][0], gs)) {
         gs.isInCheck = true;
       }
-
-      // only add states with activity in between G2 and E3
-//      if (pieceType != 0 || ((gs.combinedPieces ^ this->state.combinedPieces) & 921088) == 0) {
-//        continue;
-//      }
-//
-//
-//      std::cout << gs.combinedPieces << std::endl;
-//      ::utils::gameState::print(gs);
+#endif
 
 
       // valid move, add it to the record.
@@ -476,7 +469,7 @@ void MoveGen::generateKingMoves() {
   }
 
   // castling if not in check
-  if (!this->state.isInCheck) {
+  if ((this->state.queenCastlings[0] || this->state.kingCastlings[0]) && !this->dangerousPosition(kingBoard, this->state)) {
     // queen side castling
     if (this->state.queenCastlings[0] && (8070450532247928944 & friendly) == 0
         && (9223372036854775936 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
