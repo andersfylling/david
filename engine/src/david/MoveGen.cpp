@@ -11,11 +11,11 @@ namespace david {
  * Constructor
  * @param gs non-mutable gameState instance
  */
-MoveGen::MoveGen(const type::gameState_t& gs)
+MoveGen::MoveGen(const type::gameState_t& gs, const bool t)
     : state(gs)
     , index_gameStates(0)
-    //, xRayRookPaths(0ULL)
-    //, xRayDiagonalPaths(0ULL)
+//, xRayRookPaths(0ULL)
+//, xRayDiagonalPaths(0ULL)
 {
   // use this to figure out which pieces can move without putting the king in check
   //xRayRookPaths = this->generateRookXRayPaths(this->state.piecesArr[this->state.iKings][0]);
@@ -49,6 +49,10 @@ MoveGen::MoveGen(const type::gameState_t& gs)
     this->reversedState.piecesArr[i][0] = this->state.piecesArr[i][1];
     this->reversedState.piecesArr[i][1] = this->state.piecesArr[i][0];
   }
+
+#ifdef DAVID_TEST
+  this->printMoves = t;
+#endif
 }
 
 void MoveGen::runAllMoveGenerators() {
@@ -112,8 +116,8 @@ void MoveGen::runAllMoveGenerators() {
         // TODO-castling1c: OTHERWISE. this is a flaw
 
         // king side castling
-        if (this->state.kingCastlings[0] && (gs.piecesArr[5][1] & 144115188075855874) > 0) {
-          uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 72057594037927937);
+        if (this->state.kingCastlings[0] && (gs.piecesArr[5][1] & 144115188075855874ULL) > 0) {
+          uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 72057594037927937ULL);
           ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
 
           ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos << 2);
@@ -125,8 +129,8 @@ void MoveGen::runAllMoveGenerators() {
 #endif
         }
 
-        else if (this->state.queenCastlings[0] && (gs.piecesArr[5][1] & 2305843009213693984) > 0) {
-          uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 9223372036854775936);
+        else if (this->state.queenCastlings[0] && (gs.piecesArr[5][1] & 2305843009213693984ULL) > 0) {
+          uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 9223372036854775936ULL);
           ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
 
           ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos >> 3);
@@ -148,21 +152,23 @@ void MoveGen::runAllMoveGenerators() {
         // If a rook move, disable that sides castling rights
       else if (pieceType == this->state.iRooks) {
         // king side
-        if (this->state.kingCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 72057594037927937) == 0) {
+        if (this->state.kingCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 72057594037927937ULL) == 0) {
           // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
           gs.kingCastlings[1] = false;
         }
         // queen side
-        else if (this->state.queenCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 9223372036854775936) == 0) {
+        else if (this->state.queenCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 9223372036854775936ULL) == 0) {
           // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
           gs.queenCastlings[1] = false;
         }
       }
 
       // a piece was promoted, so remove the pawn that was sacrificed for this promotion
-      // TODO:save memory by adding the position of the pawn to the upgraded board and do an XOR to check for promotion.
-      if (this->promotedPawns[pieceType][board] > 0) {
-        gs.piecesArr[0][1] ^= this->promotedPawns[pieceType][board];
+      if (pieceType > 0 && pieceType < 5 && (this->moves[pieceType][board] & this->state.piecesArr[0][0]) > 0) {
+        const type::bitboard_t pawnBoard = this->moves[pieceType][board] & this->state.piecesArr[0][0];
+
+        gs.piecesArr[0][1] ^= pawnBoard;
+        gs.piecesArr[pieceType][1] ^= pawnBoard;
 #ifdef DAVID_TEST
         gs.promoted = true;
 #endif
@@ -233,6 +239,20 @@ void MoveGen::runAllMoveGenerators() {
       }
 #endif
 
+
+//#ifdef DAVID_TEST
+//      // pawn move
+//      if (this->printMoves && this->dangerousPosition(this->state.piecesArr[5][1], this->state, 0)) {
+//        if (!this->printedState) { // pawn at f2
+//          std::cout << "state" << std::endl;
+//          ::utils::gameState::print(this->state);
+//          this->printedState = true;
+//        }
+//
+//        std::cout << "MOVE" << std::endl;
+//        ::utils::gameState::print(gs);
+//      }
+//#endif
 
       // valid move, add it to the record.
       this->gameStates[this->index_gameStates++] = gs;
@@ -475,8 +495,8 @@ void MoveGen::generateKingMoves() {
         && (9223372036854775936 & this->state.piecesArr[this->state.iRooks][0]) > 0) {
       type::bitboard_t board = kingBoard << 2; // move two left
 
-      // make sure the squares in between arent in check
-      // make sure the king isnt in check now
+      // make sure the squares in between aren't in check
+      // make sure the king isn't in check now
       if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard << 1, this->state)) {
         this->moves[this->state.iKings][index++] = board;
       }

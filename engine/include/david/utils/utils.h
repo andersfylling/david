@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include <climits>
 
 namespace utils {
@@ -19,6 +20,51 @@ int stoi(const std::string v);
 constexpr int ctoi(const char c) {
   return c == ' ' ? 0 : c - '0';
 }
+}
+
+constexpr uint8_t nrOfDigits (unsigned int n)
+{
+  int length = 0;
+  do {
+    ++length;
+    n /= 10;
+  } while (n);
+
+  return length;
+}
+
+/**
+ * Converts an int to a string with decimals after ever 3n position for readability.
+ * 123456789 -> 123,456,789
+ * 44 -> 44
+ * 1234 -> 1,234
+ *
+ * @param n
+ * @return
+ */
+inline std::string prettyNum(uint64_t n)
+{
+  std::string result;
+  const int i = 1000;
+
+  if (n < i) {
+    result = std::to_string(n);
+  }
+  else {
+    for (; i <= n;) {
+      const int b = n / i;
+      const int r = n - b * i;
+      n = b;
+
+      result = result.empty() ? std::to_string(r) : std::to_string(r) + ',' + result;
+    }
+
+    if (n > 0) {
+      result = std::to_string(n) + ',' + result;
+    }
+  }
+
+  return result;
 }
 
 
@@ -154,14 +200,14 @@ void perft(const uint8_t max);
 void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
 uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs);
 
-// perft debug that shows the difference. standard board layout
-bool perft_debug();
-bool perft_debug(const int limit, const uint8_t startDepth = 0);
-uint64_t perft_debug(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
+void perft_threaded(const uint8_t depth, const std::string FEN = "", const uint8_t start = 255);
+void perft_threaded(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
+uint64_t perft_threaded(const uint8_t depth, const ::david::type::gameState_t &gs);
 
 // perft debug that shows the difference. standard board layout
+void perft_advanced(const uint8_t depth, const std::string FEN = "", const uint8_t start = 255);
 bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
-uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<int, 6>& results);
+uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves);
 
 
 
