@@ -109,6 +109,7 @@ void ::david::ChessEngine::linkUCICommands()
   using ::uci::event::POSITION;
   using ::uci::event::BLACK;
   using ::uci::event::WHITE;
+  using ::uci::event::PERFT;
   using ::uci::arguments_t;
 
   // set chess engine colour
@@ -316,8 +317,34 @@ void ::david::ChessEngine::linkUCICommands()
 #endif
   };
 
+  auto perft = [&](arguments_t args) {
+    std::string FEN = "";
+    int depth = 5;
+    ::david::type::gameState_t gs;
+
+    if (args.count("FEN") > 0) {
+      FEN = args["FEN"];
+    }
+
+    if (FEN.empty()) {
+      ::utils::gameState::setDefaultChessLayout(gs);
+    }
+    else {
+      ::utils::gameState::generateFromFEN(gs, FEN);
+    }
+
+    if (args.count("depth") > 0) {
+      depth = ::utils::stoi(args["depth"]);
+    }
+
+    const uint64_t nodes = depth == 0 ? 1 : ::utils::perft(depth, gs);
+
+    std::cout << nodes << std::endl;
+  };
+
 
   // bind the listeners
+  this->UCI.addListener(PERFT, perft);
   this->UCI.addListener(BLACK, uci_colour_black);
   this->UCI.addListener(WHITE, uci_colour_white);
   this->UCI.addListener(GO, uci_go);

@@ -20,7 +20,7 @@ TEST_CASE("MoveGen perft [MoveGen]") {
 
   //::utils::perft_advanced(gs, 6, 6);
 
-  ::utils::perft_advanced(5, "2b1kb2/8/8/8/8/8/8/2B1KB2");
+  ::utils::perft_advanced(6, "2b1kb2/8/8/8/8/8/8/2B1KB2");
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {

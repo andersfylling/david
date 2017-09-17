@@ -104,16 +104,12 @@ constexpr uint8_t NSB(uint64_t &board, const uint8_t index) {
 constexpr uint8_t MSB(const uint64_t board) {
 #ifdef __linux__
   return 63 - __builtin_clzll(board);
-#elif _WIN32
-  // windows code goes here
-  return 0LL;
-#elif _WIN64
-  // windows code goes here
-  return 0LL;
 #else
-  // idk
-  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
-  return 0LL;
+  for (int i = 63; i >= 0; i--) {
+    if (::utils::bitAt(board, i)) {
+      return i;
+    }
+  }
 #endif
 }
 constexpr uint8_t NSB_r(uint64_t &board) {
@@ -128,24 +124,12 @@ constexpr void flipBit(uint64_t &board, const uint8_t index) {
 constexpr uint8_t nrOfActiveBits(const uint64_t b) {
 #ifdef __linux__
   return __builtin_popcountll(b);
-#elif _WIN32
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
-#elif _WIN64
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
-  }
-  return counter;
 #else
-  // idk
-  std::cerr << "UNSUPPORTED PLATFORM!!!" << std::endl;
-  int counter = 0;
-  for (int i = 0; i < 64; i++) {
-    if (bitAt(b, i)) counter += 1;
+  uint8_t counter = 0;
+  for (uint8_t i = 0; i < 64; i++) {
+    if (bitAt(b, i)) {
+      counter += 1;
+    }
   }
   return counter;
 #endif
@@ -209,35 +193,6 @@ void perft_advanced(const uint8_t depth, const std::string FEN = "", const uint8
 bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
 uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves);
 
-
-
-/**
- * Converts a string into an bit array
- *
- * @param desiredByteLook
- * @return
- */
-//constexpr uint8_t stringTo8bitArray(const char desiredByteLook[]) {
-//  const int len = sizeof(desiredByteLook) / sizeof(desiredByteLook[0]);
-//  if (len > 8) {
-//    return 0;
-//  }
-//
-//  uint8_t arr = 0;
-//
-//
-//  for (size_t i = 0; i < len; i++) {
-//    const char c = desiredByteLook[i];
-//
-//    if (c == '0') {
-//      continue;
-//    }
-//
-//    arr |= (1 << i); // same as flipBitOn
-//  }
-//
-//  return arr;
-//}
 
 /**
  * Generate all knight attacks (psuedo) based on index / position
