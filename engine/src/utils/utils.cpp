@@ -7,6 +7,7 @@
 #include "david/MoveGen.h"
 #include <david/ChessEngine.h>
 #include <david/utils/gameState.h>
+#include <map>
 
 #ifdef __linux__
 //linux code goes here
@@ -197,15 +198,16 @@ void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint
     long int ms1 = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 
     // get nodes for given depth
-    auto nodes = depth == 0 ? 1 : ::utils::perft(depth, gs);
+    uint64_t nodes = depth == 0 ? 1 : ::utils::perft(depth, gs);
+    const auto prettyNodeCount = ::utils::prettyNum(nodes);
 
     // time finished
     gettimeofday(&tp2, NULL);
     long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
 
     // print results
-    std::printf("| %5i | %30lu | %8.2f |\n",
-                  depth, nodes,  (ms2 - ms1) / 1000.0
+    std::printf("| %5i | %30s | %8.2f |\n",
+                  depth, prettyNodeCount.c_str(),  (ms2 - ms1) / 1000.0
     );
   }
 
@@ -246,7 +248,118 @@ uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
 }
 
 
+// oh this is bad, how hte first arg is now the max depth
+// @deprecated, serious error in reading total nr of nodes.
+void perft_threaded(const uint8_t depth, const std::string FEN, const uint8_t start) {
+  ::david::type::gameState_t gs;
+
+  if (FEN == "" || FEN == " ") {
+    ::utils::gameState::setDefaultChessLayout(gs);
+  }
+  else {
+    ::utils::gameState::generateFromFEN(gs, FEN);
+  }
+
+  ::utils::perft_threaded(gs, start < depth ? start : depth, depth);
+}
+
+// and here its the start.
+// by giving an gs here, we can change the board layouts before perfts.
+void perft_threaded(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
+  std::printf("+%7s+%32s+%10s+\n",
+              "-------",
+              "--------------------------------",
+              "----------");
+  std::printf("| %5s | %30s | %8s |\n",
+              "Depth",
+              "Nodes",
+              "Time");
+  std::printf("+%7s+%32s+%10s+\n",
+              "-------",
+              "--------------------------------",
+              "----------");
+  for (uint8_t depth = start; depth <= end; depth++) {
+    // start time
+    struct timeval tp, tp2;
+    gettimeofday(&tp, NULL);
+    long int ms1 = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+
+    // get nodes for given depth
+    uint64_t nodes = depth == 0 ? 1 : ::utils::perft_threaded(depth, gs);
+    const auto prettyNodeCount = ::utils::prettyNum(nodes);
+
+    // time finished
+    gettimeofday(&tp2, NULL);
+    long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
+
+    // print results
+    std::printf("| %5i | %30s | %8.2f |\n",
+                depth, prettyNodeCount.c_str(),  (ms2 - ms1) / 1000.0
+    );
+  }
+
+  // print ending
+  std::printf("+%7s+%32s+%10s+\n",
+              "-------",
+              "--------------------------------",
+              "----------");
+}
+
+uint64_t perft_threaded(const uint8_t depth, const ::david::type::gameState_t &gs) {
+  // create a holder for possible game outputs
+  ::david::MoveGen moveGen{gs};
+
+  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
+  const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+
+  // if depth is 1 just return the length
+  if (depth == 1) {
+    return len;
+  }
+
+  // otherwise continue down the spiral
+  uint64_t nodes = 0;
+  const uint8_t nextDepth = depth - 1;
+
+  // thread every possible branch to gain speed
+  if (depth % 5 == 0) {
+    std::array<std::thread, ::david::constant::MAXMOVES> threads;
+    for (unsigned long i = 0; i < len; i++) {
+      threads[i] = std::thread([&]() {
+        nodes += perft_threaded(nextDepth, states[i]);
+      });
+    }
+
+    for (unsigned long i = 0; i < len; i++) {
+      threads[i].join();
+    }
+  }
+  else {
+    for (unsigned long i = 0; i < len; i++) {
+      nodes += perft_threaded(nextDepth, states[i]);
+    }
+  }
+
+  // return amount
+  return nodes;
+}
+
+
+
 // advanced movegen debugging
+void perft_advanced(const uint8_t depth, const std::string FEN, const uint8_t start) {
+  ::david::type::gameState_t gs;
+
+  if (FEN == "" || FEN == " ") {
+    ::utils::gameState::setDefaultChessLayout(gs);
+  }
+  else {
+    ::utils::gameState::generateFromFEN(gs, FEN);
+  }
+
+  ::utils::perft_advanced(gs, start < depth ? start : depth, depth, false);
+}
+
 bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end, const bool showEGN) {
 
   // Display perft for given FEN
@@ -281,19 +394,25 @@ bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, c
               "----------");
   for (uint8_t depth = start; depth <= end; depth++) {
     // run perft
-    std::array<int, 6> perftResults = {}; // zero initialization
+    std::array<unsigned int, 6> perftResults = {}; // zero initialization
+    std::map<std::string, unsigned int> moves{};
 
-    auto moveGenPerft = ::utils::perft_advanced(depth, gs, perftResults);
+    auto moveGenPerft = ::utils::perft_advanced(depth, gs, perftResults, moves);
+    const auto prettyNodeCount = ::utils::prettyNum(moveGenPerft);
 
-    std::printf("| %5i | %30lu | %8i | %8i | %8i | %8i | %8i | %8i |\n",
+    std::printf("| %5i | %30s | %8s | %8s | %8s | %8s | %8s | %8s |\n",
                 depth,
-                moveGenPerft, // nodes
-                perftResults[0],
-                perftResults[1],
-                perftResults[2],
-                perftResults[3],
-                perftResults[4],
-                perftResults[5]);
+                ::utils::prettyNum(moveGenPerft).c_str(),
+                ::utils::prettyNum(perftResults[0]).c_str(),
+                ::utils::prettyNum(perftResults[1]).c_str(),
+                ::utils::prettyNum(perftResults[2]).c_str(),
+                ::utils::prettyNum(perftResults[3]).c_str(),
+                ::utils::prettyNum(perftResults[4]).c_str(),
+                ::utils::prettyNum(perftResults[5]).c_str());
+
+    //for (const auto& [egn, count] : moves) {
+    //  std::cout << egn << ": " << count << std::endl;
+    //}
   }
 
   std::printf("+%7s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
@@ -307,13 +426,13 @@ bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, c
               "----------");
 }
 
-uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<int, 6>& results) {
+uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves) {
   if (depth == 0) {
     return 1;
   }
 
   // create a holder for possible game outputs
-  ::david::MoveGen moveGen{gs};
+  ::david::MoveGen moveGen{gs, depth == 1};
 
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
   const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
@@ -325,6 +444,17 @@ uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &g
     auto& state = states[i];
 
     if (depth == 1) {
+
+      // add move
+      const std::string egn = ::utils::gameState::getEGN(gs, state);
+      if (moves.count(egn) == 0) {
+        moves[egn] = 1;
+      }
+      else {
+        moves[egn] += 1;
+      }
+
+
       // add any captures
       if (((gs.piecess[1] & state.piecess[1]) > 0 || state.passant)
           && ::utils::nrOfActiveBits(gs.piecess[0] ^ state.piecess[1]) == 2
@@ -386,7 +516,7 @@ uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &g
       nodes += 1;
     }
     else {
-      nodes += ::utils::perft_advanced(nextDepth, state, results);
+      nodes += ::utils::perft_advanced(nextDepth, state, results, moves);
     }
   }
 

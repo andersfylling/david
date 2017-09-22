@@ -17,7 +17,7 @@ class MoveGen {
   friend class MoveGenTest;
 #endif
  public:
-  MoveGen(const type::gameState_t& gs);
+  MoveGen(const type::gameState_t& gs, const bool t = false);
 
   // run all the psuedo move generators
   void runAllMoveGenerators();
@@ -123,6 +123,10 @@ class MoveGen {
 
 
  private:
+#ifdef DAVID_TEST
+  bool printedState{false};
+  bool printMoves{false};
+#endif
 
   // the current board status of the game
   const type::gameState_t& state;
@@ -133,7 +137,7 @@ class MoveGen {
   //type::bitboard_t xRayDiagonalPaths;
 
   // TODO: reduce memory usage
-  std::array<std::array<type::bitboard_t, 256>, 6> promotedPawns = {{0}};
+  //std::array<std::array<type::bitboard_t, 256>, 6> promotedPawns = {{0}};
 
   // TODO: reduce memory size.
   // knight attacks
@@ -255,11 +259,9 @@ class MoveGen {
    inline void generatePromotions (const type::bitboard_t board, const type::bitboard_t pawn) {
     // add every option
     for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 5/*skip king*/; pieceType++) {
-      // since promotions removes a pawn with a promoted piece
-      // it's needed to store which pawn should be removed for a given
-      // move/promotion!
-      this->promotedPawns[pieceType][this->index_moves[pieceType]] = pawn;
-      this->moves[pieceType][this->index_moves[pieceType]++] = board | this->state.piecesArr[pieceType][0];
+      // for every promotion, the pawn position is added to its board.
+      // so u can just quickly check if any of the set bits overlap with any of the pawn board.
+      this->moves[pieceType][this->index_moves[pieceType]++] = pawn | board | this->state.piecesArr[pieceType][0];
     }
   }
 
@@ -300,7 +302,7 @@ class MoveGen {
       board |= pieceBoard >> 8;
 
       // double shift
-      if ((71776119061217280 & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard >> 8)) == 0) {
+      if ((71776119061217280ULL & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard >> 8)) == 0) {
         board |= pieceBoard >> 16;
       }
 
@@ -314,7 +316,7 @@ class MoveGen {
     }
 
     // get the promotions from the moves
-    type::bitboard_t promotions = 18374686479671623935 & board;
+    type::bitboard_t promotions = 18374686479671623935ULL & board;
     // remove pawn moves that hits a promotion square
     board ^= promotions;
 
@@ -345,8 +347,9 @@ class MoveGen {
     }
 
     // pawns. TODO: wtf? need to be related to direction of active pieces.
-     type::bitboard_t pawnAttacks = ::utils::constant::pawnAttackPaths[pos];
-     pawnAttacks &= gs.isWhite ? ~(board - 1) : board - 1;
+    // TODO-promotion: might be causing the extra promotions..
+    type::bitboard_t pawnAttacks = ::utils::constant::pawnAttackPaths[pos];
+    pawnAttacks &= gs.isWhite ? ~(board - 1) : board - 1;
     if ((pawnAttacks & gs.piecesArr[gs.iPawns][hostile]) > 0) {
       return true;
     }
@@ -534,7 +537,7 @@ class MoveGen {
     //
 
     // up and right
-    for (uint8_t i = 0; i < 8 && (tmp & 9259542123273814271) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 9259542123273814271ULL) == 0; i++, mult++) {
       type::bitboard_t board = pBoard << (7 * mult);
 
       // on hit increment tracker
@@ -557,7 +560,7 @@ class MoveGen {
     }
 
     // up and left
-    for (uint8_t i = 0; i < 8 && (tmp & 72340172838076927) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 72340172838076927ULL) == 0; i++, mult++) {
       type::bitboard_t board = pBoard << (9 * mult);
 
       // on hit increment tracker
@@ -581,7 +584,7 @@ class MoveGen {
 
 
     // down and right
-    for (uint8_t i = 0; i < 8 && (tmp & 18410856566090662016) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 18410856566090662016ULL) == 0; i++, mult++) {
       type::bitboard_t board = pBoard >> (9 * mult);
 
       // on hit increment tracker
@@ -605,7 +608,7 @@ class MoveGen {
 
 
     // down and left
-    for (uint8_t i = 0; i < 8 && (tmp & 18374969058471772417) == 0; i++, mult++) {
+    for (uint8_t i = 0; i < 8 && (tmp & 18374969058471772417ULL) == 0; i++, mult++) {
       type::bitboard_t board = pBoard >> (7 * mult);
 
       // on hit increment tracker
