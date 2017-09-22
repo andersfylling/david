@@ -68,6 +68,11 @@ void MoveGen::runAllMoveGenerators() {
     // for every pieceType
     for (unsigned long board = 0; board < this->index_moves[pieceType]; board++) {
 
+      // make sure the move isnt empty, it should never be however..
+      if (this->moves[pieceType][board] == 0) {
+        continue;
+      }
+
       //make sure the king hasn't been captured.
       if ((this->state.piecesArr[this->state.iKings][1] & this->moves[pieceType][board]) > 0) {
         continue;
@@ -233,6 +238,21 @@ void MoveGen::runAllMoveGenerators() {
       }
 #endif
 
+#ifdef DAVID_TEST
+//      // check for duplicates
+//      bool duplicate = false;
+//      for (unsigned long jj = 0; jj < board; jj++ ) {
+//        if (this->moves[pieceType][board] == this->moves[pieceType][jj]) {
+//          duplicate = true;
+//          break;
+//        }
+//      }
+//
+//      if (duplicate) {
+//        std::cerr << "DUPLICATE!!" << std::endl;
+//        continue;
+//      }
+#endif
 
       // valid move, add it to the record.
       this->gameStates[this->index_gameStates++] = gs;

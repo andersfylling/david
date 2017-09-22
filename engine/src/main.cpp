@@ -81,7 +81,7 @@ int main (/*int argc, char * argv[]*/)
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(7);
+    ::utils::perft(6);
   }
 
   // Close program with exit code 0 (UCI: after all threads have joined.)
