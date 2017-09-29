@@ -64,6 +64,7 @@ inline std::string prettyNum(uint64_t n)
     }
   }
 
+
   return result;
 }
 
@@ -181,6 +182,7 @@ void yellDeprecated(const std::string info);
 // normal perft
 void perft();
 void perft(const uint8_t max);
+void perft(const uint8_t depth, const std::string FEN, const uint8_t end = 255);
 void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
 uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs);
 

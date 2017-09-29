@@ -176,6 +176,19 @@ void perft(const uint8_t depth) {
   perft(gs, 0, depth);
 }
 
+void perft(const uint8_t depth, const std::string FEN, const uint8_t start) {
+  ::david::type::gameState_t gs;
+
+  if (FEN.empty()) {
+    ::utils::gameState::setDefaultChessLayout(gs);
+  }
+  else {
+    ::utils::gameState::generateFromFEN(gs, FEN);
+  }
+
+  ::utils::perft(gs, start < depth ? start : depth, depth);
+}
+
 // and here its the start.
 // by giving an gs here, we can change the board layouts before perfts.
 void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
@@ -206,8 +219,8 @@ void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint
     long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
 
     // print results
-    std::printf("| %5i | %30s | %8.2f |\n",
-                  depth, prettyNodeCount.c_str(),  (ms2 - ms1) / 1000.0
+    std::printf("| %5i | %30llu | %8.2f |\n",
+                  depth, nodes,  (ms2 - ms1) / 1000.0
     );
   }
 
@@ -400,15 +413,22 @@ bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, c
     auto moveGenPerft = ::utils::perft_advanced(depth, gs, perftResults, moves);
     const auto prettyNodeCount = ::utils::prettyNum(moveGenPerft);
 
-    std::printf("| %5i | %30s | %8s | %8s | %8s | %8s | %8s | %8s |\n",
+    std::printf("| %5i | %30llu | %8i | %8i | %8i | %8i | %8i | %8i |\n",
                 depth,
-                ::utils::prettyNum(moveGenPerft).c_str(),
-                ::utils::prettyNum(perftResults[0]).c_str(),
-                ::utils::prettyNum(perftResults[1]).c_str(),
-                ::utils::prettyNum(perftResults[2]).c_str(),
-                ::utils::prettyNum(perftResults[3]).c_str(),
-                ::utils::prettyNum(perftResults[4]).c_str(),
-                ::utils::prettyNum(perftResults[5]).c_str());
+                moveGenPerft,
+                perftResults[0],
+                perftResults[1],
+                perftResults[2],
+                perftResults[3],
+                perftResults[4],
+                perftResults[5]);
+//                ::utils::prettyNum(moveGenPerft).c_str(),
+//                ::utils::prettyNum(perftResults[0]).c_str(),
+//                ::utils::prettyNum(perftResults[1]).c_str(),
+//                ::utils::prettyNum(perftResults[2]).c_str(),
+//                ::utils::prettyNum(perftResults[3]).c_str(),
+//                ::utils::prettyNum(perftResults[4]).c_str(),
+//                ::utils::prettyNum(perftResults[5]).c_str());
 
     //for (const auto& [egn, count] : moves) {
     //  std::cout << egn << ": " << count << std::endl;

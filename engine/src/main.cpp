@@ -26,6 +26,7 @@
 
 #include "david/types.h"
 #include <david/ChessEngine.h>
+#include <david/utils/gameState.h>
 #include "david/utils/utils.h"
 #include "david/EngineMaster.h"
 
@@ -59,7 +60,7 @@ void gui() {
 }
 
 // TODO: Should support changing mode without recompiling.
-int main (/*int argc, char * argv[]*/)
+int main (int argc, char * argv[])
 {
   // Make sure its not some weird "cpu architecture".
   assert(sizeof(uint8_t)  == 1);
@@ -68,7 +69,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "uci"; // uci, fight, train, perft. Default: "uci"
+  const std::string mode = "judd-perft"; // uci, fight, train, perft, judd-perft. Default: "uci"
 
 
   if (mode == "fight") {
@@ -82,6 +83,39 @@ int main (/*int argc, char * argv[]*/)
   }
   else if (mode == "perft") {
     ::utils::perft(6);
+  }
+  else if (mode == "judd-perft") {
+    if (argc < 4) {
+      return 3;
+    }
+
+    std::string FEN{argv[1]};
+    int         depth{::utils::stoi(argv[2])};
+    uint64_t    score{::utils::stoi(argv[3])};
+
+    //std::cout << ": " << FEN << '\n';
+    //std::cout << ": " << depth << '\n';
+    //std::cout << ": " << score << '\n';
+
+    // trim double quotes from fen string
+    //FEN.erase(0, 1);
+    //FEN.erase(FEN.size() - 1);
+
+    ::david::type::gameState_t gs;
+    ::utils::gameState::generateFromFEN(gs, FEN);
+
+    uint64_t res = ::utils::perft(static_cast<uint8_t>(depth), gs);
+    if (res == score) {
+      return EXIT_SUCCESS;
+    }
+    else {
+      return EXIT_FAILURE; // difference in count
+    }
+//    if (res > score) {
+//      return static_cast<int>(res - score);
+//    } else {
+//      return -1 * static_cast<int>(score - res);
+//    }
   }
 
   // Close program with exit code 0 (UCI: after all threads have joined.)

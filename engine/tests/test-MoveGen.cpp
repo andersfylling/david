@@ -10,17 +10,11 @@
 
 TEST_CASE("MoveGen perft [MoveGen]") {
   // https://chessprogramming.wikispaces.com/Perft+Results
-  ::david::type::gameState_t gs;
+  //::utils::perft_advanced(6, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -");
+  //::utils::perft_advanced(4, "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR w KQkq - 0 1");
+  //::utils::perft_advanced(3, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
 
-  //::utils::gameState::setDefaultChessLayout(gs);
-  ::utils::gameState::generateFromFEN(gs, "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -");
-  //::utils::gameState::generateFromFEN(gs, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -");
-  //::utils::gameState::generateFromFEN(gs, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
-  //::utils::gameState::print(gs);
-
-  //::utils::perft_advanced(gs, 6, 6);
-
-  ::utils::perft_advanced(6, "2b1kb2/8/8/8/8/8/8/2B1KB2");
+  ::utils::perft(7, "4b2k/8/8/8/8/8/PPPPPPPP/7K w", 1);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
