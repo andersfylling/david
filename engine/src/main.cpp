@@ -69,7 +69,7 @@ int main (int argc, char * argv[])
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "judd-perft"; // uci, fight, train, perft, judd-perft. Default: "uci"
+  const std::string mode = "perft"; // uci, fight, train, perft, judd-perft. Default: "uci"
 
 
   if (mode == "fight") {
@@ -82,12 +82,13 @@ int main (int argc, char * argv[])
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(6);
+    ::utils::perft(8);
   }
   else if (mode == "judd-perft") {
     if (argc < 4) {
       return 3;
     }
+    // test-external /home/anders/Projects/david/cmake-build-release/bin/chess_ann_src 6
 
     std::string FEN{argv[1]};
     int         depth{::utils::stoi(argv[2])};

@@ -38,7 +38,7 @@ void print(const ::david::type::gameState_t& gs);
 void generateFromFEN(::david::type::gameState_t& gs, const std::string &fen);
 
 
-inline bool isHalfMove(
+constexpr bool isHalfMove(
     const uint64_t parentActivePieces,
     const uint64_t childActivePieces,
     const uint64_t parentActivePawns,

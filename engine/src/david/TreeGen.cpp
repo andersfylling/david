@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <david/utils/utils.h>
 #include <assert.h>
-#include <david/utils/gameState.h>
 #include "david/ANN/ANN.h"
 #include "david/MoveGen.h"
 

@@ -4,6 +4,7 @@
 #include "david/types.h"
 #include "david/bitboard.h"
 #include <assert.h>
+#include "david/utils/gameState.h"
 
 #ifdef DAVID_TEST
 #include "david/MoveGenTest.h"
@@ -43,24 +44,222 @@ class MoveGen {
       std::__throw_runtime_error("stop param is larger than array size");
     }
 
-    this->runAllMoveGenerators();
+    // #########################################################################
+    uint16_t index_gameStates = 0;
+    // generate all the bitboards
 
-    uint16_t nrOfMoves = 0; // use nrOfMoves++ for everyone added. at end, it represents length.
+    this->generateRookMoves();
+    this->generateKnightMoves();
+    this->generateBishopMoves();
+    this->generateQueenMoves();
+    this->generateKingMoves();
+    this->generatePawnMoves(); // Must be last due to promotions
 
-    for (; nrOfMoves < this->index_gameStates && nrOfMoves < (stop - start); nrOfMoves++) {
-      arr[start + nrOfMoves] = this->gameStates[nrOfMoves];
+    //generate gameStates based on moves
+    const auto nrOfPieceTypes = this->moves.size();
+    for (unsigned long pieceType = 0; pieceType < nrOfPieceTypes; pieceType++) {
+
+      // for every pieceType
+      for (unsigned long board = 0; board < this->index_moves[pieceType]; board++) {
+
+        //make sure the king hasn't been captured.
+        if ((this->state.piecesArr[this->state.iKings][1] & this->moves[pieceType][board]) > 0) {
+          continue;
+        }
+
+        // create a child game state
+        type::gameState_t gs = this->reversedState;
+        gs.piecesArr[pieceType][1] = this->moves[pieceType][board];       // the colour that just moved. now opponent.
+
+        // Check for capture, and destroy captured piece!
+        if ((this->moves[pieceType][board] & this->state.piecess[1]) > 0) {
+          const uint8_t attackedPiecePosition = ::utils::LSB(this->moves[pieceType][board] & this->state.piecess[1]);
+
+          //
+          // This did not fire at depth 6. where there are +34 captures.
+          //
+//        if (::utils::nrOfActiveBits(this->moves[pieceType][board] & this->state.piecess[1]) != 1) {
+//          std::cerr << " OMG MORE THAN ONE PIECE ATTACKED AT ONCE! " << std::endl;
+//        }
+
+          for (auto& bbArr : gs.piecesArr) {
+            // since gs has the opposite indexes, use 0 in stead of 1.
+            if (::utils::bitAt(bbArr[0], attackedPiecePosition)) {
+              ::utils::flipBitOff(bbArr[0], attackedPiecePosition);
+              break;
+            }
+          }
+        }
+
+          // en passant capture.
+        else if (pieceType == 0 && this->state.enPassant > 15 && ::utils::bitAt(this->moves[0][board], this->state.enPassant)) {
+          ::utils::flipBitOff(gs.piecesArr[0][0], this->state.enPassantPawn);
+          //::utils::printGameState(gs);
+          gs.passant = true;
+        }
+
+          // identify a castling situation
+          // TODO: verify that the new positions cannot be attacked!
+        else if (pieceType == gs.iKings) {
+          // TODO-castling1a: assumption, castling happens early, so i assume that a friendly rook,
+          // TODO-castling1b: is not on the opposite side, vertically. From the castling rook
+          // TODO-castling1c: OTHERWISE. this is a flaw
+
+          // king side castling
+          if (this->state.kingCastlings[0] && (gs.piecesArr[5][1] & 144115188075855874ULL) > 0) {
+            uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 72057594037927937ULL);
+            ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
+
+            ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos << 2);
+            gs.kingCastlings[1] = false;
+            gs.queenCastlings[1] = false;
+
+#ifdef DAVID_TEST
+            gs.castled = true;
+#endif
+          }
+
+          else if (this->state.queenCastlings[0] && (gs.piecesArr[5][1] & 2305843009213693984ULL) > 0) {
+            uint8_t castlePos = ::utils::LSB(gs.piecesArr[gs.iRooks][1] & 9223372036854775936ULL);
+            ::utils::flipBitOff(gs.piecesArr[gs.iRooks][1], castlePos);
+
+            ::utils::flipBitOn(gs.piecesArr[gs.iRooks][1], castlePos >> 3);
+            gs.queenCastlings[1] = false;
+            gs.kingCastlings[1] = false;
+
+#ifdef DAVID_TEST
+            gs.castled = true;
+#endif
+          }
+
+            // the king has moved so disable castling for that colour
+          else {
+            gs.queenCastlings[1] = false;
+            gs.kingCastlings[1] = false;
+          }
+        }
+
+          // If a rook move, disable that sides castling rights
+        else if (pieceType == this->state.iRooks) {
+          // king side
+          if (this->state.kingCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 72057594037927937ULL) == 0) {
+            // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
+            gs.kingCastlings[1] = false;
+          }
+            // queen side
+          else if (this->state.queenCastlings[0] && (gs.piecesArr[gs.iRooks][1] & 9223372036854775936ULL) == 0) {
+            // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
+            gs.queenCastlings[1] = false;
+          }
+        }
+
+        // a piece was promoted, so remove the pawn that was sacrificed for this promotion
+        if (pieceType > 0 && pieceType < 5 && (this->moves[pieceType][board] & this->state.piecesArr[0][0]) > 0) {
+          const type::bitboard_t pawnBoard = this->moves[pieceType][board] & this->state.piecesArr[0][0];
+
+          gs.piecesArr[0][1] ^= pawnBoard;
+          gs.piecesArr[pieceType][1] ^= pawnBoard;
+#ifdef DAVID_TEST
+          gs.promoted = true;
+#endif
+        }
+
+        // compile the new pieces
+        gs.piecess[0] = gs.piecess[1] = 0; // reset
+        for (uint8_t i = 0; i < 2; i++) {
+          for (uint8_t j = 0; j < 6; j++) {
+            gs.piecess[i] |= gs.piecesArr[j][i];
+          }
+        }
+
+        // complete board merge
+        gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
+
+
+        // en passant record
+        // TODO: slow
+        if (pieceType == this->state.iPawns && !gs.passant) {
+          auto before = this->state.piecesArr[0][0];
+          auto now = gs.piecesArr[0][1];
+          const auto diff = (before ^ now);
+          before &= diff;
+          now &= diff;
+
+          if ((before & 71776119061282560) > 0 && (now & 1099494850560) > 0) {
+            // its en passant
+            gs.enPassantPawn = ::utils::LSB(now);
+            gs.enPassant = this->state.isWhite ? ::utils::LSB(now >> 8) : ::utils::LSB(now << 8);
+          }
+        }
+
+        // print before check, just to validate how moves are generated
+        //gs.isWhite = !this->state.isWhite;
+        //::utils::printGameState(gs);
+        //gs.isWhite = this->state.isWhite;
+
+        // check?
+        if (this->dangerousPosition(gs.piecesArr[gs.iKings][1], gs, 0)) {
+          continue;
+        }
+
+
+
+        // store the completed gamestate
+        // TODO: fullstep, etc.
+
+        // half step
+        // Validate half moves
+        if (!::utils::gameState::isHalfMove(
+            this->state.piecess[0],
+            gs.piecess[0],
+            this->state.piecesArr[0][0],
+            this->state.piecesArr[0][1],
+            gs.piecesArr[0][0],
+            gs.piecesArr[0][1]
+        )) {
+          gs.halfMoves = 0;
+        }
+
+        gs.isWhite = !this->state.isWhite;
+
+        // is this new game state in check?
+#ifdef DAVID_TEST
+        if (this->dangerousPosition(gs.piecesArr[gs.iKings][0], gs)) {
+        gs.isInCheck = true;
+      }
+#endif
+
+
+//#ifdef DAVID_TEST
+//      // pawn move
+//      if (this->printMoves && this->dangerousPosition(this->state.piecesArr[5][1], this->state, 0)) {
+//        if (!this->printedState) { // pawn at f2
+//          std::cout << "state" << std::endl;
+//          ::utils::gameState::print(this->state);
+//          this->printedState = true;
+//        }
+//
+//        std::cout << "MOVE" << std::endl;
+//        ::utils::gameState::print(gs);
+//      }
+//#endif
+
+
+
+        // valid move, add it to the record.
+        arr[start + index_gameStates++] = gs;
+      }
     }
 
+    // #########################################################################
 
-    return nrOfMoves;
+    return index_gameStates;
   }
 
   // how many possible moves can be generated from this state?
   uint16_t nrOfPossibleMoves()
   {
-    this->runAllMoveGenerators();
-
-    return static_cast<uint16_t>(this->index_gameStates);
+    return 0;
   }
 
   type::gameState_t generateAttacks() {
@@ -161,8 +360,8 @@ class MoveGen {
   std::array<std::array<type::bitboard_t, 256>, 6> moves = {{0}}; // initiator list?
   std::array<unsigned long, 6> index_moves = {{0}}; // index for every type
 
-  std::array<type::gameState_t, ::david::constant::MAXMOVES> gameStates;
-  unsigned long index_gameStates;
+  //std::array<type::gameState_t, ::david::constant::MAXMOVES> gameStates;
+  //uint16_t index_gameStates;
 
   type::bitboard_t hostileAttackPaths;
 
@@ -274,21 +473,25 @@ class MoveGen {
     const auto pieceBoard = ::utils::indexToBitboard(index);
     const auto hostiles = gs.piecess[hostile ? 0 : 1];
     const auto friendly = gs.piecess[hostile ? 1 : 0];
+    const auto allowedSquares = (~this->state.combinedPieces) ^ ::utils::indexToBitboard(index);
     const bool whiteMoving = gs.isWhite && !hostile;
 
     type::bitboard_t board = 0ULL;
 
     if (whiteMoving) {
-      // shift upwards
-      board |= pieceBoard << 8;
+//      // shift upwards
+//      board |= pieceBoard << 8;
+//
+//      // double shift
+//      if ((65280 & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard << 8)) == 0) {
+//        board |= pieceBoard << 16;
+//      }
+//
+//      // remove any blocking pieces
+//      board &= ~this->state.combinedPieces;
 
-      // double shift
-      if ((65280 & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard << 8)) == 0) {
-        board |= pieceBoard << 16;
-      }
-
-      // remove any blocking pieces
-      board &= ~this->state.combinedPieces;
+      // move one and two squares up if possible
+      board = ((pieceBoard << 8) | ((65280ULL & pieceBoard) << 16)) & (allowedSquares & (allowedSquares << 8));
 
       // attacks
       auto attacks = ::utils::constant::pawnAttackPaths[index];
@@ -298,20 +501,23 @@ class MoveGen {
 
     // black
     else {
-      // shift downwards
-      board |= pieceBoard >> 8;
+//      // shift downwards
+//      board |= pieceBoard >> 8;
+//
+//      // double shift
+//      if ((71776119061217280ULL & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard >> 8)) == 0) {
+//        board |= pieceBoard >> 16;
+//      }
+//
+//      // remove any blocking pieces
+//      board &= ~this->state.combinedPieces;
 
-      // double shift
-      if ((71776119061217280ULL & pieceBoard) > 0 && (this->state.combinedPieces & (pieceBoard >> 8)) == 0) {
-        board |= pieceBoard >> 16;
-      }
-
-      // remove any blocking pieces
-      board &= ~this->state.combinedPieces;
+      // move one and two squares up if possible
+      board = ((pieceBoard >> 8) | ((71776119061217280ULL & pieceBoard) >> 16)) & (allowedSquares & (allowedSquares >> 8));
 
       // attacks
       auto attacks = ::utils::constant::pawnAttackPaths[index];
-      attacks &= (hostiles | ::utils::indexToBitboard(this->state.enPassant)); // hostile pieces that can be attacked.
+      attacks &= (hostiles | (this->state.enPassant > 0 ? ::utils::indexToBitboard(this->state.enPassant) : 0)); // hostile pieces that can be attacked.
       board |= attacks & (pieceBoard - 1);
     }
 

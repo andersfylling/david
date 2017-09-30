@@ -6,7 +6,6 @@
 #include "david/types.h"
 #include "david/MoveGen.h"
 #include <david/ChessEngine.h>
-#include <david/utils/gameState.h>
 #include <map>
 
 #ifdef __linux__

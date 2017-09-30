@@ -367,6 +367,11 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
       gameState.piecesArr[i][0] = gs.piecesArr[i][1];
       gameState.piecesArr[i][1] = gs.piecesArr[i][0];
     }
+    // castling rights
+    gameState.queenCastlings[0] = gs.queenCastlings[1];
+    gameState.queenCastlings[1] = gs.queenCastlings[0];
+    gameState.kingCastlings[0] = gs.kingCastlings[1];
+    gameState.kingCastlings[1] = gs.kingCastlings[0];
   }
 
   // fix piecess and combinedPieces
