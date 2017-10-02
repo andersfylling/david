@@ -269,7 +269,7 @@ constexpr ::std::array<uint64_t, 64> compileHorizontalAttacks() {
 constexpr ::std::array<uint64_t, 64> compileVerticalAttacks() {
   ::std::array<uint64_t, 64> attacks{};
 
-  const uint64_t right = 72340172838076673;
+  const uint64_t right = 72340172838076673ULL;
 
   for (uint8_t i = 0; i < 64; i++) {
     attacks[i] = right << (i % 8);
@@ -302,22 +302,22 @@ constexpr ::std::array<uint64_t, 64> compilePawnAttacks () {
     auto board = 0ULL;
     const auto piece = ::utils::indexToBitboard(i);
 
-    if ((71775015237779198 & piece) > 0) {
+    if ((71775015237779198ULL & piece) > 0) {
       // shift right and up
       board |= piece << (8 - 1);
     }
 
-    if ((35887507618889599 & piece) > 0) {
+    if ((35887507618889599ULL & piece) > 0) {
       // shift up and left
       board |= piece << (8 + 1);
     }
 
-    if ((9187201950435737344 & piece) > 0) {
+    if ((9187201950435737344ULL & piece) > 0) {
       // shift down and left
       board |= piece >> (8 - 1);
     }
 
-    if ((18374403900871474688 & piece) > 0) {
+    if ((18374403900871474688ULL & piece) > 0) {
       // shift down and right
       board |= piece >> (8 + 1);
     }
@@ -372,21 +372,21 @@ constexpr ::std::array<uint64_t, 64> compileUDAttacks () {
 
   // ->, up to down
   const std::array<uint64_t, 15> udAttackPaths = {
-      0,
-      32832,
-      8405024,
-      2151686160,
-      550831656968,
-      141012904183812,
-      36099303471055874,
-      9241421688590303745, // middle diagonal
-      4620710844295151872,
-      2310355422147575808,
-      1155177711073755136,
-      577588855528488960,
-      288794425616760832,
-      144396663052566528,
-      0
+      0ULL,
+      32832ULL,
+      8405024ULL,
+      2151686160ULL,
+      550831656968ULL,
+      141012904183812ULL,
+      36099303471055874ULL,
+      9241421688590303745ULL, // middle diagonal
+      4620710844295151872ULL,
+      2310355422147575808ULL,
+      1155177711073755136ULL,
+      577588855528488960ULL,
+      288794425616760832ULL,
+      144396663052566528ULL,
+      0ULL
   };
 
   for (uint8_t i = 0; i < 64; i++) {

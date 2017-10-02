@@ -360,7 +360,6 @@ class MoveGen {
     }
   }
 
-  //TODO sometimes, when close to a enemy. neighbour square (north). the path ud doesnt get added..
   inline type::bitboard_t extractLegalSouthPath(
       const type::bitboard_t psuedoPath,
       const type::bitboard_t friendlyBlockers,
