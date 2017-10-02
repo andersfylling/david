@@ -129,8 +129,6 @@ void TreeGen::reset() {
  */
 uint16_t TreeGen::generateChildren(const unsigned int index) {
   using type::gameState_t;
-  using bitboard::COLOR::WHITE;
-  using bitboard::COLOR::BLACK;
 
   auto& node = this->tree[index];
 
@@ -166,25 +164,6 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
             });
 
   return len;
-}
-
-/**
- * Generates a child node for a parent and correctly link them, and insert info.
- * TODO: remove and write changes directly in loop.
- *
- * @param parent nodePtr
- * @return nodePtr of the new child, however parent will link to this anyways.
- */
-void TreeGen::generateNode(const type::gameState_t& parent, type::gameState_t& n, const type::gameState_t child) {
-  using bitboard::gameState;
-  using bitboard::COLOR::WHITE;
-  using bitboard::COLOR::BLACK;
-  using bitboard::bitboard_t;
-
-  // There should be some record that stores the difference between the node left to this one to improve
-  // updating the node. cause shit this is way slower than it needs to be.
-  n = child;
-
 }
 
 void TreeGen::setMaxDepth(int d)

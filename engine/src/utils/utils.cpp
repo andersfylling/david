@@ -32,12 +32,6 @@ int stoi(const std::string v) {
 //  return c == ' ' ? 0 : c - '0';
 //}
 
-void legacyGameStateUpdate(::david::type::gameState_t& n) {
-  using ::david::bitboard::COLOR::WHITE;
-  using ::david::bitboard::COLOR::BLACK;
-
-}
-
 }
 
 
@@ -451,7 +445,7 @@ uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &g
   }
 
   // create a holder for possible game outputs
-  ::david::MoveGen moveGen{gs, depth == 1};
+  ::david::MoveGen moveGen{gs};
 
   std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
   const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
@@ -498,7 +492,7 @@ uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &g
         // check if the king has moved more than one position.
         if ((gs.piecesArr[5][0] & 576460752303423496) > 0 && (state.piecesArr[5][1] & 2449958197289549858) > 0) {
           // check that rook also moved
-          if ((gs.piecesArr[gs.iRooks][0] & 9295429630892703873) > 0 && (state.piecesArr[gs.iRooks][1] & 1441151880758558740) > 0) {
+          if ((gs.piecesArr[::david::constant::index::rook][0] & 9295429630892703873) > 0 && (state.piecesArr[::david::constant::index::rook][1] & 1441151880758558740) > 0) {
             results[2] += 1;
           }
         }

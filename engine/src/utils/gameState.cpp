@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include "david/types.h"
+#include "david/david.h"
 #include "david/utils/gameState.h"
 
 namespace utils {
@@ -173,19 +174,19 @@ void print(const ::david::type::gameState_t& gs) {
   int b = gs.isWhite ? 1 : 0;
 
   std::map<const char, ::david::type::bitboard_t> links = {
-      {'b', gs.piecesArr[gs.iBishops][b]},
-      {'k', gs.piecesArr[gs.iKings][b]},
-      {'n', gs.piecesArr[gs.iKnights][b]},
-      {'p', gs.piecesArr[gs.iPawns][b]},
-      {'q', gs.piecesArr[gs.iQueens][b]},
-      {'r', gs.piecesArr[gs.iRooks][b]},
+      {'b', gs.piecesArr[::david::constant::index::bishop][b]},
+      {'k', gs.piecesArr[::david::constant::index::king][b]},
+      {'n', gs.piecesArr[::david::constant::index::knight][b]},
+      {'p', gs.piecesArr[::david::constant::index::pawn][b]},
+      {'q', gs.piecesArr[::david::constant::index::queen][b]},
+      {'r', gs.piecesArr[::david::constant::index::rook][b]},
 
-      {'B', gs.piecesArr[gs.iBishops][w]},
-      {'K', gs.piecesArr[gs.iKings][w]},
-      {'N', gs.piecesArr[gs.iKnights][w]},
-      {'P', gs.piecesArr[gs.iPawns][w]},
-      {'Q', gs.piecesArr[gs.iQueens][w]},
-      {'R', gs.piecesArr[gs.iRooks][w]}
+      {'B', gs.piecesArr[::david::constant::index::bishop][w]},
+      {'K', gs.piecesArr[::david::constant::index::king][w]},
+      {'N', gs.piecesArr[::david::constant::index::knight][w]},
+      {'P', gs.piecesArr[::david::constant::index::pawn][w]},
+      {'Q', gs.piecesArr[::david::constant::index::queen][w]},
+      {'R', gs.piecesArr[::david::constant::index::rook][w]}
   };
 
   std::string board(64, '-');
@@ -246,19 +247,19 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
 
   // if its a small letter, use black. otherwise use white.
   std::map<const char, ::david::type::bitboard_t&> links = {
-      {'b', gs.piecesArr[gs.iBishops][b]},
-      {'k', gs.piecesArr[gs.iKings][b]},
-      {'n', gs.piecesArr[gs.iKnights][b]},
-      {'p', gs.piecesArr[gs.iPawns][b]},
-      {'q', gs.piecesArr[gs.iQueens][b]},
-      {'r', gs.piecesArr[gs.iRooks][b]},
+      {'b', gs.piecesArr[::david::constant::index::bishop][b]},
+      {'k', gs.piecesArr[::david::constant::index::king][b]},
+      {'n', gs.piecesArr[::david::constant::index::knight][b]},
+      {'p', gs.piecesArr[::david::constant::index::pawn][b]},
+      {'q', gs.piecesArr[::david::constant::index::queen][b]},
+      {'r', gs.piecesArr[::david::constant::index::rook][b]},
 
-      {'B', gs.piecesArr[gs.iBishops][w]},
-      {'K', gs.piecesArr[gs.iKings][w]},
-      {'N', gs.piecesArr[gs.iKnights][w]},
-      {'P', gs.piecesArr[gs.iPawns][w]},
-      {'Q', gs.piecesArr[gs.iQueens][w]},
-      {'R', gs.piecesArr[gs.iRooks][w]}
+      {'B', gs.piecesArr[::david::constant::index::bishop][w]},
+      {'K', gs.piecesArr[::david::constant::index::king][w]},
+      {'N', gs.piecesArr[::david::constant::index::knight][w]},
+      {'P', gs.piecesArr[::david::constant::index::pawn][w]},
+      {'Q', gs.piecesArr[::david::constant::index::queen][w]},
+      {'R', gs.piecesArr[::david::constant::index::rook][w]}
   };
 
 
@@ -381,8 +382,6 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
 
 
 const std::string getEGN(const ::david::type::gameState_t &first, const ::david::type::gameState_t &second) {
-  using ::david::bitboard::COLOR::WHITE;
-  using ::david::bitboard::COLOR::BLACK;
   using ::david::type::bitboard_t;
 
   const ::std::array<char, 4> pieceTypes = {'r', 'n', 'b', 'q'};

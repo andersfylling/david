@@ -27,6 +27,15 @@ static const std::string ENGINE_VERSION   = "0.2.3"; // THIS IS JUST SOME BS NUM
 static const std::string ENGINE_COPYRIGHT = ENGINE_NAME + ". Copyright (C) 2017-2017 " + ENGINE_AUTHOR + ". ";
 } // ::david::constants::engineInformation
 
+namespace index {
+constexpr uint8_t pawn    = 0;
+constexpr uint8_t rook    = 1;
+constexpr uint8_t knight  = 2;
+constexpr uint8_t bishop  = 3;
+constexpr uint8_t queen   = 4;
+constexpr uint8_t king    = 5;
+}
+
 namespace defaultPiecePosition {
 
 namespace black {

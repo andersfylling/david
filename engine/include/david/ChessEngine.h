@@ -20,7 +20,7 @@ namespace david {
  * A player object that will represent who this engine is on the board.
  */
 struct Player {
-  bitboard::COLOR color = bitboard::COLOR::WHITE;
+  bool isWhite = true;
 };
 
 
@@ -103,12 +103,10 @@ class ChessEngine {
   /**
    * Check if this engine plays as white
    */
-  bool isWhite();
-
-  /**
-   * Get ::bitboard::COLOR color
-   */
-  bitboard::COLOR getColor();
+  constexpr bool isWhite() const
+  {
+    return this->player.isWhite;
+  }
 
   /**
    * Start the ANN from given files.
@@ -144,7 +142,7 @@ class ChessEngine {
    *
    * @param color
    */
-  void setPlayerColor(bitboard::COLOR color);
+  void setPlayerColor(const bool white);
 
   /**
    * Get the game node from a engine. Will be known as the root node for the search class.

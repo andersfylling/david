@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include <david/utils/utils.h>
-#include <david/utils/gameState.h>
 #include "david/MoveGen.h"
 #include "david/MoveGenTest.h"
 #include "catch.hpp"
@@ -14,7 +13,8 @@ TEST_CASE("MoveGen perft [MoveGen]") {
   //::utils::perft_advanced(4, "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR w KQkq - 0 1");
   //::utils::perft_advanced(3, "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1");
 
-  ::utils::perft_advanced(5, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -", 1);
+  //::utils::perft_advanced(5, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -", 1);
+  ::utils::perft(5);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {

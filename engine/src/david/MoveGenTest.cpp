@@ -1,10 +1,8 @@
 
 #ifdef DAVID_TEST
 
-#include "david/MoveGenTest.h"
 #include "david/MoveGen.h"
 #include "david/utils/utils.h"
-#include "david/utils/gameState.h"
 
 namespace david {
 

@@ -72,8 +72,8 @@ int david::EngineMaster::battle(const int engineID1, const int engineID2, const 
   eng2.setNewGameBoard(fen);
 
   // set eng1 to white.
-  eng1.setPlayerColor(bitboard::COLOR::WHITE);
-  eng2.setPlayerColor(bitboard::COLOR::BLACK);
+  eng1.setPlayerColor(/*white*/true);
+  eng2.setPlayerColor(/*black*/false);
 
   // Find out who is the current player
   // TODO: use color from gs node inside eng1 in stead

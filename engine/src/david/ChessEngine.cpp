@@ -114,10 +114,10 @@ void ::david::ChessEngine::linkUCICommands()
 
   // set chess engine colour
   auto uci_colour_black = [&](arguments_t args) {
-    this->player.color = bitboard::COLOR::BLACK;
+    this->player.isWhite = false;
   };
   auto uci_colour_white = [&](arguments_t args) {
-    this->player.color = bitboard::COLOR::WHITE;
+    this->player.isWhite = true;
   };
 
   //
@@ -139,14 +139,14 @@ void ::david::ChessEngine::linkUCICommands()
     if (args.count("wtime") > 0) {
       //this->searchPtr->setWTime(utils::stoi(args["wtime"]));
       this->wtime = utils::stoi(args["wtime"]);
-      if (this->player.color == bitboard::COLOR::WHITE) {
+      if (this->player.isWhite) {
         this->timeLeft = this->wtime;
       }
     }
     if (args.count("btime") > 0) {
       //this->searchPtr->setBTime(utils::stoi(args["btime"]));
       this->btime = utils::stoi(args["btime"]);
-      if (this->player.color == bitboard::COLOR::BLACK) {
+      if (!this->player.isWhite) {
         this->timeLeft = this->btime;
       }
     }
@@ -302,7 +302,7 @@ void ::david::ChessEngine::linkUCICommands()
       }
 
       // the root node should always have the same colour as the engine!
-      bool whitePlayer = this->player.color == bitboard::COLOR::WHITE;
+      bool whitePlayer = this->player.isWhite;
       if (whitePlayer != this->treeGen.getGameState(0).isWhite) {
         std::cerr << "Root node is not the same as engine, do not search!!!" << std::endl;
         std::cerr << "\tplayer:    " << (!whitePlayer ? "black" : "white") << std::endl;
@@ -387,20 +387,6 @@ bool david::ChessEngine::hasANNFile() {
  */
 bool david::ChessEngine::hasANNInstance() {
   return this->neuralNet.hasANNInstance();
-}
-
-/**
- * Check if this engine plays as white
- */
-bool david::ChessEngine::isWhite() {
-  return this->player.color == bitboard::COLOR::WHITE;
-}
-
-/**
- * Get ::bitboard::COLOR color
- */
-david::bitboard::COLOR david::ChessEngine::getColor() {
-  return this->player.color;
 }
 
 
@@ -493,8 +479,8 @@ int david::ChessEngine::ANNEvaluate(std::string fen) {
  *
  * @param color
  */
-void david::ChessEngine::setPlayerColor(bitboard::COLOR color) {
-  this->player.color = color;
+void david::ChessEngine::setPlayerColor(const bool white) {
+  this->player.isWhite = white;
 }
 
 

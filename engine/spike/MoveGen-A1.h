@@ -76,7 +76,7 @@ class MoveGen {
 
         // update moved piece
         gs.piecess[1] ^= this->state.piecesArr[pieceType][0];
-        gs.piecess[1] |= this->moves[pieceType][board]; // merge, to deal with promotions
+        gs.piecess[1] ^= this->moves[pieceType][board];
 
 
         // Check for capture, and destroy captured piece!
@@ -169,9 +169,6 @@ class MoveGen {
 
           gs.piecesArr[0][1] ^= pawnBoard;
           gs.piecesArr[pieceType][1] ^= pawnBoard;
-
-          // merging: no need as it doesn't move the bit position.
-
 #ifdef DAVID_TEST
           gs.promoted = true;
 #endif
@@ -182,6 +179,7 @@ class MoveGen {
 
 
         // en passant record
+        // TODO: slow
         if (pieceType == ::david::constant::index::pawn && !gs.passant) {
           auto before = this->state.piecesArr[0][0];
           auto now = gs.piecesArr[0][1];
@@ -322,7 +320,7 @@ class MoveGen {
   // 3 bishop
   // 4 queen
   // 5 king
-  std::array<std::array<type::bitboard_t, 30>, 6> moves = {{0}}; // initiator list?
+  std::array<std::array<type::bitboard_t, 35>, 6> moves = {{0}}; // initiator list?
   std::array<unsigned long, 6> index_moves = {{0}}; // index for every type
 
   type::bitboard_t hostileAttackPaths_queen = 0ULL - 1;
@@ -434,7 +432,7 @@ class MoveGen {
     // remove pawn moves that hits a promotion square
     board ^= promotions;
 
-    unsigned int i = 0;
+    uint_fast8_t i = 0;
     while (promotions != 0) {
       i = ::utils::LSB(promotions);
       promotions = ::utils::flipBitOffCopy(promotions, i);
@@ -495,6 +493,253 @@ class MoveGen {
     return false;
   }
 
+  // TODO: if this->state is in check, then only some pieces can move.
+  // TODO, does this generate paths that the king can actually be attacked from? NOPE
+  inline type::bitboard_t generateRookXRayPaths (const type::bitboard_t pBoard, const uint8_t friendly = 0, const uint8_t hostile = 1) const {
+    // pass through friendlies, but only the first friendly.
+    const auto friendlies = this->state.piecess[friendly];
+    const uint8_t index = ::utils::LSB(pBoard);
+    const uint8_t iRow = index / 8;
+    const uint8_t iCol = index % 8;
+    const type::bitboard_t hostiles = (this->state.piecesArr[::david::constant::index::queen][hostile] | this->state.piecesArr[::david::constant::index::rook][hostile]);
+
+    // the result board
+    type::bitboard_t result = 0ULL;
+
+    // holds the tmp path to check if it's useful.
+    type::bitboard_t tmp = 0ULL;
+
+    // the number of blocker hits
+    uint8_t hitTracker = 0;
+
+    uint8_t mult = 1;
+
+
+    // #####
+    // Vertical attacks
+    //
+
+    // upwards, TODO: slow..
+    for (uint8_t i = iRow + 1; i < 8; i++, mult++) {
+      type::bitboard_t board = pBoard << (8 * mult);
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    hitTracker = 0;
+    mult = 1;
+
+    // downwards, TODO: slow..
+    for (uint8_t i = iRow - 1; i > 0; i--, mult++) {
+      type::bitboard_t board = pBoard >> (8 * mult);
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    hitTracker = 0;
+    mult = 1;
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+    // #####
+    // Horizontal attacks
+    //
+
+    // left, TODO: slow..
+    for (uint8_t i = iCol + 1; i < 8; i++, mult++) {
+      type::bitboard_t board = pBoard << (1 * mult); // left
+
+      // is it on the same row?
+      if (::utils::LSB(board) != iRow) {
+        break;
+      }
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    hitTracker = 0;
+    mult = 1;
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+    // right, TODO: slow..
+    for (uint8_t i = iCol - 1; i > 0; i--, mult++) {
+      type::bitboard_t board = pBoard >> (1 * mult);
+
+      // is it on the same row?
+      if (::utils::LSB(board) != iRow) {
+        break;
+      }
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+    return result;
+  } // generateRookXRayPaths
+
+  inline type::bitboard_t generateDiagonalXRayPaths (const type::bitboard_t pBoard, const uint8_t friendly = 0, const uint8_t hostile = 1) const {
+    // pass through friendlies, but only the first friendly.
+    const auto friendlies = this->state.piecess[friendly];
+    const uint8_t index = ::utils::LSB(pBoard);
+    const uint8_t iRow = index / 8;
+    const uint8_t iCol = index % 8;
+    const type::bitboard_t hostiles = (this->state.piecesArr[::david::constant::index::queen][hostile] | this->state.piecesArr[::david::constant::index::bishop][hostile]);
+
+    // the result board
+    type::bitboard_t result = 0ULL;
+
+    // holds the tmp path to check if it's useful.
+    type::bitboard_t tmp = 0ULL;
+
+    // the number of blocker hits
+    uint8_t hitTracker = 0;
+
+    uint8_t mult = 1;
+
+    // ######
+    // Diagonal attacks, up right
+    //
+
+    // up and right
+    for (uint8_t i = 0; i < 8 && (tmp & 9259542123273814271ULL) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard << (7 * mult);
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    hitTracker = 0;
+    mult = 1;
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+    // up and left
+    for (uint8_t i = 0; i < 8 && (tmp & 72340172838076927ULL) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard << (9 * mult);
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    hitTracker = 0;
+    mult = 1;
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+
+    // down and right
+    for (uint8_t i = 0; i < 8 && (tmp & 18410856566090662016ULL) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard >> (9 * mult);
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    hitTracker = 0;
+    mult = 1;
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+
+    // down and left
+    for (uint8_t i = 0; i < 8 && (tmp & 18374969058471772417ULL) == 0; i++, mult++) {
+      type::bitboard_t board = pBoard >> (7 * mult);
+
+      // on hit increment tracker
+      if ((friendlies & board) > 0) {
+        hitTracker += 1;
+      }
+
+      if (hitTracker == 2) {
+        break;
+      }
+
+      // add attack path
+      tmp |= board;
+    }
+    if ((hostiles & tmp) > 0) {
+      result |= tmp;
+      tmp = 0ULL;
+    }
+
+    return result;
+  } // generateDiagonalXRayPaths
+
   /**
    * Use for only one piece at the time!
    * @param piece index
@@ -527,9 +772,10 @@ class MoveGen {
   /**
    * Attack position for knights
    */
-  inline uint64_t generateKnightAttack (const uint8_t index, const uint8_t friendly = 0) const
-  {
-    return (~this->state.piecess[friendly]) & ::utils::constant::knightAttackPaths[index];
+  inline uint64_t generateKnightAttack (const uint8_t index, const uint8_t friendly = 0) const {
+    const type::bitboard_t friendlies = this->state.piecess[friendly];
+
+    return (~friendlies) & ::utils::constant::knightAttackPaths[index];
   }
 
   /**
@@ -538,8 +784,9 @@ class MoveGen {
    * @param hostilePath
    * @return
    */
-  inline uint64_t generateKingAttack (const uint8_t index, const bool hostilePath = false) const
-  {
+  inline uint64_t generateKingAttack (const uint8_t index, const bool hostilePath = false) const {
+    const type::bitboard_t friendly = this->state.piecess[hostilePath ? 1 : 0];
+
     // <---
     uint8_t maskRowOffset = 3; // offset from row 0
     const std::array<type::bitboard_t, 8> masks = {
@@ -565,7 +812,7 @@ class MoveGen {
     }
 
     // legal moves, not checked if in check mate or smth
-    return (rMask & this->state.piecess[hostilePath ? 1 : 0]) ^ rMask;
+    return (rMask & friendly) ^ rMask;
   }
 
   inline uint64_t generateRookAttack (const uint8_t index, const type::gameState_t& gs, const bool hostilePath = false) const {
@@ -588,7 +835,7 @@ class MoveGen {
     r2 = this->extractLegalNorthPath(r2, friendly, hostiles, northArea & r2, 1);
 
     // combine
-    return r1 | r2;
+    return r1 | r2; // remove start position of piece
   }
 
 

@@ -27,7 +27,7 @@ class EngineContext {
   //type::neuralNetwork_ptr   neuralNetworkPtr  = nullptr;
   //type::gameTree_ptr        gameTreePtr       = nullptr;
   //type::uciProtocol_ptr     uciProtocolPtr    = nullptr;
-  bitboard::COLOR           playerColor       = bitboard::COLOR::WHITE;
+  bool           playerColor       = true; // white
 
   type::NeuralNetwork_t NeuralNet;
   type::TreeGen_t TreeGen;

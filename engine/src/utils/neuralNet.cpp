@@ -101,14 +101,14 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
       gs.piecesArr[5][w]
   };
   std::array<::david::type::bitboard_t, 8> boards2 = {
-      gs.piecesArr[gs.iBishops][b],
-      gs.piecesArr[gs.iKnights][b],
-      gs.piecesArr[gs.iQueens][b],
-      gs.piecesArr[gs.iRooks][b],
-      gs.piecesArr[gs.iBishops][w],
-      gs.piecesArr[gs.iQueens][w],
-      gs.piecesArr[gs.iKnights][w],
-      gs.piecesArr[gs.iRooks][w]
+      gs.piecesArr[::david::constant::index::bishop][b],
+      gs.piecesArr[::david::constant::index::knight][b],
+      gs.piecesArr[::david::constant::index::queen][b],
+      gs.piecesArr[::david::constant::index::rook][b],
+      gs.piecesArr[::david::constant::index::bishop][w],
+      gs.piecesArr[::david::constant::index::queen][w],
+      gs.piecesArr[::david::constant::index::knight][w],
+      gs.piecesArr[::david::constant::index::rook][w]
   };
   std::array<::david::type::bitboard_t, 2> boards8 = {
       gs.piecesArr[0][b],

@@ -82,7 +82,7 @@ int main (int argc, char * argv[])
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(8);
+    ::utils::perft(7);
   }
   else if (mode == "judd-perft") {
     if (argc < 4) {
