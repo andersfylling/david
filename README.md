@@ -65,7 +65,7 @@ https://bitbucket.org/sciencefyll/david/src
 # Contributors
  * [Sciencefyll](https://github.com/sciencefyll)
  * [Klyngen](https://github.com/klyngen)
- * [Markus Jacobsen](https://bitbucket.org/MarkusJacobsen/)
+ * [Markus Jacobsen](https://bitbucket.org/MarkusJacobsen/) [(GitHub site)](https://github.com/markusja)
 
 # Thanks to
 [Juddperft](https://github.com/jniemann66/juddperft) for finding a bug in castling and promotion.
