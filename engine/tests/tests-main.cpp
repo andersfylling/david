@@ -15,9 +15,9 @@ int moveGenPerfter (std::string FEN, std::vector<uint64_t> results)
 
   setbuf(stdout, NULL);
   std::printf("\n");
-  std::printf("+-%70s-+\n", "----------------------------------------------------------------------");
-  std::printf("| %70s |\n", FEN.c_str());
-  std::printf("+-%70s-+\n", "----------------------------------------------------------------------");
+  std::printf("+-%75s-+\n", "---------------------------------------------------------------------------");
+  std::printf("| %75s |\n", FEN.c_str());
+  std::printf("+-%75s-+\n", "---------------------------------------------------------------------------");
 
   // for every results entry
   std::printf("| %8s |", "perft(n)");
@@ -44,6 +44,7 @@ int moveGenPerfter (std::string FEN, std::vector<uint64_t> results)
     std::printf(" %4s |", fail == -1 ? "ok" : "fail");
 
     if (fail != -1) {
+      std::cout << " > perft(" << std::to_string(fail) << "): got " << perft << ", wants " << results.at(i);
       break;
     }
   }
@@ -58,6 +59,9 @@ int moveGenPerfter (std::string FEN, std::vector<uint64_t> results)
     usleep(100);
     ::utils::perft_advanced(fail, FEN);
   }
+
+
+  usleep(1000);
 
   return fail;
 }
@@ -84,7 +88,8 @@ int main( int argc, char* argv[] )
 
 
   // Validate MoveGen here.
-  if (true) {
+  const bool useMoveGenTestSuite = true;
+  if (useMoveGenTestSuite) {
     std::vector<uint64_t> expected{};
 
     // normal perft at first
@@ -94,11 +99,14 @@ int main( int argc, char* argv[] )
     expected.push_back(8902);
     expected.push_back(197281);
     expected.push_back(4865609);
-#ifdef DAVID_PRODUCTION
     expected.push_back(119060324); // 6
+#ifdef DAVID_PRODUCTION
+    expected.push_back(3195901860); // 7
+    //expected.push_back(84998978956); // 8. might take over 40 minutes.
 #endif
     moveGenPerfter("", expected);
 
+    // Position 2
     // r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -
     expected.clear();
     expected.push_back(1);
@@ -108,6 +116,66 @@ int main( int argc, char* argv[] )
     expected.push_back(4085603);
     expected.push_back(193690690);
     moveGenPerfter("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -", expected);
+
+    // Position 3
+    // 8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -
+    expected.clear();
+    expected.push_back(1);
+    expected.push_back(14);
+    expected.push_back(191);
+    expected.push_back(2812);
+    expected.push_back(43238);
+    expected.push_back(674624);
+    expected.push_back(11030083); // 6
+    expected.push_back(178633661);
+    moveGenPerfter("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -", expected);
+
+    // Position 4
+    // r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
+    // Or mirrored (with the same perft results):
+    // r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1
+    expected.clear();
+    expected.push_back(1);
+    expected.push_back(6);
+    expected.push_back(264);
+    expected.push_back(9467);
+    expected.push_back(422333);
+    expected.push_back(15833292);
+    expected.push_back(706045033);
+    moveGenPerfter("r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1", expected);
+    moveGenPerfter("r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1", expected);
+
+    // Position 5
+    // rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
+    expected.clear();
+    expected.push_back(1);
+    expected.push_back(44);
+    expected.push_back(1486);
+    expected.push_back(62379);
+    expected.push_back(2103487);
+    expected.push_back(89941194);
+    moveGenPerfter("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8", expected);
+
+    // Position 6
+    // r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10
+    expected.clear();
+    expected.push_back(1);
+    expected.push_back(46);
+    expected.push_back(2079);
+    expected.push_back(89890);
+    expected.push_back(3894594);
+    expected.push_back(164075551); // 5
+    expected.push_back(6923051137);
+#ifdef DAVID_PRODUCTION
+    //expected.push_back(287188994746);
+    //expected.push_back(11923589843526);
+    //expected.push_back(490154852788714);
+#endif
+    moveGenPerfter("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10", expected);
+
+
+    // done
+    std::cout << "\n\nDONE!\n";
   }
 
 

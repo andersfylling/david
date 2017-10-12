@@ -12,6 +12,12 @@
 
 namespace david {
 
+namespace movegen {
+extern std::array<std::array<type::bitboard_t, 30>, 6> moves;
+extern std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack;
+//extern std::array<uint_fast16_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack_encoded;
+}
+
 class MoveGen {
 #ifdef DAVID_TEST
   friend class MoveGenTest;
@@ -56,29 +62,29 @@ class MoveGen {
     this->generatePawnMoves(); // Must be last due to promotions
 
     //generate gameStates based on moves
-    const auto nrOfPieceTypes = this->moves.size();
+    const auto nrOfPieceTypes = movegen::moves.size();
     for (unsigned long pieceType = 0; pieceType < nrOfPieceTypes; pieceType++) {
 
       // for every pieceType
       for (unsigned long board = 0; board < this->index_moves[pieceType]; board++) {
 
         //make sure the king hasn't been captured.
-        if ((this->state.piecesArr[::david::constant::index::king][1] & this->moves[pieceType][board]) > 0) {
+        if ((this->state.piecesArr[::david::constant::index::king][1] & movegen::moves[pieceType][board]) > 0) {
           continue;
         }
 
         // create a child game state
         type::gameState_t gs = this->reversedState;
-        gs.piecesArr[pieceType][1] = this->moves[pieceType][board];       // the colour that just moved. now opponent.
+        gs.piecesArr[pieceType][1] = movegen::moves[pieceType][board];       // the colour that just moved. now opponent.
 
         // update moved piece
         gs.piecess[1] ^= this->state.piecesArr[pieceType][0];
-        gs.piecess[1] |= this->moves[pieceType][board]; // merge, to deal with promotions
+        gs.piecess[1] |= movegen::moves[pieceType][board]; // merge, to deal with promotions
 
 
         // Check for capture, and destroy captured piece!
-        if ((this->moves[pieceType][board] & this->state.piecess[1]) > 0) {
-          const uint8_t attackedPiecePosition = ::utils::LSB(this->moves[pieceType][board] & this->state.piecess[1]);
+        if ((movegen::moves[pieceType][board] & this->state.piecess[1]) > 0) {
+          const uint8_t attackedPiecePosition = ::utils::LSB(movegen::moves[pieceType][board] & this->state.piecess[1]);
 
           for (auto& bbArr : gs.piecesArr) {
             // since gs has the opposite indexes, use 0 in stead of 1.
@@ -93,7 +99,7 @@ class MoveGen {
         }
 
           // en passant capture.
-        else if (pieceType == 0 && this->state.enPassant > 15 && ::utils::bitAt(this->moves[0][board], this->state.enPassant)) {
+        else if (pieceType == 0 && this->state.enPassant > 15 && ::utils::bitAt(movegen::moves[0][board], this->state.enPassant)) {
           ::utils::flipBitOff(gs.piecesArr[0][0], this->state.enPassantPawn);
           ::utils::flipBitOff(gs.piecess[0], this->state.enPassantPawn);
           gs.passant = true;
@@ -161,8 +167,8 @@ class MoveGen {
         }
 
         // a piece was promoted, so remove the pawn that was sacrificed for this promotion
-        if (pieceType > 0 && pieceType < 5 && (this->moves[pieceType][board] & this->state.piecesArr[0][0]) > 0) {
-          const type::bitboard_t pawnBoard = this->moves[pieceType][board] & this->state.piecesArr[0][0];
+        if (pieceType > 0 && pieceType < 5 && (movegen::moves[pieceType][board] & this->state.piecesArr[0][0]) > 0) {
+          const type::bitboard_t pawnBoard = movegen::moves[pieceType][board] & this->state.piecesArr[0][0];
 
           gs.piecesArr[0][1] ^= pawnBoard;
           gs.piecesArr[pieceType][1] ^= pawnBoard;
@@ -324,7 +330,7 @@ class MoveGen {
   // 3 bishop
   // 4 queen
   // 5 king
-  std::array<std::array<type::bitboard_t, 30>, 6> moves = {{0}}; // initiator list?
+  //std::array<std::array<type::bitboard_t, 30>, 6> moves = {{0}}; // initiator list?
   std::array<unsigned long, 6> index_moves = {{0}}; // index for every type
 
   // xray v0.1
@@ -424,7 +430,7 @@ class MoveGen {
     for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 5/*skip king*/; pieceType++) {
       // for every promotion, the pawn position is added to its board.
       // so u can just quickly check if any of the set bits overlap with any of the pawn board.
-      this->moves[pieceType][this->index_moves[pieceType]++] = pawn | board | this->state.piecesArr[pieceType][0];
+      movegen::moves[pieceType][this->index_moves[pieceType]++] = pawn | board | this->state.piecesArr[pieceType][0];
     }
   }
 

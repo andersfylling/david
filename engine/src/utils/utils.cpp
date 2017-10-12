@@ -260,7 +260,6 @@ void perft_time(::david::type::gameState_t& gs, const uint8_t depth, const unsig
             << (timing / 1000.0) / rounds << "s\n";
 }
 
-std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> perftstack{};
 /**
  * Assumes that the depth is above 0.
  * If depth is 0, assume ahead of the result is 1 => depth == 0 ? 1 : perft(...);
@@ -277,19 +276,19 @@ uint64_t perft(const uint8_t depth, ::david::type::gameState_t &gs) {
   int index = 0;
 
   // add first game state to the stack
-  perftstack[index] = gs;
+  ::david::movegen::stack[index] = gs;
 
   ::david::MoveGen moveGen{gs};
 
   // start perfting.
   while (index >= 0) {
-    moveGen.setGameState(perftstack[index]);
+    moveGen.setGameState(::david::movegen::stack[index]);
 
     // returns anything from 0 to 256.
-    length = moveGen.template generateGameStates(perftstack, index, index + 255);
+    length = moveGen.template generateGameStates(::david::movegen::stack, index, index + 255);
 
     // index has been overwritten with a new leaf node if length is >0.
-    if (perftstack[index].depth >= depth) {
+    if (::david::movegen::stack[index].depth >= depth) {
       // if this node generates leafs, just count its children and move onto the next entry
       nodes += length;
     }

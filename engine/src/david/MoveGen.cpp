@@ -4,7 +4,9 @@
 namespace david {
 
 namespace movegen {
-
+std::array<std::array<type::bitboard_t, 30>, 6> moves = {{0}};
+std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack{};
+//std::array<uint_fast16_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack_encoded{};
 }
 
 
@@ -131,7 +133,7 @@ void MoveGen::generatePawnMoves() {
     //}
 
     for (uint8_t ii = ::utils::LSB(paths); paths != 0; ii = ::utils::NSB(paths, ii)) {
-      this->moves[0][index++] = ::utils::flipBitOnCopy(resultCache, ii);
+      movegen::moves[0][index++] = ::utils::flipBitOnCopy(resultCache, ii);
     }
   }
 
@@ -173,7 +175,7 @@ void MoveGen::generateRookMoves() {
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
 
       // store the new board layout
-      this->moves[1][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[1][index++] = ::utils::flipBitOnCopy(resultCache, position);
     }
   }
 
@@ -212,7 +214,7 @@ void MoveGen::generateKnightMoves() {
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
 
       // store the new board layout
-      this->moves[2][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[2][index++] = ::utils::flipBitOnCopy(resultCache, position);
     }
   }
 
@@ -250,7 +252,7 @@ void MoveGen::generateBishopMoves() {
       uint8_t position = ::utils::LSB(attackPaths);
 
       // store the new board layout
-      this->moves[3][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[3][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
@@ -291,7 +293,7 @@ void MoveGen::generateQueenMoves() {
       uint8_t position = ::utils::LSB(attackPaths);
 
       // store the new board layout
-      this->moves[4][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[4][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
@@ -316,7 +318,7 @@ void MoveGen::generateKingMoves() {
     attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
 
     // store the new board layout
-    this->moves[5][index++] = ::utils::indexToBitboard(position);
+    movegen::moves[5][index++] = ::utils::indexToBitboard(position);
   }
 
   // castling if not in check
@@ -329,7 +331,7 @@ void MoveGen::generateKingMoves() {
       // make sure the squares in between aren't in check
       // make sure the king isn't in check now
       if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard << 1, this->state)) {
-        this->moves[5][index++] = board;
+        movegen::moves[5][index++] = board;
       }
     }
 
@@ -338,7 +340,7 @@ void MoveGen::generateKingMoves() {
         && (72057594037927937ULL & this->state.piecesArr[::david::constant::index::rook][0]) > 0) {
       type::bitboard_t board = kingBoard >> 2; // move two right
       if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard >> 1, this->state)) {
-        this->moves[5][index++] = board;
+        movegen::moves[5][index++] = board;
       }
     }
   }
