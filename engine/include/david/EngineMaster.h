@@ -11,7 +11,7 @@
 namespace david {
 class EngineMaster {
  private:
-  std::map<int, type::engine_ptr> engineInstances; // id => instance
+  std::map<int, type::Engine_t> engineInstances; // id => instance
   std::map<int, std::array<int, 2>> engineBattle;
   std::map<int, int> engineBattleWinnerLog; // battle id => winner id (engineInstance)
 

@@ -1,4 +1,5 @@
 #pragma once
+#ifdef DAVID_NOT_SUPPORTED
 
 #include <string>
 #include <functional>
@@ -168,3 +169,5 @@ inline void logbenchmark(const std::function<const std::string()>& actionInfo) {
 
 } // logger
 } // utils
+
+#endif

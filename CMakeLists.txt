@@ -1,8 +1,9 @@
 # settings
 set(CMAKE_VERBOSE_MAKEFILE ON)
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.8)
 project(chess_ann LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Setup paths
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Paths.cmake")
@@ -14,9 +15,13 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+if(CMAKE_BUILD_TYPE EQUAL "Release")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC -Wno-unused-variable")
+endif()
+
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto -DNDEBUG")
 
 # Third party libraries in lib
 add_subdirectory(external)

@@ -28,8 +28,7 @@ namespace david {
  */
 class Search {
  public:
-  Search(); // This can be used for unit testing and benchmarking.
-  Search(type::engineContext_ptr ctx);
+  Search(type::TreeGen_t& tg);
   Search(const Search&) = delete;             // delete the copy constructor
   void operator=(const Search&) = delete;     // delete the copy-assignment operator
   int searchInit();
@@ -75,6 +74,8 @@ class Search {
   clock_t startTime;
 
  private:
+  type::TreeGen_t& treeGen;
+
   bool uciMode;
   std::thread searchThread;
   int depth;
@@ -87,7 +88,6 @@ class Search {
   int nodes;
   std::string searchMoves;
   int searchScore;
-  type::engineContext_ptr engineContextPtr;
   type::gameState_t bestMove;
   int bestMoveIndex;
   int /*time[COLOR], inc[COLOR],*/ npmsec;

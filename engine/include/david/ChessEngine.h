@@ -3,6 +3,11 @@
 // local dependencies
 #include "david/types.h"
 #include "david/bitboard.h"
+#include "david/ANN/ANN.h"
+#include "david/Search.h"
+#include "david/TreeGen.h"
+
+// git submodule dependencies
 #include "uci/Listener.h"
 
 // forward declarations
@@ -15,7 +20,7 @@ namespace david {
  * A player object that will represent who this engine is on the board.
  */
 struct Player {
-  bitboard::COLOR color = bitboard::COLOR::WHITE;
+  bool isWhite = true;
 };
 
 
@@ -26,13 +31,10 @@ class ChessEngine {
   int timeLeft;
 
   // this is sent to other classes so they can communicate with each other
-  type::engineContext_ptr engineContextPtr;
-
-  // contents of the engineContextPtr
-  type::search_ptr        searchPtr;
-  type::neuralNetwork_ptr neuralNetworkPtr;
-  type::gameTree_ptr      gameTreePtr;
-  type::uciProtocol_ptr   uciProtocolPtr;
+  type::NeuralNetwork_t neuralNet;
+  type::TreeGen_t treeGen;
+  type::Search_t search;
+  type::UciProtocol_t UCI;
 
 
   type::gameState_t currentGameState;
@@ -46,8 +48,8 @@ class ChessEngine {
 
   ChessEngine();
   ChessEngine(Player self);
-  ChessEngine(std::string ANNFile);
-  ChessEngine(Player self, std::string ANNFile);
+  ChessEngine(const std::string ANNFile);
+  ChessEngine(Player self, const std::string ANNFile);
   ~ChessEngine();
 
   void linkUCICommands();
@@ -86,6 +88,8 @@ class ChessEngine {
    */
   std::string getANNFile();
 
+  void setANNFile(const std::string ANNFile);
+
   /**
    * Check if there exists a ANNFile
    */
@@ -99,17 +103,15 @@ class ChessEngine {
   /**
    * Check if this engine plays as white
    */
-  bool isWhite();
-
-  /**
-   * Get ::bitboard::COLOR color
-   */
-  bitboard::COLOR getColor();
+  constexpr bool isWhite() const
+  {
+    return this->player.isWhite;
+  }
 
   /**
    * Start the ANN from given files.
    */
-  void createANNInstance(std::string ANNFile);
+  void createANNInstance();
 
   /**
    * Run the boards through the trained neural network to get a generated output.
@@ -117,7 +119,7 @@ class ChessEngine {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(const type::gameState_t& board);
+  int ANNEvaluate(type::gameState_t& board);
 
 
   /**
@@ -140,7 +142,7 @@ class ChessEngine {
    *
    * @param color
    */
-  void setPlayerColor(bitboard::COLOR color);
+  void setPlayerColor(const bool white);
 
   /**
    * Get the game node from a engine. Will be known as the root node for the search class.
@@ -156,7 +158,7 @@ class ChessEngine {
    * @param state shared_ptr of a gameState
    * @return true if the state was updated
    */
-  bool setGameState(const type::gameState_t& gs);
+  bool setGameState(type::gameState_t& gs);
 
   /**
    * Check if the engine has lost.

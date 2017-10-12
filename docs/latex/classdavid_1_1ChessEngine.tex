@@ -1,0 +1,304 @@
+\hypertarget{classdavid_1_1ChessEngine}{}\section{david\+:\+:Chess\+Engine Class Reference}
+\label{classdavid_1_1ChessEngine}\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdavid_1_1ChessEngine_a8207c17987e0e3fca64a71288a3fabfc}{Chess\+Engine} ()
+\item 
+\hyperlink{classdavid_1_1ChessEngine_a93e1910ba6f2ea91a64027ae404ea47c}{Chess\+Engine} (\hyperlink{structdavid_1_1Player}{Player} self)
+\item 
+\hyperlink{classdavid_1_1ChessEngine_a850f69799f447605f730eb6edff09a1e}{Chess\+Engine} (const std\+::string A\+N\+N\+File)
+\item 
+\hyperlink{classdavid_1_1ChessEngine_a17a031eb5b738d0d030addc399eee1be}{Chess\+Engine} (\hyperlink{structdavid_1_1Player}{Player} self, const std\+::string A\+N\+N\+File)
+\item 
+\hyperlink{classdavid_1_1ChessEngine_a48df80ac4ae29baa7f8bfd50429d4711}{$\sim$\+Chess\+Engine} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_af0c14184c87a7859e6ebe24d3d635f71}\label{classdavid_1_1ChessEngine_af0c14184c87a7859e6ebe24d3d635f71}} 
+void {\bfseries link\+U\+C\+I\+Commands} ()
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_a87d97f18682651d669bd978e45c40add}{enable\+U\+C\+I\+Mode} ()
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_acb677e30d52e8a66f96eaa6954418a9e}{configure\+U\+C\+I\+Protocol} ()
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_acc39e613bf801c1ac1dfb8e0eee3d025}{activate\+U\+C\+I\+Protocol} ()
+\item 
+bool \hyperlink{classdavid_1_1ChessEngine_a0783753d3e0678d053d28d509b4170cb}{has\+Initiated\+U\+C\+I\+Protocol} ()
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_acd362bad7fd99d2210ea2ee9fa92db1a}{say\+U\+C\+I\+Command} (std\+::string command)
+\item 
+std\+::string \hyperlink{classdavid_1_1ChessEngine_a364e98f32632c0669585ab464f8b6532}{get\+A\+N\+N\+File} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a1bdc638fcb3786b930b676e9f0c5848f}\label{classdavid_1_1ChessEngine_a1bdc638fcb3786b930b676e9f0c5848f}} 
+void {\bfseries set\+A\+N\+N\+File} (const std\+::string A\+N\+N\+File)
+\item 
+bool \hyperlink{classdavid_1_1ChessEngine_a311f1a02d29e394759d20ca656c79ad2}{has\+A\+N\+N\+File} ()
+\item 
+bool \hyperlink{classdavid_1_1ChessEngine_a613d9156ef352542a940f544779036ad}{has\+A\+N\+N\+Instance} ()
+\item 
+constexpr bool \hyperlink{classdavid_1_1ChessEngine_aad68f52fc4118e10b932b35117062ad2}{is\+White} () const
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_a0f3c9b1664dc4e8eb84bde2da018500d}{create\+A\+N\+N\+Instance} ()
+\item 
+int \hyperlink{classdavid_1_1ChessEngine_a3779b125c09306c2518b0a752a1e06c4}{A\+N\+N\+Evaluate} (\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&board)
+\item 
+int \hyperlink{classdavid_1_1ChessEngine_a86fd8cfd367471192bc0061ae19b16af}{A\+N\+N\+Evaluate} (std\+::string fen)
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_a503d008299e7b29f93426938eac42d9a}{set\+New\+Game\+Board} (const std\+::string fen)
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_aafa56ec5ce01a62e385e660b73cdfbd2}{set\+Player\+Color} (const bool white)
+\item 
+\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \hyperlink{classdavid_1_1ChessEngine_aad2aa712b003d233c682463de9930fd2}{get\+Game\+State} ()
+\item 
+bool \hyperlink{classdavid_1_1ChessEngine_a9ae5dd5a237f7ed341a320944285d1f7}{set\+Game\+State} (\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&gs)
+\item 
+bool \hyperlink{classdavid_1_1ChessEngine_a498710f8adfacee9b066d69e5c9399c5}{lost} ()
+\item 
+void \hyperlink{classdavid_1_1ChessEngine_a8a7024be604538049a4606be80ee054f}{find\+Best\+Move} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a8207c17987e0e3fca64a71288a3fabfc}\label{classdavid_1_1ChessEngine_a8207c17987e0e3fca64a71288a3fabfc}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!Chess\+Engine@{Chess\+Engine}}
+\index{Chess\+Engine@{Chess\+Engine}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{Chess\+Engine()}{ChessEngine()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily david\+::\+Chess\+Engine\+::\+Chess\+Engine (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Constructor \mbox{\Hypertarget{classdavid_1_1ChessEngine_a93e1910ba6f2ea91a64027ae404ea47c}\label{classdavid_1_1ChessEngine_a93e1910ba6f2ea91a64027ae404ea47c}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!Chess\+Engine@{Chess\+Engine}}
+\index{Chess\+Engine@{Chess\+Engine}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{Chess\+Engine()}{ChessEngine()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily david\+::\+Chess\+Engine\+::\+Chess\+Engine (\begin{DoxyParamCaption}\item[{\hyperlink{structdavid_1_1Player}{Player}}]{self }\end{DoxyParamCaption})}
+
+Constructor
+
+
+\begin{DoxyParams}{Parameters}
+{\em self} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a850f69799f447605f730eb6edff09a1e}\label{classdavid_1_1ChessEngine_a850f69799f447605f730eb6edff09a1e}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!Chess\+Engine@{Chess\+Engine}}
+\index{Chess\+Engine@{Chess\+Engine}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{Chess\+Engine()}{ChessEngine()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily david\+::\+Chess\+Engine\+::\+Chess\+Engine (\begin{DoxyParamCaption}\item[{const std\+::string}]{A\+N\+N\+File }\end{DoxyParamCaption})}
+
+Constructor
+
+
+\begin{DoxyParams}{Parameters}
+{\em A\+N\+N\+File} & std\+::string The \hyperlink{classdavid_1_1ANN}{A\+NN} network file (The product of \hyperlink{classdavid_1_1ANN}{A\+NN} training) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a17a031eb5b738d0d030addc399eee1be}\label{classdavid_1_1ChessEngine_a17a031eb5b738d0d030addc399eee1be}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!Chess\+Engine@{Chess\+Engine}}
+\index{Chess\+Engine@{Chess\+Engine}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{Chess\+Engine()}{ChessEngine()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily david\+::\+Chess\+Engine\+::\+Chess\+Engine (\begin{DoxyParamCaption}\item[{\hyperlink{structdavid_1_1Player}{Player}}]{self,  }\item[{const std\+::string}]{A\+N\+N\+File }\end{DoxyParamCaption})}
+
+Constructor
+
+
+\begin{DoxyParams}{Parameters}
+{\em self} & \hyperlink{structdavid_1_1Player}{Player} struct Which player instance you are (black / white) \\
+\hline
+{\em A\+N\+N\+File} & std\+::string The \hyperlink{classdavid_1_1ANN}{A\+NN} network file (The product of \hyperlink{classdavid_1_1ANN}{A\+NN} training) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a48df80ac4ae29baa7f8bfd50429d4711}\label{classdavid_1_1ChessEngine_a48df80ac4ae29baa7f8bfd50429d4711}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!````~Chess\+Engine@{$\sim$\+Chess\+Engine}}
+\index{````~Chess\+Engine@{$\sim$\+Chess\+Engine}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{$\sim$\+Chess\+Engine()}{~ChessEngine()}}
+{\footnotesize\ttfamily david\+::\+Chess\+Engine\+::$\sim$\+Chess\+Engine (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Destructor 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_acc39e613bf801c1ac1dfb8e0eee3d025}\label{classdavid_1_1ChessEngine_acc39e613bf801c1ac1dfb8e0eee3d025}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!activate\+U\+C\+I\+Protocol@{activate\+U\+C\+I\+Protocol}}
+\index{activate\+U\+C\+I\+Protocol@{activate\+U\+C\+I\+Protocol}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{activate\+U\+C\+I\+Protocol()}{activateUCIProtocol()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::activate\+U\+C\+I\+Protocol (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Actives the U\+CI protocol, and keeps it running in another thread. \mbox{\Hypertarget{classdavid_1_1ChessEngine_a3779b125c09306c2518b0a752a1e06c4}\label{classdavid_1_1ChessEngine_a3779b125c09306c2518b0a752a1e06c4}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!A\+N\+N\+Evaluate@{A\+N\+N\+Evaluate}}
+\index{A\+N\+N\+Evaluate@{A\+N\+N\+Evaluate}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{A\+N\+N\+Evaluate()}{ANNEvaluate()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily int david\+::\+Chess\+Engine\+::\+A\+N\+N\+Evaluate (\begin{DoxyParamCaption}\item[{\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&}]{board }\end{DoxyParamCaption})}
+
+Run the boards through the trained neural network to get a generated output.
+
+
+\begin{DoxyParams}{Parameters}
+{\em board} & \+::game\+Tree\+::game\+State, of shared\+\_\+ptr type \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int board evaluation 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a86fd8cfd367471192bc0061ae19b16af}\label{classdavid_1_1ChessEngine_a86fd8cfd367471192bc0061ae19b16af}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!A\+N\+N\+Evaluate@{A\+N\+N\+Evaluate}}
+\index{A\+N\+N\+Evaluate@{A\+N\+N\+Evaluate}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{A\+N\+N\+Evaluate()}{ANNEvaluate()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int david\+::\+Chess\+Engine\+::\+A\+N\+N\+Evaluate (\begin{DoxyParamCaption}\item[{std\+::string}]{fen }\end{DoxyParamCaption})}
+
+Run the boards through the trained neural network to get a generated output.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fen} & std\+::string F\+EN(Forsyth–\+Edwards Notation) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int board evaluation 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_acb677e30d52e8a66f96eaa6954418a9e}\label{classdavid_1_1ChessEngine_acb677e30d52e8a66f96eaa6954418a9e}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!configure\+U\+C\+I\+Protocol@{configure\+U\+C\+I\+Protocol}}
+\index{configure\+U\+C\+I\+Protocol@{configure\+U\+C\+I\+Protocol}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{configure\+U\+C\+I\+Protocol()}{configureUCIProtocol()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::configure\+U\+C\+I\+Protocol (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Adds typical U\+CI responses to the engine \mbox{\Hypertarget{classdavid_1_1ChessEngine_a0f3c9b1664dc4e8eb84bde2da018500d}\label{classdavid_1_1ChessEngine_a0f3c9b1664dc4e8eb84bde2da018500d}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!create\+A\+N\+N\+Instance@{create\+A\+N\+N\+Instance}}
+\index{create\+A\+N\+N\+Instance@{create\+A\+N\+N\+Instance}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{create\+A\+N\+N\+Instance()}{createANNInstance()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::create\+A\+N\+N\+Instance (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Start the \hyperlink{classdavid_1_1ANN}{A\+NN} from given files.
+
+Creates the neural network based on the A\+N\+N\+File \mbox{\Hypertarget{classdavid_1_1ChessEngine_a87d97f18682651d669bd978e45c40add}\label{classdavid_1_1ChessEngine_a87d97f18682651d669bd978e45c40add}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!enable\+U\+C\+I\+Mode@{enable\+U\+C\+I\+Mode}}
+\index{enable\+U\+C\+I\+Mode@{enable\+U\+C\+I\+Mode}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{enable\+U\+C\+I\+Mode()}{enableUCIMode()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::enable\+U\+C\+I\+Mode (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Enable uci mode \mbox{\Hypertarget{classdavid_1_1ChessEngine_a8a7024be604538049a4606be80ee054f}\label{classdavid_1_1ChessEngine_a8a7024be604538049a4606be80ee054f}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!find\+Best\+Move@{find\+Best\+Move}}
+\index{find\+Best\+Move@{find\+Best\+Move}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{find\+Best\+Move()}{findBestMove()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::find\+Best\+Move (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Find the best move, and update the current game state. \mbox{\Hypertarget{classdavid_1_1ChessEngine_a364e98f32632c0669585ab464f8b6532}\label{classdavid_1_1ChessEngine_a364e98f32632c0669585ab464f8b6532}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!get\+A\+N\+N\+File@{get\+A\+N\+N\+File}}
+\index{get\+A\+N\+N\+File@{get\+A\+N\+N\+File}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{get\+A\+N\+N\+File()}{getANNFile()}}
+{\footnotesize\ttfamily std\+::string david\+::\+Chess\+Engine\+::get\+A\+N\+N\+File (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Retrieve the \hyperlink{classdavid_1_1ANN}{A\+NN} file this engine instance uses for evaluating game boards. \begin{DoxyReturn}{Returns}
+std\+::string absolute path of ann file. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_aad2aa712b003d233c682463de9930fd2}\label{classdavid_1_1ChessEngine_aad2aa712b003d233c682463de9930fd2}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!get\+Game\+State@{get\+Game\+State}}
+\index{get\+Game\+State@{get\+Game\+State}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{get\+Game\+State()}{getGameState()}}
+{\footnotesize\ttfamily \hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} david\+::\+Chess\+Engine\+::get\+Game\+State (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Get the game node from a engine. Will be known as the root node for the search class.
+
+\begin{DoxyReturn}{Returns}
+shared\+\_\+ptr of game\+State 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a311f1a02d29e394759d20ca656c79ad2}\label{classdavid_1_1ChessEngine_a311f1a02d29e394759d20ca656c79ad2}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!has\+A\+N\+N\+File@{has\+A\+N\+N\+File}}
+\index{has\+A\+N\+N\+File@{has\+A\+N\+N\+File}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{has\+A\+N\+N\+File()}{hasANNFile()}}
+{\footnotesize\ttfamily bool david\+::\+Chess\+Engine\+::has\+A\+N\+N\+File (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Check if there exists a A\+N\+N\+File
+
+Check if there exists a \hyperlink{classdavid_1_1ANN}{A\+NN} instance \mbox{\Hypertarget{classdavid_1_1ChessEngine_a613d9156ef352542a940f544779036ad}\label{classdavid_1_1ChessEngine_a613d9156ef352542a940f544779036ad}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!has\+A\+N\+N\+Instance@{has\+A\+N\+N\+Instance}}
+\index{has\+A\+N\+N\+Instance@{has\+A\+N\+N\+Instance}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{has\+A\+N\+N\+Instance()}{hasANNInstance()}}
+{\footnotesize\ttfamily bool david\+::\+Chess\+Engine\+::has\+A\+N\+N\+Instance (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Check if there exists a \hyperlink{classdavid_1_1ANN}{A\+NN} instance \mbox{\Hypertarget{classdavid_1_1ChessEngine_a0783753d3e0678d053d28d509b4170cb}\label{classdavid_1_1ChessEngine_a0783753d3e0678d053d28d509b4170cb}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!has\+Initiated\+U\+C\+I\+Protocol@{has\+Initiated\+U\+C\+I\+Protocol}}
+\index{has\+Initiated\+U\+C\+I\+Protocol@{has\+Initiated\+U\+C\+I\+Protocol}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{has\+Initiated\+U\+C\+I\+Protocol()}{hasInitiatedUCIProtocol()}}
+{\footnotesize\ttfamily bool david\+::\+Chess\+Engine\+::has\+Initiated\+U\+C\+I\+Protocol (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Check if U\+CI is activated on this engine or not.
+
+\begin{DoxyReturn}{Returns}
+bool if U\+CI protocol has been activated. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_aad68f52fc4118e10b932b35117062ad2}\label{classdavid_1_1ChessEngine_aad68f52fc4118e10b932b35117062ad2}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!is\+White@{is\+White}}
+\index{is\+White@{is\+White}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{is\+White()}{isWhite()}}
+{\footnotesize\ttfamily constexpr bool david\+::\+Chess\+Engine\+::is\+White (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Check if this engine plays as white \mbox{\Hypertarget{classdavid_1_1ChessEngine_a498710f8adfacee9b066d69e5c9399c5}\label{classdavid_1_1ChessEngine_a498710f8adfacee9b066d69e5c9399c5}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!lost@{lost}}
+\index{lost@{lost}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{lost()}{lost()}}
+{\footnotesize\ttfamily bool david\+::\+Chess\+Engine\+::lost (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Check if the engine has lost.
+
+\begin{DoxyReturn}{Returns}
+true on losing 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_acd362bad7fd99d2210ea2ee9fa92db1a}\label{classdavid_1_1ChessEngine_acd362bad7fd99d2210ea2ee9fa92db1a}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!say\+U\+C\+I\+Command@{say\+U\+C\+I\+Command}}
+\index{say\+U\+C\+I\+Command@{say\+U\+C\+I\+Command}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{say\+U\+C\+I\+Command()}{sayUCICommand()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::say\+U\+C\+I\+Command (\begin{DoxyParamCaption}\item[{std\+::string}]{command }\end{DoxyParamCaption})}
+
+Gives this engine a U\+CI Protocol command, but does not return responses. \begin{DoxyRefDesc}{Deprecated}
+\item[\hyperlink{deprecated__deprecated000002}{Deprecated}], hasn\textquotesingle{}t been implemented yet. \end{DoxyRefDesc}
+
+
+Gives this engine a U\+CI Protocol command, but does not return responses.
+
+\begin{DoxyRefDesc}{Deprecated}
+\item[\hyperlink{deprecated__deprecated000001}{Deprecated}], hasn\textquotesingle{}t been implemented yet. \end{DoxyRefDesc}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a9ae5dd5a237f7ed341a320944285d1f7}\label{classdavid_1_1ChessEngine_a9ae5dd5a237f7ed341a320944285d1f7}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!set\+Game\+State@{set\+Game\+State}}
+\index{set\+Game\+State@{set\+Game\+State}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{set\+Game\+State()}{setGameState()}}
+{\footnotesize\ttfamily bool david\+::\+Chess\+Engine\+::set\+Game\+State (\begin{DoxyParamCaption}\item[{\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&}]{gs }\end{DoxyParamCaption})}
+
+Sets the game state based on a node. Used when updating board states during battles.
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & shared\+\_\+ptr of a game\+State \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the state was updated 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_a503d008299e7b29f93426938eac42d9a}\label{classdavid_1_1ChessEngine_a503d008299e7b29f93426938eac42d9a}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!set\+New\+Game\+Board@{set\+New\+Game\+Board}}
+\index{set\+New\+Game\+Board@{set\+New\+Game\+Board}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{set\+New\+Game\+Board()}{setNewGameBoard()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::set\+New\+Game\+Board (\begin{DoxyParamCaption}\item[{const std\+::string}]{fen }\end{DoxyParamCaption})}
+
+Used to reset old data, and construct a new fresh game for this engine.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fen} & a F\+EN string, must be correctly parsed otherwise worlds will collide. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1ChessEngine_aafa56ec5ce01a62e385e660b73cdfbd2}\label{classdavid_1_1ChessEngine_aafa56ec5ce01a62e385e660b73cdfbd2}} 
+\index{david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}!set\+Player\+Color@{set\+Player\+Color}}
+\index{set\+Player\+Color@{set\+Player\+Color}!david\+::\+Chess\+Engine@{david\+::\+Chess\+Engine}}
+\subsubsection{\texorpdfstring{set\+Player\+Color()}{setPlayerColor()}}
+{\footnotesize\ttfamily void david\+::\+Chess\+Engine\+::set\+Player\+Color (\begin{DoxyParamCaption}\item[{const bool}]{white }\end{DoxyParamCaption})}
+
+Update this players color, color means what piece this player can move..
+
+
+\begin{DoxyParams}{Parameters}
+{\em color} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+engine/include/david/Chess\+Engine.\+h\item 
+engine/src/david/Chess\+Engine.\+cpp\end{DoxyCompactItemize}

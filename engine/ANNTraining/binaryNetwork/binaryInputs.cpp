@@ -15,9 +15,10 @@
 #include <sstream>
 #include <string>
 #include <fstream>
-#include <david/environment.h>
 #include <david/TreeGen.h>
 #include <fann/parallel_fann.h>
+#include <david/utils/gameState.h>
+#include <david/utils/neuralNet.h>
 #include "david/ANN/binaryInputs.h"
 using std::cout;
 using std::cerr;
@@ -188,7 +189,6 @@ void binaryNetwork::generateTrainingFile(
 
   int trainingPairs = 0;
   int lines = 0;
-  ::david::environment::Environment env(::david::bitboard::COLOR::WHITE);
 
   std::string line;
   int lineNr = 1;
@@ -211,8 +211,8 @@ void binaryNetwork::generateTrainingFile(
     // write this to a file
     if (output.is_open()) {
       ::david::type::gameState_t node;
-      ::utils::generateBoardFromFen(node, line);
-      auto inputs = ::utils::convertGameStateToInputs(node);
+      ::utils::gameState::generateFromFEN(node, line);
+      auto inputs = ::utils::neuralNet::convertGameStateToInputs(node);
 
       // create an input string
       for (auto i : inputs) {

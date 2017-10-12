@@ -1,0 +1,296 @@
+\hypertarget{namespaceutils}{}\section{utils Namespace Reference}
+\label{namespaceutils}\index{utils@{utils}}
+
+
+holds different utility functions that\textquotesingle{}s often used in general.  
+
+
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespaceutils_1_1convert}{convert}
+\item 
+ \hyperlink{namespaceutils_1_1gameState}{game\+State}
+\begin{DoxyCompactList}\small\item\em Utilities specific to the \hyperlink{namespaceutils_1_1gameState}{game\+State} struct. \end{DoxyCompactList}\item 
+ \hyperlink{namespaceutils_1_1neuralNet}{neural\+Net}
+\begin{DoxyCompactList}\small\item\em Utilities specific to the neural net. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespaceutils_a14bd3ae16155806e72b98d3567d2f10c}\label{namespaceutils_a14bd3ae16155806e72b98d3567d2f10c}} 
+bool {\bfseries file\+Exists} (const std\+::string \&file)
+\item 
+\mbox{\Hypertarget{namespaceutils_ad7045b98eab552a30b4d442c9d08367b}\label{namespaceutils_ad7045b98eab552a30b4d442c9d08367b}} 
+void {\bfseries yell\+Deprecated} (const std\+::string info)
+\item 
+void \hyperlink{namespaceutils_a46add8ad404f7c6a4e29688660dc0bd0}{print\+Board} (uint64\+\_\+t bb, const int index)
+\item 
+uint8\+\_\+t \hyperlink{namespaceutils_a0a337e3860a76bb2f128b59445f0f270}{chess\+Index\+To\+Array\+Index} (const std\+::string \&chess\+Index)
+\item 
+\mbox{\Hypertarget{namespaceutils_a31d4fc766d2fe07eb9ed3c1307464cd8}\label{namespaceutils_a31d4fc766d2fe07eb9ed3c1307464cd8}} 
+std\+::string {\bfseries get\+Absolute\+Project\+Path} ()
+\item 
+\mbox{\Hypertarget{namespaceutils_a079e1aa803d7c1f19e2602c960479c42}\label{namespaceutils_a079e1aa803d7c1f19e2602c960479c42}} 
+void {\bfseries perft} ()
+\item 
+\mbox{\Hypertarget{namespaceutils_ad53466aeb9373f945fafe858c9865dff}\label{namespaceutils_ad53466aeb9373f945fafe858c9865dff}} 
+void {\bfseries perft} (const uint8\+\_\+t depth)
+\item 
+\mbox{\Hypertarget{namespaceutils_aaba51eb0be65c034f71d413ce8154299}\label{namespaceutils_aaba51eb0be65c034f71d413ce8154299}} 
+void {\bfseries perft} (const uint8\+\_\+t depth, const std\+::string F\+EN, const uint8\+\_\+t start)
+\item 
+\mbox{\Hypertarget{namespaceutils_a25d5cc2f5e85583bc2166040f1132b38}\label{namespaceutils_a25d5cc2f5e85583bc2166040f1132b38}} 
+void {\bfseries perft} (\+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs, const uint8\+\_\+t start, const uint8\+\_\+t end)
+\item 
+\mbox{\Hypertarget{namespaceutils_a594bc5b2a28192ef8be24cee7c68f880}\label{namespaceutils_a594bc5b2a28192ef8be24cee7c68f880}} 
+void {\bfseries perft\+\_\+time} (const uint8\+\_\+t depth, const unsigned int rounds)
+\item 
+\mbox{\Hypertarget{namespaceutils_ae1bb226cc994b62a8f03b69775466ef4}\label{namespaceutils_ae1bb226cc994b62a8f03b69775466ef4}} 
+void {\bfseries perft\+\_\+time} (\+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs, const uint8\+\_\+t depth, const unsigned int rounds)
+\item 
+uint64\+\_\+t \hyperlink{namespaceutils_adb012fdcadbd0fefac13b72dcb638f9d}{perft} (const uint8\+\_\+t depth, \+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs)
+\item 
+uint64\+\_\+t \hyperlink{namespaceutils_abcc8166e9f81cb4000d77b797f0d4c38}{perft\+\_\+silent} (const uint\+\_\+fast8\+\_\+t depth, const std\+::string F\+EN)
+\item 
+\mbox{\Hypertarget{namespaceutils_ac2e1f395d95ba5fdacc69b4e320ed740}\label{namespaceutils_ac2e1f395d95ba5fdacc69b4e320ed740}} 
+void {\bfseries perft\+\_\+threaded} (const uint8\+\_\+t depth, const std\+::string F\+EN, const uint8\+\_\+t start)
+\item 
+\mbox{\Hypertarget{namespaceutils_ab7f80b12546ca2f17d002e605653467c}\label{namespaceutils_ab7f80b12546ca2f17d002e605653467c}} 
+void {\bfseries perft\+\_\+threaded} (\+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs, const uint8\+\_\+t start, const uint8\+\_\+t end)
+\item 
+\mbox{\Hypertarget{namespaceutils_a71bc167bf8d687cfcd3cf83c97b17d92}\label{namespaceutils_a71bc167bf8d687cfcd3cf83c97b17d92}} 
+uint64\+\_\+t {\bfseries perft\+\_\+threaded} (const uint8\+\_\+t depth, \+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs)
+\item 
+\mbox{\Hypertarget{namespaceutils_abbe567db351c5a00ba036b6209e9fee1}\label{namespaceutils_abbe567db351c5a00ba036b6209e9fee1}} 
+void {\bfseries perft\+\_\+advanced} (const uint8\+\_\+t depth, const std\+::string F\+EN, const uint8\+\_\+t start)
+\item 
+\mbox{\Hypertarget{namespaceutils_a82bc2fa3b6d0dd57867d9fe008c9280e}\label{namespaceutils_a82bc2fa3b6d0dd57867d9fe008c9280e}} 
+void {\bfseries perft\+\_\+advanced} (\+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs, const uint8\+\_\+t start, const uint8\+\_\+t end, const bool show\+E\+GN)
+\item 
+\mbox{\Hypertarget{namespaceutils_a0849c5193ffd2d6505fda2315b0565b3}\label{namespaceutils_a0849c5193ffd2d6505fda2315b0565b3}} 
+uint64\+\_\+t {\bfseries perft\+\_\+advanced} (const uint8\+\_\+t depth, \+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&gs, std\+::array$<$ unsigned int, 6 $>$ \&results, std\+::map$<$ std\+::string, unsigned int $>$ \&moves)
+\item 
+\mbox{\Hypertarget{namespaceutils_a44e29e39147f6057ad3e8296f2f2ad64}\label{namespaceutils_a44e29e39147f6057ad3e8296f2f2ad64}} 
+constexpr uint8\+\_\+t {\bfseries nr\+Of\+Digits} (unsigned int n)
+\item 
+std\+::string \hyperlink{namespaceutils_abf9ae68bb8aa601d647ebed1fe7d8972}{pretty\+Num} (uint64\+\_\+t n)
+\item 
+constexpr uint8\+\_\+t \hyperlink{namespaceutils_aa2421ac142f51f3a3f99aefb9ee80661}{L\+SB} (const uint64\+\_\+t board)
+\item 
+constexpr uint8\+\_\+t \hyperlink{namespaceutils_aa9a43407479c837a168958d3a9e79540}{N\+SB} (uint64\+\_\+t \&board)
+\item 
+\mbox{\Hypertarget{namespaceutils_abd208a64eda1dac3b9ac8c5c94e43682}\label{namespaceutils_abd208a64eda1dac3b9ac8c5c94e43682}} 
+constexpr uint8\+\_\+t {\bfseries N\+SB} (uint64\+\_\+t \&board, const uint8\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_a74e7103359cc9c9669e2235fc6e7015e}\label{namespaceutils_a74e7103359cc9c9669e2235fc6e7015e}} 
+constexpr uint8\+\_\+t {\bfseries M\+SB} (const uint64\+\_\+t board)
+\item 
+\mbox{\Hypertarget{namespaceutils_a07780b011c2f5095af9befdff65d34c7}\label{namespaceutils_a07780b011c2f5095af9befdff65d34c7}} 
+constexpr uint8\+\_\+t {\bfseries N\+S\+B\+\_\+r} (uint64\+\_\+t \&board)
+\item 
+\mbox{\Hypertarget{namespaceutils_a840479011293cc95b788bfe87d68c87a}\label{namespaceutils_a840479011293cc95b788bfe87d68c87a}} 
+constexpr void {\bfseries flip\+Bit} (uint64\+\_\+t \&board, const uint8\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_ae60793efa330e1ec4bbfd0b8ac6d1894}\label{namespaceutils_ae60793efa330e1ec4bbfd0b8ac6d1894}} 
+constexpr uint8\+\_\+t {\bfseries nr\+Of\+Active\+Bits} (const uint64\+\_\+t b)
+\item 
+\mbox{\Hypertarget{namespaceutils_a48c9fa064f732d6b7a2a93fdaa8f955d}\label{namespaceutils_a48c9fa064f732d6b7a2a93fdaa8f955d}} 
+constexpr bool {\bfseries bit\+At} (const uint64\+\_\+t b, const uint8\+\_\+t i)
+\item 
+\mbox{\Hypertarget{namespaceutils_a774431d48bffc6d6d71d638ee1d4ddc4}\label{namespaceutils_a774431d48bffc6d6d71d638ee1d4ddc4}} 
+constexpr uint64\+\_\+t {\bfseries activate\+Bit} (const uint64\+\_\+t board, const uint8\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_a24a4a106ffb9297f514ab2545e7686f8}\label{namespaceutils_a24a4a106ffb9297f514ab2545e7686f8}} 
+constexpr uint64\+\_\+t {\bfseries index\+To\+Bitboard} (const uint8\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_a0dcbfb05d37538860f8c6952b797a087}\label{namespaceutils_a0dcbfb05d37538860f8c6952b797a087}} 
+constexpr void {\bfseries flip\+Bit\+Off} (uint64\+\_\+t \&board, const uint64\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_a26ec640084d33d347c2dcb20c1e51b87}\label{namespaceutils_a26ec640084d33d347c2dcb20c1e51b87}} 
+constexpr uint64\+\_\+t {\bfseries flip\+Bit\+Off\+Copy} (const uint64\+\_\+t board, const uint8\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_aa175d82e1ca3a1de0cf90d322ff6121e}\label{namespaceutils_aa175d82e1ca3a1de0cf90d322ff6121e}} 
+constexpr void {\bfseries flip\+Bit\+On} (uint64\+\_\+t \&board, const uint64\+\_\+t index)
+\item 
+\mbox{\Hypertarget{namespaceutils_ae85f5665776c06009edf09d7806cfe31}\label{namespaceutils_ae85f5665776c06009edf09d7806cfe31}} 
+constexpr uint64\+\_\+t {\bfseries flip\+Bit\+On\+Copy} (const uint64\+\_\+t board, const uint8\+\_\+t index)
+\item 
+inline \+::david\+::type\+::bitboard\+\_\+t \hyperlink{namespaceutils_a0636557b5feb605e766d4d475bf2aa06}{chess\+Index\+To\+Bitboard} (const std\+::string chess\+Index)
+\item 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ \hyperlink{namespaceutils_a044acdfcbacf70cc1a638f54b0383546}{compile\+Knight\+Attacks} ()
+\item 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ \hyperlink{namespaceutils_abcc2ec379cf8441898e1446ae0ca6fb5}{compile\+Horizontal\+Attacks} ()
+\item 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ \hyperlink{namespaceutils_ab4db5d05b597a157948bf348fc6184ad}{compile\+Vertical\+Attacks} ()
+\item 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ \hyperlink{namespaceutils_a43e54c4f225236daf6809e0e877cfeaf}{compile\+Rook\+Attacks} ()
+\item 
+\mbox{\Hypertarget{namespaceutils_aa9057308aa2ffb27cf07a4d92a5bf160}\label{namespaceutils_aa9057308aa2ffb27cf07a4d92a5bf160}} 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ {\bfseries compile\+Pawn\+Attacks} ()
+\item 
+\mbox{\Hypertarget{namespaceutils_a9c81cd4fda78936341a550831291c4e8}\label{namespaceutils_a9c81cd4fda78936341a550831291c4e8}} 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ {\bfseries compile\+D\+U\+Attacks} ()
+\item 
+\mbox{\Hypertarget{namespaceutils_a83c8269af203f5850f56f1085d692fc3}\label{namespaceutils_a83c8269af203f5850f56f1085d692fc3}} 
+constexpr \+::std\+::array$<$ uint64\+\_\+t, 64 $>$ {\bfseries compile\+U\+D\+Attacks} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+holds different utility functions that\textquotesingle{}s often used in general. 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespaceutils_a0a337e3860a76bb2f128b59445f0f270}\label{namespaceutils_a0a337e3860a76bb2f128b59445f0f270}} 
+\index{utils@{utils}!chess\+Index\+To\+Array\+Index@{chess\+Index\+To\+Array\+Index}}
+\index{chess\+Index\+To\+Array\+Index@{chess\+Index\+To\+Array\+Index}!utils@{utils}}
+\subsubsection{\texorpdfstring{chess\+Index\+To\+Array\+Index()}{chessIndexToArrayIndex()}}
+{\footnotesize\ttfamily uint8\+\_\+t utils\+::chess\+Index\+To\+Array\+Index (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{chess\+Index }\end{DoxyParamCaption})}
+
+Converts indexes such as \char`\"{}\+E6\char`\"{} into an integer index\+: H1 == 0.
+
+
+\begin{DoxyParams}{Parameters}
+{\em chess\+Index} & String such as \char`\"{}\+E6\char`\"{} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+integer bitboard\+\_\+t index, 64 on error. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_a0636557b5feb605e766d4d475bf2aa06}\label{namespaceutils_a0636557b5feb605e766d4d475bf2aa06}} 
+\index{utils@{utils}!chess\+Index\+To\+Bitboard@{chess\+Index\+To\+Bitboard}}
+\index{chess\+Index\+To\+Bitboard@{chess\+Index\+To\+Bitboard}!utils@{utils}}
+\subsubsection{\texorpdfstring{chess\+Index\+To\+Bitboard()}{chessIndexToBitboard()}}
+{\footnotesize\ttfamily inline \+::david\+::type\+::bitboard\+\_\+t utils\+::chess\+Index\+To\+Bitboard (\begin{DoxyParamCaption}\item[{const std\+::string}]{chess\+Index }\end{DoxyParamCaption})}
+
+Takes a chess position such as \char`\"{}\+E6\char`\"{} and creates a bitboard with a on bit at that given index.
+
+
+\begin{DoxyParams}{Parameters}
+{\em chess\+Index} & String such as \char`\"{}\+E6\char`\"{} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bitboard with a active bit in given position 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_abcc2ec379cf8441898e1446ae0ca6fb5}\label{namespaceutils_abcc2ec379cf8441898e1446ae0ca6fb5}} 
+\index{utils@{utils}!compile\+Horizontal\+Attacks@{compile\+Horizontal\+Attacks}}
+\index{compile\+Horizontal\+Attacks@{compile\+Horizontal\+Attacks}!utils@{utils}}
+\subsubsection{\texorpdfstring{compile\+Horizontal\+Attacks()}{compileHorizontalAttacks()}}
+{\footnotesize\ttfamily constexpr \+::std\+::array$<$uint64\+\_\+t, 64$>$ utils\+::compile\+Horizontal\+Attacks (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate all horizontal attack paths \mbox{\Hypertarget{namespaceutils_a044acdfcbacf70cc1a638f54b0383546}\label{namespaceutils_a044acdfcbacf70cc1a638f54b0383546}} 
+\index{utils@{utils}!compile\+Knight\+Attacks@{compile\+Knight\+Attacks}}
+\index{compile\+Knight\+Attacks@{compile\+Knight\+Attacks}!utils@{utils}}
+\subsubsection{\texorpdfstring{compile\+Knight\+Attacks()}{compileKnightAttacks()}}
+{\footnotesize\ttfamily constexpr \+::std\+::array$<$uint64\+\_\+t, 64$>$ utils\+::compile\+Knight\+Attacks (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate all knight attacks (psuedo) based on index / position \mbox{\Hypertarget{namespaceutils_a43e54c4f225236daf6809e0e877cfeaf}\label{namespaceutils_a43e54c4f225236daf6809e0e877cfeaf}} 
+\index{utils@{utils}!compile\+Rook\+Attacks@{compile\+Rook\+Attacks}}
+\index{compile\+Rook\+Attacks@{compile\+Rook\+Attacks}!utils@{utils}}
+\subsubsection{\texorpdfstring{compile\+Rook\+Attacks()}{compileRookAttacks()}}
+{\footnotesize\ttfamily constexpr \+::std\+::array$<$uint64\+\_\+t, 64$>$ utils\+::compile\+Rook\+Attacks (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate all horizontal/vertical attacks \mbox{\Hypertarget{namespaceutils_ab4db5d05b597a157948bf348fc6184ad}\label{namespaceutils_ab4db5d05b597a157948bf348fc6184ad}} 
+\index{utils@{utils}!compile\+Vertical\+Attacks@{compile\+Vertical\+Attacks}}
+\index{compile\+Vertical\+Attacks@{compile\+Vertical\+Attacks}!utils@{utils}}
+\subsubsection{\texorpdfstring{compile\+Vertical\+Attacks()}{compileVerticalAttacks()}}
+{\footnotesize\ttfamily constexpr \+::std\+::array$<$uint64\+\_\+t, 64$>$ utils\+::compile\+Vertical\+Attacks (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate all vertical attack paths \mbox{\Hypertarget{namespaceutils_aa2421ac142f51f3a3f99aefb9ee80661}\label{namespaceutils_aa2421ac142f51f3a3f99aefb9ee80661}} 
+\index{utils@{utils}!L\+SB@{L\+SB}}
+\index{L\+SB@{L\+SB}!utils@{utils}}
+\subsubsection{\texorpdfstring{L\+S\+B()}{LSB()}}
+{\footnotesize\ttfamily constexpr uint8\+\_\+t utils\+::\+L\+SB (\begin{DoxyParamCaption}\item[{const uint64\+\_\+t}]{board }\end{DoxyParamCaption})}
+
+Finds the index of the first active bit, starting from right to left. L\+SB\+: Least Significant Bit
+
+
+\begin{DoxyParams}{Parameters}
+{\em board} & type\+::bitboard\+\_\+t \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+index\mbox{[}0, 63\mbox{]}, if board is 0, 0 is returned. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_aa9a43407479c837a168958d3a9e79540}\label{namespaceutils_aa9a43407479c837a168958d3a9e79540}} 
+\index{utils@{utils}!N\+SB@{N\+SB}}
+\index{N\+SB@{N\+SB}!utils@{utils}}
+\subsubsection{\texorpdfstring{N\+S\+B()}{NSB()}}
+{\footnotesize\ttfamily constexpr uint8\+\_\+t utils\+::\+N\+SB (\begin{DoxyParamCaption}\item[{uint64\+\_\+t \&}]{board }\end{DoxyParamCaption})}
+
+Deactivates the smallest active bit, and returns the L\+SB value.
+
+
+\begin{DoxyParams}{Parameters}
+{\em board} & type\+::bitboard\+\_\+t \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+index\mbox{[}0, 63\mbox{]}, if the board is 0, 0 is returned 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_adb012fdcadbd0fefac13b72dcb638f9d}\label{namespaceutils_adb012fdcadbd0fefac13b72dcb638f9d}} 
+\index{utils@{utils}!perft@{perft}}
+\index{perft@{perft}!utils@{utils}}
+\subsubsection{\texorpdfstring{perft()}{perft()}}
+{\footnotesize\ttfamily uint64\+\_\+t utils\+::perft (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t}]{depth,  }\item[{\+::\hyperlink{structdavid_1_1bitboard_1_1gameState}{david\+::type\+::game\+State\+\_\+t} \&}]{gs }\end{DoxyParamCaption})}
+
+Assumes that the depth is above 0. If depth is 0, assume ahead of the result is 1 =$>$ depth == 0 ? 1 \+: perft(...);
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth} & 1 or higher \\
+\hline
+{\em gs} & a game state struct where .depth is set to 0 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_abcc8166e9f81cb4000d77b797f0d4c38}\label{namespaceutils_abcc8166e9f81cb4000d77b797f0d4c38}} 
+\index{utils@{utils}!perft\+\_\+silent@{perft\+\_\+silent}}
+\index{perft\+\_\+silent@{perft\+\_\+silent}!utils@{utils}}
+\subsubsection{\texorpdfstring{perft\+\_\+silent()}{perft\_silent()}}
+{\footnotesize\ttfamily uint64\+\_\+t utils\+::perft\+\_\+silent (\begin{DoxyParamCaption}\item[{const uint\+\_\+fast8\+\_\+t}]{depth,  }\item[{const std\+::string}]{F\+EN }\end{DoxyParamCaption})}
+
+Perft that doesn\textquotesingle{}t print but only returns the score.
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth} & \\
+\hline
+{\em F\+EN} & \\
+\hline
+{\em start} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_abf9ae68bb8aa601d647ebed1fe7d8972}\label{namespaceutils_abf9ae68bb8aa601d647ebed1fe7d8972}} 
+\index{utils@{utils}!pretty\+Num@{pretty\+Num}}
+\index{pretty\+Num@{pretty\+Num}!utils@{utils}}
+\subsubsection{\texorpdfstring{pretty\+Num()}{prettyNum()}}
+{\footnotesize\ttfamily std\+::string utils\+::pretty\+Num (\begin{DoxyParamCaption}\item[{uint64\+\_\+t}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Converts an int to a string with decimals after ever 3n position for readability. 123456789 -\/$>$ 123,456,789 44 -\/$>$ 44 1234 -\/$>$ 1,234
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespaceutils_a46add8ad404f7c6a4e29688660dc0bd0}\label{namespaceutils_a46add8ad404f7c6a4e29688660dc0bd0}} 
+\index{utils@{utils}!print\+Board@{print\+Board}}
+\index{print\+Board@{print\+Board}!utils@{utils}}
+\subsubsection{\texorpdfstring{print\+Board()}{printBoard()}}
+{\footnotesize\ttfamily void utils\+::print\+Board (\begin{DoxyParamCaption}\item[{uint64\+\_\+t}]{bb,  }\item[{const int}]{index }\end{DoxyParamCaption})}
+
+Prints a bitboard as a chessboard with 0\textquotesingle{}s and 1\textquotesingle{}s 
+\begin{DoxyParams}{Parameters}
+{\em board} & -\/ at bitboard\+\_\+t\\
+\hline
+\end{DoxyParams}
+63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 00 

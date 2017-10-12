@@ -1,22 +1,6 @@
-// check if any of the development flags are used
-#if defined(DAVID_DEBUG) || defined(DAVID_TEST) || defined(DAVID_BENCHMARK) || defined(DAVID_DEVELOPMENT)
-#define DAVID_FLAG_DEVELOPMENT
-#endif
 
-//
-// Supported compilers
-// * GCC 5.1 and higher
-//
-#if defined(__GNUC__) && __GNUC__ > 5
-#define DAVID_SUPPORTED_COMPILER
-#endif
-
-// if the compiler is not officially supported, create an error
-// This can be removed, but isn't recommended. Just remove the comments below:
-//#define I_DONT_CARE_LET_ME_THROUGH
-#if !defined(DAVID_SUPPORTED_COMPILER) && !defined(I_DONT_CARE_LET_ME_THROUGH)
-#error Compiler type or version is not supported.
-#endif
+// handle macros
+#include "david/MACROS.h"
 
 
 // includes
@@ -25,37 +9,13 @@
 
 #include "david/types.h"
 #include <david/ChessEngine.h>
+#include <david/utils/gameState.h>
 #include "david/utils/utils.h"
 #include "david/EngineMaster.h"
+#include "david/MoveGen.h"
 
-#include "david/MoveGeneration.h"
 #include "david/utils/logger.h"
 
-
-
-void memTestMoveGen() {
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * 30 + 1> arr;
-
-  // TreeGen
-  for (int i = 0; i < arr.size(); i++) {
-    ::utils::setDefaultChessLayout(arr[i]);
-  }
-
-
-  ::david::type::gameState_t gs;
-  ::utils::setDefaultChessLayout(gs);
-
-  const auto len = 1000000000;
-  const auto N = 2;
-
-  // MoveGen
-  // Find everything from depth 0 to depth N and count the nodes.
-  // Any memory stored by the recursive should be deleted after the loop round is complete.
-  // Therefore anything else, suggests a issue in MoveGen.
-  for (int i = 0; i < len; i++) {
-    ::utils::perft(N, gs);
-  }
-}
 
 void train() {}
 
@@ -83,8 +43,61 @@ void gui() {
   engine.activateUCIProtocol();
 }
 
+int juddperft (int argc, char * argv[])
+{
+  // get command
+  if (argc < 2) {
+    std::cerr << "no juddperft argument" << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  std::string cmd{argv[1]};
+  if (cmd == "juddperft") {
+    std::string FEN{argv[2]};
+    int         depth{::utils::stoi(argv[3])};
+    int         score{::utils::stoi(argv[4])}; //TODO make uin64_t
+
+    ::david::type::gameState_t gs;
+    ::utils::gameState::generateFromFEN(gs, FEN);
+
+    if (::utils::perft(static_cast<uint8_t>(depth), gs) != static_cast<uint64_t>(score)) {
+      return EXIT_FAILURE;
+    }
+  }
+  else if (cmd == "juddperft-egn") {
+    std::string FEN{argv[2]};
+
+    ::david::type::gameState_t gs;
+    ::utils::gameState::generateFromFEN(gs, FEN);
+
+    ::david::MoveGen moveGen{gs};
+
+    std::array<::david::type::gameState_t, 256> gameStates{};
+    auto end = moveGen.template generateGameStates(gameStates);
+
+    for (unsigned int i = 0; i < end; i++) {
+      std::cout << ::utils::gameState::getEGN(gs, gameStates[i]) << "\n";
+    }
+  }
+
+  return EXIT_SUCCESS;
+}
+//
+//int main () {
+//
+//  ::david::type::gameState_t gs;
+//  ::utils::gameState::setDefaultChessLayout(gs);
+//
+//  ::david::MoveGen moveGen{gs};
+//
+//  for (int i = 0; i < 100; i++) {
+//    std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
+//    moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+//  }
+//}
+
 // TODO: Should support changing mode without recompiling.
-int main (/*int argc, char * argv[]*/)
+int main (int argc, char * argv[])
 {
   // Make sure its not some weird "cpu architecture".
   assert(sizeof(uint8_t)  == 1);
@@ -93,7 +106,7 @@ int main (/*int argc, char * argv[]*/)
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "perft"; // uci, fight, train, perft, memTestMoveGen. Default: "uci"
+  const std::string mode = "perft"; // uci, fight, train, perft, judd-perft. Default: "uci"
 
 
   if (mode == "fight") {
@@ -106,13 +119,26 @@ int main (/*int argc, char * argv[]*/)
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(0); // memory leak issue atm
+    ::utils::perft(7);
+    //::utils::perft_time(6, 100);
+    //::utils::perft(5, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -", 1);
   }
-  else if (mode == "memTestMoveGen") {
-    memTestMoveGen();
+  else if (mode == "juddperft") {
+    juddperft(argc, argv);
+  }
+  else if (mode == "profiling") {
+    ::david::type::gameState_t gs;
+    ::utils::gameState::setDefaultChessLayout(gs);
+
+    ::david::MoveGen moveGen{gs};
+
+    for (int i = 0; i < 100; i++) {
+      std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
+      moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+    }
   }
 
-  // Close program with exit code 0 (UCI: after all threads have joined.)
-  return 0;
+
+  return EXIT_SUCCESS;
 }
 

@@ -3,7 +3,7 @@
 #include "david/david.h"
 #include "david/types.h"
 #include <array>
-#include "david/EngineContext.h"
+#include "david/bitboard.h"
 
 namespace david {
 namespace gameTree {
@@ -21,8 +21,7 @@ namespace gameTree {
  */
 class TreeGen {
  private:
-  // Context class
-  type::engineContext_ptr engineContextPtr;
+  const type::NeuralNetwork_t& neuralnet;
 
   // transposition table
   //std::array<NodeCache, constant::MAXMOVES>
@@ -37,17 +36,16 @@ class TreeGen {
   // keep track of game history
   std::string startposFEN;
   std::array<std::string, 300> history; // number of MAX moves in a game. EGN => uint8_t * 4
-  unsigned int historyIndex;
+  unsigned int historyIndex{0};
 
   // Creates EGN moves for each possible move after root node. 1 - 256.
   std::array<std::string, constant::MAXMOVES> EGNMoves; // calculate this after best move, dont waste time.
-  int nrOfEGNMoves; // holds the number of moves generated after root to reduce loop check
+  int nrOfEGNMoves{-1}; // holds the number of moves generated after root to reduce loop check
 
  public:
 
   // Constructors
-  TreeGen(type::engineContext_ptr ctx);
-  TreeGen(); // unit testing only
+  TreeGen(const type::NeuralNetwork_t& neuralNetwork);
 
   // Destructor
   ~TreeGen();
@@ -62,7 +60,6 @@ class TreeGen {
   void /************/ setMaxDepth(const int depth);
   void /************/ generateNode(const type::gameState_t& p, type::gameState_t& n, const type::gameState_t c);
   uint16_t /********/ generateChildren(const unsigned int index);
-  unsigned int /****/ getChildIndex(const unsigned int parent, const unsigned int child) const;
   unsigned int /****/ treeIndex(const uint8_t depth, const uint8_t index) const;
   type::gameState_t   getGameStateCopy(const unsigned int index) const;
   type::gameState_t&  getGameState(const unsigned int index);
@@ -75,6 +72,23 @@ class TreeGen {
 
   // sync engine's board track with GUI
   //void syncGameRecord(); // should this take an array of strings, or just the uci param for moves?
+
+  //
+  // inlines
+  //
+  inline unsigned int getChildIndex(const unsigned int parent, const unsigned int child) const {
+    //return this->depthIndexes[parent + 1 + child];
+    //utils::yellDeprecated("TreeGen::getChildIndex is not working correctly!!!!");
+    if (parent == 0) {
+      return 1 + child;
+    }
+    else if (parent <= constant::MAXMOVES) {
+      return constant::MAXMOVES + 1 + child;
+    }
+    else /*if (parent > constant::MAXMOVES)*/ {
+      return ((parent / constant::MAXMOVES) + 1) * constant::MAXMOVES + 1 + child;
+    }
+  }
 
 };
 

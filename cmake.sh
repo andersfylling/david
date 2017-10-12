@@ -10,7 +10,7 @@ mkdir build
 cd build
 
 # Run tests and build
-cmake ../..
+cmake ../.. -DCMAKE_BUILD_TYPE=Debug
 make -j 
 
 cd bin

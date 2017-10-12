@@ -2,32 +2,41 @@
 #include "david/ANN/ANN.h"
 #include "david/david.h"
 #include "david/utils/utils.h"
-#include "david/environment.h"
+#include "david/utils/gameState.h"
 
 // system dependencies
 #include <sstream>
+#include <david/utils/neuralNet.h>
 
 namespace david {
 /**
  * Constructor
  * @param filename The ANN weight file.
  */
-ANN::ANN(std::string filename)
-    : engineContextPtr(nullptr),
-      ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+ANN::ANN()
+    : ANNFile(""),
       ANNInstance(nullptr) {}
 
 /**
  * Constructor
- *
- * @param ctx engineContext_ptr which holds links to other initiated classes
  * @param filename The ANN weight file.
- * @see /engine/includes/david/definitions.h
  */
-ANN::ANN(type::engineContext_ptr ctx, std::string filename)
-    : engineContextPtr(ctx),
-      ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+ANN::ANN(const std::string filename)
+    : ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
       ANNInstance(nullptr) {}
+
+
+void ANN::guarenteeANNFile() const {
+#if defined(__linux__)
+  // make sure the chess david folder exists
+  // make sure the ANN folder exists
+  // make sure the ann file exists.
+  //::utils::fileExists(::utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename)
+#elif defined(_WIN32) || defined(_WIN64)
+  std::__throw_runtime_error("ERROR: Windows support is lacking!")
+#endif
+
+}
 
 /**
  * Destructor
@@ -42,7 +51,7 @@ ANN::~ANN() {
  * Retrieve the ANN file this engine instance uses for evaluating game boards.
  * @return std::string absolute path of ann file.
  */
-std::string ANN::getANNFile() {
+std::string ANN::getANNFile() const {
   return this->ANNFile;
 }
 
@@ -83,14 +92,14 @@ void ANN::setANNFile(std::string filename) {
 /**
  * Check if there exists a ANN instance
  */
-bool ANN::hasANNFile() {
+bool ANN::hasANNFile() const {
   return this->ANNFile != "";
 }
 
 /**
  * Check if there exists a ANN instance
  */
-bool ANN::hasANNInstance() {
+bool ANN::hasANNInstance() const {
   return this->ANNInstance != nullptr;
 }
 
@@ -112,7 +121,8 @@ void ANN::createANNInstance() {
 
   // Check that the file exists on the machine
   if (!utils::fileExists(this->ANNFile)) {
-    std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
+    std::string error = "ANN file does not exist: " + this->ANNFile;
+    std::__throw_runtime_error(error.c_str());
     return;
   }
 
@@ -126,13 +136,13 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(const type::gameState_t& board) {
-  const auto arr = ::utils::neuralnet::convertGameStateToInputs(board); // float array of the inputs
+int ANN::ANNEvaluate(type::gameState_t& board) const {
+  const auto arr = ::utils::neuralNet::convertGameStateToInputs(board); // float array of the inputs
 
   // populate array
   fann_type inputs[::david::constant::nn::INPUTSIZE];
   const auto len = arr.size();
-  for (int i = 0; i < len; i++) {
+  for (unsigned int i = 0; i < len; i++) {
     inputs[i] = arr[i];
   }
 
@@ -147,10 +157,9 @@ int ANN::ANNEvaluate(const type::gameState_t& board) {
  * @param fen std::string FEN(Forsyth–Edwards Notation)
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(const std::string& fen) {
-
+int ANN::ANNEvaluate(const std::string& fen) const {
   type::gameState_t gs;
-  utils::generateBoardFromFen(gs, fen);
+  utils::gameState::generateFromFEN(gs, fen);
 
   return this->ANNEvaluate(gs);
 }
