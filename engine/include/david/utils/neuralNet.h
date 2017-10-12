@@ -4,6 +4,8 @@
 #include "david/types.h"
 
 namespace utils {
+
+//! Utilities specific to the neural net.
 namespace neuralNet {
 
 

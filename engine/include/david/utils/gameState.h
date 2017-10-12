@@ -6,6 +6,8 @@
 #include "david/utils/utils.h"
 
 namespace utils {
+
+//! Utilities specific to the gameState struct.
 namespace gameState {
 
 std::string generateFen(const ::david::type::gameState_t& node);

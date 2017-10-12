@@ -5,6 +5,8 @@
 #include "david/david.h"
 
 namespace david {
+
+//! Contains the gameState struct...
 namespace bitboard {
 
 // 63 62 61 60 59 58 57 56

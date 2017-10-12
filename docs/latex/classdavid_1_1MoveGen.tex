@@ -1,0 +1,93 @@
+\hypertarget{classdavid_1_1MoveGen}{}\section{david\+:\+:Move\+Gen Class Reference}
+\label{classdavid_1_1MoveGen}\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdavid_1_1MoveGen_a36e125d25c15f5ce205d7f2843f8f3c9}{Move\+Gen} (\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&gs)
+\item 
+\mbox{\Hypertarget{classdavid_1_1MoveGen_a38412012c820f74eecacd76ae208ca93}\label{classdavid_1_1MoveGen_a38412012c820f74eecacd76ae208ca93}} 
+void {\bfseries set\+Game\+State} (\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&gs)
+\item 
+\mbox{\Hypertarget{classdavid_1_1MoveGen_ac5f61844feca4af99268276703693a68}\label{classdavid_1_1MoveGen_ac5f61844feca4af99268276703693a68}} 
+void {\bfseries run\+All\+Move\+Generators} ()
+\item 
+void \hyperlink{classdavid_1_1MoveGen_a4e521a22effe648f7efe62d147cdd29f}{generate\+Pawn\+Moves} ()
+\item 
+void \hyperlink{classdavid_1_1MoveGen_a5658568059a418aa87c6abaec120fa07}{generate\+Rook\+Moves} ()
+\item 
+void \hyperlink{classdavid_1_1MoveGen_a19c96f5c67ae7c5ca466f6a4dada6343}{generate\+Knight\+Moves} ()
+\item 
+void \hyperlink{classdavid_1_1MoveGen_a58f32c0d7f2d7df1ed6a6a53a85cb9e7}{generate\+Bishop\+Moves} ()
+\item 
+void \hyperlink{classdavid_1_1MoveGen_a333ddcfe5d1f26d9edf631229bf6edbf}{generate\+Queen\+Moves} ()
+\item 
+void \hyperlink{classdavid_1_1MoveGen_af6addc5f8801d660b54885a61c9723ad}{generate\+King\+Moves} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1MoveGen_a9ff1f7c7581bba85c26c97f6473df3f5}\label{classdavid_1_1MoveGen_a9ff1f7c7581bba85c26c97f6473df3f5}} 
+{\footnotesize template$<$size\+\_\+t N$>$ }\\uint16\+\_\+t {\bfseries generate\+Game\+States} (std\+::array$<$ \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t}, N $>$ \&arr, const unsigned long start=0, const unsigned long stop=N -\/ 1)
+\item 
+\mbox{\Hypertarget{classdavid_1_1MoveGen_a6f542d8d2b6f0d50afca11565cd5ff50}\label{classdavid_1_1MoveGen_a6f542d8d2b6f0d50afca11565cd5ff50}} 
+uint16\+\_\+t {\bfseries nr\+Of\+Possible\+Moves} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1MoveGen_ac60ac7d171642ae052be46baff52f8e9}\label{classdavid_1_1MoveGen_ac60ac7d171642ae052be46baff52f8e9}} 
+\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} {\bfseries generate\+Attacks} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdavid_1_1MoveGen_a36e125d25c15f5ce205d7f2843f8f3c9}\label{classdavid_1_1MoveGen_a36e125d25c15f5ce205d7f2843f8f3c9}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!Move\+Gen@{Move\+Gen}}
+\index{Move\+Gen@{Move\+Gen}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{Move\+Gen()}{MoveGen()}}
+{\footnotesize\ttfamily david\+::\+Move\+Gen\+::\+Move\+Gen (\begin{DoxyParamCaption}\item[{\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&}]{gs }\end{DoxyParamCaption})}
+
+Constructor 
+\begin{DoxyParams}{Parameters}
+{\em gs} & non-\/mutable game\+State instance \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdavid_1_1MoveGen_a58f32c0d7f2d7df1ed6a6a53a85cb9e7}\label{classdavid_1_1MoveGen_a58f32c0d7f2d7df1ed6a6a53a85cb9e7}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!generate\+Bishop\+Moves@{generate\+Bishop\+Moves}}
+\index{generate\+Bishop\+Moves@{generate\+Bishop\+Moves}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{generate\+Bishop\+Moves()}{generateBishopMoves()}}
+{\footnotesize\ttfamily void david\+::\+Move\+Gen\+::generate\+Bishop\+Moves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate legal moves for bishop \mbox{\Hypertarget{classdavid_1_1MoveGen_af6addc5f8801d660b54885a61c9723ad}\label{classdavid_1_1MoveGen_af6addc5f8801d660b54885a61c9723ad}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!generate\+King\+Moves@{generate\+King\+Moves}}
+\index{generate\+King\+Moves@{generate\+King\+Moves}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{generate\+King\+Moves()}{generateKingMoves()}}
+{\footnotesize\ttfamily void david\+::\+Move\+Gen\+::generate\+King\+Moves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate legal moves for king \mbox{\Hypertarget{classdavid_1_1MoveGen_a19c96f5c67ae7c5ca466f6a4dada6343}\label{classdavid_1_1MoveGen_a19c96f5c67ae7c5ca466f6a4dada6343}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!generate\+Knight\+Moves@{generate\+Knight\+Moves}}
+\index{generate\+Knight\+Moves@{generate\+Knight\+Moves}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{generate\+Knight\+Moves()}{generateKnightMoves()}}
+{\footnotesize\ttfamily void david\+::\+Move\+Gen\+::generate\+Knight\+Moves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate legal moves for knights \mbox{\Hypertarget{classdavid_1_1MoveGen_a4e521a22effe648f7efe62d147cdd29f}\label{classdavid_1_1MoveGen_a4e521a22effe648f7efe62d147cdd29f}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!generate\+Pawn\+Moves@{generate\+Pawn\+Moves}}
+\index{generate\+Pawn\+Moves@{generate\+Pawn\+Moves}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{generate\+Pawn\+Moves()}{generatePawnMoves()}}
+{\footnotesize\ttfamily void david\+::\+Move\+Gen\+::generate\+Pawn\+Moves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate all legal moves for pawns \mbox{\Hypertarget{classdavid_1_1MoveGen_a333ddcfe5d1f26d9edf631229bf6edbf}\label{classdavid_1_1MoveGen_a333ddcfe5d1f26d9edf631229bf6edbf}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!generate\+Queen\+Moves@{generate\+Queen\+Moves}}
+\index{generate\+Queen\+Moves@{generate\+Queen\+Moves}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{generate\+Queen\+Moves()}{generateQueenMoves()}}
+{\footnotesize\ttfamily void david\+::\+Move\+Gen\+::generate\+Queen\+Moves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate legal moves for queen \mbox{\Hypertarget{classdavid_1_1MoveGen_a5658568059a418aa87c6abaec120fa07}\label{classdavid_1_1MoveGen_a5658568059a418aa87c6abaec120fa07}} 
+\index{david\+::\+Move\+Gen@{david\+::\+Move\+Gen}!generate\+Rook\+Moves@{generate\+Rook\+Moves}}
+\index{generate\+Rook\+Moves@{generate\+Rook\+Moves}!david\+::\+Move\+Gen@{david\+::\+Move\+Gen}}
+\subsubsection{\texorpdfstring{generate\+Rook\+Moves()}{generateRookMoves()}}
+{\footnotesize\ttfamily void david\+::\+Move\+Gen\+::generate\+Rook\+Moves (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Generate legal moves for rook 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+engine/include/david/Move\+Gen.\+h\item 
+engine/src/david/Move\+Gen.\+cpp\end{DoxyCompactItemize}

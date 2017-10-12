@@ -12,6 +12,7 @@
 
 namespace david {
 
+//! contains data used by the MoveGen instance, search or perft runs. TreeGen alternative.
 namespace movegen {
 extern std::array<std::array<type::bitboard_t, 30>, 6> moves;
 extern std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack;

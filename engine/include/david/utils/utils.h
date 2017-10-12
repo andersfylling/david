@@ -12,6 +12,8 @@
 #include <map>
 #include <climits>
 
+
+//! holds different utility functions that's often used in general.
 namespace utils {
 
 // converters
