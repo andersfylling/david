@@ -1,0 +1,278 @@
+\hypertarget{classdavid_1_1Search}{}\section{david\+:\+:Search Class Reference}
+\label{classdavid_1_1Search}\index{david\+::\+Search@{david\+::\+Search}}
+
+
+{\ttfamily \#include $<$Search.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdavid_1_1Search_a2a037825dc7f3bf6d4d9c1e06c0c1848}{Search} (\hyperlink{classdavid_1_1gameTree_1_1TreeGen}{type\+::\+Tree\+Gen\+\_\+t} \&tg)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a3a6e4319d8d73e068ff464b7f9c1dbee}\label{classdavid_1_1Search_a3a6e4319d8d73e068ff464b7f9c1dbee}} 
+{\bfseries Search} (const \hyperlink{classdavid_1_1Search}{Search} \&)=delete
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_ada79fe6a57039fc0845fc2b32ebe52e0}\label{classdavid_1_1Search_ada79fe6a57039fc0845fc2b32ebe52e0}} 
+void {\bfseries operator=} (const \hyperlink{classdavid_1_1Search}{Search} \&)=delete
+\item 
+int \hyperlink{classdavid_1_1Search_a2369363341b57c68fcef39a5be57221b}{search\+Init} ()
+\item 
+int \hyperlink{classdavid_1_1Search_a77bf5a13cdb27c44f1c3abf26c0be0b5}{iterative\+Deepening} ()
+\item 
+int \hyperlink{classdavid_1_1Search_a4ce0b048c7b1a1beebfe033d92622ba4}{negamax} (unsigned int index, int alpha, int beta, int depth, int iterative\+Depth\+Limit)
+\item 
+void \hyperlink{classdavid_1_1Search_acdd60c4222d2c63d07e8576faf5a34fd}{set\+Abort} (bool is\+Aborted)
+\item 
+void \hyperlink{classdavid_1_1Search_ad473d052f9123762c1636ef04a7ecdde}{set\+Complete} (bool is\+Complete)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_ada3fc61b63f35aaf5a5a5e177b08d93f}\label{classdavid_1_1Search_ada3fc61b63f35aaf5a5a5e177b08d93f}} 
+int {\bfseries get\+Search\+Result} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a17bee32484445f77cdc1de6d0e7256b6}\label{classdavid_1_1Search_a17bee32484445f77cdc1de6d0e7256b6}} 
+void {\bfseries uci\+Search\+Waiter} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_aa07d8f9db7ebdbbaab08fb19ea7e4747}\label{classdavid_1_1Search_aa07d8f9db7ebdbbaab08fb19ea7e4747}} 
+void {\bfseries uci\+Search\+Waiter\+Join} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a7d2a2b6d9ecd529696944468ffdda7b3}\label{classdavid_1_1Search_a7d2a2b6d9ecd529696944468ffdda7b3}} 
+void {\bfseries enable\+U\+C\+I\+Mode} ()
+\item 
+int \hyperlink{classdavid_1_1Search_aca35880f4373631acf04f5e394470c1f}{return\+Depth} ()
+\item 
+int \hyperlink{classdavid_1_1Search_aa61a42ed269f910f0fdc41c050c3e195}{return\+Time\+To\+Search} ()
+\item 
+int \hyperlink{classdavid_1_1Search_a4986ca7138add256e0c6e974e66c1c25}{return\+Score} ()
+\item 
+bool \hyperlink{classdavid_1_1Search_a7ce9c77d95a5883bea2f8ce2ed5f006b}{return\+Complete} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a5b721b9fed74f278c8ff5f8314af642b}\label{classdavid_1_1Search_a5b721b9fed74f278c8ff5f8314af642b}} 
+bool {\bfseries aborted} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a4892e06da8c95e6e5df00e5f0072ff74}\label{classdavid_1_1Search_a4892e06da8c95e6e5df00e5f0072ff74}} 
+void {\bfseries performance\+Test} (\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&node, int iterations)
+\item 
+void \hyperlink{classdavid_1_1Search_a2606078550d8ea05738960a9f171de08}{stop\+Search} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a001d1c613473d161245bc4c70d9c7944}\label{classdavid_1_1Search_a001d1c613473d161245bc4c70d9c7944}} 
+void {\bfseries quit\+Search} ()
+\item 
+void \hyperlink{classdavid_1_1Search_a4c3398fb13ce8c3bc477ded05f75ec0e}{set\+Depth} (int depth)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a816f2e2bfa507be243c8af5df82cc248}\label{classdavid_1_1Search_a816f2e2bfa507be243c8af5df82cc248}} 
+void {\bfseries set\+Search\+Moves} (std\+::string moves)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_ac39d9e7faf111bcf7344b0499602e336}\label{classdavid_1_1Search_ac39d9e7faf111bcf7344b0499602e336}} 
+void {\bfseries set\+W\+Time} (int wtime)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_ab6f3d9c3a309f16b12703ccd5422704b}\label{classdavid_1_1Search_ab6f3d9c3a309f16b12703ccd5422704b}} 
+void {\bfseries set\+B\+Time} (int btime)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_ae9fe5183ac56cbd824fdf6e6b27e6369}\label{classdavid_1_1Search_ae9fe5183ac56cbd824fdf6e6b27e6369}} 
+void {\bfseries set\+Winc} (int winc)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a06bf057ac90a52fcec98ddfc1fa83d88}\label{classdavid_1_1Search_a06bf057ac90a52fcec98ddfc1fa83d88}} 
+void {\bfseries set\+Binc} (int binc)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a63771eb0bcda5888a34166c1afef579a}\label{classdavid_1_1Search_a63771eb0bcda5888a34166c1afef579a}} 
+void {\bfseries set\+Moves\+To\+Go} (int movestogo)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a8d8cb30f3f1675770da222a7a8c31a40}\label{classdavid_1_1Search_a8d8cb30f3f1675770da222a7a8c31a40}} 
+void {\bfseries set\+Nodes} (int nodes)
+\item 
+void \hyperlink{classdavid_1_1Search_ae56889dbafede8407e4edb397cd2d19b}{set\+Move\+Time} (int movetime)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_aa88886359a8cc975fb365bb503b07ccc}\label{classdavid_1_1Search_aa88886359a8cc975fb365bb503b07ccc}} 
+void {\bfseries set\+Mate} (int mate)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_aa8bf67dc1ac04b43e97bc6f12076411d}\label{classdavid_1_1Search_aa8bf67dc1ac04b43e97bc6f12076411d}} 
+void {\bfseries set\+Infinite} (bool inf)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a6dbe689d6ef4b839c49401175f3d0697}\label{classdavid_1_1Search_a6dbe689d6ef4b839c49401175f3d0697}} 
+void {\bfseries set\+Ponder} (bool ponder)
+\item 
+void \hyperlink{classdavid_1_1Search_a84aaba374418b295f0a0cfed676114b4}{set\+Difficulty} (int difficulty)
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_ab2c4662e6caa5aa829aec9e8dcf17b63}\label{classdavid_1_1Search_ab2c4662e6caa5aa829aec9e8dcf17b63}} 
+int {\bfseries get\+Time\+Used} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdavid_1_1Search_a85837d0f20ee7c3d087ed972a3aee903}\label{classdavid_1_1Search_a85837d0f20ee7c3d087ed972a3aee903}} 
+clock\+\_\+t {\bfseries start\+Time}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classdavid_1_1Search}{Search} class is responsible for searching through a gamestate tree best\+Score is stored in object, this is the heuristic og a move best\+Move stores the gamestate which is the best throughout. Should return a fen string or something to U\+CI 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdavid_1_1Search_a2a037825dc7f3bf6d4d9c1e06c0c1848}\label{classdavid_1_1Search_a2a037825dc7f3bf6d4d9c1e06c0c1848}} 
+\index{david\+::\+Search@{david\+::\+Search}!Search@{Search}}
+\index{Search@{Search}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{Search()}{Search()}}
+{\footnotesize\ttfamily david\+::\+Search\+::\+Search (\begin{DoxyParamCaption}\item[{\hyperlink{classdavid_1_1gameTree_1_1TreeGen}{type\+::\+Tree\+Gen\+\_\+t} \&}]{tg }\end{DoxyParamCaption})}
+
+Constructor 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdavid_1_1Search_a77bf5a13cdb27c44f1c3abf26c0be0b5}\label{classdavid_1_1Search_a77bf5a13cdb27c44f1c3abf26c0be0b5}} 
+\index{david\+::\+Search@{david\+::\+Search}!iterative\+Deepening@{iterative\+Deepening}}
+\index{iterative\+Deepening@{iterative\+Deepening}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{iterative\+Deepening()}{iterativeDeepening()}}
+{\footnotesize\ttfamily int david\+::\+Search\+::iterative\+Deepening (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Main iterative loop, calls negamax until desired depth is reached or the time limit is run out. 
+\begin{DoxyParams}{Parameters}
+{\em board} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_a4ce0b048c7b1a1beebfe033d92622ba4}\label{classdavid_1_1Search_a4ce0b048c7b1a1beebfe033d92622ba4}} 
+\index{david\+::\+Search@{david\+::\+Search}!negamax@{negamax}}
+\index{negamax@{negamax}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{negamax()}{negamax()}}
+{\footnotesize\ttfamily int david\+::\+Search\+::negamax (\begin{DoxyParamCaption}\item[{unsigned int}]{index,  }\item[{int}]{alpha,  }\item[{int}]{beta,  }\item[{int}]{i\+Depth,  }\item[{int}]{iterative\+Depth\+Limit }\end{DoxyParamCaption})}
+
+Negamax routine. Recursive. Searches after best move in a gametree, will call itself until all nodes in the tree is searched trough. Returns best move
+
+Local int values need to be changed to gamestate pointers instead 
+\begin{DoxyParams}{Parameters}
+{\em node} & \\
+\hline
+{\em alpha} & \\
+\hline
+{\em beta} & \\
+\hline
+{\em depth} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_a7ce9c77d95a5883bea2f8ce2ed5f006b}\label{classdavid_1_1Search_a7ce9c77d95a5883bea2f8ce2ed5f006b}} 
+\index{david\+::\+Search@{david\+::\+Search}!return\+Complete@{return\+Complete}}
+\index{return\+Complete@{return\+Complete}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{return\+Complete()}{returnComplete()}}
+{\footnotesize\ttfamily bool david\+::\+Search\+::return\+Complete (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns if the search is complete, search not aborted and completed without issues \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_aca35880f4373631acf04f5e394470c1f}\label{classdavid_1_1Search_aca35880f4373631acf04f5e394470c1f}} 
+\index{david\+::\+Search@{david\+::\+Search}!return\+Depth@{return\+Depth}}
+\index{return\+Depth@{return\+Depth}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{return\+Depth()}{returnDepth()}}
+{\footnotesize\ttfamily int david\+::\+Search\+::return\+Depth (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns depth to be searched, only used in debug \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_a4986ca7138add256e0c6e974e66c1c25}\label{classdavid_1_1Search_a4986ca7138add256e0c6e974e66c1c25}} 
+\index{david\+::\+Search@{david\+::\+Search}!return\+Score@{return\+Score}}
+\index{return\+Score@{return\+Score}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{return\+Score()}{returnScore()}}
+{\footnotesize\ttfamily int david\+::\+Search\+::return\+Score (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns best\+Score sat by searching \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_aa61a42ed269f910f0fdc41c050c3e195}\label{classdavid_1_1Search_aa61a42ed269f910f0fdc41c050c3e195}} 
+\index{david\+::\+Search@{david\+::\+Search}!return\+Time\+To\+Search@{return\+Time\+To\+Search}}
+\index{return\+Time\+To\+Search@{return\+Time\+To\+Search}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{return\+Time\+To\+Search()}{returnTimeToSearch()}}
+{\footnotesize\ttfamily int david\+::\+Search\+::return\+Time\+To\+Search (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns how much time allocated to the search \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_a2369363341b57c68fcef39a5be57221b}\label{classdavid_1_1Search_a2369363341b57c68fcef39a5be57221b}} 
+\index{david\+::\+Search@{david\+::\+Search}!search\+Init@{search\+Init}}
+\index{search\+Init@{search\+Init}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{search\+Init()}{searchInit()}}
+{\footnotesize\ttfamily int david\+::\+Search\+::search\+Init (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Set \hyperlink{classdavid_1_1Search}{Search} variables. search\+Score is a class member and should be returned to U\+CI. Must rewrite to send best move and not \char`\"{}score\char`\"{} 
+\begin{DoxyParams}{Parameters}
+{\em node} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1Search_acdd60c4222d2c63d07e8576faf5a34fd}\label{classdavid_1_1Search_acdd60c4222d2c63d07e8576faf5a34fd}} 
+\index{david\+::\+Search@{david\+::\+Search}!set\+Abort@{set\+Abort}}
+\index{set\+Abort@{set\+Abort}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{set\+Abort()}{setAbort()}}
+{\footnotesize\ttfamily void david\+::\+Search\+::set\+Abort (\begin{DoxyParamCaption}\item[{bool}]{is\+Aborted }\end{DoxyParamCaption})}
+
+Set aborted search 
+\begin{DoxyParams}{Parameters}
+{\em is\+Aborted} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1Search_ad473d052f9123762c1636ef04a7ecdde}\label{classdavid_1_1Search_ad473d052f9123762c1636ef04a7ecdde}} 
+\index{david\+::\+Search@{david\+::\+Search}!set\+Complete@{set\+Complete}}
+\index{set\+Complete@{set\+Complete}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{set\+Complete()}{setComplete()}}
+{\footnotesize\ttfamily void david\+::\+Search\+::set\+Complete (\begin{DoxyParamCaption}\item[{bool}]{is\+Complete }\end{DoxyParamCaption})}
+
+Set complete search 
+\begin{DoxyParams}{Parameters}
+{\em is\+Complete} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1Search_a4c3398fb13ce8c3bc477ded05f75ec0e}\label{classdavid_1_1Search_a4c3398fb13ce8c3bc477ded05f75ec0e}} 
+\index{david\+::\+Search@{david\+::\+Search}!set\+Depth@{set\+Depth}}
+\index{set\+Depth@{set\+Depth}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{set\+Depth()}{setDepth()}}
+{\footnotesize\ttfamily void david\+::\+Search\+::set\+Depth (\begin{DoxyParamCaption}\item[{int}]{depth }\end{DoxyParamCaption})}
+
+Set search depth, recieved by uci 
+\begin{DoxyParams}{Parameters}
+{\em depth} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1Search_a84aaba374418b295f0a0cfed676114b4}\label{classdavid_1_1Search_a84aaba374418b295f0a0cfed676114b4}} 
+\index{david\+::\+Search@{david\+::\+Search}!set\+Difficulty@{set\+Difficulty}}
+\index{set\+Difficulty@{set\+Difficulty}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{set\+Difficulty()}{setDifficulty()}}
+{\footnotesize\ttfamily void david\+::\+Search\+::set\+Difficulty (\begin{DoxyParamCaption}\item[{int}]{difficulty }\end{DoxyParamCaption})}
+
+Used to set game difficulty 
+\begin{DoxyParams}{Parameters}
+{\em difficulty} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1Search_ae56889dbafede8407e4edb397cd2d19b}\label{classdavid_1_1Search_ae56889dbafede8407e4edb397cd2d19b}} 
+\index{david\+::\+Search@{david\+::\+Search}!set\+Move\+Time@{set\+Move\+Time}}
+\index{set\+Move\+Time@{set\+Move\+Time}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{set\+Move\+Time()}{setMoveTime()}}
+{\footnotesize\ttfamily void david\+::\+Search\+::set\+Move\+Time (\begin{DoxyParamCaption}\item[{int}]{movetime }\end{DoxyParamCaption})}
+
+Set how much time to search 
+\begin{DoxyParams}{Parameters}
+{\em movetime} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1Search_a2606078550d8ea05738960a9f171de08}\label{classdavid_1_1Search_a2606078550d8ea05738960a9f171de08}} 
+\index{david\+::\+Search@{david\+::\+Search}!stop\+Search@{stop\+Search}}
+\index{stop\+Search@{stop\+Search}!david\+::\+Search@{david\+::\+Search}}
+\subsubsection{\texorpdfstring{stop\+Search()}{stopSearch()}}
+{\footnotesize\ttfamily void david\+::\+Search\+::stop\+Search (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Used to gather statistcs over how much time and nodes a search uses and can search over some iterations 
+\begin{DoxyParams}{Parameters}
+{\em node} & \\
+\hline
+{\em iterations} & If the U\+CI at any time tells search to abort \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+engine/include/david/Search.\+h\item 
+engine/src/david/Search.\+cpp\end{DoxyCompactItemize}

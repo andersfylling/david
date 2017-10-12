@@ -1,24 +1,34 @@
 # settings
-cmake_minimum_required(VERSION 3.6)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_VERBOSE_MAKEFILE ON)
+cmake_minimum_required(VERSION 3.8)
+project(chess_ann LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# root project name
-project(chess_ann)
+# Setup paths
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/Paths.cmake")
 
-# sub folders
-#add_subdirectory(chessBoard)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+
+# In case neither release nor debug is set as build type, default to release.
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if(CMAKE_BUILD_TYPE EQUAL "Release")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC -Wno-unused-variable")
+endif()
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto -DNDEBUG")
 
 # Third party libraries in lib
-add_subdirectory(lib/Catch) # Catch, for unit testing.
-add_subdirectory(lib/fann)  # Fann, for faster neural network development.
-add_subdirectory(tests)     # Our tests
+add_subdirectory(external)
 
-# cpp files in root project folder
-set(SOURCE_FILES
-    src/main.cpp
-        src/enviornment.cpp
-    )
-add_executable(chess_ann ${SOURCE_FILES})
+# Our source code
+add_subdirectory(engine)
 
-# link all folders (root + subfolders)
-target_link_libraries(chess_ann)
+#MESSAGE( WARNING "BUILD TYPE" ${CMAKE_BUILD_TYPE})
+#MESSAGE( WARNING "CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS} )
+#message(WARNING "CMAKE_COMMAND: " ${CMAKE_COMMAND})

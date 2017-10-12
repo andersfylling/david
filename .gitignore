@@ -1,37 +1,23 @@
 # Add any directories, files, or patterns you don't want to be tracked by version control
 
 # Ignore CMakeDebug files
-cmake-build-debug
-CMakeFiles
-CMakeCache.txt
-Makefile
-cmake_*
-*.cbp
-*.cmake
-*/cmake-build-debug
-*/CMakeFiles
-*/CMakeCache.txt
-*/Makefile
-*/cmake_*
-*/*.cbp
-*/*.cmake
+/cmake-build-debug/
+/cmake-build-release/
+/cmake/build/
 
 # Ignore intellij "CLion" project configurations
 .idea
 
-# Ignore the build and lib dirs
-build/*
-#lib/*
-
-# Ignore any executables
-bin/*
+#engine/ANNTraining/trainingdata/fenstring.txt
+#engine/ANNTraining/trainingdata/fenAndStockfishScore.data
 
 # Ignore Mac specific files
 .DS_Store
 
+# tmp data created by neural network training
+engine/ANNTraining/binaryNetwork/tmp/*.data
+
 
 
 # DO NOT SKIP THESE
-#Would skip repository lib/Catch
-!README.md
-!*/README.md
+# !*/README.md

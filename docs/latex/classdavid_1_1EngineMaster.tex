@@ -1,0 +1,69 @@
+\hypertarget{classdavid_1_1EngineMaster}{}\section{david\+:\+:Engine\+Master Class Reference}
+\label{classdavid_1_1EngineMaster}\index{david\+::\+Engine\+Master@{david\+::\+Engine\+Master}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_a54cbfc2886ca31ea806b3242b654c5bc}\label{classdavid_1_1EngineMaster_a54cbfc2886ca31ea806b3242b654c5bc}} 
+{\bfseries Engine\+Master} (const std\+::string filename)
+\item 
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_a48bb11415bf635328bc54dd4db36ff6e}\label{classdavid_1_1EngineMaster_a48bb11415bf635328bc54dd4db36ff6e}} 
+int {\bfseries spawn\+Engine} ()
+\item 
+int \hyperlink{classdavid_1_1EngineMaster_a37cdf4a685c0fb0e317e94fcc03e6228}{battle} (const int engine\+I\+D1, const int engine\+I\+D2)
+\item 
+int \hyperlink{classdavid_1_1EngineMaster_a714b4dd5a0ce60b61f0c9f5ad769644d}{battle} (const int engine\+I\+D1, const int engine\+I\+D2, const std\+::string fen)
+\item 
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_aa1cde75b83ce9dcf11a5769a5345d1b9}\label{classdavid_1_1EngineMaster_aa1cde75b83ce9dcf11a5769a5345d1b9}} 
+bool {\bfseries battle\+Winner} (int battle\+ID, int main\+Engine\+ID)
+\item 
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_a9ef59bd73c1aaee24984e0416acd6ab9}\label{classdavid_1_1EngineMaster_a9ef59bd73c1aaee24984e0416acd6ab9}} 
+int {\bfseries battle\+Winner} (int battle\+ID)
+\item 
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_aa58d33be1b3e3302a2afb57162af0e28}\label{classdavid_1_1EngineMaster_aa58d33be1b3e3302a2afb57162af0e28}} 
+void {\bfseries train\+Until\+Winner} (int main\+Engine\+ID, int opponent\+Engine\+ID)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_a37cdf4a685c0fb0e317e94fcc03e6228}\label{classdavid_1_1EngineMaster_a37cdf4a685c0fb0e317e94fcc03e6228}} 
+\index{david\+::\+Engine\+Master@{david\+::\+Engine\+Master}!battle@{battle}}
+\index{battle@{battle}!david\+::\+Engine\+Master@{david\+::\+Engine\+Master}}
+\subsubsection{\texorpdfstring{battle()}{battle()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily int david\+::\+Engine\+Master\+::battle (\begin{DoxyParamCaption}\item[{const int}]{engine\+I\+D1,  }\item[{const int}]{engine\+I\+D2 }\end{DoxyParamCaption})}
+
+Initiates a battle with default chess layout
+
+
+\begin{DoxyParams}{Parameters}
+{\em engine\+I\+D1} & an engine instance ID \\
+\hline
+{\em engine\+I\+D2} & an engine instance ID, != engine\+I\+D1 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1EngineMaster_a714b4dd5a0ce60b61f0c9f5ad769644d}\label{classdavid_1_1EngineMaster_a714b4dd5a0ce60b61f0c9f5ad769644d}} 
+\index{david\+::\+Engine\+Master@{david\+::\+Engine\+Master}!battle@{battle}}
+\index{battle@{battle}!david\+::\+Engine\+Master@{david\+::\+Engine\+Master}}
+\subsubsection{\texorpdfstring{battle()}{battle()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int david\+::\+Engine\+Master\+::battle (\begin{DoxyParamCaption}\item[{const int}]{engine\+I\+D1,  }\item[{const int}]{engine\+I\+D2,  }\item[{const std\+::string}]{fen }\end{DoxyParamCaption})}
+
+Initiates a battle with desired chess layout
+
+
+\begin{DoxyParams}{Parameters}
+{\em engine\+I\+D1} & an engine instance ID \\
+\hline
+{\em engine\+I\+D2} & an engine instance ID, != engine\+I\+D1 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+engine/include/david/Engine\+Master.\+h\item 
+engine/src/david/Engine\+Master.\+cpp\end{DoxyCompactItemize}

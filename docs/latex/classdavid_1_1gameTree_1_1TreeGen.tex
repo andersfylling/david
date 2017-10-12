@@ -1,0 +1,178 @@
+\hypertarget{classdavid_1_1gameTree_1_1TreeGen}{}\section{david\+:\+:game\+Tree\+:\+:Tree\+Gen Class Reference}
+\label{classdavid_1_1gameTree_1_1TreeGen}\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+
+
+{\ttfamily \#include $<$Tree\+Gen.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classdavid_1_1gameTree_1_1TreeGen_a83ab2152e0a57671f7b38a0c24c2bb3b}{Tree\+Gen} (const \hyperlink{classdavid_1_1ANN}{type\+::\+Neural\+Network\+\_\+t} \&neural\+Network)
+\item 
+\hyperlink{classdavid_1_1gameTree_1_1TreeGen_ad9d485261d15b5837e4aec4d46912ad5}{$\sim$\+Tree\+Gen} ()
+\item 
+int \hyperlink{classdavid_1_1gameTree_1_1TreeGen_ae5b4ec70914ac495f83199db48f9a475}{get\+Game\+State\+Score} (const unsigned int index) const
+\item 
+int \hyperlink{classdavid_1_1gameTree_1_1TreeGen_aeaa5e74a9a71ea62b3cab50c245aa46c}{get\+Depth} () const
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_ad775b50fae0171d712c227a3aa69e972}\label{classdavid_1_1gameTree_1_1TreeGen_ad775b50fae0171d712c227a3aa69e972}} 
+void {\bfseries set\+Root\+Node} (const \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&gs)
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a1bedef028d98003b7da32dcfccbcf154}\label{classdavid_1_1gameTree_1_1TreeGen_a1bedef028d98003b7da32dcfccbcf154}} 
+void {\bfseries update\+Root\+Node\+To} (const int index)
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_af00bca995593806cb50e62a642869361}\label{classdavid_1_1gameTree_1_1TreeGen_af00bca995593806cb50e62a642869361}} 
+void {\bfseries set\+Root\+Node\+From\+F\+EN} (const std\+::string \&F\+EN)
+\item 
+void \hyperlink{classdavid_1_1gameTree_1_1TreeGen_a3fdea406aba77b0553ebf507dc73c1b8}{reset} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a10d0e11d7bd9fb8a0bd0425df46a0e6b}\label{classdavid_1_1gameTree_1_1TreeGen_a10d0e11d7bd9fb8a0bd0425df46a0e6b}} 
+void {\bfseries set\+Max\+Depth} (const int depth)
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a63d50ceeb1993012ae8f956f4476948a}\label{classdavid_1_1gameTree_1_1TreeGen_a63d50ceeb1993012ae8f956f4476948a}} 
+void {\bfseries generate\+Node} (const \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&p, \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \&n, const \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} c)
+\item 
+uint16\+\_\+t \hyperlink{classdavid_1_1gameTree_1_1TreeGen_a330f72db3d31bbd75e8cf8a452b55d26}{generate\+Children} (const unsigned int index)
+\item 
+unsigned int \hyperlink{classdavid_1_1gameTree_1_1TreeGen_af4174f1ef14a61e88cf241a82c1761c7}{tree\+Index} (const uint8\+\_\+t depth, const uint8\+\_\+t index) const
+\item 
+\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \hyperlink{classdavid_1_1gameTree_1_1TreeGen_a8c9344951f5f5ae2cdf77dbfb06f21a1}{get\+Game\+State\+Copy} (const unsigned int index) const
+\item 
+\hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \& \hyperlink{classdavid_1_1gameTree_1_1TreeGen_aa2a2345e74895db50b8f3b5fb63c3087}{get\+Game\+State} (const unsigned int index)
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_aa60d9a73adafbc67e2f08e4914a1bc21}\label{classdavid_1_1gameTree_1_1TreeGen_aa60d9a73adafbc67e2f08e4914a1bc21}} 
+void {\bfseries generate\+E\+G\+N\+Moves} ()
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a58a1218cb529b5b42476bb1c4e18692c}\label{classdavid_1_1gameTree_1_1TreeGen_a58a1218cb529b5b42476bb1c4e18692c}} 
+void {\bfseries apply\+E\+G\+N\+Move} (const std\+::string \&E\+GN)
+\item 
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_ac7349dedac423993d192ac5e50839a23}\label{classdavid_1_1gameTree_1_1TreeGen_ac7349dedac423993d192ac5e50839a23}} 
+unsigned int {\bfseries get\+Child\+Index} (const unsigned int parent, const unsigned int child) const
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class instance lives through the whole engine lifetime.
+
+Used to generate nodes from a game\+State node.
+
+Number of levels to be generated or nr of nodes can be specified.
+
+This class starts always on the leftmost node, generates children and then moves to the neighbour node to his right. If there are no neighbour node at this level, it\textquotesingle{}s either skipped if the parent discovered chess mate or the generating is finished. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a83ab2152e0a57671f7b38a0c24c2bb3b}\label{classdavid_1_1gameTree_1_1TreeGen_a83ab2152e0a57671f7b38a0c24c2bb3b}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!Tree\+Gen@{Tree\+Gen}}
+\index{Tree\+Gen@{Tree\+Gen}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{Tree\+Gen()}{TreeGen()}}
+{\footnotesize\ttfamily david\+::game\+Tree\+::\+Tree\+Gen\+::\+Tree\+Gen (\begin{DoxyParamCaption}\item[{const \hyperlink{classdavid_1_1ANN}{type\+::\+Neural\+Network\+\_\+t} \&}]{Neural\+Net\+Ref }\end{DoxyParamCaption})}
+
+Constructor \mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_ad9d485261d15b5837e4aec4d46912ad5}\label{classdavid_1_1gameTree_1_1TreeGen_ad9d485261d15b5837e4aec4d46912ad5}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!````~Tree\+Gen@{$\sim$\+Tree\+Gen}}
+\index{````~Tree\+Gen@{$\sim$\+Tree\+Gen}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{$\sim$\+Tree\+Gen()}{~TreeGen()}}
+{\footnotesize\ttfamily david\+::game\+Tree\+::\+Tree\+Gen\+::$\sim$\+Tree\+Gen (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Destructor 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a330f72db3d31bbd75e8cf8a452b55d26}\label{classdavid_1_1gameTree_1_1TreeGen_a330f72db3d31bbd75e8cf8a452b55d26}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!generate\+Children@{generate\+Children}}
+\index{generate\+Children@{generate\+Children}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{generate\+Children()}{generateChildren()}}
+{\footnotesize\ttfamily uint16\+\_\+t david\+::game\+Tree\+::\+Tree\+Gen\+::generate\+Children (\begin{DoxyParamCaption}\item[{const unsigned int}]{index }\end{DoxyParamCaption})}
+
+Generates children for a given node, and sorts the children.
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & std\+::share\+\_\+ptr$<$\+::bitboard\+::game\+State$>$ \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_aeaa5e74a9a71ea62b3cab50c245aa46c}\label{classdavid_1_1gameTree_1_1TreeGen_aeaa5e74a9a71ea62b3cab50c245aa46c}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!get\+Depth@{get\+Depth}}
+\index{get\+Depth@{get\+Depth}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{get\+Depth()}{getDepth()}}
+{\footnotesize\ttfamily int david\+::game\+Tree\+::\+Tree\+Gen\+::get\+Depth (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Maximum depth allowed to search to.
+
+\begin{DoxyReturn}{Returns}
+int Max Depth of game tree 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_aa2a2345e74895db50b8f3b5fb63c3087}\label{classdavid_1_1gameTree_1_1TreeGen_aa2a2345e74895db50b8f3b5fb63c3087}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!get\+Game\+State@{get\+Game\+State}}
+\index{get\+Game\+State@{get\+Game\+State}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{get\+Game\+State()}{getGameState()}}
+{\footnotesize\ttfamily \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} \& david\+::game\+Tree\+::\+Tree\+Gen\+::get\+Game\+State (\begin{DoxyParamCaption}\item[{const unsigned int}]{index }\end{DoxyParamCaption})}
+
+Get a reference of the given node at index.
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & unsigned int Index in game tree \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Mutable game\+State reference 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a8c9344951f5f5ae2cdf77dbfb06f21a1}\label{classdavid_1_1gameTree_1_1TreeGen_a8c9344951f5f5ae2cdf77dbfb06f21a1}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!get\+Game\+State\+Copy@{get\+Game\+State\+Copy}}
+\index{get\+Game\+State\+Copy@{get\+Game\+State\+Copy}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{get\+Game\+State\+Copy()}{getGameStateCopy()}}
+{\footnotesize\ttfamily \hyperlink{structdavid_1_1bitboard_1_1gameState}{type\+::game\+State\+\_\+t} david\+::game\+Tree\+::\+Tree\+Gen\+::get\+Game\+State\+Copy (\begin{DoxyParamCaption}\item[{const unsigned int}]{index }\end{DoxyParamCaption}) const}
+
+Get a copy of the given node at index.
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & unsigned int Index in game tree \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Mutable game\+State copy 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_ae5b4ec70914ac495f83199db48f9a475}\label{classdavid_1_1gameTree_1_1TreeGen_ae5b4ec70914ac495f83199db48f9a475}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!get\+Game\+State\+Score@{get\+Game\+State\+Score}}
+\index{get\+Game\+State\+Score@{get\+Game\+State\+Score}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{get\+Game\+State\+Score()}{getGameStateScore()}}
+{\footnotesize\ttfamily int david\+::game\+Tree\+::\+Tree\+Gen\+::get\+Game\+State\+Score (\begin{DoxyParamCaption}\item[{const unsigned int}]{index }\end{DoxyParamCaption}) const}
+
+Get score of node at index. 
+\begin{DoxyParams}{Parameters}
+{\em index} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_a3fdea406aba77b0553ebf507dc73c1b8}\label{classdavid_1_1gameTree_1_1TreeGen_a3fdea406aba77b0553ebf507dc73c1b8}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!reset@{reset}}
+\index{reset@{reset}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void david\+::game\+Tree\+::\+Tree\+Gen\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Remove every node in this class instance memory. \mbox{\Hypertarget{classdavid_1_1gameTree_1_1TreeGen_af4174f1ef14a61e88cf241a82c1761c7}\label{classdavid_1_1gameTree_1_1TreeGen_af4174f1ef14a61e88cf241a82c1761c7}} 
+\index{david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}!tree\+Index@{tree\+Index}}
+\index{tree\+Index@{tree\+Index}!david\+::game\+Tree\+::\+Tree\+Gen@{david\+::game\+Tree\+::\+Tree\+Gen}}
+\subsubsection{\texorpdfstring{tree\+Index()}{treeIndex()}}
+{\footnotesize\ttfamily unsigned int david\+::game\+Tree\+::\+Tree\+Gen\+::tree\+Index (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t}]{depth,  }\item[{const uint8\+\_\+t}]{index }\end{DoxyParamCaption}) const}
+
+Get the tree index that represents the element at relative position from depth and index.
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth} & -\/1 $<$ depth $<$ constant\+::\+M\+A\+X\+D\+E\+P\+TH \\
+\hline
+{\em index} & -\/1 $<$ index $<$ constant\+::\+M\+A\+X\+M\+O\+V\+ES \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+index that can be used in the game tree, range \mbox{[}0, constant\+::\+M\+A\+X\+M\+O\+V\+ES $\ast$ constant\+::\+M\+A\+X\+D\+E\+P\+TH\mbox{]} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+engine/include/david/Tree\+Gen.\+h\item 
+engine/src/david/Tree\+Gen.\+cpp\end{DoxyCompactItemize}

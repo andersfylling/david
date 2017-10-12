@@ -1,0 +1,55 @@
+\hypertarget{structdavid_1_1bitboard_1_1gameState}{}\section{david\+:\+:bitboard\+:\+:game\+State Struct Reference}
+\label{structdavid_1_1bitboard_1_1gameState}\index{david\+::bitboard\+::game\+State@{david\+::bitboard\+::game\+State}}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a1eccb07e0279b314da216c37a6ec5d13}\label{structdavid_1_1bitboard_1_1gameState_a1eccb07e0279b314da216c37a6ec5d13}} 
+uint\+\_\+fast8\+\_\+t {\bfseries half\+Moves} = 0
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a61be62d12357e9751e646ab4783faf08}\label{structdavid_1_1bitboard_1_1gameState_a61be62d12357e9751e646ab4783faf08}} 
+uint\+\_\+fast16\+\_\+t {\bfseries full\+Moves} = 1
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a21d1606aa14f57a7e52591d084a246d6}\label{structdavid_1_1bitboard_1_1gameState_a21d1606aa14f57a7e52591d084a246d6}} 
+int {\bfseries score} = \+::david\+::constant\+::board\+Score\+::\+L\+O\+W\+E\+ST
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a37cbe5eed807c4b1def70e56e05a7b41}\label{structdavid_1_1bitboard_1_1gameState_a37cbe5eed807c4b1def70e56e05a7b41}} 
+uint\+\_\+fast8\+\_\+t {\bfseries depth} = 0
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_adf55dc4fe955801475f6e2f98c5bd84d}\label{structdavid_1_1bitboard_1_1gameState_adf55dc4fe955801475f6e2f98c5bd84d}} 
+uint\+\_\+fast8\+\_\+t {\bfseries possible\+Sub\+Moves} = 0
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a49fc12f52d28fe8d08a70c0b4f2804c5}\label{structdavid_1_1bitboard_1_1gameState_a49fc12f52d28fe8d08a70c0b4f2804c5}} 
+std\+::array$<$ type\+::bitboard\+\_\+t, 2 $>$ {\bfseries piecess} = \{\+::david\+::constant\+::\+E\+M\+P\+T\+Y\+B\+O\+A\+RD, \+::david\+::constant\+::\+E\+M\+P\+T\+Y\+B\+O\+A\+RD\}
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a9be8fa21e032b27d2e0a6e1a0da1112a}\label{structdavid_1_1bitboard_1_1gameState_a9be8fa21e032b27d2e0a6e1a0da1112a}} 
+type\+::bitboard\+\_\+t {\bfseries combined\+Pieces} = \+::david\+::constant\+::\+E\+M\+P\+T\+Y\+B\+O\+A\+RD
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a44f88cee60f9f37133a4d68a1c0ac4f6}\label{structdavid_1_1bitboard_1_1gameState_a44f88cee60f9f37133a4d68a1c0ac4f6}} 
+std\+::array$<$ std\+::array$<$ type\+::bitboard\+\_\+t, 2 $>$, 6 $>$ {\bfseries pieces\+Arr} = \{\{0\}\}
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_aa737d1bf9709d497c69b38c91821f83b}\label{structdavid_1_1bitboard_1_1gameState_aa737d1bf9709d497c69b38c91821f83b}} 
+uint\+\_\+fast8\+\_\+t {\bfseries en\+Passant} = 0
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_ab09cb7e0a1697d1b260e6ae69a7aea7d}\label{structdavid_1_1bitboard_1_1gameState_ab09cb7e0a1697d1b260e6ae69a7aea7d}} 
+uint\+\_\+fast8\+\_\+t {\bfseries en\+Passant\+Pawn} = 0
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_aeaaaea3c36fd699d80a14889946a7f5d}\label{structdavid_1_1bitboard_1_1gameState_aeaaaea3c36fd699d80a14889946a7f5d}} 
+bool {\bfseries is\+White} = true
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a7113f8a066d79f949ee0c62dbd9cdbab}\label{structdavid_1_1bitboard_1_1gameState_a7113f8a066d79f949ee0c62dbd9cdbab}} 
+\+::std\+::array$<$ bool, 2 $>$ {\bfseries queen\+Castlings} = \{true, true\}
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a094824fa1e583fabd917dceba7d7cec8}\label{structdavid_1_1bitboard_1_1gameState_a094824fa1e583fabd917dceba7d7cec8}} 
+\+::std\+::array$<$ bool, 2 $>$ {\bfseries king\+Castlings} = \{true, true\}
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_a4fb6e8e6f32b8a7285e60ea06528ceac}\label{structdavid_1_1bitboard_1_1gameState_a4fb6e8e6f32b8a7285e60ea06528ceac}} 
+uint\+\_\+fast8\+\_\+t {\bfseries castling} = 0b00001111
+\item 
+\mbox{\Hypertarget{structdavid_1_1bitboard_1_1gameState_aa284ca726db224308bb08b7a7ffa8321}\label{structdavid_1_1bitboard_1_1gameState_aa284ca726db224308bb08b7a7ffa8321}} 
+bool {\bfseries passant} = false
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+engine/include/david/bitboard.\+h\end{DoxyCompactItemize}
