@@ -63,8 +63,8 @@ Perft(0..7) results:
 https://bitbucket.org/sciencefyll/david/src
 
 # Contributors
-[Klyngen](https://github.com/klyngen)
-[Markus Jacobsen](https://bitbucket.org/MarkusJacobsen/)
+ * [Klyngen](https://github.com/klyngen)
+ * [Markus Jacobsen](https://bitbucket.org/MarkusJacobsen/)
 
 # Thanks to
 [Juddperft](https://github.com/jniemann66/juddperft) for finding a bug in castling and promotion.
