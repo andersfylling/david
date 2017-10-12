@@ -12,16 +12,13 @@
 
 namespace david {
 
-namespace movegen {
-
-}
-
 class MoveGen {
 #ifdef DAVID_TEST
   friend class MoveGenTest;
 #endif
  public:
-  MoveGen(const type::gameState_t& gs);
+  MoveGen(type::gameState_t& gs);
+  void setGameState(type::gameState_t& gs);
 
   // run all the psuedo move generators
   void runAllMoveGenerators();
@@ -44,7 +41,7 @@ class MoveGen {
   uint16_t generateGameStates(std::array<type::gameState_t, N>& arr, const unsigned long start = 0, const unsigned long stop = N - 1)
   {
     if (stop >= N) {
-      std::__throw_runtime_error("stop param is larger than array size");
+      throw 0;
     }
 
     // #########################################################################
@@ -177,6 +174,7 @@ class MoveGen {
 #endif
         }
 
+
         // complete board merge
         gs.combinedPieces = gs.piecess[0] | gs.piecess[1];
 
@@ -195,6 +193,8 @@ class MoveGen {
             gs.enPassant = this->state.isWhite ? ::utils::LSB(now >> 8) : ::utils::LSB(now << 8);
           }
         }
+
+
 
         // check?
         if (this->dangerousPosition(gs.piecesArr[::david::constant::index::king][1], gs, 0)) {
@@ -225,6 +225,8 @@ class MoveGen {
         gs.isInCheck = true;
       }
 #endif
+        // increment depth
+        gs.depth += 1;
 
         // valid move, add it to the record.
         arr[start + index_gameStates++] = gs;
@@ -308,7 +310,7 @@ class MoveGen {
 #endif
 
   // the current board status of the game
-  const type::gameState_t& state;
+  type::gameState_t state;
   type::gameState_t reversedState;
 
   // xray attack path for king
@@ -325,9 +327,10 @@ class MoveGen {
   std::array<std::array<type::bitboard_t, 30>, 6> moves = {{0}}; // initiator list?
   std::array<unsigned long, 6> index_moves = {{0}}; // index for every type
 
-  type::bitboard_t hostileAttackPaths_queen = 0ULL - 1;
-  type::bitboard_t hostileAttackPaths_knight = 0ULL - 1;
-  type::bitboard_t hostileAttackPaths_pawn = 0ULL - 1;
+  // xray v0.1
+  uint64_t hostileAttackPaths_queen   = 0ull - 1;
+  uint64_t hostileAttackPaths_knight  = 0ull - 1;
+  uint64_t hostileAttackPaths_pawn    = 0ull - 1;
 
   /**
    * Remove the parts of the Psuedo attack path that is illegal / invalid.
@@ -346,7 +349,7 @@ class MoveGen {
       const uint8_t offset = 7
   ) const {
     // find all path blockers
-    type::bitboard_t northBlockers = (friendlyBlockers | ((hostiles & northArea) << offset)) & northArea; // & northArea);
+    type::bitboard_t northBlockers = (friendlyBlockers | (((psuedoPath & hostiles) & northArea) << offset)) & northArea; // & northArea);
 
     if (northBlockers > 0) {
       // find the area south of the closest blocker
@@ -360,6 +363,11 @@ class MoveGen {
     }
   }
 
+  inline uint64_t generateXRay_queen(const uint64_t board) const
+  {
+    return 0ull - 1;
+  }
+
   inline type::bitboard_t extractLegalSouthPath(
       const type::bitboard_t psuedoPath,
       const type::bitboard_t friendlyBlockers,
@@ -368,7 +376,7 @@ class MoveGen {
       const uint8_t offset = 7
   ) const {
     // find all southern blockers
-    type::bitboard_t southBlockers = (friendlyBlockers | ((hostiles & southArea) >> offset)) & southArea;
+    type::bitboard_t southBlockers = (friendlyBlockers | (((psuedoPath & hostiles) & southArea) >> offset)) & southArea;
 
     if (southBlockers > 0) {
       // get the area of illegal moves, starting from the first blocker downwards to index 0.
@@ -380,6 +388,32 @@ class MoveGen {
     else {
       return psuedoPath;
     }
+  }
+
+  template<uint8_t DIRECTION>
+  inline type::bitboard_t extractLegalRange(
+      const type::bitboard_t south,
+      const type::bitboard_t north,
+      const type::bitboard_t psuedo,
+      const type::bitboard_t friendly,
+      const type::bitboard_t hostiles
+  ) const {
+    using bb = type::bitboard_t;
+
+    // south blockers
+    bb southBlockers = south & (((psuedo & hostiles) >> DIRECTION) | friendly);
+
+    // north blockers
+    bb northBlockers = north & (((psuedo & hostiles) << DIRECTION) | friendly);
+
+    // legal north area
+    bb legalNorth = northBlockers > 0 ? (::utils::indexToBitboard(::utils::LSB(northBlockers & psuedo)) - 1) : 0ull - 1;
+
+    // illegal south area
+    bb illegalSouth = southBlockers > 0 ? (::utils::indexToBitboard(::utils::MSB(southBlockers & psuedo) + 1) - 1) : 0ull;
+
+    // legal range
+    return psuedo & (legalNorth ^ illegalSouth);
   }
 
   /**
@@ -402,7 +436,7 @@ class MoveGen {
   inline type::bitboard_t generatePawnPaths (const uint8_t index, const type::gameState_t& gs, const bool hostile = false) {
     const auto pieceBoard = ::utils::indexToBitboard(index);
     const auto hostiles = gs.piecess[hostile ? 0 : 1];
-    const auto friendly = gs.piecess[hostile ? 1 : 0];
+    //const auto friendly = gs.piecess[hostile ? 1 : 0];
     const auto allowedSquares = (~this->state.combinedPieces) ^ ::utils::indexToBitboard(index);
     const bool whiteMoving = gs.isWhite && !hostile;
 
@@ -428,14 +462,12 @@ class MoveGen {
       board |= attacks & (pieceBoard - 1);
     }
 
-    // get the promotions from the moves
+    // extract the promotions from the moves
     type::bitboard_t promotions = 18374686479671623935ULL & board;
-    // remove pawn moves that hits a promotion square
     board ^= promotions;
 
-    unsigned int i = 0;
     while (promotions != 0) {
-      i = ::utils::LSB(promotions);
+      unsigned int i = ::utils::LSB(promotions);
       promotions = ::utils::flipBitOffCopy(promotions, i);
 
       this->generatePromotions(::utils::indexToBitboard(i), pieceBoard);
@@ -567,7 +599,20 @@ class MoveGen {
     return (rMask & this->state.piecess[hostilePath ? 1 : 0]) ^ rMask;
   }
 
-  inline uint64_t generateRookAttack (const uint8_t index, const type::gameState_t& gs, const bool hostilePath = false) const {
+  inline uint64_t generateRookAttack (const uint8_t index, const type::gameState_t& gs, const bool hostilePath = false) const
+  {
+//    using bb = uint64_t;
+//
+//    const auto friendly = gs.piecess[hostilePath ? 1 : 0];
+//    const auto hostiles = gs.piecess[hostilePath ? 0 : 1];
+//    const auto iBoard   = ::utils::indexToBitboard(index);
+//
+//    // attack path starting from bottom going upwards, reading left to right
+//    bb r1 = this->template extractLegalRange<8>(iBoard - 1, (~iBoard) ^ (iBoard - 1), ::utils::constant::verticalAttackPaths[index], friendly, hostiles);
+//
+//    // attack path starting from bottom going upwards, reading left to right
+//    bb r2 = this->template extractLegalRange<1>(iBoard - 1, (~iBoard) ^ (iBoard - 1), ::utils::constant::horizontalAttackPaths[index], friendly, hostiles);
+//
     const auto friendly   = gs.piecess[hostilePath ? 1 : 0];
     const auto hostiles   = gs.piecess[hostilePath ? 0 : 1];
     const auto iBoard     = ::utils::indexToBitboard(index);
@@ -576,13 +621,11 @@ class MoveGen {
 
     // attack path starting from bottom going upwards, reading left to right
     type::bitboard_t r1 = ::utils::constant::verticalAttackPaths[index];
-
     r1 = this->extractLegalSouthPath(r1, friendly, hostiles, southArea & r1, 8);
     r1 = this->extractLegalNorthPath(r1, friendly, hostiles, northArea & r1, 8);
 
     // attack path starting from bottom going upwards, reading left to right
     type::bitboard_t r2 = ::utils::constant::horizontalAttackPaths[index];
-
     r2 = this->extractLegalSouthPath(r2, friendly, hostiles, southArea & r2, 1);
     r2 = this->extractLegalNorthPath(r2, friendly, hostiles, northArea & r2, 1);
 

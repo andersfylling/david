@@ -104,7 +104,7 @@ constexpr uint8_t NSB(uint64_t &board, const uint8_t index) {
 
 constexpr uint8_t MSB(const uint64_t board) {
 #ifdef __linux__
-  return 63 - __builtin_clzll(board);
+  return (board > 0) ? 63 - __builtin_clzll(board) : 0;
 #else
   for (int i = 63; i >= 0; i--) {
     if (::utils::bitAt(board, i)) {
@@ -161,7 +161,6 @@ constexpr uint64_t flipBitOnCopy(const uint64_t board, const uint8_t index) {
 std::string getAbsoluteProjectPath();
 bool fileExists(const std::string &file);
 
-::david::type::bitboard_t chessIndexToBitboard(const std::string& chessIndex);
 uint8_t chessIndexToArrayIndex(const std::string& chessIndex);
 
 
@@ -183,17 +182,22 @@ void yellDeprecated(const std::string info);
 void perft();
 void perft(const uint8_t max);
 void perft(const uint8_t depth, const std::string FEN, const uint8_t end = 255);
-void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
-uint64_t perft(const uint8_t depth, const ::david::type::gameState_t& gs);
+void perft(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
+uint64_t perft(const uint8_t depth, ::david::type::gameState_t& gs);
+
+// for testing
+void perft_time(const uint8_t depth, const unsigned int rounds);
+void perft_time(::david::type::gameState_t& gs, const uint8_t depth, const unsigned int rounds);
+uint64_t perft_silent(const uint_fast8_t depth, const std::string FEN = "");
 
 void perft_threaded(const uint8_t depth, const std::string FEN = "", const uint8_t start = 255);
-void perft_threaded(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
-uint64_t perft_threaded(const uint8_t depth, const ::david::type::gameState_t &gs);
+void perft_threaded(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
+uint64_t perft_threaded(const uint8_t depth, ::david::type::gameState_t &gs);
 
 // perft debug that shows the difference. standard board layout
 void perft_advanced(const uint8_t depth, const std::string FEN = "", const uint8_t start = 255);
-bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
-uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t& gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves);
+void perft_advanced(::david::type::gameState_t& gs, const uint8_t start = 1, const uint8_t stop = 6, const bool showEGN = false); // max depth 6 completion.
+uint64_t perft_advanced(const uint8_t depth, ::david::type::gameState_t& gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves);
 
 
 /**

@@ -162,6 +162,7 @@ void perft() {
   perft(6); // from depth 0 to depth 6, is default.
 }
 
+
 // oh this is bad, how hte first arg is now the max depth
 void perft(const uint8_t depth) {
   ::david::type::gameState_t gs;
@@ -184,7 +185,7 @@ void perft(const uint8_t depth, const std::string FEN, const uint8_t start) {
 
 // and here its the start.
 // by giving an gs here, we can change the board layouts before perfts.
-void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
+void perft(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
   std::printf("+%7s+%32s+%10s+\n",
               "-------",
               "--------------------------------",
@@ -212,8 +213,8 @@ void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint
     long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
 
     // print results
-    std::printf("| %5i | %30llu | %8.2f |\n",
-                  depth, nodes,  (ms2 - ms1) / 1000.0
+    std::printf("| %5i | %30lu | %8.2f |\n",
+                depth, nodes,  (ms2 - ms1) / 1000.0
     );
   }
 
@@ -223,34 +224,108 @@ void perft(const ::david::type::gameState_t& gs, const uint8_t start, const uint
               "--------------------------------",
               "----------");
 }
+void perft_time(const uint8_t depth, const unsigned int rounds) {
+  ::david::type::gameState_t gs;
+  ::utils::gameState::setDefaultChessLayout(gs);
 
+  ::utils::perft_time(gs, depth, rounds);
+}
+void perft_time(::david::type::gameState_t& gs, const uint8_t depth, const unsigned int rounds) {
+  float timing = 0.0;
+  std::cout << "[" <<std::flush;
+  for (int i = 0; i < rounds; i++) {
+    std::cout << ".";
+  }
+  std::cout << "]Progress bar\n[" << std::flush;
+
+  for (unsigned int round = 0; round < rounds; round++) {
+    // start time
+    struct timeval tp, tp2;
+    gettimeofday(&tp, NULL);
+    long int ms1 = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+
+    // get nodes for given depth
+    ::utils::perft(depth, gs);
+
+    // time finished
+    gettimeofday(&tp2, NULL);
+    long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
+
+    timing += ms2 - ms1;
+    std::cout << "." << std::flush;
+  }
+  std::cout << "]\n" << std::flush;
+
+  std::cout << "Average time for perft(" << std::to_string(depth) << ") at " << std::to_string(rounds) << " rounds: "
+            << (timing / 1000.0) / rounds << "s\n";
+}
+
+std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> perftstack{};
 /**
- * Assumes that the depth is never 0!
- * @param depth
- * @param gs
+ * Assumes that the depth is above 0.
+ * If depth is 0, assume ahead of the result is 1 => depth == 0 ? 1 : perft(...);
+ *
+ * @param depth 1 or higher
+ * @param gs a game state struct where .depth is set to 0
  * @return
  */
-uint64_t perft(const uint8_t depth, const ::david::type::gameState_t &gs) {
-  // create a holder for possible game outputs
+uint64_t perft(const uint8_t depth, ::david::type::gameState_t &gs) {
+  // number of nodes registered at the given depth
+  uint64_t nodes = 0;
+  uint16_t length = 0;
+
+  int index = 0;
+
+  // add first game state to the stack
+  perftstack[index] = gs;
+
   ::david::MoveGen moveGen{gs};
 
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
-  const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+  // start perfting.
+  while (index >= 0) {
+    moveGen.setGameState(perftstack[index]);
 
-  // if depth is 1 just return the length
-  if (depth == 1) {
-    return len;
-  }
+    // returns anything from 0 to 256.
+    length = moveGen.template generateGameStates(perftstack, index, index + 255);
 
-  // otherwise continue down the spiral
-  uint64_t nodes = 0;
-  const uint8_t nextDepth = depth - 1;
-  for (unsigned long i = 0; i < len; i++) {
-    nodes += perft(nextDepth, states[i]);
+    // index has been overwritten with a new leaf node if length is >0.
+    if (perftstack[index].depth >= depth) {
+      // if this node generates leafs, just count its children and move onto the next entry
+      nodes += length;
+    }
+    else {
+      // the children generated aren't leaf so jump onto the last node added.
+      index += length;
+    }
+
+    // decrement the index to go onto the next node
+    index -= 1;
   }
 
   // return amount
   return nodes;
+}
+
+/**
+ * Perft that doesn't print but only returns the score.
+ *
+ * @param depth
+ * @param FEN
+ * @param start
+ * @return
+ */
+uint64_t perft_silent(const uint_fast8_t depth, const std::string FEN)
+{
+  ::david::type::gameState_t gs;
+
+  if (FEN.empty()) {
+    ::utils::gameState::setDefaultChessLayout(gs);
+  }
+  else {
+    ::utils::gameState::generateFromFEN(gs, FEN);
+  }
+
+  return depth == 0 ? 1 : ::utils::perft(depth, gs);
 }
 
 
@@ -271,7 +346,7 @@ void perft_threaded(const uint8_t depth, const std::string FEN, const uint8_t st
 
 // and here its the start.
 // by giving an gs here, we can change the board layouts before perfts.
-void perft_threaded(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
+void perft_threaded(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
   std::printf("+%7s+%32s+%10s+\n",
               "-------",
               "--------------------------------",
@@ -311,7 +386,7 @@ void perft_threaded(const ::david::type::gameState_t& gs, const uint8_t start, c
               "----------");
 }
 
-uint64_t perft_threaded(const uint8_t depth, const ::david::type::gameState_t &gs) {
+uint64_t perft_threaded(const uint8_t depth, ::david::type::gameState_t &gs) {
   // create a holder for possible game outputs
   ::david::MoveGen moveGen{gs};
 
@@ -356,7 +431,7 @@ uint64_t perft_threaded(const uint8_t depth, const ::david::type::gameState_t &g
 void perft_advanced(const uint8_t depth, const std::string FEN, const uint8_t start) {
   ::david::type::gameState_t gs;
 
-  if (FEN == "" || FEN == " ") {
+  if (FEN.empty()) {
     ::utils::gameState::setDefaultChessLayout(gs);
   }
   else {
@@ -366,9 +441,9 @@ void perft_advanced(const uint8_t depth, const std::string FEN, const uint8_t st
   ::utils::perft_advanced(gs, start < depth ? start : depth, depth, false);
 }
 
-bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, const uint8_t end, const bool showEGN) {
+void perft_advanced(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end, const bool showEGN) {
 
-  // Display perft for given FEN
+  // Display perft for generated FEN
   std::cout << "FEN string: " << ::utils::gameState::generateFen(gs) << '\n';
 
   std::printf("+%7s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
@@ -404,9 +479,8 @@ bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, c
     std::map<std::string, unsigned int> moves{};
 
     auto moveGenPerft = ::utils::perft_advanced(depth, gs, perftResults, moves);
-    const auto prettyNodeCount = ::utils::prettyNum(moveGenPerft);
 
-    std::printf("| %5i | %30llu | %8i | %8i | %8i | %8i | %8i | %8i |\n",
+    std::printf("| %5u | %30lu | %8u | %8u | %8u | %8u | %8u | %8u |\n",
                 depth,
                 moveGenPerft,
                 perftResults[0],
@@ -415,17 +489,6 @@ bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, c
                 perftResults[3],
                 perftResults[4],
                 perftResults[5]);
-//                ::utils::prettyNum(moveGenPerft).c_str(),
-//                ::utils::prettyNum(perftResults[0]).c_str(),
-//                ::utils::prettyNum(perftResults[1]).c_str(),
-//                ::utils::prettyNum(perftResults[2]).c_str(),
-//                ::utils::prettyNum(perftResults[3]).c_str(),
-//                ::utils::prettyNum(perftResults[4]).c_str(),
-//                ::utils::prettyNum(perftResults[5]).c_str());
-
-    //for (const auto& [egn, count] : moves) {
-    //  std::cout << egn << ": " << count << std::endl;
-    //}
   }
 
   std::printf("+%7s+%32s+%10s+%10s+%10s+%10s+%10s+%10s+\n",
@@ -439,7 +502,7 @@ bool perft_advanced(const ::david::type::gameState_t& gs, const uint8_t start, c
               "----------");
 }
 
-uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves) {
+uint64_t perft_advanced(const uint8_t depth, ::david::type::gameState_t &gs, std::array<unsigned int, 6>& results, std::map<std::string, unsigned int>& moves) {
   if (depth == 0) {
     return 1;
   }
@@ -490,9 +553,9 @@ uint64_t perft_advanced(const uint8_t depth, const ::david::type::gameState_t &g
       else if ((gs.kingCastlings[0] != state.kingCastlings[1]) || (gs.queenCastlings[0] != state.queenCastlings[1])) {
         // castling state has changed, but did the king move?
         // check if the king has moved more than one position.
-        if ((gs.piecesArr[5][0] & 576460752303423496) > 0 && (state.piecesArr[5][1] & 2449958197289549858) > 0) {
+        if ((gs.piecesArr[5][0] & 576460752303423496ULL) > 0 && (state.piecesArr[5][1] & 2449958197289549858ULL) > 0) {
           // check that rook also moved
-          if ((gs.piecesArr[::david::constant::index::rook][0] & 9295429630892703873) > 0 && (state.piecesArr[::david::constant::index::rook][1] & 1441151880758558740) > 0) {
+          if ((gs.piecesArr[::david::constant::index::rook][0] & 9295429630892703873ULL) > 0 && (state.piecesArr[::david::constant::index::rook][1] & 1441151880758558740) > 0) {
             results[2] += 1;
           }
         }

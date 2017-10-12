@@ -25,7 +25,7 @@ struct gameState {
 
   int score = ::david::constant::boardScore::LOWEST; // board score
 
-  uint_fast8_t gameTreeLevel = 0;
+  uint_fast8_t depth = 0;
   uint_fast8_t possibleSubMoves = 0; // is used by an iterator since everything is preinitialized, can by uint8
 
   std::array<type::bitboard_t, 2> piecess = {::david::constant::EMPTYBOARD, ::david::constant::EMPTYBOARD};

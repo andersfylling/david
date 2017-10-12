@@ -7,7 +7,7 @@ namespace utils {
 namespace neuralNet {
 
 
-std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(const ::david::type::gameState_t &node);
+std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(::david::type::gameState_t &node);
 
 
 } // neuralNet

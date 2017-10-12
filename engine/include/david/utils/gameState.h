@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unistd.h>
 #include <string>
 #include "david/types.h"

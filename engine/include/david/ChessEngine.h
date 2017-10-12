@@ -119,7 +119,7 @@ class ChessEngine {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(const type::gameState_t& board);
+  int ANNEvaluate(type::gameState_t& board);
 
 
   /**
@@ -158,7 +158,7 @@ class ChessEngine {
    * @param state shared_ptr of a gameState
    * @return true if the state was updated
    */
-  bool setGameState(const type::gameState_t& gs);
+  bool setGameState(type::gameState_t& gs);
 
   /**
    * Check if the engine has lost.

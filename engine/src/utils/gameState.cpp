@@ -3,6 +3,7 @@
 #include <map>
 #include "david/types.h"
 #include "david/david.h"
+#include "david/utils/utils.h"
 #include "david/utils/gameState.h"
 
 namespace utils {
@@ -202,6 +203,10 @@ void print(const ::david::type::gameState_t& gs) {
     }
   }
 
+  if (gs.enPassant > 0) {
+    board.at(63 - gs.enPassant) = 'e';
+  }
+
   std::cout << "\n ";
   std::cout << std::endl << "  +---+---+---+---+---+---+---+---+" << std::endl;
   for (uint8_t i = 0; i < 8; i++) {
@@ -299,21 +304,22 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
       // castling
     else if (index == 65) {
       for (; i < len && fen[i] != ' '; i += 1) {
-        if (fen[i] == 'K') {
+        char fenC = fen[i];
+        if (fenC == 'K') {
           gs.kingCastlings[w] = true;
         }
-        else if (fen[i] == 'Q') {
+        else if (fenC == 'Q') {
           gs.queenCastlings[w] = true;
         }
-        else if (fen[i] == 'k') {
+        else if (fenC == 'k') {
           gs.kingCastlings[b] = true;
         }
-        else if (fen[i] == 'q') {
+        else if (fenC == 'q') {
           gs.queenCastlings[b] = true;
         }
       }
 
-      i += 1; // skip space
+      //i += 1; // skip space
       index += 1;
     }
 
@@ -326,12 +332,10 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
 
       if (pos.length() == 2) {
         // this ignores '-' and only takes board positions
-        // TODO: what to do about en passant
-        // convert the EGN to a index, and give it to gs.enPassant..
-        //auto passantBoard = ::david::utils::chessIndexToBitboard(pos);
+        gs.enPassant = ::utils::LSB(::utils::chessIndexToBitboard(pos));
       }
 
-      i += 1; // skip space
+      //i += 1; // skip space
       index += 1;
     }
 
@@ -344,7 +348,7 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
 
       gs.halfMoves = ::utils::stoi(hm);
 
-      i += 1; // skip space
+      //i += 1; // skip space
       index += 1;
     }
 
@@ -373,6 +377,11 @@ void generateFromFEN(::david::type::gameState_t& gameState, const std::string &f
     gameState.queenCastlings[1] = gs.queenCastlings[0];
     gameState.kingCastlings[0] = gs.kingCastlings[1];
     gameState.kingCastlings[1] = gs.kingCastlings[0];
+  }
+
+  // en passant
+  if (gs.enPassant > 0) {
+    gameState.enPassantPawn = gs.isWhite ? gs.enPassant - 8 : gs.enPassant + 8;
   }
 
   // fix piecess and combinedPieces

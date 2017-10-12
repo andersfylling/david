@@ -61,7 +61,7 @@ class ANN {
    * @param board ::gameTree::gameState, of shared_ptr type
    * @return int board evaluation
    */
-  int ANNEvaluate(const type::gameState_t& board) const;
+  int ANNEvaluate(type::gameState_t& board) const;
 
 
   /**

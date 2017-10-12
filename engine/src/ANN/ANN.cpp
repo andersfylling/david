@@ -136,13 +136,13 @@ void ANN::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int ANN::ANNEvaluate(const type::gameState_t& board) const {
+int ANN::ANNEvaluate(type::gameState_t& board) const {
   const auto arr = ::utils::neuralNet::convertGameStateToInputs(board); // float array of the inputs
 
   // populate array
   fann_type inputs[::david::constant::nn::INPUTSIZE];
   const auto len = arr.size();
-  for (auto i = 0; i < len; i++) {
+  for (unsigned int i = 0; i < len; i++) {
     inputs[i] = arr[i];
   }
 

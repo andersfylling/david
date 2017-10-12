@@ -4,6 +4,7 @@
 #include "david/genericUCIResponses.h"
 #include "david/david.h"
 #include "david/utils/utils.h"
+#include "david/MoveGen.h"
 
 #include "david/types.h"
 #include "david/bitboard.h"
@@ -458,7 +459,7 @@ void david::ChessEngine::createANNInstance() {
  * @param board ::gameTree::gameState, of shared_ptr type
  * @return int board evaluation
  */
-int david::ChessEngine::ANNEvaluate(const type::gameState_t& board) {
+int david::ChessEngine::ANNEvaluate(type::gameState_t& board) {
   return this->neuralNet.ANNEvaluate(board);
 }
 
@@ -501,7 +502,7 @@ david::type::gameState_t david::ChessEngine::getGameState() {
  * @param state shared_ptr of a gameState
  * @return true if the state was updated
  */
-bool david::ChessEngine::setGameState(const type::gameState_t& gs) {
+bool david::ChessEngine::setGameState(type::gameState_t& gs) {
   // std::cerr << "updated version" << std::endl;
   // utils::printGameState(gs);
   this->treeGen.setRootNode(gs);

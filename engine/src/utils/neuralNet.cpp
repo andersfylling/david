@@ -18,7 +18,7 @@ namespace neuralNet {
  * @return
  */
 // TODO: convert to the new node setup
-std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(const ::david::type::gameState_t& gs) {
+std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(::david::type::gameState_t& gs) {
   std::array<float, ::david::constant::nn::INPUTSIZE> boardInfo{};
 
   uint8_t w = 1;
@@ -91,10 +91,6 @@ std::array<float, ::david::constant::nn::INPUTSIZE> convertGameStateToInputs(con
 
   // how many possible moves from this game state
   boardInfo[offset++] = static_cast<float>(moveGen.nrOfPossibleMoves() / 100.0); // is this smart??
-
-  // old version
-
-  unsigned int index = 61;
 
   std::array<::david::type::bitboard_t, 2> boards1 = {
       gs.piecesArr[5][b],
