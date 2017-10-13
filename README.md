@@ -63,7 +63,7 @@ Perft(0..7) results:
 https://bitbucket.org/sciencefyll/david/src
 
 # Contributors
- * [Sciencefyll](https://github.com/sciencefyll)
+ * [andersfylling](https://github.com/andersfylling)
  * [Klyngen](https://github.com/klyngen)
  * [MarkusAJacobsen](https://github.com/MarkusAJacobsen)
 
