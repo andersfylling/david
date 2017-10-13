@@ -13,6 +13,33 @@ This project is written in C++17 and is built using CMake 3.8, with the compiler
 # Docs #
 See https://sciencefyll.github.io/david/html/ for generated Doxygen docs.
 
+# TO-DO #
+## Move Generation (Legal Moves) ##
+ - [ ] X-ray for check
+ - [ ] Encoding Moves
+ - [ ] No errors on all chessprogramming positions (1-6)
+ - [x] Generate gamestates for each piece type
+ - [x] Be able to add this to a stack / pre allocated array.
+ - [x] Perft test suite
+ - [x] Perft
+ - [ ] 100% documentation
+ - [ ] Staged move generation
+ - [x] Precalculated psuedo moves for knight, diagonals, horizontal and vertical directions.
+ - [ ] Magic bitboards. (Maybe ?)
+ - [ ] Transposition tables
+ - [ ] Threading (is it worth it?)
+ 
+ ## Search (Selective) ##
+  - [ ] Replace recursion with iteration,
+  - [ ] Improve sorting algorithm.
+  - [ ] Quiescence Search
+  - [x] Iterative deepening
+  - [x] Negamax
+  - [x] Alpha-Beta pruning
+  - [x] Aspiration Windows (Needs revision)
+  - [ ] Threaded search (Thread pool to seperate branches for quicker searching)
+
+
 # Results #
 MoveGen accuracy:
 ```
@@ -41,7 +68,7 @@ FEN string: r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1
 ```
 
 This is without caching.
-MoveGen speed: `~35,471,675.5moves/second`
+MoveGen speed: `~35,471,675.5moves/second`. Note that a move here is a complete game state generated.
 
 Perft(0..7) results:
 ```
@@ -59,9 +86,6 @@ Perft(0..7) results:
 +-------+--------------------------------+----------+
 ```
 
-# Old repository
-https://bitbucket.org/sciencefyll/david/src
-
 # Contributors
  * [andersfylling](https://github.com/andersfylling)
  * [Klyngen](https://github.com/klyngen)
@@ -69,3 +93,6 @@ https://bitbucket.org/sciencefyll/david/src
 
 # Thanks to
 [Juddperft](https://github.com/jniemann66/juddperft) for finding a bug in castling and promotion.
+
+# Old repository
+https://bitbucket.org/sciencefyll/david/src
