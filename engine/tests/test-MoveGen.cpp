@@ -24,6 +24,34 @@ TEST_CASE("MoveGen perft [MoveGen]") {
 
   //std::exit(1);
   //::utils::perft(5);
+
+  ::david::type::gameState_t gs;
+  ::utils::gameState::generateFromFEN(gs, "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
+
+  ::david::MoveGen moveGen{gs};
+
+  std::array<::david::type::gameState_t, 256> gameStates{};
+  auto end = moveGen.template generateGameStates(gameStates);
+
+  // 0 - 44
+  //int ii = 19;
+  //::utils::gameState::print(gameStates[ii]);
+  //moveGen.setGameState(gameStates[ii]);
+  //auto end = moveGen.template generateGameStates(gameStates);
+  //if (end == 11) { std::exit(0); }
+  //std::cout << std::to_string(end) << std::endl << std::flush;
+  for (unsigned int i = 0; i < end; i++) {
+    moveGen.setGameState(gameStates[i]);
+    std::array<::david::type::gameState_t, 256> gameStates2{};
+    auto len = moveGen.template generateGameStates(gameStates2);
+    if (len == 11) { continue; }
+    ::utils::gameState::print(gameStates[i]);
+    std::cout << std::to_string(i) << std::endl << std::flush;
+
+    //std::cout << ::utils::gameState::getEGN(gs, gameStates[i]) << "\n";
+  }
+
+  std::exit(1);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {

@@ -53,8 +53,8 @@ class MoveGen {
 
     // #########################################################################
     uint16_t index_gameStates = 0;
+    
     // generate all the bitboards
-
     this->generateRookMoves();
     this->generateKnightMoves();
     this->generateBishopMoves();
@@ -79,8 +79,8 @@ class MoveGen {
         gs.piecesArr[pieceType][1] = movegen::moves[pieceType][board];       // the colour that just moved. now opponent.
 
         // update moved piece
-        gs.piecess[1] ^= this->state.piecesArr[pieceType][0];
-        gs.piecess[1] |= movegen::moves[pieceType][board]; // merge, to deal with promotions
+        gs.piecess[1] ^= this->state.piecesArr[pieceType][0]; // turn off all pieces
+        gs.piecess[1] |= movegen::moves[pieceType][board]; // since the move contains the not moved pieces, + the newly moved one. just add it.
 
 
         // Check for capture, and destroy captured piece!
@@ -118,12 +118,12 @@ class MoveGen {
             uint8_t castlePos = ::utils::LSB(gs.piecesArr[::david::constant::index::rook][1] & 72057594037927937ULL);
             ::utils::flipBitOff(gs.piecesArr[::david::constant::index::rook][1], castlePos);
 
-            ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos << 2);
+            ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos + 2);
             gs.kingCastlings[1] = false;
             gs.queenCastlings[1] = false;
 
             ::utils::flipBitOff(gs.piecess[1], castlePos);
-            ::utils::flipBitOn(gs.piecess[1], castlePos << 2);
+            ::utils::flipBitOn(gs.piecess[1], castlePos + 2);
 
 #ifdef DAVID_TEST
             gs.castled = true;
@@ -134,12 +134,12 @@ class MoveGen {
             uint8_t castlePos = ::utils::LSB(gs.piecesArr[::david::constant::index::rook][1] & 9223372036854775936ULL);
             ::utils::flipBitOff(gs.piecesArr[::david::constant::index::rook][1], castlePos);
 
-            ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos >> 3);
+            ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos - 3);
             gs.queenCastlings[1] = false;
             gs.kingCastlings[1] = false;
 
             ::utils::flipBitOff(gs.piecess[1], castlePos);
-            ::utils::flipBitOn(gs.piecess[1], castlePos >> 3);
+            ::utils::flipBitOn(gs.piecess[1], castlePos - 3);
 
 #ifdef DAVID_TEST
             gs.castled = true;
@@ -197,7 +197,7 @@ class MoveGen {
           if ((before & 71776119061282560) > 0 && (now & 1099494850560) > 0) {
             // its en passant
             gs.enPassantPawn = ::utils::LSB(now);
-            gs.enPassant = this->state.isWhite ? ::utils::LSB(now >> 8) : ::utils::LSB(now << 8);
+            gs.enPassant = this->state.isWhite ? gs.enPassantPawn - 8 : gs.enPassantPawn + 8;
           }
         }
 
@@ -229,8 +229,8 @@ class MoveGen {
         // is this new game state in check?
 #ifdef DAVID_TEST
         if (this->dangerousPosition(gs.piecesArr[::david::constant::index::king][0], gs)) {
-        gs.isInCheck = true;
-      }
+          gs.isInCheck = true;
+        }
 #endif
         // increment depth
         gs.depth += 1;

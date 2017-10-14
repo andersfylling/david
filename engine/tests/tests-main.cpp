@@ -99,8 +99,8 @@ int main( int argc, char* argv[] )
     expected.push_back(8902);
     expected.push_back(197281);
     expected.push_back(4865609);
-    expected.push_back(119060324); // 6
 #ifdef DAVID_PRODUCTION
+    expected.push_back(119060324); // 6
     expected.push_back(3195901860); // 7
     //expected.push_back(84998978956); // 8. might take over 40 minutes.
 #endif
@@ -127,7 +127,9 @@ int main( int argc, char* argv[] )
     expected.push_back(43238);
     expected.push_back(674624);
     expected.push_back(11030083); // 6
+#ifdef DAVID_PRODUCTION
     expected.push_back(178633661);
+#endif
     moveGenPerfter("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - -", expected);
 
     // Position 4
