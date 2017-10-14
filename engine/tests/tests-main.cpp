@@ -167,8 +167,8 @@ int main( int argc, char* argv[] )
     expected.push_back(89890);
     expected.push_back(3894594);
     expected.push_back(164075551); // 5
-    expected.push_back(6923051137); // ish 3.5min
 #ifdef DAVID_PRODUCTION
+    expected.push_back(6923051137); // ish 3.5min
     //expected.push_back(287188994746);
     //expected.push_back(11923589843526);
     //expected.push_back(490154852788714);

@@ -53,7 +53,7 @@ class MoveGen {
 
     // #########################################################################
     uint16_t index_gameStates = 0;
-    
+
     // generate all the bitboards
     this->generateRookMoves();
     this->generateKnightMoves();
@@ -135,8 +135,8 @@ class MoveGen {
             ::utils::flipBitOff(gs.piecesArr[::david::constant::index::rook][1], castlePos);
 
             ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos - 3);
-            gs.queenCastlings[1] = false;
             gs.kingCastlings[1] = false;
+            gs.queenCastlings[1] = false;
 
             ::utils::flipBitOff(gs.piecess[1], castlePos);
             ::utils::flipBitOn(gs.piecess[1], castlePos - 3);
