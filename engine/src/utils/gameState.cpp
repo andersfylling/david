@@ -37,7 +37,7 @@ std::string generateFen(const ::david::type::gameState_t& gs) {
   int b = 1;
   if (!gs.isWhite) {
     w = 1;
-    b = 1;
+    b = 0;
   }
 
   std::array<char, 12> symbols = {
@@ -136,9 +136,12 @@ std::string generateFen(const ::david::type::gameState_t& gs) {
   fen += ' '; // spacing
 
   // missing passant target verification support
-  // TODO: convert index to EGN
   if (gs.enPassant != 0) {
-    fen += std::to_string(gs.enPassant);
+    char col = 'h' - (gs.enPassant % 8);
+    int row = gs.enPassant / 8;
+    //fen += std::to_string(gs.enPassant);
+    fen += col;
+    fen += std::to_string(1 + row);
   }
   else {
     fen += "-";
