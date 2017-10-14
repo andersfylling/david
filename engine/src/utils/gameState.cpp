@@ -135,11 +135,10 @@ std::string generateFen(const ::david::type::gameState_t& gs) {
   }
   fen += ' '; // spacing
 
-  // missing passant target verification support
+  // encode en passant position
   if (gs.enPassant != 0) {
     char col = 'h' - (gs.enPassant % 8);
     int row = gs.enPassant / 8;
-    //fen += std::to_string(gs.enPassant);
     fen += col;
     fen += std::to_string(1 + row);
   }
