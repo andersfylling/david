@@ -106,7 +106,7 @@ int main (int argc, char * argv[])
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "perft"; // uci, fight, train, perft, judd-perft. Default: "uci"
+  const std::string mode = "juddperft"; // uci, fight, train, perft, judd-perft. Default: "uci"
 
 
   if (mode == "fight") {

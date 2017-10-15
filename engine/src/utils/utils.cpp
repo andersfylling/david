@@ -185,7 +185,15 @@ void perft(const uint8_t depth, const std::string FEN, const uint8_t start) {
 
 // and here its the start.
 // by giving an gs here, we can change the board layouts before perfts.
+/**
+ * This does reset depth!!
+ *
+ * @param gs
+ * @param start
+ * @param end
+ */
 void perft(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
+  gs.depth = 0;
   std::printf("+%7s+%32s+%10s+\n",
               "-------",
               "--------------------------------",
@@ -230,7 +238,15 @@ void perft_time(const uint8_t depth, const unsigned int rounds) {
 
   ::utils::perft_time(gs, depth, rounds);
 }
+/**
+ * This does reset depth!!
+ *
+ * @param gs
+ * @param depth
+ * @param rounds
+ */
 void perft_time(::david::type::gameState_t& gs, const uint8_t depth, const unsigned int rounds) {
+  gs.depth = 0;
   float timing = 0.0;
   std::cout << "[" <<std::flush;
   for (int i = 0; i < rounds; i++) {
@@ -263,12 +279,14 @@ void perft_time(::david::type::gameState_t& gs, const uint8_t depth, const unsig
 /**
  * Assumes that the depth is above 0.
  * If depth is 0, assume ahead of the result is 1 => depth == 0 ? 1 : perft(...);
+ * This resets depth!!!
  *
  * @param depth 1 or higher
  * @param gs a game state struct where .depth is set to 0
  * @return
  */
 uint64_t perft(const uint8_t depth, ::david::type::gameState_t &gs) {
+  gs.depth = 0;
   // number of nodes registered at the given depth
   uint64_t nodes = 0;
   uint16_t length = 0;

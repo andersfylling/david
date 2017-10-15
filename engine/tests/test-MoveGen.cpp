@@ -52,6 +52,44 @@ TEST_CASE("MoveGen perft [MoveGen]") {
 //  }
 //
 //  std::exit(1);
+  //::utils::perft(7, "Q1B1n3/2N5/1k4p1/R2qr2R/b7/4P1K1/3b3B/2r5 w - - 0 1");
+  //std::exit(1);
+
+//  ::david::type::gameState_t gs;
+//  std::string FEN = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
+//  ::utils::gameState::generateFromFEN(gs, FEN);
+//
+//  std::cout << ::utils::gameState::generateFen(gs) << std::endl;
+//  std::cout << FEN << std::endl;
+//  if (::utils::gameState::generateFen(gs) != FEN) {
+//    std::cerr << "Incorrect FEN generation" << std::endl;
+//  }
+//
+//  ::david::MoveGen moveGen{gs};
+//
+//  std::array<::david::type::gameState_t, 256> gameStates{};
+//  auto end = moveGen.template generateGameStates(gameStates);
+//
+//  int sum = 0;
+//  int sum2 = 0;
+//  for (unsigned int i = 0; i < end; i++) {
+//    const std::string fen = ::utils::gameState::generateFen(gameStates[i]);
+//
+//
+//    int perft = ::utils::perft_silent(1, fen);
+//    int perft2 = ::utils::perft(1, gameStates[i]);
+//    std::cout << std::to_string(i) << ": " << fen << ", perft: " << std::to_string(perft) << "\n";
+//
+//    if (perft != perft2) {
+//      ::david::type::gameState_t gs2;
+//      ::utils::gameState::generateFromFEN(gs2, fen);
+//      gs2.castling = 0;
+//    }
+//
+//    sum += perft;
+//    sum2 += perft2;
+//  }
+//  std::exit(1);
 }
 
 TEST_CASE("extract legal south attack [MoveGen.extractLegalSouthPath]") {
