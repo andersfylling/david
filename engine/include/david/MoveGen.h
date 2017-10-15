@@ -174,7 +174,8 @@ class MoveGen {
           gs.piecesArr[0][1] ^= pawnBoard;
           gs.piecesArr[pieceType][1] ^= pawnBoard;
 
-          // merging: no need as it doesn't move the bit position.
+          // Deactivate the pawn position that gets promoted.
+          gs.piecess[1] ^= pawnBoard;
 
 #ifdef DAVID_TEST
           gs.promoted = true;
