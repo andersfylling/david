@@ -11,7 +11,7 @@ David is a university project that tries to implement a Artificial Neural Networ
 This project is written in C++17 and is built using CMake 3.8, with the compiler gcc7+.
 
 # Docs #
-See https://sciencefyll.github.io/david/html/ for generated Doxygen docs.
+See https://andersfylling.github.io/david/html/ for generated Doxygen docs.
 
 # TO-DO #
 ## Move Generation (Legal Moves) ##
