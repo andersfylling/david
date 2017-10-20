@@ -50,6 +50,18 @@ int juddperft (int argc, char * argv[])
     std::cerr << "no juddperft argument" << std::endl;
     return EXIT_FAILURE;
   }
+  std::string FEN{argv[1]};
+  int         depth{::utils::stoi(argv[2])};
+  int         score{::utils::stoi(argv[3])}; //TODO make uin64_t
+
+  ::david::type::gameState_t gs;
+  ::utils::gameState::generateFromFEN(gs, FEN);
+
+  if (::utils::perft(static_cast<uint8_t>(depth), gs) != static_cast<uint64_t>(score)) {
+    return EXIT_FAILURE;
+  }
+
+  return EXIT_SUCCESS; //test-external /home/anders/github.com/andersfylling/david/cmake-build-release/bin/chess_ann_src
 
   std::string cmd{argv[1]};
   if (cmd == "juddperft") {
@@ -106,7 +118,7 @@ int main (int argc, char * argv[])
   assert(sizeof(uint64_t) == 8);
 
 
-  const std::string mode = "juddperft"; // uci, fight, train, perft, judd-perft. Default: "uci"
+  const std::string mode = "perft"; // uci, fight, train, perft, judd-perft. Default: "uci"
 
 
   if (mode == "fight") {
@@ -119,9 +131,9 @@ int main (int argc, char * argv[])
     train();
   }
   else if (mode == "perft") {
-    ::utils::perft(7);
-    //::utils::perft_time(6, 100);
-    //::utils::perft(5, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -", 1);
+    //::utils::perft(7);
+    //::utils::perft_time(6, 10);
+    ::utils::perft(6, "rnbq1k1r/pp2bppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R", 1);
   }
   else if (mode == "juddperft") {
     juddperft(argc, argv);

@@ -4,7 +4,7 @@
 namespace david {
 
 namespace movegen {
-std::array<std::array<type::bitboard_t, 30>, 6> moves = {{0}};
+std::array<std::array<type::bitboard_t, 225>, 6> moves = {{0}};
 std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack{};
 //std::array<uint_fast16_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack_encoded{};
 }

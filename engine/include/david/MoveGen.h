@@ -14,7 +14,7 @@ namespace david {
 
 //! contains data used by the MoveGen instance, search or perft runs. TreeGen alternative.
 namespace movegen {
-extern std::array<std::array<type::bitboard_t, 30>, 6> moves;
+extern std::array<std::array<type::bitboard_t, 225>, 6> moves; // 9 queens on a empty board..
 extern std::array<::david::type::gameState_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack;
 //extern std::array<uint_fast16_t, ::david::constant::MAXMOVES * ::david::constant::MAXDEPTH> stack_encoded;
 }
@@ -62,9 +62,14 @@ class MoveGen {
     this->generateKingMoves();
     this->generatePawnMoves(); // Must be last due to promotions
 
+
     //generate gameStates based on moves
+    type::bitboard_t oldPieces = 0ull;
+    type::gameState_t gs{};
     const auto nrOfPieceTypes = movegen::moves.size();
     for (unsigned long pieceType = 0; pieceType < nrOfPieceTypes; pieceType++) {
+
+      oldPieces = this->state.piecesArr[pieceType][0];
 
       // for every pieceType
       for (unsigned long board = 0; board < this->index_moves[pieceType]; board++) {
@@ -75,11 +80,11 @@ class MoveGen {
         }
 
         // create a child game state
-        type::gameState_t gs = this->reversedState;
+        gs = this->reversedState;
         gs.piecesArr[pieceType][1] = movegen::moves[pieceType][board];       // the colour that just moved. now opponent.
 
         // update moved piece
-        gs.piecess[1] ^= this->state.piecesArr[pieceType][0]; // turn off all pieces
+        gs.piecess[1] ^= oldPieces; // turn off all pieces
         gs.piecess[1] |= movegen::moves[pieceType][board]; // since the move contains the not moved pieces, + the newly moved one. just add it.
 
 
@@ -107,61 +112,46 @@ class MoveGen {
         }
 
           // identify a castling situation
-          // TODO: verify that the new positions cannot be attacked!
         else if (pieceType == ::david::constant::index::king) {
-          // TODO-castling1a: assumption, castling happens early, so i assume that a friendly rook,
-          // TODO-castling1b: is not on the opposite side, vertically. From the castling rook
-          // TODO-castling1c: OTHERWISE. this is a flaw
-
           // king side castling
-          if (this->state.kingCastlings[0] && (gs.piecesArr[5][1] & 144115188075855874ULL) > 0) {
-            uint8_t castlePos = ::utils::LSB(gs.piecesArr[::david::constant::index::rook][1] & 72057594037927937ULL);
-            ::utils::flipBitOff(gs.piecesArr[::david::constant::index::rook][1], castlePos);
+          if (gs.kingCastlings[1] && (gs.piecesArr[5][1] & 144115188075855874ULL) > 0) {
+            type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & 72057594037927937ull;
+            type::bitboard_t diff = castleBoard | (castleBoard << 2);
 
-            ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos + 2);
-            gs.kingCastlings[1] = false;
-            gs.queenCastlings[1] = false;
-
-            ::utils::flipBitOff(gs.piecess[1], castlePos);
-            ::utils::flipBitOn(gs.piecess[1], castlePos + 2);
+            gs.piecesArr[::david::constant::index::rook][1] ^= diff;
+            gs.piecess[1] ^= diff;
 
 #ifdef DAVID_TEST
             gs.castled = true;
 #endif
           }
 
-          else if (this->state.queenCastlings[0] && (gs.piecesArr[5][1] & 2305843009213693984ULL) > 0) {
-            uint8_t castlePos = ::utils::LSB(gs.piecesArr[::david::constant::index::rook][1] & 9223372036854775936ULL);
-            ::utils::flipBitOff(gs.piecesArr[::david::constant::index::rook][1], castlePos);
+          else if (gs.queenCastlings[1] && (gs.piecesArr[5][1] & 2305843009213693984ULL) > 0) {
+            type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & 9223372036854775936ull;
+            type::bitboard_t diff = castleBoard | (castleBoard >> 3);
 
-            ::utils::flipBitOn(gs.piecesArr[::david::constant::index::rook][1], castlePos - 3);
-            gs.kingCastlings[1] = false;
-            gs.queenCastlings[1] = false;
-
-            ::utils::flipBitOff(gs.piecess[1], castlePos);
-            ::utils::flipBitOn(gs.piecess[1], castlePos - 3);
+            gs.piecesArr[::david::constant::index::rook][1] ^= diff;
+            gs.piecess[1] ^= diff;
 
 #ifdef DAVID_TEST
             gs.castled = true;
 #endif
           }
 
-            // the king has moved so disable castling for that colour
-          else {
-            gs.queenCastlings[1] = false;
-            gs.kingCastlings[1] = false;
-          }
+          // the king has moved so disable castling for that colour
+          gs.queenCastlings[1] = false;
+          gs.kingCastlings[1] = false;
         }
 
           // If a rook move, disable that sides castling rights
         else if (pieceType == ::david::constant::index::rook) {
           // king side
-          if (this->state.kingCastlings[0] && (gs.piecesArr[::david::constant::index::rook][1] & 72057594037927937ULL) == 0) {
+          if (gs.kingCastlings[1] && (gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 1ull : 72057594037927937ull)) == 0) {
             // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
             gs.kingCastlings[1] = false;
           }
             // queen side
-          else if (this->state.queenCastlings[0] && (gs.piecesArr[::david::constant::index::rook][1] & 9223372036854775936ULL) == 0) {
+          else if (gs.queenCastlings[1] && (gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 128ull : 9223372036854775808ull)) == 0) {
             // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
             gs.queenCastlings[1] = false;
           }
