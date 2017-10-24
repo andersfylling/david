@@ -217,6 +217,7 @@ void ::david::ChessEngine::linkUCICommands()
       this->searchThread.join();
     }
     int bestIndex = this->search.getSearchResult();
+    // TODO: infinite does not print best move
     if (bestIndex > 0) {
       // if a search hasn't been done, this stops us from a sigsegv.
       auto EGN = utils::gameState::getEGN(this->treeGen.getGameState(0), this->treeGen.getGameState(bestIndex));

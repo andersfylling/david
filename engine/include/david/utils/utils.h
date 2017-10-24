@@ -187,6 +187,8 @@ void perft(const uint8_t depth, const std::string FEN, const uint8_t end = 255);
 void perft(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end);
 uint64_t perft(const uint8_t depth, ::david::type::gameState_t& gs);
 
+void perft_egn(unsigned int depth, const std::string fen);
+
 // for testing
 void perft_time(const uint8_t depth, const unsigned int rounds);
 void perft_time(::david::type::gameState_t& gs, const uint8_t depth, const unsigned int rounds);

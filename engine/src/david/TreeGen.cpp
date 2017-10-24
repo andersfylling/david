@@ -149,7 +149,7 @@ uint16_t TreeGen::generateChildren(const unsigned int index) {
     auto& n = this->tree[firstChildPos + i];
 
     // use ann to get score
-    //n.score = this->neuralnet.ANNEvaluate(n);
+    n.score = this->neuralnet.ANNEvaluate(n);
     //if (this->NN != nullptr) {
     //  n.score = this->engineContextPtr->neuralNetworkPtr->ANNEvaluate(n);
     //}

@@ -67,7 +67,7 @@ int juddperft (int argc, char * argv[])
   if (cmd == "juddperft") {
     std::string FEN{argv[2]};
     int         depth{::utils::stoi(argv[3])};
-    int         score{::utils::stoi(argv[4])}; //TODO make uin64_t
+    uint64_t    score{::std::stoull(argv[4])}; //TODO make uin64_t
 
     ::david::type::gameState_t gs;
     ::utils::gameState::generateFromFEN(gs, FEN);
@@ -133,7 +133,9 @@ int main (int argc, char * argv[])
   else if (mode == "perft") {
     //::utils::perft(7);
     //::utils::perft_time(6, 10);
-    ::utils::perft(6, "rnbq1k1r/pp2bppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R", 1);
+    //::utils::perft_egn(1, "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
+    //::utils::perft(6, "rnbq1k1r/pp2bppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R", 1);
+    //::utils::perft_egn(2, "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
   }
   else if (mode == "juddperft") {
     juddperft(argc, argv);

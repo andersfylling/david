@@ -345,102 +345,125 @@ uint64_t perft_silent(const uint_fast8_t depth, const std::string FEN)
   return depth == 0 ? 1 : ::utils::perft(depth, gs);
 }
 
+void perft_divide(unsigned int depth, std::string fen, std::map<std::string, uint64_t> egnMoves) {
 
-// oh this is bad, how hte first arg is now the max depth
-// @deprecated, serious error in reading total nr of nodes.
-void perft_threaded(const uint8_t depth, const std::string FEN, const uint8_t start) {
-  ::david::type::gameState_t gs;
-
-  if (FEN == "" || FEN == " ") {
-    ::utils::gameState::setDefaultChessLayout(gs);
-  }
-  else {
-    ::utils::gameState::generateFromFEN(gs, FEN);
+  // colour will not be the same as starting colour
+  // the colour needs to be changed
+  for (unsigned int i = 0; i < fen.size(); i++) {
+    if (fen.at(i) == ' ') {
+      fen.at(i + 1) = fen.at(i + 1) == 'w' ? 'b' : 'w';
+      break;
+    }
   }
 
-  ::utils::perft_threaded(gs, start < depth ? start : depth, depth);
-}
+  ::david::type::gameState_t gs{};
+  ::utils::gameState::generateFromFEN(gs, fen);
 
-// and here its the start.
-// by giving an gs here, we can change the board layouts before perfts.
-void perft_threaded(::david::type::gameState_t& gs, const uint8_t start, const uint8_t end) {
-  std::printf("+%7s+%32s+%10s+\n",
-              "-------",
-              "--------------------------------",
-              "----------");
-  std::printf("| %5s | %30s | %8s |\n",
-              "Depth",
-              "Nodes",
-              "Time");
-  std::printf("+%7s+%32s+%10s+\n",
-              "-------",
-              "--------------------------------",
-              "----------");
-  for (uint8_t depth = start; depth <= end; depth++) {
-    // start time
-    struct timeval tp, tp2;
-    gettimeofday(&tp, NULL);
-    long int ms1 = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+  // number of nodes registered at the given depth
+  uint16_t length = 0;
 
-    // get nodes for given depth
-    uint64_t nodes = depth == 0 ? 1 : ::utils::perft_threaded(depth, gs);
-    const auto prettyNodeCount = ::utils::prettyNum(nodes);
+  int index = 0;
 
-    // time finished
-    gettimeofday(&tp2, NULL);
-    long int ms2 = tp2.tv_sec * 1000 + tp2.tv_usec / 1000;
+  // add first game state to the stack
+  ::david::movegen::stack[index] = gs;
 
-    // print results
-    std::printf("| %5i | %30s | %8.2f |\n",
-                depth, prettyNodeCount.c_str(),  (ms2 - ms1) / 1000.0
-    );
-  }
+  bool firstMoves = true;
 
-  // print ending
-  std::printf("+%7s+%32s+%10s+\n",
-              "-------",
-              "--------------------------------",
-              "----------");
-}
-
-uint64_t perft_threaded(const uint8_t depth, ::david::type::gameState_t &gs) {
-  // create a holder for possible game outputs
   ::david::MoveGen moveGen{gs};
+  // start perfting.
+  while (index >= 0) {
+    moveGen.setGameState(::david::movegen::stack[index]);
 
-  std::array<::david::type::gameState_t, ::david::constant::MAXMOVES> states;
-  const uint16_t len = moveGen.template generateGameStates<::david::constant::MAXMOVES>(states);
+    ::david::type::gameState_t gsCopy = ::david::movegen::stack[index];
 
-  // if depth is 1 just return the length
-  if (depth == 1) {
-    return len;
-  }
+    // returns anything from 0 to 256.
+    length = moveGen.template generateGameStates(::david::movegen::stack, index, index + 255);
 
-  // otherwise continue down the spiral
-  uint64_t nodes = 0;
-  const uint8_t nextDepth = depth - 1;
+    // index has been overwritten with a new leaf node if length is >0.
+    if (::david::movegen::stack[index].depth >= depth) {
+      // store egn moves
+      for (unsigned int i = 0; i < length; i++) {
+        const std::string egn = ::utils::gameState::getEGN(gsCopy, ::david::movegen::stack[index + i]);
 
-  // thread every possible branch to gain speed
-  if (depth % 5 == 0) {
-    std::array<std::thread, ::david::constant::MAXMOVES> threads;
-    for (unsigned long i = 0; i < len; i++) {
-      threads[i] = std::thread([&]() {
-        nodes += perft_threaded(nextDepth, states[i]);
-      });
+        if (egnMoves.count(egn) > 0) {
+          egnMoves[egn] += 1;
+        }
+      }
+    }
+    else {
+      // the children generated aren't leaf so jump onto the last node added.
+      index += length;
     }
 
-    for (unsigned long i = 0; i < len; i++) {
-      threads[i].join();
-    }
-  }
-  else {
-    for (unsigned long i = 0; i < len; i++) {
-      nodes += perft_threaded(nextDepth, states[i]);
-    }
+    // decrement the index to go onto the next node
+    index -= 1;
   }
 
-  // return amount
-  return nodes;
+  // print egn moves
+  for (const auto& [egn, counts] : egnMoves) {
+    std::cout << egn << ": " << std::to_string(counts) << std::endl << std::flush;
+  }
 }
+
+void perft_egn(unsigned int depth, const std::string fen) {
+  ::david::type::gameState_t gs{};
+  ::utils::gameState::generateFromFEN(gs, fen);
+  ::utils::gameState::print(gs);
+
+  // number of nodes registered at the given depth
+  uint64_t nodes = 0;
+  uint16_t length = 0;
+
+  int index = 0;
+
+  // add first game state to the stack
+  ::david::movegen::stack[index] = gs;
+  std::map<std::string, uint64_t> egnMoves{};
+  bool firstMoves = true;
+
+  ::david::MoveGen moveGen{gs};
+  // start perfting.
+  while (index >= 0) {
+    moveGen.setGameState(::david::movegen::stack[index]);
+
+    ::david::type::gameState_t gsCopy = ::david::movegen::stack[index];
+
+    // returns anything from 0 to 256.
+    length = moveGen.template generateGameStates(::david::movegen::stack, index, index + 255);
+
+    if (firstMoves) {
+      firstMoves = false;
+
+      for (unsigned int i = 0; i < length; i++) {
+        const std::string egn = ::utils::gameState::getEGN(gsCopy, ::david::movegen::stack[index + i]);
+        egnMoves[egn] = 1;
+      }
+    }
+
+    // index has been overwritten with a new leaf node if length is >0.
+    if (::david::movegen::stack[index].depth >= depth) {
+      // if this node generates leafs, just count its children and move onto the next entry
+      nodes += length;
+    }
+    else {
+      // the children generated aren't leaf so jump onto the last node added.
+      index += length;
+    }
+
+    // decrement the index to go onto the next node
+    index -= 1;
+  }
+
+  // print egn moves
+  //print_perft_egn(depth, fen, egnMoves);
+
+  // print total nodes
+  std::cout << "\nNodes searched: " << std::to_string(nodes) << '\n' << std::flush;
+}
+
+
+
+
 
 
 

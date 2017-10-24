@@ -192,7 +192,7 @@ void print(const ::david::type::gameState_t& gs) {
       {'R', gs.piecesArr[::david::constant::index::rook][w]}
   };
 
-  std::string board(64, '-');
+  std::string board(64, ' ');
 
   for (auto entry : links) {
     const char piece = entry.first;
@@ -421,28 +421,44 @@ const std::string getEGN(const ::david::type::gameState_t &first, const ::david:
     to = LSB(b & difference);
   }
 
+//  if (first.isWhite) {
+//    // from
+//    EGN.at(0) = indexes[(from % 8)];
+//    EGN.at(1) = ints[(from / 8)];
+//
+//    // to
+//    EGN.at(2) = indexes[(to % 8)];
+//    EGN.at(3) = ints[(to / 8)];
+//  }
+//  else {
+//    // from
+//    EGN.at(0) = indexes[7 - (from % 8)];
+//    EGN.at(1) = ints[7 - (from / 8)];
+//
+//    // to
+//    EGN.at(2) = indexes[7 - (to % 8)];
+//    EGN.at(3) = ints[7 - (to / 8)];
+//  }
+
   // from
-  EGN.at(0) = indexes[from % 8];
-  EGN.at(1) = ints[from / 8];
+  EGN.at(0) = indexes[(from % 8)];
+  EGN.at(1) = ints[(from / 8)];
 
   // to
-  EGN.at(2) = indexes[to % 8];
-  EGN.at(3) = ints[to / 8];
+  EGN.at(2) = indexes[(to % 8)];
+  EGN.at(3) = ints[(to / 8)];
+
 
   // check for promotion
-  if (!castling && (first.piecesArr[0][0] & from) > 0 && (second.piecesArr[0][1] & to) == 0) {
+  if (!castling && (first.piecesArr[0][0] & (a & difference)) > 0 && (second.piecesArr[0][1] & (b & difference)) == 0) {
     // find out which piece type
     for (uint8_t i = 1; i < 5; i++) {
-      if ((second.piecesArr[i][1] & to) > 0) {
+      if ((second.piecesArr[i][1] & (b & difference)) > 0) {
         // found piece: i
-        EGN += pieceTypes[i];
+        EGN += pieceTypes[i - 1];
         break;
       }
     }
-  }
-  else if (castling) {
-    // add the castling char?
-    // now it just shows that the king jumps 2 moves.
   }
 
   return EGN;

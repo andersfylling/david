@@ -48,7 +48,7 @@ class MoveGen {
   uint16_t generateGameStates(std::array<type::gameState_t, N>& arr, const unsigned long start = 0, const unsigned long stop = N - 1)
   {
     if (stop >= N) {
-      throw 0;
+      throw "MoveGen@generateGameStates: `end` is larger than `N`";
     }
 
     // #########################################################################
@@ -158,14 +158,27 @@ class MoveGen {
         }
 
         // a piece was promoted, so remove the pawn that was sacrificed for this promotion
-        if (pieceType > 0 && pieceType < 5 && (movegen::moves[pieceType][board] & this->state.piecesArr[0][0]) > 0) {
-          const type::bitboard_t pawnBoard = movegen::moves[pieceType][board] & this->state.piecesArr[0][0];
+        // every promotion will contains a active bit set to the position of an existing pawn
+        if (pieceType > 0 && pieceType < 5 && (movegen::moves[pieceType][board] & gs.piecesArr[0][1]) > 0) {
+          const type::bitboard_t pawnBoard = movegen::moves[pieceType][board] & gs.piecesArr[0][1];
 
+#ifdef DAVID_TEST
+          if (::utils::nrOfActiveBits(pawnBoard) != 1) {
+            std::__throw_overflow_error("Too many or few pawns set in promotion..");
+          }
+#endif
+
+          // deactivate the pawn position
           gs.piecesArr[0][1] ^= pawnBoard;
-          gs.piecesArr[pieceType][1] ^= pawnBoard;
+          gs.piecesArr[pieceType][1] = (gs.piecesArr[pieceType][1] | pawnBoard) ^ pawnBoard;
+          gs.piecess[1] = (gs.piecess[1] | pawnBoard) ^ pawnBoard;
 
-          // Deactivate the pawn position that gets promoted.
-          gs.piecess[1] ^= pawnBoard;
+          // activate the promoted piece position
+          //gs.piecesArr[pieceType][1] |= ((movegen::moves[pieceType][board] ^ pawnBoard) ^ gs.piecesArr[pieceType][1]);
+          //gs.piecess[1] |= ((movegen::moves[pieceType][board] ^ pawnBoard) ^ gs.piecesArr[pieceType][1]);
+
+
+
 
 #ifdef DAVID_TEST
           gs.promoted = true;
@@ -223,8 +236,6 @@ class MoveGen {
           gs.isInCheck = true;
         }
 #endif
-        // increment depth
-        gs.depth += 1;
 
         // valid move, add it to the record.
         arr[start + index_gameStates++] = gs;

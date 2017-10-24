@@ -113,7 +113,8 @@ int Search::iterativeDeepening() {
     // Aspiration window, used to limit alpha beta window, which will increase cut-offs
     //
     // Reset aspiration window starting size
-    if (currentDepth >= 5) {
+    // TODO: aspiration windows causes SLOWER searching. depth 5 takes several seconds...
+    if (currentDepth > 17) {
       const int delta = iterationScore[currentDepth - 1] - iterationScore[currentDepth - 2];
       aspirationDelta = std::max(delta, 10) + 5;
       alpha = std::max(iterationScore[currentDepth - 1] - aspirationDelta, constant::boardScore::LOWEST);
@@ -180,7 +181,8 @@ int Search::iterativeDeepening() {
         << "info "
         << "depth " << currentDepth << " "
         << "nodes " << this->nodesSearched << " "
-        << std::endl;
+        << std::endl
+        << std::flush;
   }
 
   // uci response
@@ -364,7 +366,7 @@ void Search::setSearchMoves(std::string moves) {
 void Search::setMovesToGo(int movestogo) {
   this->movestogo = movestogo;
 }
-void Search::setNodes(int nodes) {
+void Search::setNodes(uint64_t nodes) {
   this->nodes = nodes;
 }
 

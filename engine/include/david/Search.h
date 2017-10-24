@@ -63,7 +63,7 @@ class Search {
   void setWinc(int winc);
   void setBinc(int binc);
   void setMovesToGo(int movestogo);
-  void setNodes(int nodes);
+  void setNodes(uint64_t nodes);
   void setMoveTime(int movetime);
   void setMate(int mate);
   void setInfinite(bool inf);
@@ -85,7 +85,7 @@ class Search {
   int mate;
   bool infinite;
   bool ponder;
-  int nodes;
+  uint64_t nodes;
   std::string searchMoves;
   int searchScore;
   type::gameState_t bestMove;
@@ -97,7 +97,7 @@ class Search {
   int currentSearchID;
   bool isComplete;
   bool debug;
-  int nodesSearched;
+  uint64_t nodesSearched;
 };
 
 

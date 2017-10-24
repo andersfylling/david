@@ -37,6 +37,7 @@ MoveGen::MoveGen(type::gameState_t& gs)
   this->reversedState.passant = false;
   this->reversedState.enPassant = 0;
   this->reversedState.enPassantPawn = 0;
+  this->reversedState.depth += 1;
 
 #ifdef DAVID_TEST
   this->reversedState.promoted = false;
@@ -76,6 +77,7 @@ void MoveGen::setGameState(type::gameState_t& gs)
   this->reversedState.passant = false;
   this->reversedState.enPassant = 0;
   this->reversedState.enPassantPawn = 0;
+  this->reversedState.depth += 1;
 
 #ifdef DAVID_TEST
   this->reversedState.promoted = false;
