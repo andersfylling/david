@@ -7,10 +7,20 @@
 #include <vector>
 
 // move gen perft test
-int moveGenPerfter (std::string FEN, std::vector<uint64_t> results)
+int moveGenPerfter (std::string FEN, std::vector<uint64_t> results, const uint8_t depth = 0)
 {
   if (FEN.empty() || FEN == "") {
     FEN = ::david::constant::FENStartPosition;
+  }
+
+  // check that the last position causes a mismatch, if not. don't bother running this.
+  std::cout << "Checking perft(" << std::to_string(depth > 0 ? depth : results.size() - 1) << ")[" << FEN << "] => " << std::flush;
+  if (results.size() > 0 && ::utils::perft_silent(depth > 0 ? depth : results.size() - 1, FEN) == results.back()) {
+    std::cout << "OK\n" << std::flush;
+    return -1;
+  }
+  else {
+    std::cout << "ERROR\n" << std::flush;
   }
 
   setbuf(stdout, NULL);
@@ -21,8 +31,14 @@ int moveGenPerfter (std::string FEN, std::vector<uint64_t> results)
 
   // for every results entry
   std::printf("| %8s |", "perft(n)");
-  for (unsigned int  i = 0; i < results.size(); i++) {
-    std::printf(" %4d |", i);
+  if (depth == 0) {
+    for (unsigned int i = 0; i < results.size(); i++) {
+      std::printf(" %4d |", i);
+    }
+  }
+  else {
+    // specific depth
+    std::printf(" %4d |", depth);
   }
   std::printf("\n+----------+");
   for (unsigned int  i = 0; i < results.size(); i++) {
@@ -34,18 +50,34 @@ int moveGenPerfter (std::string FEN, std::vector<uint64_t> results)
   // run perft for every result
   std::printf("| %8s |", "result");
   int fail = -1;
-  for (unsigned int  i = 0; i < results.size(); i++) {
-    const uint64_t perft = ::utils::perft_silent(i, FEN);
+  if (depth == 0) {
+    for (unsigned int i = 0; i < results.size(); i++) {
+      const uint64_t perft = ::utils::perft_silent(i, FEN);
 
-    if (perft != results.at(i)) {
-      fail = i;
+      if (perft != results.at(i)) {
+        fail = i;
+      }
+
+      std::printf(" %4s |", fail == -1 ? "ok" : "fail");
+
+      if (fail != -1) {
+        std::cout << " > perft(" << std::to_string(fail) << "): got " << perft << ", wants " << results.at(i);
+        break;
+      }
+    }
+  }
+  else {
+    // run at a specific depth
+    const uint64_t perft = ::utils::perft_silent(depth, FEN);
+
+    if (perft != results.at(0)) {
+      fail = depth;
     }
 
     std::printf(" %4s |", fail == -1 ? "ok" : "fail");
 
     if (fail != -1) {
-      std::cout << " > perft(" << std::to_string(fail) << "): got " << perft << ", wants " << results.at(i);
-      break;
+      std::cout << " > perft(" << std::to_string(fail) << "): got " << perft << ", wants " << results.at(0);
     }
   }
   std::printf("\n+----------+");
@@ -91,6 +123,8 @@ int main( int argc, char* argv[] )
   const bool useMoveGenTestSuite = true;
   if (useMoveGenTestSuite) {
     std::vector<uint64_t> expected{};
+
+
 
     // normal perft at first
     expected.push_back(1);
@@ -174,6 +208,50 @@ int main( int argc, char* argv[] )
     //expected.push_back(490154852788714);
 #endif
     moveGenPerfter("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10", expected);
+
+
+    // 3k4/3p4/8/K1P4r/8/8/8/8 b - - 0 1
+    // https://github.com/sandermvdb/chess22k
+    expected.clear();
+    expected.push_back(1134888); // 6
+    moveGenPerfter("3k4/3p4/8/K1P4r/8/8/8/8 b - - 0 1", expected, 6);
+
+    // Promotion
+    expected.clear();
+    expected.push_back(3821001); // 6
+    moveGenPerfter("2K2r2/4P3/8/8/8/8/8/3k4 w - - 0 1", expected, 6);
+
+    // Promotion 2
+    expected.clear();
+    expected.push_back(217342); // 6
+    moveGenPerfter("4k3/1P6/8/8/8/8/K7/8 w - - 0 1", expected, 6);
+
+    // Promotion 3
+    expected.clear();
+    expected.push_back(92683); // 6
+    moveGenPerfter("8/P1k5/K7/8/8/8/8/8 w - - 0 1", expected, 6);
+
+    // Check-and stale-mate
+
+    // Discovered Check
+    expected.clear();
+    expected.push_back(1004658);
+    moveGenPerfter("8/8/1P2K3/8/2n5/1q6/8/5k2 b - - 0 1", expected, 5);
+
+    // Self Stalemate
+    expected.clear();
+    expected.push_back(382);
+    moveGenPerfter("K1k5/8/P7/8/8/8/8/8 w - - 0 1", expected, 5);
+
+    // Stalemate & Checkmate
+    expected.clear();
+    expected.push_back(567584);
+    moveGenPerfter("8/k1P5/8/1K6/8/8/8/8 w - - 0 1", expected, 7);
+
+    // Stalemate & Checkmate
+    expected.clear();
+    expected.push_back(23527);
+    moveGenPerfter("8/8/2k5/5q2/5n2/8/5K2/8 b - - 0 1", expected, 4);
 
 
     // done

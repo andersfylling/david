@@ -63,7 +63,7 @@ FEN string: r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1
 +-----------------------------------------------------------------------------+
 | perft(n) |    0 |    1 |    2 |    3 |    4 |    5 |    6 |
 +----------+------+------+------+------+------+------+------+
-|   result |   ok |   ok |   ok |   ok |   ok | fail | > perft(5): got 15832226, wants 15833292
+|   result |   ok |   ok |   ok |   ok |   ok | fail | > perft(5): got 15833006, wants 15833292
 +----------+------+------+------+------+------+------+
 
 Detected failure. Doing advanced perft check. Please verify results.
@@ -71,7 +71,7 @@ FEN string: r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
 +-------+--------------------------------+----------+----------+----------+----------+----------+----------+
 | Depth |                          Nodes | Captures |     E.P. |  Castles |   Promos |   Checks | Checkm's |
 +-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-|     5 |                       15832226 |  2046061 |     6512 |        0 |   328676 |   200174 |   200174 |
+|     5 |                       15833006 |  2046219 |     6512 |        0 |   329456 |   200564 |   200564 |
 +-------+--------------------------------+----------+----------+----------+----------+----------+----------+
 
 +-----------------------------------------------------------------------------+
@@ -79,15 +79,15 @@ FEN string: r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
 +-----------------------------------------------------------------------------+
 | perft(n) |    0 |    1 |    2 |    3 |    4 |    5 |    6 |
 +----------+------+------+------+------+------+------+------+
-|   result |   ok |   ok |   ok |   ok |   ok |   ok | fail | > perft(6): got 706082478, wants 706045033
-+----------+------+------+------+------+------+------+------+
+|   result |   ok |   ok |   ok |   ok |   ok | fail | > perft(5): got 15833006, wants 15833292
++----------+------+------+------+------+------+------+
 
 Detected failure. Doing advanced perft check. Please verify results.
 FEN string: r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1
 +-------+--------------------------------+----------+----------+----------+----------+----------+----------+
 | Depth |                          Nodes | Captures |     E.P. |  Castles |   Promos |   Checks | Checkm's |
 +-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-|     6 |                      706082478 | 210367872 |      212 | 10910767 | 81102984 | 26974006 | 26974006 |
+|     5 |                       15833006 |  2046219 |     6512 |        0 |   329456 |   200564 |   200564 |
 +-------+--------------------------------+----------+----------+----------+----------+----------+----------+
 
 +-----------------------------------------------------------------------------+
@@ -109,7 +109,10 @@ FEN string: rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
 
 # Perft speed #
 This is without caching.
-MoveGen speed: `~35,471,675.5moves/second`. Note that a move here is a complete game state generated.
+MoveGen speed: `~35,471,675.5 legal moves/second`.
+Note that a move here is a complete game state generated and
+some are removed at runtime as they are evaluated as illegal.
+This means there isn't a correct nodes per second counter yet.
 
 Perft(0..7) results:
 ```
