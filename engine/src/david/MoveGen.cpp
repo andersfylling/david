@@ -324,7 +324,11 @@ void MoveGen::generateKingMoves() {
   }
 
   // castling if not in check
-  if ((this->state.queenCastlings[0] || this->state.kingCastlings[0]) && !this->dangerousPosition(kingBoard, this->state)) {
+  if (
+      (this->state.queenCastlings[0] || this->state.kingCastlings[0])
+      && !this->dangerousPosition(kingBoard, this->state)
+      && (this->state.piecesArr[5][0] & 576460752303423496ull) > 0
+      ) {
     // queen side castling
     if (this->state.queenCastlings[0] && ((this->state.isWhite ? 112 : 8070450532247928832ULL) & this->state.combinedPieces) == 0
         && (9223372036854775936ULL & this->state.piecesArr[::david::constant::index::rook][0]) > 0) {

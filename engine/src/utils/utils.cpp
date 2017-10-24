@@ -560,7 +560,6 @@ uint64_t perft_advanced(const uint8_t depth, ::david::type::gameState_t &gs, std
     auto& state = states[i];
 
     if (depth == 1) {
-
       // add move
       const std::string egn = ::utils::gameState::getEGN(gs, state);
       if (moves.count(egn) == 0) {
@@ -587,6 +586,9 @@ uint64_t perft_advanced(const uint8_t depth, ::david::type::gameState_t &gs, std
       // castling
 #ifdef DAVID_TEST
       if (state.castled) {
+        //::utils::gameState::print(gs);
+        //::utils::gameState::print(state);
+        //std::cout << ::utils::gameState::generateFen(gs) << '\n' << std::flush;
         results[2] += 1;
       }
 #else

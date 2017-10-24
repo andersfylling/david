@@ -100,6 +100,13 @@ class MoveGen {
             }
           }
 
+          // if king has captured a piece, turn off castling.
+          // king isn't dealt with whenever a capture takes place normally.
+          if (pieceType == ::david::constant::index::king) {
+            gs.queenCastlings[1] = false;
+            gs.kingCastlings[1] = false;
+          }
+
           // update pieces
           ::utils::flipBitOff(gs.piecess[0], attackedPiecePosition);
         }
