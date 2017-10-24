@@ -253,6 +253,11 @@ int main( int argc, char* argv[] )
     expected.push_back(23527);
     moveGenPerfter("8/8/2k5/5q2/5n2/8/5K2/8 b - - 0 1", expected, 4);
 
+    // random
+    expected.clear();
+    expected.push_back(2215);
+    moveGenPerfter("r3k3/3N4/8/8/8/8/8/4K3 b q", expected, 3);
+
 
     // done
     std::cout << "\n\nDONE!\n";

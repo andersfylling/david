@@ -136,6 +136,8 @@ int main (int argc, char * argv[])
     //::utils::perft_egn(1, "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
     //::utils::perft(6, "rnbq1k1r/pp2bppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R", 1);
     //::utils::perft_egn(2, "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
+    ::utils::perft_advanced(3, "r3k3/3N4/8/8/8/8/8/4K3 b q");
+    //::utils::perft(1, "r4k2/8/8/4N3/8/4K3/8/8 b - - 0 1");
   }
   else if (mode == "juddperft") {
     juddperft(argc, argv);
