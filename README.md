@@ -83,10 +83,8 @@ Perft(0..7) results:
 +-------+--------------------------------+----------+
 ```
 
-# Contributors
- * [andersfylling](https://github.com/andersfylling)
- * [Klyngen](https://github.com/klyngen)
- * [MarkusAJacobsen](https://github.com/MarkusAJacobsen)
+# Contributing
+Todo
 
 # Thanks to
 [Juddperft](https://github.com/jniemann66/juddperft) for finding a bug in castling and promotion.
