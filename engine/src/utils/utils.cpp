@@ -558,6 +558,8 @@ uint64_t perft_advanced(const uint8_t depth, ::david::type::gameState_t &gs, std
   const uint8_t nextDepth = depth - 1;
   for (unsigned long i = 0; i < len; i++) {
     auto& state = states[i];
+    
+    //std::cout << ::utils::gameState::generateFen(state) << std::endl;
 
     if (depth == 1) {
       // add move

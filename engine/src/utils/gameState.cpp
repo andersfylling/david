@@ -172,6 +172,11 @@ std::string generateFen(const ::david::type::gameState_t& gs) {
 07	06	05	04	03	02	01	00
  *
  */
+void print(const std::string FEN) {
+  ::david::type::gameState_t gs{};
+  ::utils::gameState::generateFromFEN(gs, FEN);
+  ::utils::gameState::print(gs);
+}
 void print(const ::david::type::gameState_t& gs) {
   int w = gs.isWhite ? 0 : 1;
   int b = gs.isWhite ? 1 : 0;

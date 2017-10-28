@@ -109,7 +109,7 @@ class MoveGen {
           }
 
           // do the same for rook moves
-          if (pieceType == ::david::constant::index::rook) {
+          else if (pieceType == ::david::constant::index::rook) {
             if (gs.kingCastlings[1]
                 && (gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 1ull : 72057594037927937ull))
                     == 0) {
@@ -171,13 +171,13 @@ class MoveGen {
           // If a rook move, disable that sides castling rights
         else if (pieceType == ::david::constant::index::rook) {
           // king side
-          if (gs.kingCastlings[1] && (gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 1ull : 72057594037927937ull)) == 0) {
-            // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
+          if (gs.kingCastlings[1] && (gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 1ull : 72057594037927936ull)) == 0) {
+            // there is no rook at its home anymore. however what if there's a friendly rook at the hostile rank?
             gs.kingCastlings[1] = false;
           }
             // queen side
           else if (gs.queenCastlings[1] && (gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 128ull : 9223372036854775808ull)) == 0) {
-            // there is no rook at its home anymore. however what if theres a friendly rook at the hostile rank?
+            // there is no rook at its home anymore. however what if there's a friendly rook at the hostile rank?
             gs.queenCastlings[1] = false;
           }
         }

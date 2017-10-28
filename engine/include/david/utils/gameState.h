@@ -28,6 +28,7 @@ std::string generateFen(const ::david::type::gameState_t& node);
 07	06	05	04	03	02	01	00
  *
  */
+void print(const std::string FEN);
 void print(const ::david::type::gameState_t& gs);
 
 /**
