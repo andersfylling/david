@@ -124,6 +124,20 @@ class MoveGen {
               gs.queenCastlings[1] = false;
             }
           }
+          
+          // check if this destroys castling for opponent
+          if (::utils::bitAt(9295429630892703873ull, attackedPiecePosition)) {
+            // one of the corners was attacked, make sure the opponent has castling rights
+            if (gs.kingCastlings[0] || gs.queenCastlings[0]) {
+              // opponent has castling rights.
+              if (attackedPiecePosition == (gs.isWhite ? 63 : 7) && gs.queenCastlings[0]) {
+                gs.queenCastlings[0] = false;
+              }
+              else if (attackedPiecePosition == (gs.isWhite ? 56 : 0) && gs.kingCastlings[0]) {
+                gs.kingCastlings[0] = false;
+              }
+            }
+          }
 
           // update pieces
           ::utils::flipBitOff(gs.piecess[0], attackedPiecePosition);
@@ -140,7 +154,7 @@ class MoveGen {
         else if (pieceType == ::david::constant::index::king) {
           // king side castling
           if (gs.kingCastlings[1] && (gs.piecesArr[5][1] & 144115188075855874ULL) > 0) {
-            type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & 72057594037927937ull;
+            type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 1ull : 72057594037927936ull);
             type::bitboard_t diff = castleBoard | (castleBoard << 2);
 
             gs.piecesArr[::david::constant::index::rook][1] ^= diff;
@@ -152,7 +166,7 @@ class MoveGen {
           }
 
           else if (gs.queenCastlings[1] && (gs.piecesArr[5][1] & 2305843009213693984ULL) > 0) {
-            type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & 9223372036854775936ull;
+            type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 128ull : 9223372036854775808ull);
             type::bitboard_t diff = castleBoard | (castleBoard >> 3);
 
             gs.piecesArr[::david::constant::index::rook][1] ^= diff;

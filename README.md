@@ -40,39 +40,24 @@ See https://andersfylling.github.io/david/html/ for generated Doxygen docs.
   - [ ] Threaded search (Thread pool to seperate branches for quicker searching)
 
 
-# Incorrect perft scores #
+# Perft for debugging (perft perft) #
 ```
-+-----------------------------------------------------------------------------+
-|            r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1 |
-+-----------------------------------------------------------------------------+
-| perft(n) |    0 |    1 |    2 |    3 |    4 |    5 |    6 |
-+----------+------+------+------+------+------+------+------+
-|   result |   ok |   ok |   ok |   ok |   ok | fail | > perft(5): got 15833006, wants 15833292
-+----------+------+------+------+------+------+------+
-
-Detected failure. Doing advanced perft check. Please verify results.
-FEN string: r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1
-+-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-| Depth |                          Nodes | Captures |     E.P. |  Castles |   Promos |   Checks | Checkm's |
-+-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-|     5 |                       15833006 |  2046219 |     6512 |        0 |   329456 |   200564 |   200564 |
-+-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-
-+-----------------------------------------------------------------------------+
-|            r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1 |
-+-----------------------------------------------------------------------------+
-| perft(n) |    0 |    1 |    2 |    3 |    4 |    5 |    6 |
-+----------+------+------+------+------+------+------+------+
-|   result |   ok |   ok |   ok |   ok |   ok | fail | > perft(5): got 15833006, wants 15833292
-+----------+------+------+------+------+------+------+
-
-Detected failure. Doing advanced perft check. Please verify results.
-FEN string: r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1
-+-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-| Depth |                          Nodes | Captures |     E.P. |  Castles |   Promos |   Checks | Checkm's |
-+-------+--------------------------------+----------+----------+----------+----------+----------+----------+
-|     5 |                       15833006 |  2046219 |     6512 |        0 |   329456 |   200564 |   200564 |
-+-------+--------------------------------+----------+----------+----------+----------+----------+----------+
+Checking perft(5)[                  rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 ] => OK
+Checking perft(5)[          r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ] => OK
+Checking perft(6)[                                     8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - ] => OK
+Checking perft(6)[          r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1 ] => OK
+Checking perft(6)[          r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1 ] => OK
+Checking perft(5)[                 rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8 ] => OK
+Checking perft(5)[  r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10 ] => OK
+Checking perft(6)[                                         3k4/3p4/8/K1P4r/8/8/8/8 b - - 0 1 ] => OK
+Checking perft(6)[                                         2K2r2/4P3/8/8/8/8/8/3k4 w - - 0 1 ] => OK
+Checking perft(6)[                                            4k3/1P6/8/8/8/8/K7/8 w - - 0 1 ] => OK
+Checking perft(6)[                                             8/P1k5/K7/8/8/8/8/8 w - - 0 1 ] => OK
+Checking perft(5)[                                       8/8/1P2K3/8/2n5/1q6/8/5k2 b - - 0 1 ] => OK
+Checking perft(5)[                                             K1k5/8/P7/8/8/8/8/8 w - - 0 1 ] => OK
+Checking perft(7)[                                            8/k1P5/8/1K6/8/8/8/8 w - - 0 1 ] => OK
+Checking perft(4)[                                         8/8/2k5/5q2/5n2/8/5K2/8 b - - 0 1 ] => OK
+Checking perft(3)[                                                r3k3/3N4/8/8/8/8/8/4K3 b q ] => OK
 ```
 
 # Perft speed #

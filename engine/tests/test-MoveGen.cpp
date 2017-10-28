@@ -13,9 +13,19 @@ TEST_CASE("MoveGen perft [MoveGen]") {
 
   //std::cout << "FEN::";
 
-  //const std::string FEN = "r3k2r/8/8/8/8/8/8/6K1 b k";
+  const std::string FEN = "r3k3/8/2K5/8/8/8/8/r6R b q - 0 1";
+  // perft3
+  // r3k3/2K5/8/8/8/8/8/r6R w q - 0 1
+//  r3k3/2K5/8/8/8/8/8/7r w q - 0 1
+//  r3k3/2K5/8/8/8/8/8/6rR w q - 0 1
+//  r3k3/2K5/8/8/8/8/8/5r1R w q - 0 1
+//  r3k3/2K5/8/8/8/8/8/4r2R w q - 0 1
+//  r3k3/2K5/8/8/8/8/8/3r3R w q - 0 1
+//  r3k3/2K5/8/8/8/8/8/2r4R w q - 0 1
+  // perft 2
+  // r3k3/8/2K5/8/8/8/8/r6R b q - 0 1
   //::utils::gameState::print(FEN);
-  //::utils::perft_advanced(3, FEN, 1);
+  //::utils::perft_advanced(2, FEN, 1);
   //std::exit(1);
 
 

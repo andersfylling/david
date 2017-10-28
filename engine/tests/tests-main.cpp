@@ -15,6 +15,7 @@ int moveGenPerfter (std::string FEN, std::vector<uint64_t> results, const uint8_
 
   // check that the last position causes a mismatch, if not. don't bother running this.
   std::printf("Checking perft(%u)[ %73s ] => ", (depth > 0 ? depth : results.size() - 1), FEN.c_str());
+  std::flush;
   if (results.size() > 0 && ::utils::perft_silent(depth > 0 ? depth : results.size() - 1, FEN) == results.back()) {
     std::cout << "OK\n" << std::flush;
     return -1;
