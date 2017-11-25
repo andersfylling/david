@@ -36,7 +36,7 @@ int david::EngineMaster::spawnEngine() {
  * @return
  */
 int david::EngineMaster::battle(int engineID1, int engineID2) {
-  return this->battle(engineID1, engineID2, david::FENStartPosition);
+  return this->battle(engineID1, engineID2, ::david::constant::FENStartPosition);
 }
 
 /**

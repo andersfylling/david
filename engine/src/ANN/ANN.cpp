@@ -22,7 +22,7 @@ ANN::ANN()
  * @param filename The ANN weight file.
  */
 ANN::ANN(const std::string filename)
-    : ANNFile(utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename),
+    : ANNFile(utils::getAbsoluteProjectPath() + ::david::constant::neuralNetworksFolder + filename),
       ANNInstance(nullptr) {}
 
 
@@ -79,7 +79,7 @@ void ANN::setANNFile(std::string filename) {
   }
 
   // Check that the file exists on the machine
-  std::string file = utils::getAbsoluteProjectPath() + ::david::neuralNetworksFolder + filename;
+  std::string file = utils::getAbsoluteProjectPath() + ::david::constant::neuralNetworksFolder + filename;
   if (!utils::fileExists(file)) {
     std::cerr << "ANN file does not exist: " << this->ANNFile << std::endl;
     return;

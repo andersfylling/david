@@ -275,6 +275,11 @@ void ::david::ChessEngine::linkUCICommands()
       // replace by applyEGNMove,
       // but since startpos / fen, resets the node to the default each time
       // this command should run for every move in moves given to sync the engine correctly.
+      
+      // TODO-fix: this is hacky af, but not sure how to handle this..
+      if (args.count("moves") == 1) {
+        this->player.isWhite = false; // if the first move is sent, then the user started as white.
+      }
 
       // get every egn string and apply it.
       std::vector<std::string> egns;
@@ -338,10 +343,8 @@ void ::david::ChessEngine::linkUCICommands()
     if (args.count("depth") > 0) {
       depth = ::utils::stoi(args["depth"]);
     }
-
-    const uint64_t nodes = depth == 0 ? 1 : ::utils::perft(depth, gs);
-
-    std::cout << nodes << std::endl;
+    
+    ::utils::perft(depth, FEN);
   };
 
 
@@ -550,7 +553,7 @@ void david::ChessEngine::setNewGameBoard(const std::string fen) {
   auto& node = this->treeGen.getGameState(0);
 
   // check if its a default setup
-  if (fen == david::FENStartPosition) {
+  if (fen == ::david::constant::FENStartPosition) {
     ::utils::gameState::setDefaultChessLayout(node);
     return;
   }

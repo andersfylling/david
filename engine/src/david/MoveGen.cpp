@@ -20,80 +20,14 @@ MoveGen::MoveGen(type::gameState_t& gs)
 //, xRayRookPaths(0ULL)
 //, xRayDiagonalPaths(0ULL)
 {
-  // use this to figure out which pieces can move without putting the king in check
-  //xRayRookPaths = this->generateRookXRayPaths(this->state.piecesArr[this->state.iKings][0]);
-  //xRayDiagonalPaths = this->generateDiagonalXRayPaths(this->state.piecesArr[this->state.iKings][0]);
-
-
-  // create a reversed version of state.
-  // this should speed up game state generation
-  this->reversedState = this->state;
-
-  // swap the active piece side
-  this->reversedState.queenCastlings[0] = this->state.queenCastlings[1];
-  this->reversedState.queenCastlings[1] = this->state.queenCastlings[0];
-  this->reversedState.kingCastlings[0] = this->state.kingCastlings[1];
-  this->reversedState.kingCastlings[1] = this->state.kingCastlings[0];
-  this->reversedState.passant = false;
-  this->reversedState.enPassant = 0;
-  this->reversedState.enPassantPawn = 0;
-  this->reversedState.depth += 1;
-
-#ifdef DAVID_TEST
-  this->reversedState.promoted = false;
-  this->reversedState.castled = false;
-  this->reversedState.isInCheck = false;
-#endif
-
-  // reverse the pieces to respect the active player change
-  const auto nrOfPieces = this->state.piecesArr.size();
-  for (uint8_t i = 0; i < nrOfPieces; i++) {
-    this->reversedState.piecesArr[i][0] = this->state.piecesArr[i][1];
-    this->reversedState.piecesArr[i][1] = this->state.piecesArr[i][0];
-  }
-
-  this->reversedState.piecess[0] = this->state.piecess[1];
-  this->reversedState.piecess[1] = this->state.piecess[0];
-
-  // xray v0.1
-  //this->hostileAttackPaths_queen = this->generateXRay_queen(this->state.piecesArr[5][0]);
+  this->createReversedState();
 }
 
 void MoveGen::setGameState(type::gameState_t& gs)
 {
   this->state = gs;
   this->index_moves = {{0}};
-
-
-  // create a reversed version of state.
-  // this should speed up game state generation
-  this->reversedState = this->state;
-
-  // swap the active piece side
-  this->reversedState.queenCastlings[0] = this->state.queenCastlings[1];
-  this->reversedState.queenCastlings[1] = this->state.queenCastlings[0];
-  this->reversedState.kingCastlings[0] = this->state.kingCastlings[1];
-  this->reversedState.kingCastlings[1] = this->state.kingCastlings[0];
-  this->reversedState.passant = false;
-  this->reversedState.enPassant = 0;
-  this->reversedState.enPassantPawn = 0;
-  this->reversedState.depth += 1;
-
-#ifdef DAVID_TEST
-  this->reversedState.promoted = false;
-  this->reversedState.castled = false;
-  this->reversedState.isInCheck = false;
-#endif
-
-  // reverse the pieces to respect the active player change
-  const auto nrOfPieces = this->state.piecesArr.size();
-  for (uint8_t i = 0; i < nrOfPieces; i++) {
-    this->reversedState.piecesArr[i][0] = this->state.piecesArr[i][1];
-    this->reversedState.piecesArr[i][1] = this->state.piecesArr[i][0];
-  }
-
-  this->reversedState.piecess[0] = this->state.piecess[1];
-  this->reversedState.piecess[1] = this->state.piecess[0];
+  this->createReversedState();
 }
 
 void MoveGen::runAllMoveGenerators() {
@@ -114,14 +48,14 @@ void MoveGen::generatePawnMoves() {
   unsigned long index = 0;
 
   // stack over pieces to handle
-  auto que = this->state.piecesArr[0][0];
+  auto que = this->state.piecesArr[::david::constant::index::pawn][0];
 
   // first lets just move every pawn up/down once
   while (que != 0) {
     uint8_t i = ::utils::LSB(que);
     que = ::utils::flipBitOffCopy(que, i);
 
-    const auto resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[0][0], i);
+    const auto resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[::david::constant::index::pawn][0], i);
 
     // psuedo paths for pawns
     auto paths = this->generatePawnPaths(i, this->state);// & this->hostileAttackPaths_queen;
@@ -135,11 +69,11 @@ void MoveGen::generatePawnMoves() {
     //}
 
     for (uint8_t ii = ::utils::LSB(paths); paths != 0; ii = ::utils::NSB(paths, ii)) {
-      movegen::moves[0][index++] = ::utils::flipBitOnCopy(resultCache, ii);
+      movegen::moves[::david::constant::index::pawn][index++] = ::utils::flipBitOnCopy(resultCache, ii);
     }
   }
 
-  this->index_moves[0] = index;
+  this->index_moves[::david::constant::index::pawn] = index;
 }
 
 /**
@@ -149,7 +83,7 @@ void MoveGen::generateRookMoves() {
   unsigned long index = 0;
 
   // stack over pieces to handle
-  auto que = this->state.piecesArr[1][0];
+  auto que = this->state.piecesArr[::david::constant::index::rook][0];
 
   // For every rook, see how far you can move it until it hits a piece
   // If it hits a friendly, don't add that position
@@ -158,7 +92,7 @@ void MoveGen::generateRookMoves() {
     uint8_t i = ::utils::LSB(que);
     que = ::utils::flipBitOffCopy(que, i);
 
-    auto resultCache = this->state.piecesArr[1][0];
+    auto resultCache = this->state.piecesArr[::david::constant::index::rook][0];
     ::utils::flipBitOff(resultCache, i);
 
     type::bitboard_t attackPaths = this->generateRookAttack(i, this->state);// & this->hostileAttackPaths_queen;
@@ -177,11 +111,11 @@ void MoveGen::generateRookMoves() {
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
 
       // store the new board layout
-      movegen::moves[1][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[::david::constant::index::rook][index++] = ::utils::flipBitOnCopy(resultCache, position);
     }
   }
 
-  this->index_moves[1] = index;
+  this->index_moves[::david::constant::index::rook] = index;
 }
 
 /**
@@ -198,7 +132,7 @@ void MoveGen::generateKnightMoves() {
     uint8_t i = ::utils::LSB(que);
     que = ::utils::flipBitOffCopy(que, i);
 
-    type::bitboard_t resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[2][0], i);
+    type::bitboard_t resultCache = ::utils::flipBitOffCopy(this->state.piecesArr[::david::constant::index::knight][0], i);
 
     type::bitboard_t attackPaths = this->generateKnightAttack(i);// & this->hostileAttackPaths_queen;
 
@@ -216,11 +150,11 @@ void MoveGen::generateKnightMoves() {
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
 
       // store the new board layout
-      movegen::moves[2][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[::david::constant::index::knight][index++] = ::utils::flipBitOnCopy(resultCache, position);
     }
   }
 
-  this->index_moves[2] = index;
+  this->index_moves[::david::constant::index::knight] = index;
 }
 
 /**
@@ -231,13 +165,13 @@ void MoveGen::generateBishopMoves() {
   unsigned long index = 0;
 
   // stack over pieces to handle
-  auto que = this->state.piecesArr[3][0];
+  auto que = this->state.piecesArr[::david::constant::index::bishop][0];
 
   while (que != 0) {
     uint8_t i = ::utils::LSB(que);
     que = ::utils::flipBitOffCopy(que, i);
 
-    type::bitboard_t resultCache = this->state.piecesArr[3][0];
+    type::bitboard_t resultCache = this->state.piecesArr[::david::constant::index::bishop][0];
     ::utils::flipBitOff(resultCache, i);
 
     type::bitboard_t attackPaths = this->generateDiagonals(i, this->state);// & this->hostileAttackPaths_queen;
@@ -254,13 +188,13 @@ void MoveGen::generateBishopMoves() {
       uint8_t position = ::utils::LSB(attackPaths);
 
       // store the new board layout
-      movegen::moves[3][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[::david::constant::index::bishop][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
   }
 
-  this->index_moves[3] = index;
+  this->index_moves[::david::constant::index::bishop] = index;
 }
 
 
@@ -271,13 +205,13 @@ void MoveGen::generateQueenMoves() {
   unsigned long index = 0;
 
   // stack over pieces to handle
-  auto que = this->state.piecesArr[4][0];
+  auto que = this->state.piecesArr[::david::constant::index::queen][0];
 
   while (que != 0) {
     uint8_t i = ::utils::LSB(que);
     que = ::utils::flipBitOffCopy(que, i);
 
-    type::bitboard_t resultCache = this->state.piecesArr[4][0];
+    type::bitboard_t resultCache = this->state.piecesArr[::david::constant::index::queen][0];
     ::utils::flipBitOff(resultCache, i);
 
     type::bitboard_t attackPaths = this->generateDiagonals(i, this->state);// & this->hostileAttackPaths_queen;
@@ -295,13 +229,13 @@ void MoveGen::generateQueenMoves() {
       uint8_t position = ::utils::LSB(attackPaths);
 
       // store the new board layout
-      movegen::moves[4][index++] = ::utils::flipBitOnCopy(resultCache, position);
+      movegen::moves[::david::constant::index::queen][index++] = ::utils::flipBitOnCopy(resultCache, position);
 
       attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
     }
   }
 
-  this->index_moves[4] = index;
+  this->index_moves[::david::constant::index::queen] = index;
 }
 
 
@@ -310,7 +244,7 @@ void MoveGen::generateQueenMoves() {
  */
 void MoveGen::generateKingMoves() {
   unsigned long index = 0;
-  const auto kingBoard = this->state.piecesArr[5][0];
+  const auto kingBoard = this->state.piecesArr[::david::constant::index::king][0];
 
   // assumptions, there's only one king
   type::bitboard_t attackPaths = this->generateKingAttack(::utils::LSB(kingBoard));
@@ -320,14 +254,14 @@ void MoveGen::generateKingMoves() {
     attackPaths = ::utils::flipBitOffCopy(attackPaths, position);
 
     // store the new board layout
-    movegen::moves[5][index++] = ::utils::indexToBitboard(position);
+    movegen::moves[::david::constant::index::king][index++] = ::utils::indexToBitboard(position);
   }
 
   // castling if not in check
   if (
       (this->state.queenCastlings[0] || this->state.kingCastlings[0])
       && !this->dangerousPosition(kingBoard, this->state)
-      && (this->state.piecesArr[5][0] & 576460752303423496ull) > 0
+      && (this->state.piecesArr[::david::constant::index::king][0] & 576460752303423496ull) > 0
       ) {
     // queen side castling
     if (this->state.queenCastlings[0] && ((this->state.isWhite ? 112 : 8070450532247928832ULL) & this->state.combinedPieces) == 0
@@ -337,7 +271,7 @@ void MoveGen::generateKingMoves() {
       // make sure the squares in between aren't in check
       // make sure the king isn't in check now
       if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard << 1, this->state)) {
-        movegen::moves[5][index++] = board;
+        movegen::moves[::david::constant::index::king][index++] = board;
       }
     }
 
@@ -346,11 +280,11 @@ void MoveGen::generateKingMoves() {
         && (72057594037927937ULL & this->state.piecesArr[::david::constant::index::rook][0]) > 0) {
       type::bitboard_t board = kingBoard >> 2; // move two right
       if (!this->dangerousPosition(board, this->state) && !this->dangerousPosition(kingBoard >> 1, this->state)) {
-        movegen::moves[5][index++] = board;
+        movegen::moves[::david::constant::index::king][index++] = board;
       }
     }
   }
 
-  this->index_moves[5] = index;
+  this->index_moves[::david::constant::index::king] = index;
 }
 }

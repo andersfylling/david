@@ -144,8 +144,8 @@ class MoveGen {
         }
 
           // en passant capture.
-        else if (pieceType == 0 && this->state.enPassant > 15 && ::utils::bitAt(movegen::moves[0][board], this->state.enPassant)) {
-          ::utils::flipBitOff(gs.piecesArr[0][0], this->state.enPassantPawn);
+        else if (pieceType == ::david::constant::index::pawn && this->state.enPassant > 15 && ::utils::bitAt(movegen::moves[0][board], this->state.enPassant)) {
+          ::utils::flipBitOff(gs.piecesArr[::david::constant::index::pawn][0], this->state.enPassantPawn);
           ::utils::flipBitOff(gs.piecess[0], this->state.enPassantPawn);
           gs.passant = true;
         }
@@ -153,7 +153,7 @@ class MoveGen {
           // identify a castling situation
         else if (pieceType == ::david::constant::index::king) {
           // king side castling
-          if (gs.kingCastlings[1] && (gs.piecesArr[5][1] & 144115188075855874ULL) > 0) {
+          if (gs.kingCastlings[1] && (gs.piecesArr[::david::constant::index::king][1] & 144115188075855874ULL) > 0) {
             type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 1ull : 72057594037927936ull);
             type::bitboard_t diff = castleBoard | (castleBoard << 2);
 
@@ -165,7 +165,7 @@ class MoveGen {
 #endif
           }
 
-          else if (gs.queenCastlings[1] && (gs.piecesArr[5][1] & 2305843009213693984ULL) > 0) {
+          else if (gs.queenCastlings[1] && (gs.piecesArr[::david::constant::index::king][1] & 2305843009213693984ULL) > 0) {
             type::bitboard_t castleBoard = gs.piecesArr[::david::constant::index::rook][1] & (gs.isWhite ? 128ull : 9223372036854775808ull);
             type::bitboard_t diff = castleBoard | (castleBoard >> 3);
 
@@ -198,8 +198,8 @@ class MoveGen {
 
         // a piece was promoted, so remove the pawn that was sacrificed for this promotion
         // every promotion will contains a active bit set to the position of an existing pawn
-        if (pieceType > 0 && pieceType < 5 && (movegen::moves[pieceType][board] & gs.piecesArr[0][1]) > 0) {
-          const type::bitboard_t pawnBoard = movegen::moves[pieceType][board] & gs.piecesArr[0][1];
+        if (pieceType != ::david::constant::index::pawn && pieceType != ::david::constant::index::king && (movegen::moves[pieceType][board] & gs.piecesArr[::david::constant::index::pawn][1]) > 0) {
+          const type::bitboard_t pawnBoard = movegen::moves[pieceType][board] & gs.piecesArr[::david::constant::index::pawn][1];
 
 #ifdef DAVID_TEST
           if (::utils::nrOfActiveBits(pawnBoard) != 1) {
@@ -208,7 +208,7 @@ class MoveGen {
 #endif
 
           // deactivate the pawn position
-          gs.piecesArr[0][1] ^= pawnBoard;
+          gs.piecesArr[::david::constant::index::pawn][1] ^= pawnBoard;
           gs.piecesArr[pieceType][1] = (gs.piecesArr[pieceType][1] | pawnBoard) ^ pawnBoard;
           gs.piecess[1] = (gs.piecess[1] | pawnBoard) ^ pawnBoard;
 
@@ -231,8 +231,8 @@ class MoveGen {
 
         // en passant record
         if (pieceType == ::david::constant::index::pawn && !gs.passant) {
-          auto before = this->state.piecesArr[0][0];
-          auto now = gs.piecesArr[0][1];
+          auto before = this->state.piecesArr[::david::constant::index::pawn][0];
+          auto now = gs.piecesArr[::david::constant::index::pawn][1];
           const auto diff = (before ^ now);
           before &= diff;
           now &= diff;
@@ -259,10 +259,10 @@ class MoveGen {
         if (!::utils::gameState::isHalfMove(
             this->state.piecess[0],
             gs.piecess[0],
-            this->state.piecesArr[0][0],
-            this->state.piecesArr[0][1],
-            gs.piecesArr[0][0],
-            gs.piecesArr[0][1]
+            this->state.piecesArr[::david::constant::index::pawn][0],
+            this->state.piecesArr[::david::constant::index::pawn][1],
+            gs.piecesArr[::david::constant::index::pawn][0],
+            gs.piecesArr[::david::constant::index::pawn][1]
         )) {
           gs.halfMoves = 0;
         }
@@ -299,9 +299,9 @@ class MoveGen {
 
     // pawns
     for (uint8_t j = 0; j < 2; j++) {
-      que = gs.piecesArr[0][j];
+      que = gs.piecesArr[::david::constant::index::pawn][j];
       for (uint8_t i = ::utils::LSB(que); que != 0; i = ::utils::NSB(que, i)) {
-        gs.piecesArr[0][j] |= this->generatePawnPaths(i, gs, j == 1);
+        gs.piecesArr[::david::constant::index::pawn][j] |= this->generatePawnPaths(i, gs, j == 1);
       }
     }
 
@@ -379,6 +379,48 @@ class MoveGen {
   uint64_t hostileAttackPaths_queen   = 0ull - 1;
   uint64_t hostileAttackPaths_knight  = 0ull - 1;
   uint64_t hostileAttackPaths_pawn    = 0ull - 1;
+  
+  inline void createReversedState()
+  {
+  
+    // use this to figure out which pieces can move without putting the king in check
+    //xRayRookPaths = this->generateRookXRayPaths(this->state.piecesArr[this->state.iKings][0]);
+    //xRayDiagonalPaths = this->generateDiagonalXRayPaths(this->state.piecesArr[this->state.iKings][0]);
+  
+  
+    // create a reversed version of state.
+    // this should speed up game state generation
+    this->reversedState = this->state;
+  
+    // swap the active piece side
+    this->reversedState.queenCastlings[0] = this->state.queenCastlings[1];
+    this->reversedState.queenCastlings[1] = this->state.queenCastlings[0];
+    this->reversedState.kingCastlings[0] = this->state.kingCastlings[1];
+    this->reversedState.kingCastlings[1] = this->state.kingCastlings[0];
+    this->reversedState.passant = false;
+    this->reversedState.enPassant = 0;
+    this->reversedState.enPassantPawn = 0;
+    this->reversedState.depth += 1;
+
+#ifdef DAVID_TEST
+    this->reversedState.promoted = false;
+  this->reversedState.castled = false;
+  this->reversedState.isInCheck = false;
+#endif
+  
+    // reverse the pieces to respect the active player change
+    const auto nrOfPieces = this->state.piecesArr.size();
+    for (uint8_t i = 0; i < nrOfPieces; i++) {
+      this->reversedState.piecesArr[i][0] = this->state.piecesArr[i][1];
+      this->reversedState.piecesArr[i][1] = this->state.piecesArr[i][0];
+    }
+  
+    this->reversedState.piecess[0] = this->state.piecess[1];
+    this->reversedState.piecess[1] = this->state.piecess[0];
+  
+    // xray v0.1
+    //this->hostileAttackPaths_queen = this->generateXRay_queen(this->state.piecesArr[5][0]);
+  }
 
   /**
    * Remove the parts of the Psuedo attack path that is illegal / invalid.
@@ -469,7 +511,10 @@ class MoveGen {
    */
    inline void generatePromotions (const type::bitboard_t board, const type::bitboard_t pawn) {
     // add every option
-    for (uint8_t pieceType = 1/*skip Pawn*/; pieceType < 5/*skip king*/; pieceType++) {
+    for (uint8_t pieceType = 0; pieceType < 6; pieceType++) {
+      if (pieceType == ::david::constant::index::pawn || pieceType == ::david::constant::index::king) {
+        continue;
+      }
       // for every promotion, the pawn position is added to its board.
       // so u can just quickly check if any of the set bits overlap with any of the pawn board.
       movegen::moves[pieceType][this->index_moves[pieceType]++] = pawn | board | this->state.piecesArr[pieceType][0];

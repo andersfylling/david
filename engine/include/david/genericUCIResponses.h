@@ -14,8 +14,8 @@ namespace uciResponses {
  * Send id information to gui.
  */
 auto id = [&]() {
-  uci::send("id name " + engineInformation::ENGINE_NAME);
-  uci::send("id author " + engineInformation::ENGINE_AUTHOR);
+  uci::send("id name " + constant::engineInformation::ENGINE_NAME);
+  uci::send("id author " + constant::engineInformation::ENGINE_AUTHOR);
 };
 
 /**
